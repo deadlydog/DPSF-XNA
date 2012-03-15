@@ -1,0 +1,53 @@
+When releasing a new version of DPSF, be sure to follow these steps:
+
+0 - If the DPSPDefaultEffect.fx file was modified, you will need to re-add it as a resource so that the changes take effect. Make sure to do the build in release mode so the .xnb files generated are nice and small, then go into DPSFResources.resx in the DPSF Project, remove the effect resources, and then re-add them, making sure to use the ones in the release folder, and making sure the Xbox one is taken from the Xbox build folder (not the x86 folder). Be sure to do a thorough test on both the PC and Xbox for all particle types to make sure everything is good.
+
+1 - Go into the DPSF Project Properties and update the Assembly Information to use the new Assembly Version (Major.Minor.Build.Revision) (Major features, minor features, bug fixes, 0).
+
+2 - First make sure the configuration manager is set to Mixed Platforms, so that both x86 and Xbox 360 files are built.
+
+3 - Do a "Build Solution" in RELEASE mode to generate an updated DPSF.dll/.xml and DPSFXbox360.dll/.xml.
+
+4 - In the "DPSF" Project Properties, change the Assembly Name to DPSFAsDrawableGameComponent and add DPSFAsDrawableGameComponent to the Conditional Compilation Symbols (in the Build tab). In the DPSF Xbox 360 Project Properties change the Assembly Name to DPSFXbox360AsDrawableGameComponent and add DPSFAsDrawableGameComponent to the Conditional Compilation Symbols. Then do a Build Solution to generate a new DPSFAsDrawableGameComponent.dll/.xml and DPSFXbox360AsDrawableGameComponent.dll/.xml that inherit from DrawableGameComponent.
+
+5 - Copy the DPSF.dll/.xml, DPSFAsDrawableGameComponent.dll/.xml, DPSFXbox360.dll/.xml, and DPSFXbox360AsDrawableGameComponenet.dll/.xml files in the "DPSF\LatestDLLBuild" folder into the "Installer Files" folder, and copy them into the "C:\DPSF (XNA 3.1)" folder as well so that the "Installer Files\DPSF Demo" project can find the new files.
+
+6 - Remove the Conditional Compilation Symbol from both Project Properties, rename the Assembly Names back to DPSF and DPSFXbox360, change back to DEBUG mode, and do another Build Solution to return the solution to its original state.
+
+7 - Open the TestDPSFDLL solution and run it to ensure that DPSF.dll is working correctly. Look at the DPSF Reference properties to make sure it is using the correct version of the dll file. Test it both with "this" and "null" supplied in the particle system's constructor; both should run fine. Test it on the Xbox 360 as well if possible by right-clicking the Xbox 360 copy of the project and selecting "Set as StartUp Project.
+
+8 - Open the TestDPSFInheritsDLL solution and run it to ensure that DPSFAsDrawableGameComponent.dll is working correctly. Look at the DPSF Reference properties to make sure it is using the correct version of the dll file. Test it both with "this" and "null" supplied in the particle system's constructor; using "null" should throw an exception when you try and run it. Test it on the Xbox 360 as well if possible by right-clicking the Xbox 360 copy of the project and selecting "Set as StartUp Project.
+
+9 - Copy any changed or new files from the "DPSF\DPSF Demo" project into the "Installer Files\DPSF Demo" project. Don't copy folders themselves, as they will take the _svn folders with them. Just copy the individual files. Folders to check include the root folder, "Particle Systems", "Templates", "Content", "Content\Fonts", "Content\Shaders", and "Content\Textures".
+
+10 - Copy the files in "Installer Files\DPSF Demo\Templates" to the "Installer Files\Templates" folder.
+
+11 - Copy the "DPSF\DPSF\DPSFDefaults.cs" file to the "Installer Files\Templates" folder.
+
+12 - Copy "DPSF\DPSFDLLContent\Content\DPSFDefaultEffect.fx" to the "Installer Files\Templates" folder.
+
+13 - Open the "Installer Files\DPSF Demo\DPSF Demo.sln", change the mbRELEASE_MODE variable at the top of "GameMain.cs" to "true" and make sure mbLIMIT_FPS is set to "false". If any new textures or particle system class files were added to the original DPSF Demo.sln, they will need to be added to this one as well.
+
+14 - Update the "DPSF API Documentation" to use the .dll's new .xml files generated (using Sandcastle Help File Builder program). You will need to update the HelpFileVersion to match the new DPSF version number.
+
+15 - Update the Help document (including the change log), generating a new "DPSF Help.chm" and copy it into the "Installer Files" folder. Generating the Help document has it's own process document that should be followed (DPSF Help Update Process.txt).
+
+16 - Do a search on the "Installer Files" folder and delete all "Debug" and "Release" folders, and ".suo" and ".cachefile" files. This will help keep the size of the installer small, but will require users to build the applications (tutorials, etc.) in visual studio before running them. 
+
+17 - Re-run the "Installer Files\DPSF Demo\DPSF Demo.sln" in x86 Release mode to generate the executable and required .xnb files so that the DPSF Demo can be ran without needing Visual Studio.
+
+18 - Check all files into SVN.
+
+19 - Do a search on the "Installer Files" folder and delete all "_svn" folders to the recycle bin so that they don't get included in the installer (we will restore them later) (If there was a way to simply exclude these folders from the installer we wouldn't need to do this).
+
+20 - Open the "DPSF Installer Settings.iit" and Build a new "DPSF Installer.exe", making sure to include any new links that should appear in the Start Menu DPSF folder, such as links to new tutorials, demos, etc. and updating the DPSF EULA if it was updated in the help documentation.
+
+21 - Go to the recycle bin and restore all of the "_svn" folders back into the Installer Files folder's sub-folders.
+
+22 - Install DPSF from the new installer and make sure the DPSF Demo works properly. Then uninstall it and make sure everything is removed properly.
+
+23 - Create a copy of the installer and move it into the "Archived Installers" section, renaming it with it's version number and adding it to SVN, and then zip it up to be uploaded to the web.
+
+24 - Check files into SVN again, adding the current dll version (e.g. v1.0.1.1) and Change Log to the SVN commit comments.
+
+25 - Upload the new version to the web, along with the new HTML help files, and update the RSS feed to show a new version.

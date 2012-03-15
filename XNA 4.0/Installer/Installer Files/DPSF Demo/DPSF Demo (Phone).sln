@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DPSF Demo (Phone)", "DPSF Demo (Phone)\DPSF Demo (Phone)\DPSF Demo (Phone).csproj", "{F1ED9C1B-8E13-40C6-837F-9DC56347FCAB}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "DPSF Demo (Phone)Content", "DPSF Demo (Phone)\DPSF Demo (Phone)Content\DPSF Demo (Phone)Content.contentproj", "{905FCCBE-B335-41C0-9305-F118433E5BA4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Windows Phone = Debug|Windows Phone
+		Release|Windows Phone = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F1ED9C1B-8E13-40C6-837F-9DC56347FCAB}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{F1ED9C1B-8E13-40C6-837F-9DC56347FCAB}.Debug|Windows Phone.Build.0 = Debug|Windows Phone
+		{F1ED9C1B-8E13-40C6-837F-9DC56347FCAB}.Debug|Windows Phone.Deploy.0 = Debug|Windows Phone
+		{F1ED9C1B-8E13-40C6-837F-9DC56347FCAB}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+		{F1ED9C1B-8E13-40C6-837F-9DC56347FCAB}.Release|Windows Phone.Build.0 = Release|Windows Phone
+		{F1ED9C1B-8E13-40C6-837F-9DC56347FCAB}.Release|Windows Phone.Deploy.0 = Release|Windows Phone
+		{905FCCBE-B335-41C0-9305-F118433E5BA4}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{905FCCBE-B335-41C0-9305-F118433E5BA4}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

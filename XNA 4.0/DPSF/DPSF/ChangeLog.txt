@@ -1,0 +1,239 @@
+﻿=====================================================================
+This document should show all of the technical changes to DPSF (private), 
+as well as the larger changes that the users should be aware of (public)
+=====================================================================
+
+TODO - Move Particle Position and Lerping to the Emitter function, so it returns back a list of Position/Orientations that should be applied to the particles (hmmm, or
+move it to the helper functions, since we will want to do this for both new and existing particles being updated).
+
+
+Changes made after Version 2.2.2:
+public:
+- Fixed bug in Sprite Particle System Templates and Sprite particle systems where they wouldn't use the SpriteBatch passed into the AutoInitialize() function.
+- Added new ExplosionDebrisSpriteParticleSystem class, that shows the implementation differences between a 3D and 2D Sprite Particle System.
+- Exposed the SpriteBatch object on the particle systems so that it can be retrieved.
+
+Possible Breaking Changes:
+- Removed the mcRandomNumber particle system class variable. Everything should now just use the RandomNumber public property.
+
+
+Changes made after Version 2.2.1:
+public:
+- Changed EULA to make using the DPSF Splash Screen optional.  Now as long as DPSF is mentioned somewhere in the application (not necessarily through a splash screen) 
+	that is acceptable.
+
+Changes made after Version 2.2.0:
+public:
+- Fixed bug with accepting input during the splash screen which resulted in a null ref exception.
+- Now allow user input to skip the splash screen in the Windows Phone DPSF Demo.
+- Fixed the DPSF Demo feature to not clear the screen every frame (F5).
+- Fixed the DPSF Demo feature to draw static particles (F6).
+- Fixed the DPSF Demo feature to create animated gifs and tilesets from particle systems (F8).
+
+
+Changes made after Version 2.1.0:
+public:
+- Changed all particle systems to use the built-in XNA 4 effects by default, rather than the DPSFDefaultEffect, so they are all now Reach compatible (i.e. Windows Phone 7 compatible).
+- Substantial improvement to the performance of Quad particle systems, so it is very comparable with the Sprite3DBillboard particle systems now.
+- Changed default Sampler State to LinearClamp, as PointClamp was causing aliasing problems with new effect types.
+- Updated the DPSF Splash Screen to make it Reach compatible.
+- Fixed bug in Particle System Manager where exception would be thrown by the manager if a particle system removed itself from the manager from within its Update() function.
+- Fixed bug where Emitters would still emit particles when their Enabled property was set to false.
+- Since we now use the built-in XNA 4 effects by default, added a ColorAsPremultiplied property to the particle base class, since
+	the built-in effects expect premultiplied colors.
+
+
+Changes made after Version 2.0.1:
+public:
+- Made DPSF compatible with the Reach profile configuration.
+- Added new Sprite 3D Billboard particle system type which is generally 10%-50% faster than using billboarded Textured Quads.
+- Converted most particle systems over to use the new Sprite 3D Billboard particle systems.
+- Changed particle system's IsInitialized() function into IsInitialized boolean property.
+- Fixed bug where particles wouldn't linearly interpolate (Lerp) between the emitter's previous and current position and orientation when it was moved
+	manually (i.e. not with it's own acceleration/velocity properties).
+- Added particle system properties LerpEmittersPositionAndOrientation and LerpEmittersPositionAndOrientationOnNextUpdate to control emitter Lerping.
+- Added static DPSFDefaultSettings class to be used to set the default values to use for all DPSF particle systems when they are initialized.
+- Added CopyFrom() function and Copy constructor to Emitter and AutoMemoryManagerSettings classes.
+- Fixed bug in ParticleSystemManager's CopyFrom() function.
+- Added PerformanceProfiling variables to the DPSF particle system class and Particle System Manager class that allow you to see how long
+	it takes to perform an Update() or Draw() function call.
+- Added new Trail, FireSprite, and MultipleParticleImagesSprite particle systems, and added templates for the Sprite 3D Billboard particle systems as well.
+- Changed default SpriteSortMode from FrontToBack to Deferred.
+- Fixed bug to treat the SpriteSortMode.Immediate mode like the other modes, since XNA 4 now supports using effects with any of the Sprite Sort Modes.
+- Added FPSUpdated event to the static FPS class that fires every second after the FPS has been updated.
+- Added ability to view performance stats in the DPSF Demo by pressing the F10 key.
+
+private:
+- Added SetCameraPosition() function to template files that were missed.
+- Fixed template files that were not displaying particles.
+- Moved classes from DPSFHelper.cs into their own files.
+
+
+Changes made after Version 2.0.0:
+public:
+- Fixed bug causing incompatible render settings run-time errors to be thrown.
+- Added logic to more properly handle drawing too many particles on the Xbox 360, instead of throwing an exception.
+- Fixed bug in DPSF Demo where it was still checking to make sure XNA 3.1 was installed and throwing an error if it wasn't.
+- Gave assemblies a strong name.
+- Added performance optimizations.
+- Made DSPFDefaultEffect strongly typed, rather than just a generic Effect.
+- Added virtual function SetCameraPosition() that may be overridden when not inheriting from the default DPSF particle system classes 
+	and will still work with the ParticleSystemManager.SetCameraPositionForAllParticleSystems() function.
+
+
+Changes made to get to Version 2.0.0.0 (XNA 4.0):
+public:
+- Made DPSF compatible with XNA GameStudio 4.0, including the Windows Phone 7 (using a 2D Sprite particle system only for now).
+- Removed Pixel and Point Sprite particle system types, as they are no longer supported in XNA 4.0. You will need to convert any existing PointSpriteParticleSystem 
+	classes to be TexturedQuadParticleSystem classes, and add the EverytimeEvent "UpdateParticleToFaceTheCamera" to the particle system.
+- Added WorldViewProjection property to return the result of multiplying the World, View, and Projection matrices.
+- Sprite particle systems no longer default to using the custom DPSF effect (this allows it to run on the Windows Phone 7 without any changes).
+	The custom DPSF effect can still be applied though by calling the function "SetEffectAndTechnique(DPSFDefaultEffect, DPSFDefaultEffectTechniques.Sprites.ToString());".
+- Removed the InitializeRenderState() and ResetRenderState() virtual functions and replaced them with an InitializeRenderProperties() virtual function.
+- Added DistanceFromCameraSquared property to all of the Quad particles.
+- Added ParticleEvent "UpdateParticleDistanceFromCameraSquared" and ParticleSystemEvent "UpdateParticleSystemToSortParticlesByDistanceFromCamera" to
+	sort particles based on their distance from the camera. These must be used if drawing textures with opaque and semi-transparent portions, where you
+	don't want further away particles to be drawn overtop of closer particles.
+- Wrapped all [Serializable] attributes in "if (WINDOWS)" conditional compilation statements, as binary serialization is not supported on the Xbox or Windows Phone.
+
+
+Changes made after Version 1.5.3.0:
+public:
+- Changed install directory to be "DPSF (XNA 3.1)", rather than "DPSF" so that XNA 4 DPSF version can install to "DPSF".
+- Fixed minor memory leak in the Particle System Manager when removing particle systems.
+- SpriteBatchSettings now throws exception if trying to access it when not using a Sprite particle system.
+- Added SpriteBatch parameter to the InitializeSpriteParticleSystem() functions to allow users to draw particle systems
+	using their own SpriteBatches, instead of every particle system using its own. Also included a new
+	UsingExternalSpriteBatchToDrawParticles property that tells at run-time if the particle system uses its own SpriteBatch or not.
+- Added SpriteBatch parameter to the AutoInitialize() function to easily pass in an external Sprite Batch to use to
+	draw Sprite particle systems.
+
+
+Changes made after Version 1.5.2.0:
+public:
+- Fixed bug in Quad and Textured Quad particle systems where the texture was being drawn in reverse (upside down and mirrored).
+
+
+Changes made after Version 1.5.1.0:
+public:
+- Fixed enormous amount of garbage being created when using a Sprite type particle system, causing the garbage collector to run very often.
+
+
+Changes made after Version 1.5.0.0:
+public:
+- Added SourceToTargetVector() and SourceToTargetDirection() functions to DPSFHelper.
+- Added SetCameraPositionForAllParticleSystems() function to the Particle System Manager class.
+- Reduced memory footprint of the Draw() function.
+- Fixed exceptions that would be thrown when a particle system Destroyed itself.
+- Added Particle Update functions to the Quad particle systems to constrain a particle around a specific axis (i.e. X, Y, or Z).
+
+
+Changes made after Version 1.4.0.0:
+public:
+- Added check to make sure .NET Framework 3.5 or greater and XNA 3.1 are installed on the client's machine before running the DPSF Demo, and
+	now displays a nice warning message if they are not installed.
+- Catch and throw new exception when calling SetTexture() in the case that the texture you are loading has already been Dispose()'d.
+- Fixed bug in Default Quad particle systems where particles with a size less than 2 would not be displayed.
+- Now throw descriptive exceptions when properties try to be used before the particle system has been initialized.
+- Added Size, StartSize, and EndSize properties to the Default Sprite and Quad Particles, which simply set the Width and Height properties.
+- Updated help documentation a bit.
+- Plastered the [Serializable] attribute everywhere to make DPSF serializable.
+- Now throw more descriptive exceptions from the Particle System Manager class.
+- Added DPSFDefaultEffectTechniques enumeration which specifies all of the available Techniques for the DPSFDefaultEffect.
+- Added extra functions to the default particles.
+- Fixed bug in ParticleSystemManager.RemoveAllParticleSystems() function that would cause an invalid index exception to be thrown.
+- Fixed bug in ParticleSystemManager.DrawAllParticleSystems() function to draw particle systems in the correct order.
+- Made all Particle and ParticleSystem Update Functions protected instead of public to promote particle system encapsulation and removed extra
+	exposed functions that should not be used from users.
+- Added explosion particle systems to the DPSF Demo.
+- Included the DPSFDefaults.cs file used by DPSF for others to modify if wanted and to learn from.
+
+private:
+- Added null checks to CParticleSystemManager when adding new Particle Systems.
+
+
+Changes made after Version 1.3.1.0:
+public:
+- Added a FPSLogger class to the FPS.cs file included in the DPSF Demo project. This allows the FPS to be logged to a file.
+- Added overloaded Initialize...ParticleSystem() functions to allow a Texture2D to be specified instead of a texture asset name string.
+- Changed the Magnets class, adding MagnetPoint, MagnetLine, MagnetLineSegment, and MagnetPlane classes.
+- Added DefaultSpriteTextureCoordinatesParticleSystem and DefaultTexturedQuadTextureCoordinatesParticleSystem classes for when texture 
+	coordinates are required (not for animated particles), as well as the associated Particle classes and Particle Vertex structs.
+- Added DefaultPointSpriteTextureCoordinatesParticleSystem, DefaultPointSpriteTextureCoordinatesNoRotationParticleSystem, and
+	DefaultPointSpriteTextureCoordinatesNoColorParticleSystem classes, as well as associated Particle classes, Particle Vertex
+	structs, and Effect file techniques.  Three classes are provided because the the NoRotation and NoColor classes run considerably
+	faster than the DefaultPointSpriteTextureCoordinatesParticleSystem, as extra operations must be performed in the shaders to support
+	both Color and Rotation when also using Texture Coordinates for Point Sprites. So if Texture Coordinates are required, but not
+	both Color (including transparency) and Rotation, it is better to use the corresponding NoRotation or NoColor particle system classes.
+- Added DefaultAnimatedPointSpriteParticleSystem, DefaultAnimatedPointSpriteNoRotationParticleSystem, and
+	DefaultAnimatedPointSpriteNoColorParticleSystem classes, as well as associated Particle classes and Particle Vertex structs.
+- Added MultipleParticleImagePS particle system to DPSF demo to show how one particle system can be used to display many different particle images.
+
+
+Changes made after Version 1.3.0.0:
+public:
+- Updated to be compatible with XNA Game Studio 3.1.
+- Added inner exception output to exceptions thrown when initializing particle systems.
+- Changed the SherePS particle system to use the Particle texture.
+- Fixed formula for calculating the row, column, and layer a particle is at in the Grid particle systems.
+- Now throws an exception when trying to Draw on the XBox 360 with a vertex buffer that is too large.
+
+private:
+- Slightly changed the code in DPSF.AddParticle() when deciding if more memory should be allocated or not.
+
+
+Changes made after Version 1.2.0.0:
+public:
+- Fixed bug in DPSFHelper.RandomNormalizedVector() function where it only returned positive vectors.
+- Renamed Emitter.EmitParticles property to Emitter.EmitParticlesAutomatically.
+- Added Emitter.Enabled property.
+- Added Emitter.BurstParticles and Emitter.BurstTime properties to release particles in bursts.
+- Renamed UpdateParticleSystemTurnEmitterOn/Off() functions to UpdateParticleSystemEmitParticlesAutomaticallyOn/Off().
+- Added UpdateParticleSystemEnableEmitter() and UpdateParticleSystemDisableEmitter() particle system update functions to the Default classes.
+- Fixed bug where an "index out of range" exception would be thrown when removing Events from within an Event function.
+- Renamed MultipleChangeParticleSystem.cs to SquarePatternParticleSystem.cs and changed some of its functions.
+- Formatted a lot of the XML documentation better.
+- Fixed bug in DPSFDefaultEffect.fx which caused Point Sprites to be displayed smaller when their rotation was zero.
+- Created first 5 tutorials in the Help Documentation.
+
+
+Changes made after Version 1.1.1.0:
+public:
+- Changed what happens a little bit when a particle is in the exact same position as a magnet affecting it,
+	so now the particle is only pushed in a random direction if the magnet is repelling it (not attracting it).
+- Renamed the DefaultParticleSystemMagnet.DistanceFunctions enumeration's value "SameForceAtAllDistances" to "Constant".
+- Added Grid particle system to Demo.
+- Added Sphere particle system to Demo.
+- Fixed bug where exception would be thrown when reducing the NumberOfParticlesAllocatedInMemory to less than
+	what was currently in the particle system already.
+- Added global variable miPARTICLE_SYSTEM_UPDATES_PER_SECOND to GameMain.cs to control how often the particle systems
+	are updated.
+- Fixed bug in the ParticleSystemManager.AutoInitializeAllParticleSystems() function where not all Particle Systems
+	were being initialized.
+- Added DPSFHelper.RandomNumberBetween(min, max) function for returning random numbers in a given range.
+- Changed the Default Point Sprite and Quad Particle System classes and Templates to reset the RenderState's 
+	AlphaBlendEnable and AlphaTestEnable properties to false after Draw() is called.
+- Added SimulationSpeed and UpdatesPerSecond properties to the individual particle systems, and changing the Particle
+	System Manager's SimulationSpeed / UpdatesPerSecond now sets the individual particle systems' properties.
+- Changed the SimulationSpeed and UpdatesPerSecond properties to work the same when inheriting from
+	DrawableGameComponent or not.
+- Added ParticleSystemManagerToCopyPropertiesFrom property to the particle systems (Copies SimulationSpeed and UpdatesPerSecond).
+- Added a NoDisplay Particle Type that can offer better performance for particle systems that do not need to be
+	visualized (i.e. drawn to the screen), such as for some research applications.
+- Added a RandomNumbers class that inherits the Random class and adds more functionality.
+- Replaced the PointOnVertical/HorizontalCircle() functions in DPSFHelper with more generic PointOnSphere() functions.
+
+private:
+- Added new event functions to the Particle System Manager so when a Particle System's Update or Draw Order is changed,
+	the Particle System Lists are not resorted right away, they are resorted before performing the next Update / Draw.
+- Changed the InitializeCommonVariables() function so the Update and Draw Orders are not reset to zero.
+- Made the VertexElement property private.
+
+
+Changes made after Version 1.1.0.0:
+public:
+- Fixed bug where a particle would be given an invalid position when it was in the exact same position 
+	as a magnet affecting it.
+- Added global boolean values to GameMain.cs to turn building an Animated GIF and TileSetImage on/off
+	when building images from an animation.
+- Added a null check to the DPSF.GraphicsDevice property

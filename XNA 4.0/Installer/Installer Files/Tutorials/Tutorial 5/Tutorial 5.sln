@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tutorial 5", "Tutorial\Tutorial 5.csproj", "{1D07258E-9761-46AC-99E6-43D1387FA71A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TutorialContent", "Tutorial\Content\TutorialContent.contentproj", "{DCBF2047-6902-48EA-891C-13723FB79977}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1D07258E-9761-46AC-99E6-43D1387FA71A}.Debug|x86.ActiveCfg = Debug|x86
+		{1D07258E-9761-46AC-99E6-43D1387FA71A}.Debug|x86.Build.0 = Debug|x86
+		{1D07258E-9761-46AC-99E6-43D1387FA71A}.Release|x86.ActiveCfg = Release|x86
+		{1D07258E-9761-46AC-99E6-43D1387FA71A}.Release|x86.Build.0 = Release|x86
+		{DCBF2047-6902-48EA-891C-13723FB79977}.Debug|x86.ActiveCfg = Debug|x86
+		{DCBF2047-6902-48EA-891C-13723FB79977}.Release|x86.ActiveCfg = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

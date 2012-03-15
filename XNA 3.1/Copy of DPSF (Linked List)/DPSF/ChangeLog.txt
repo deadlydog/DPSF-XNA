@@ -1,0 +1,66 @@
+﻿=====================================================================
+This document should show all of the technical changes to DPSF (private), 
+as well as the larger changes that the users should be aware of (public)
+=====================================================================
+
+Changes made after Version 1.3.0.0:
+public:
+
+private:
+
+
+Changes made after Version 1.2.0.0:
+public:
+- Fixed bug in DPSFHelper.RandomNormalizedVector() function where it only returned positive vectors.
+- Renamed Emitter.EmitParticles property to Emitter.EmitParticlesAutomatically.
+- Added Emitter.Enabled property.
+- Added Emitter.BurstParticles and Emitter.BurstTime properties to release particles in bursts.
+- Renamed UpdateParticleSystemTurnEmitterOn/Off() functions to UpdateParticleSystemEmitParticlesAutomaticallyOn/Off().
+- Added UpdateParticleSystemEnableEmitter() and UpdateParticleSystemDisableEmitter() particle system update functions to the Default classes.
+- Fixed bug where an "index out of range" exception would be thrown when removing Events from within an Event function.
+- Renamed MultipleChangeParticleSystem.cs to SquarePatternParticleSystem.cs and changed some of its functions.
+- Formatted a lot of the XML documentation better.
+- Fixed bug in DPSFDefaultEffect.fx which caused Point Sprites to be displayed smaller when their rotation was zero.
+- Created first 5 tutorials in the Help Documentation.
+
+
+Changes made after Version 1.1.1.0:
+public:
+- Changed what happens a little bit when a particle is in the exact same position as a magnet affecting it,
+	so now the particle is only pushed in a random direction if the magnet is repelling it (not attracting it).
+- Renamed the DefaultParticleSystemMagnet.DistanceFunctions enumeration's value "SameForceAtAllDistances" to "Constant".
+- Added Grid particle system to Demo.
+- Added Sphere particle system to Demo.
+- Fixed bug where exception would be thrown when reducing the NumberOfParticlesAllocatedInMemory to less than
+	what was currently in the particle system already.
+- Added global variable miPARTICLE_SYSTEM_UPDATES_PER_SECOND to GameMain.cs to control how often the particle systems
+	are updated.
+- Fixed bug in the ParticleSystemManager.AutoInitializeAllParticleSystems() function where not all Particle Systems
+	were being initialized.
+- Added DPSFHelper.RandomNumberBetween(min, max) function for returning random numbers in a given range.
+- Changed the Default Point Sprite and Quad Particle System classes and Templates to reset the RenderState's 
+	AlphaBlendEnable and AlphaTestEnable properties to false after Draw() is called.
+- Added SimulationSpeed and UpdatesPerSecond properties to the individual particle systems, and changing the Particle
+	System Manager's SimulationSpeed / UpdatesPerSecond now sets the individual particle systems' properties.
+- Changed the SimulationSpeed and UpdatesPerSecond properties to work the same when inheriting from
+	DrawableGameComponent or not.
+- Added ParticleSystemManagerToCopyPropertiesFrom property to the particle systems (Copies SimulationSpeed and UpdatesPerSecond).
+- Added a NoDisplay Particle Type that can offer better performance for particle systems that do not need to be
+	visualized (i.e. drawn to the screen), such as for some research applications.
+- Added a RandomNumbers class that inherits the Random class and adds more functionality.
+- Replaced the PointOnVertical/HorizontalCircle() functions in DPSFHelper with more generic PointOnSphere() functions.
+
+private:
+- Added new event functions to the Particle System Manager so when a Particle System's Update or Draw Order is changed,
+	the Particle System Lists are not resorted right away, they are resorted before performing the next Update / Draw.
+- Changed the InitializeCommonVariables() function so the Update and Draw Orders are not reset to zero.
+- Made the VertexElement property private.
+
+
+Changes made after Version 1.1.0.0:
+public:
+- Fixed bug where a particle would be given an invalid position when it was in the exact same position 
+	as a magnet affecting it.
+- Added global boolean values to GameMain.cs to turn building an Animated GIF and TileSetImage on/off
+	when building images from an animation.
+- Added a null check to the DPSF.GraphicsDevice property
