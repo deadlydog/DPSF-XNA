@@ -21,7 +21,7 @@ using System.Collections.Generic;
 using System.IO;
 #endregion
 
-namespace DPSF
+namespace DPSF_Demo
 {
     /// <summary>
     /// Static class used to display the current and average Frames Per Second. 

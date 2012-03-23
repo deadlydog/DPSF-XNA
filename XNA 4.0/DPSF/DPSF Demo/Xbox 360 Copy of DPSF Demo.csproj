@@ -74,7 +74,7 @@
   <ItemGroup>
     <Compile Include="FPS.cs" />
     <Compile Include="GameMain.cs" />
-    <Compile Include="Input\GamePadManager.cs" />
+    <Compile Include="Input\GamePadsManager.cs" />
     <Compile Include="Input\KeyboardManager.cs" />
     <Compile Include="Input\MouseManager.cs" />
     <Compile Include="Particle System Wrappers For DPSF Demo\IWrapParticleSystemsForDPSFDemo.cs" />
@@ -126,6 +126,7 @@
     <Compile Include="Templates\Sprite3DBillboardParticleSystemTemplate.cs" />
     <Compile Include="Templates\SpriteParticleSystemTemplate.cs" />
     <Compile Include="Templates\TexturedQuadParticleSystemTemplate.cs" />
+    <Compile Include="View\Camera.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
