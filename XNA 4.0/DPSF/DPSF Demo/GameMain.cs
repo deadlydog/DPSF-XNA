@@ -11,6 +11,8 @@
 #region Using Statements
 using System;
 using System.Collections.Generic;
+using DPSF_Demo.Input;
+using DPSF_Demo.Particle_System_Wrappers_For_DPSF_Demo;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -19,7 +21,7 @@ using DPSF;
 using DPSF.ParticleSystems;
 #endregion
 
-namespace Demo
+namespace DPSF_Demo
 {
 	/// <summary>
 	/// Application class showing how to use the Dynamic Particle System Framework
@@ -373,10 +375,6 @@ namespace Demo
 		Random mcRandom = new Random();         // Random number generator
 
 		// Input States
-		KeyboardState mcCurrentKeyboardState;   // Holds the Keyboard's Current State
-		KeyboardState mcPreviousKeyboardState;  // Holds the Keyboard's Previous State
-		MouseState mcCurrentMouseState;         // Holds the Mouse's Current State
-		MouseState mcPreviousMouseState;        // Holds the Mouse's Previous State
 		GamePadState mcCurrentGamePadState;     // Holds the GamePad's Current State
 		GamePadState mcPreviousGamePadState;    // Holds the GamePad's Previous State
 
@@ -385,7 +383,6 @@ namespace Demo
 		bool mbShowPSControls = false;          // Tells if the Particle System specific Controls should be shown or not
 		bool mbShowCameraControls = false;      // Tells if the Camera Controls should be shown or not
 		bool mbShowPerformanceText = false;     // Tells if we should draw Performance info or not, such as how much memory is currently set to be collected by the Garbage Collector.
-		TimeSpan mcInputTimeSpan = new TimeSpan();  // Used to control user input speed
 
 		bool DrawPerformanceText
 		{
@@ -481,7 +478,7 @@ namespace Demo
 
 		// Declare the Particle System Variables
 		DPSFSplashScreenParticleSystem mcDPSFSplashScreenParticleSystem = null;
-		RandomParticleSystem mcRandomParticleSystem = null;
+		RandomParticleSystemWrapper mcRandomParticleSystem = null;
 		FireParticleSystem mcFireParticleSystem = null;
 		FireSpriteParticleSystem mcFireSpriteParticleSystem = null;
 		SmokeParticleSystem mcSmokeParticleSystem = null;
@@ -595,7 +592,7 @@ namespace Demo
 
 			// Instantiate all of the Particle Systems
 			mcDPSFSplashScreenParticleSystem = new DPSFSplashScreenParticleSystem(this);
-			mcRandomParticleSystem = new RandomParticleSystem(this);
+			mcRandomParticleSystem = new RandomParticleSystemWrapper(this);
 			mcFireParticleSystem = new FireParticleSystem(this);
 			mcFireSpriteParticleSystem = new FireSpriteParticleSystem(this);
 			mcSmokeParticleSystem = new SmokeParticleSystem(this);
@@ -2065,146 +2062,6 @@ namespace Demo
 		#region Handle Input
 
 		/// <summary>
-		/// Returns true if the Key is being pressed down
-		/// </summary>
-		/// <param name="cKey">The Key to check</param>
-		/// <returns>Returns true if the Key is being pressed down</returns>
-		bool KeyIsDown(Keys cKey)
-		{
-			return mcCurrentKeyboardState.IsKeyDown(cKey);
-		}
-
-		/// <summary>
-		/// Returns true if the Key is being pressed down, and no other input was received in the 
-		/// last TimeInSeconds seconds
-		/// </summary>
-		/// <param name="cKey">The Key to check</param>
-		/// <param name="fTimeInSeconds">The amount of time in seconds that must have passed since the 
-		/// last input for this key to be considered pressed down</param>
-		/// <returns>Returns true if the Key is being pressed down, and no other input was received in
-		/// the last TimeInSeconds seconds</returns>
-		bool KeyIsDown(Keys cKey, float fTimeInSeconds)
-		{
-			// If the Key is being pressed down
-			if (KeyIsDown(cKey))
-			{
-				// If the specified Time In Seconds has passed since any input was recieved
-				if (mcInputTimeSpan.TotalSeconds >= fTimeInSeconds)
-				{
-					// Reset the Input Timer
-					mcInputTimeSpan = TimeSpan.Zero;
-
-					// Rerun that the specified amount of Time has elapsed since the last input was received
-					return true;
-				}
-			}
-
-			// Return that the key is not being pressed, or that a key was hit sooner than 
-			// the specified Time In Seconds
-			return false;
-		}
-
-		/// <summary>
-		/// Returns true if the Key is not pressed down
-		/// </summary>
-		/// <param name="cKey">The Key to check</param>
-		/// <returns>Returns true if the Key is not being pressed down</returns>
-		bool KeyIsUp(Keys cKey)
-		{
-			return mcCurrentKeyboardState.IsKeyUp(cKey);
-		}
-
-		/// <summary>
-		/// Returns true if the Key was just pressed down
-		/// </summary>
-		/// <param name="cKey">The Key to check</param>
-		/// <returns>Returns true if the Key is being pressed now, but was not being pressed last frame</returns>
-		bool KeyWasJustPressed(Keys cKey)
-		{
-			return (mcCurrentKeyboardState.IsKeyDown(cKey) && !mcPreviousKeyboardState.IsKeyDown(cKey));
-		}
-
-		/// <summary>
-		/// Returns true if the Key was just released
-		/// </summary>
-		/// <param name="cKey">The Key to check</param>
-		/// <returns>Returns true if the Key is not being pressed now, but was being pressed last frame</returns>
-		bool KeyWasJustReleased(Keys cKey)
-		{
-			return (mcCurrentKeyboardState.IsKeyUp(cKey) && !mcPreviousKeyboardState.IsKeyUp(cKey));
-		}
-
-		/// <summary>
-		/// Returns true if the GamePad Button is down
-		/// </summary>
-		/// <param name="cButton">The Button to check</param>
-		/// <returns>Returns true if the GamePad Button is down, false if not</returns>
-		bool ButtonIsDown(Buttons cButton)
-		{
-			return mcCurrentGamePadState.IsButtonDown(cButton);
-		}
-
-		/// <summary>
-		/// Returns true if the Button is being pressed down, and no other input was received in the
-		/// last TimeInSeconds seconds
-		/// </summary>
-		/// <param name="cButton">The Button to check</param>
-		/// <param name="fTimeInSeconds">The amount of time in seconds that must have passed since the
-		/// last input for the Button to be considered pressed down</param>
-		/// <returns>Returns true if the Button is being pressed down, and no other input was received in the
-		/// last TimeInSeconds seconds</returns>
-		bool ButtonIsDown(Buttons cButton, float fTimeInSeconds)
-		{
-			// If the Button is being pressed down
-			if (ButtonIsDown(cButton))
-			{
-				// If the specified Time In Seconds has passed since any input was recieved
-				if (mcInputTimeSpan.TotalSeconds >= fTimeInSeconds)
-				{
-					// Reset the Input Timer
-					mcInputTimeSpan = TimeSpan.Zero;
-
-					// Rerun that the specified amount of Time has elapsed since the last input was received
-					return true;
-				}
-			}
-
-			// Return that the Button is not being pressed, or that a Button was hit sooner than 
-			// the specified Time In Seconds
-			return false;
-		}
-
-		/// <summary>
-		/// Returns true if the GamePad Button is up
-		/// </summary>
-		/// <param name="cButton">The Button to check</param>
-		/// <returns>Returns true if the GamePad Button is up, false if not</returns>
-		bool ButtonIsUp(Buttons cButton)
-		{
-			return mcCurrentGamePadState.IsButtonUp(cButton);
-		}
-
-		/// <summary>
-		/// Returns true if the GamePad Button was just pressed
-		/// </summary>
-		/// <param name="cButton">The Button to check</param>
-		/// <returns>Returns true if the GamePad Button was just pressed, false if not</returns>
-		bool ButtonWasJustPressed(Buttons cButton)
-		{
-			return (mcCurrentGamePadState.IsButtonDown(cButton) && !mcPreviousGamePadState.IsButtonDown(cButton));
-		}
-
-		/// <summary>
-		/// Returns true if the GamePad Button was just released
-		/// </summary>
-		/// <param name="cButton">The Button to check</param>
-		/// <returns>Returns true if the GamePad Button was just released, false if not</returns>
-		bool ButtonWasJustReleased(Buttons cButton)
-		{
-			return (mcCurrentGamePadState.IsButtonUp(cButton) && !mcPreviousGamePadState.IsButtonUp(cButton));
-		}
-
-		/// <summary>
 		/// Gets and processes all user input
 		/// </summary>
 		void ProcessInput(GameTime cGameTime)
@@ -2212,31 +2069,26 @@ namespace Demo
 			// Save how long it's been since the last time Input was Handled
 			float fTimeInSeconds = (float)cGameTime.ElapsedGameTime.TotalSeconds;
 
-			// Add how long it's been since the last user input was received
-			mcInputTimeSpan += TimeSpan.FromSeconds(fTimeInSeconds);
-
-			// Save the Keyboard State and get its new State
-			mcPreviousKeyboardState = mcCurrentKeyboardState;
-			mcCurrentKeyboardState = Keyboard.GetState();
-
-			// Save the Mouse State and get its new State
-			mcPreviousMouseState = mcCurrentMouseState;
-			mcCurrentMouseState = Mouse.GetState();
+			// Save the state of the input devices at this frame
+			KeyboardManager.UpdateKeyboardStateForThisFrame(cGameTime.ElapsedGameTime);
+			MouseManager.UpdateMouseStateForThisFrame(cGameTime.ElapsedGameTime);
+			GamePadsManager.UpdateGamePadStatesForThisFrame(cGameTime.ElapsedGameTime);
 
 			// Save the GamePad State and get its new State
 			mcPreviousGamePadState = mcCurrentGamePadState;
 			mcCurrentGamePadState = GamePad.GetState(PlayerIndex.One);
 
+
 			// If we should Exit
-			if (KeyIsDown(Keys.Escape) || ButtonIsDown(Buttons.Back))
+			if (KeyboardManager.KeyIsDown(Keys.Escape) || GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.Back))
 			{
 				Exit();
 			}
 
 			// If we are currently showing the Splash Screen and a key was pressed, skip the Splash Screen.
 			if (mcDPSFSplashScreenParticleSystem != null && 
-				((mcCurrentKeyboardState.GetPressedKeys().Length > 0 && mcCurrentKeyboardState.GetPressedKeys()[0] != Keys.None) || 
-				(mcCurrentMouseState.LeftButton == ButtonState.Pressed || mcCurrentMouseState.RightButton == ButtonState.Pressed) ||
+				((KeyboardManager.CurrentKeyboardState.GetPressedKeys().Length > 0 && KeyboardManager.CurrentKeyboardState.GetPressedKeys()[0] != Keys.None) || 
+				(MouseManager.CurrentMouseState.LeftButton == ButtonState.Pressed || MouseManager.CurrentMouseState.RightButton == ButtonState.Pressed) ||
 				(mcCurrentGamePadState.IsButtonDown(Buttons.A | Buttons.B | Buttons.X | Buttons.Y | Buttons.Start))))
 			{
 				mcDPSFSplashScreenParticleSystem.IsSplashScreenComplete = true;
@@ -2244,69 +2096,69 @@ namespace Demo
 			}
 
 			// If we should toggle showing the Floor
-			if (KeyWasJustPressed(Keys.F))
+			if (KeyboardManager.KeyWasJustPressed(Keys.F))
 			{
 				mbShowFloor = !mbShowFloor;
 			}
 
 			// If we should toggle Pausing the game
-			if (KeyWasJustPressed(Keys.Space) || ButtonWasJustPressed(Buttons.Start))
+			if (KeyboardManager.KeyWasJustPressed(Keys.Space) || GamePadsManager.ButtonWasJustPressed(PlayerIndex.One, Buttons.Start))
 			{
 				mbPaused = !mbPaused;
 			}
 
 			// If we should toggle between Full Screen and Windowed mode
-			if (KeyWasJustPressed(Keys.End))
+			if (KeyboardManager.KeyWasJustPressed(Keys.End))
 			{
 				mcGraphics.ToggleFullScreen();
 			}
 
 			// If we should toggle showing the Common Controls
-			if (KeyWasJustPressed(Keys.F1))
+			if (KeyboardManager.KeyWasJustPressed(Keys.F1))
 			{
 				mbShowCommonControls = !mbShowCommonControls;
 			}
 
 			// If we should toggle showing the Particle System specific Controls
-			if (KeyWasJustPressed(Keys.F2))
+			if (KeyboardManager.KeyWasJustPressed(Keys.F2))
 			{
 				mbShowPSControls = !mbShowPSControls;
 			}
 
 			// If we should toggle showing the Camera Controls
-			if (KeyWasJustPressed(Keys.F3))
+			if (KeyboardManager.KeyWasJustPressed(Keys.F3))
 			{
 				mbShowCameraControls = !mbShowCameraControls;
 			}
 
 			// If we should toggle showing the Common Controls
-			if (KeyWasJustPressed(Keys.F4))
+			if (KeyboardManager.KeyWasJustPressed(Keys.F4))
 			{
 				mbShowText = !mbShowText;
 			}
 
 			// If we should toggle Clearing the Screen each Frame
-			if (KeyWasJustPressed(Keys.F5))
+			if (KeyboardManager.KeyWasJustPressed(Keys.F5))
 			{
 				mbClearScreenEveryFrame = !mbClearScreenEveryFrame;
 				_clearScreenEveryFrameJustToggled = true;
 			}
 			
 			// If the particle lifetimes should be drawn in one frame
-			if (KeyWasJustPressed(Keys.F6))
+			if (KeyboardManager.KeyWasJustPressed(Keys.F6))
 			{
 				mbDrawStaticPS = !mbDrawStaticPS;
 				mbStaticParticlesDrawn = false;
 			}
 
 			// If the Axis should be toggled on/off
-			if (KeyWasJustPressed(Keys.F7))
+			if (KeyboardManager.KeyWasJustPressed(Keys.F7))
 			{
 				mbShowAxis = !mbShowAxis;
 			}
 #if (WINDOWS)
 			// If the PS should be drawn to files
-			if (KeyWasJustPressed(Keys.F8))
+			if (KeyboardManager.KeyWasJustPressed(Keys.F8))
 			{
 				// Draw the Particle System Animation to a series of Image Files
 				mcParticleSystemManager.DrawAllParticleSystemsAnimationToFiles(GraphicsDevice, miDrawPSToFilesImageWidth, miDrawPSToFilesImageHeight, 
@@ -2314,7 +2166,7 @@ namespace Demo
 			}
 
 			// If the PS should be serialized to a file
-			if (KeyWasJustPressed(Keys.F9))
+			if (KeyboardManager.KeyWasJustPressed(Keys.F9))
 			{
 				// Only particle systems that do not inherit the DrawableGameComponent can be serialized.
 				if (!DPSFHelper.DPSFInheritsDrawableGameComponent)
@@ -2361,7 +2213,7 @@ namespace Demo
 			}
 #endif
 			// If the Performance Profiling was toggled
-			if (KeyWasJustPressed(Keys.F10))
+			if (KeyboardManager.KeyWasJustPressed(Keys.F10))
 			{
 				// Toggle if the Performance Profiling text should be drawn
 				DrawPerformanceText = !DrawPerformanceText;
@@ -2383,54 +2235,54 @@ namespace Demo
 			if (msCamera.bUsingFixedCamera)
 			{
 				// If the Camera should be rotated vertically
-				if (KeyIsDown(Keys.NumPad1) || (KeyIsUp(Keys.LeftShift) && KeyIsUp(Keys.RightShift) && KeyIsDown(Keys.D1)) ||
-					(ButtonIsDown(Buttons.LeftThumbstickUp) && ButtonIsDown(Buttons.LeftStick)))
+				if (KeyboardManager.KeyIsDown(Keys.NumPad1) || (KeyboardManager.KeyIsUp(Keys.LeftShift) && KeyboardManager.KeyIsUp(Keys.RightShift) && KeyboardManager.KeyIsDown(Keys.D1)) ||
+					(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.LeftThumbstickUp) && GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.LeftStick)))
 				{
 					msCamera.fCameraArc -= fTimeInSeconds * 25;
 				}
 
-				if (KeyIsDown(Keys.NumPad0) || (KeyIsUp(Keys.LeftShift) && KeyIsUp(Keys.RightShift) && KeyIsDown(Keys.D0)) ||
-					(ButtonIsDown(Buttons.LeftThumbstickDown) && ButtonIsDown(Buttons.LeftStick)))
+				if (KeyboardManager.KeyIsDown(Keys.NumPad0) || (KeyboardManager.KeyIsUp(Keys.LeftShift) && KeyboardManager.KeyIsUp(Keys.RightShift) && KeyboardManager.KeyIsDown(Keys.D0)) ||
+					(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.LeftThumbstickDown) && GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.LeftStick)))
 				{
 					msCamera.fCameraArc += fTimeInSeconds * 25;
 				}
 
 				// If the Camera should rotate horizontally
-				if (KeyIsDown(Keys.Right) || ButtonIsDown(Buttons.LeftThumbstickRight))
+				if (KeyboardManager.KeyIsDown(Keys.Right) || GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.LeftThumbstickRight))
 				{
 					msCamera.fCameraRotation -= fTimeInSeconds * 50;
 				}
 
-				if (KeyIsDown(Keys.Left) || ButtonIsDown(Buttons.LeftThumbstickLeft))
+				if (KeyboardManager.KeyIsDown(Keys.Left) || GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.LeftThumbstickLeft))
 				{
 					msCamera.fCameraRotation += fTimeInSeconds * 50;
 				}
 
 				// If Camera should be zoomed out
-				if (KeyIsDown(Keys.Down) || 
-					(ButtonIsDown(Buttons.LeftThumbstickDown) && !ButtonIsDown(Buttons.LeftStick)))
+				if (KeyboardManager.KeyIsDown(Keys.Down) || 
+					(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.LeftThumbstickDown) && !GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.LeftStick)))
 				{
 					msCamera.fCameraDistance += fTimeInSeconds * 250;
 				}
 
 				// If Camera should be zoomed in
-				if (KeyIsDown(Keys.Up) || 
-					(ButtonIsDown(Buttons.LeftThumbstickUp) && !ButtonIsDown(Buttons.LeftStick)))
+				if (KeyboardManager.KeyIsDown(Keys.Up) || 
+					(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.LeftThumbstickUp) && !GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.LeftStick)))
 				{
 					msCamera.fCameraDistance -= fTimeInSeconds * 250;
 				}
 
 
 				// Calculate how much the Mouse was moved
-				int iXMovement = mcCurrentMouseState.X - mcPreviousMouseState.X;
-				int iYMovement = mcCurrentMouseState.Y - mcPreviousMouseState.Y;
-				int iZMovement = mcCurrentMouseState.ScrollWheelValue - mcPreviousMouseState.ScrollWheelValue;
+				int iXMovement = MouseManager.CurrentMouseState.X - MouseManager.PreviousMouseState.X;
+				int iYMovement = MouseManager.CurrentMouseState.Y - MouseManager.PreviousMouseState.Y;
+				int iZMovement = MouseManager.CurrentMouseState.ScrollWheelValue - MouseManager.PreviousMouseState.ScrollWheelValue;
 
 				const float fMOUSE_MOVEMENT_SPEED = 0.5f;
 				const float fMOUSE_ROTATION_SPEED = 0.5f;
 
 				// If the Left Mouse Button is pressed
-				if (mcCurrentMouseState.LeftButton == ButtonState.Pressed)
+				if (MouseManager.CurrentMouseState.LeftButton == ButtonState.Pressed)
 				{
 					// If the Camera should rotate horizontally
 					if (iXMovement != 0)
@@ -2446,7 +2298,7 @@ namespace Demo
 				}
 
 				// If the Right Mouse Button is pressed
-				if (mcCurrentMouseState.RightButton == ButtonState.Pressed)
+				if (MouseManager.CurrentMouseState.RightButton == ButtonState.Pressed)
 				{
 					// If the Camera should zoom in/out
 					if (iYMovement != 0)
@@ -2482,82 +2334,82 @@ namespace Demo
 				int iSPEED = 200;
 				float fROTATE_SPEED = MathHelper.PiOver4;
 
-				if (KeyIsDown(Keys.Decimal))
+				if (KeyboardManager.KeyIsDown(Keys.Decimal))
 				{
 					iSPEED = 100;
 				}
 
 				// If the Camera should move forward
-				if (KeyIsDown(Keys.Up))
+				if (KeyboardManager.KeyIsDown(Keys.Up))
 				{
 					msCamera.MoveCameraForwardOrBackward(iSPEED * fTimeInSeconds);
 				}
 
 				// If the Camera should move backwards
-				if (KeyIsDown(Keys.Down))
+				if (KeyboardManager.KeyIsDown(Keys.Down))
 				{
 					msCamera.MoveCameraForwardOrBackward(-iSPEED * fTimeInSeconds);
 				}
 
 				// If the Camera should strafe right
-				if (KeyIsDown(Keys.Right))
+				if (KeyboardManager.KeyIsDown(Keys.Right))
 				{
 					msCamera.MoveCameraHorizontally(-iSPEED * fTimeInSeconds);
 				}
 
 				// If the Camera should strafe left
-				if (KeyIsDown(Keys.Left))
+				if (KeyboardManager.KeyIsDown(Keys.Left))
 				{
 					msCamera.MoveCameraHorizontally(iSPEED * fTimeInSeconds);
 				}
 
 				// If the Camera should move upwards
-				if (KeyIsDown(Keys.NumPad1) || (KeyIsUp(Keys.LeftShift) && KeyIsUp(Keys.RightShift) && KeyIsDown(Keys.D1)))
+				if (KeyboardManager.KeyIsDown(Keys.NumPad1) || (KeyboardManager.KeyIsUp(Keys.LeftShift) && KeyboardManager.KeyIsUp(Keys.RightShift) && KeyboardManager.KeyIsDown(Keys.D1)))
 				{
 					msCamera.MoveCameraVertically((iSPEED / 2) * fTimeInSeconds);
 				}
 
 				// If the Camera should move downwards
-				if (KeyIsDown(Keys.NumPad0) || (KeyIsUp(Keys.LeftShift) && KeyIsUp(Keys.RightShift) && KeyIsDown(Keys.D0)))
+				if (KeyboardManager.KeyIsDown(Keys.NumPad0) || (KeyboardManager.KeyIsUp(Keys.LeftShift) && KeyboardManager.KeyIsUp(Keys.RightShift) && KeyboardManager.KeyIsDown(Keys.D0)))
 				{
 					msCamera.MoveCameraVertically((-iSPEED / 2) * fTimeInSeconds);
 				}
 
 				// If the Camera should yaw left
-				if (KeyIsDown(Keys.NumPad4) || (KeyIsUp(Keys.LeftShift) && KeyIsUp(Keys.RightShift) && KeyIsDown(Keys.D4)))
+				if (KeyboardManager.KeyIsDown(Keys.NumPad4) || (KeyboardManager.KeyIsUp(Keys.LeftShift) && KeyboardManager.KeyIsUp(Keys.RightShift) && KeyboardManager.KeyIsDown(Keys.D4)))
 				{
 					msCamera.RotateCameraHorizontally(fROTATE_SPEED * fTimeInSeconds);
 				}
 
 				// If the Camera should yaw right
-				if (KeyIsDown(Keys.NumPad6) || (KeyIsUp(Keys.LeftShift) && KeyIsUp(Keys.RightShift) && KeyIsDown(Keys.D6)))
+				if (KeyboardManager.KeyIsDown(Keys.NumPad6) || (KeyboardManager.KeyIsUp(Keys.LeftShift) && KeyboardManager.KeyIsUp(Keys.RightShift) && KeyboardManager.KeyIsDown(Keys.D6)))
 				{
 					msCamera.RotateCameraHorizontally(-fROTATE_SPEED * fTimeInSeconds);
 				}
 
 				// If the Camera should pitch up
-				if (KeyIsDown(Keys.NumPad8) || (KeyIsUp(Keys.LeftShift) && KeyIsUp(Keys.RightShift) && KeyIsDown(Keys.D8)))
+				if (KeyboardManager.KeyIsDown(Keys.NumPad8) || (KeyboardManager.KeyIsUp(Keys.LeftShift) && KeyboardManager.KeyIsUp(Keys.RightShift) && KeyboardManager.KeyIsDown(Keys.D8)))
 				{
 					msCamera.RotateCameraVertically(-fROTATE_SPEED * fTimeInSeconds);
 				}
 
 				// If the Camera should pitch down
-				if (KeyIsDown(Keys.NumPad2) || (KeyIsUp(Keys.LeftShift) && KeyIsUp(Keys.RightShift) && KeyIsDown(Keys.D2)))
+				if (KeyboardManager.KeyIsDown(Keys.NumPad2) || (KeyboardManager.KeyIsUp(Keys.LeftShift) && KeyboardManager.KeyIsUp(Keys.RightShift) && KeyboardManager.KeyIsDown(Keys.D2)))
 				{
 					msCamera.RotateCameraVertically(fROTATE_SPEED * fTimeInSeconds);
 				}
 
 
 				// Calculate how much the Mouse was moved
-				int iXMovement = mcCurrentMouseState.X - mcPreviousMouseState.X;
-				int iYMovement = mcCurrentMouseState.Y - mcPreviousMouseState.Y;
-				int iZMovement = mcCurrentMouseState.ScrollWheelValue - mcPreviousMouseState.ScrollWheelValue;
+				int iXMovement = MouseManager.CurrentMouseState.X - MouseManager.PreviousMouseState.X;
+				int iYMovement = MouseManager.CurrentMouseState.Y - MouseManager.PreviousMouseState.Y;
+				int iZMovement = MouseManager.CurrentMouseState.ScrollWheelValue - MouseManager.PreviousMouseState.ScrollWheelValue;
 
 				const float fMOUSE_MOVEMENT_SPEED = 0.5f;
 				const float fMOUSE_ROTATION_SPEED = 0.005f;
 
 				// If the Left Mouse Button is pressed
-				if (mcCurrentMouseState.LeftButton == ButtonState.Pressed)
+				if (MouseManager.CurrentMouseState.LeftButton == ButtonState.Pressed)
 				{
 					// If the Camera should yaw
 					if (iXMovement != 0)
@@ -2573,7 +2425,7 @@ namespace Demo
 				}
 
 				// If the Right Mouse Button is pressed
-				if (mcCurrentMouseState.RightButton == ButtonState.Pressed)
+				if (MouseManager.CurrentMouseState.RightButton == ButtonState.Pressed)
 				{
 					// If the Camera should strafe
 					if (iXMovement != 0)
@@ -2596,14 +2448,14 @@ namespace Demo
 			}
 
 			// If the Camera Mode should be switched
-			if (KeyWasJustPressed(Keys.PageDown))
+			if (KeyboardManager.KeyWasJustPressed(Keys.PageDown))
 			{
 				msCamera.bUsingFixedCamera = !msCamera.bUsingFixedCamera;
 			}
 
 			// If the Camera values should be Reset
-			if (KeyIsDown(Keys.R) || 
-				(ButtonIsDown(Buttons.LeftShoulder) && ButtonIsDown(Buttons.RightShoulder)))
+			if (KeyboardManager.KeyIsDown(Keys.R) || 
+				(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.LeftShoulder) && GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightShoulder)))
 			{
 				msCamera.ResetFreeCameraVariables();
 				msCamera.ResetFixedCameraVariables();
@@ -2616,7 +2468,7 @@ namespace Demo
 		public void ProcessInputForParticleSystem(float fElapsedTimeInSeconds)
 		{
 			// If the Current Particle System should be changed to the next Particle System
-			if (KeyWasJustPressed(Keys.H) || ButtonWasJustPressed(Buttons.RightTrigger))
+			if (KeyboardManager.KeyWasJustPressed(Keys.H) || GamePadsManager.ButtonWasJustPressed(PlayerIndex.One, Buttons.RightTrigger))
 			{
 				meCurrentPS++;
 				if (meCurrentPS > EPSEffects.LastInList)
@@ -2628,7 +2480,7 @@ namespace Demo
 				InitializeCurrentParticleSystem();
 			}
 			// Else if the Current Particle System should be changed back to the previous Particle System
-			else if (KeyWasJustPressed(Keys.G) || ButtonWasJustPressed(Buttons.LeftTrigger))
+			else if (KeyboardManager.KeyWasJustPressed(Keys.G) || GamePadsManager.ButtonWasJustPressed(PlayerIndex.One, Buttons.LeftTrigger))
 			{
 				meCurrentPS--;
 				if (meCurrentPS < 0)
@@ -2651,55 +2503,55 @@ namespace Demo
 			float fEmitterRotateDelta = MathHelper.Pi * fElapsedTimeInSeconds;
 
 			// If the Shift key is down, move faster
-			if (KeyIsDown(Keys.LeftShift) || KeyIsDown(Keys.RightShift))
+			if (KeyboardManager.KeyIsDown(Keys.LeftShift) || KeyboardManager.KeyIsDown(Keys.RightShift))
 			{
 				fEmitterMoveDelta *= 2;
 			}
 
 			// Check if the Emitter should be moved
-			if (KeyIsDown(Keys.W) || 
-				(ButtonIsDown(Buttons.DPadUp) && !ButtonIsDown(Buttons.RightStick)))
+			if (KeyboardManager.KeyIsDown(Keys.W) || 
+				(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.DPadUp) && !GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightStick)))
 			{
 				mcCurrentParticleSystem.Emitter.PositionData.Position += Vector3.Up * fEmitterMoveDelta;
 			}
 
-			if (KeyIsDown(Keys.S) || 
-				(ButtonIsDown(Buttons.DPadDown) && !ButtonIsDown(Buttons.RightStick)))
+			if (KeyboardManager.KeyIsDown(Keys.S) || 
+				(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.DPadDown) && !GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightStick)))
 			{
 				mcCurrentParticleSystem.Emitter.PositionData.Position += Vector3.Down * fEmitterMoveDelta;
 			}
 
-			if (KeyIsDown(Keys.A) || ButtonIsDown(Buttons.DPadLeft))
+			if (KeyboardManager.KeyIsDown(Keys.A) || GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.DPadLeft))
 			{
 				mcCurrentParticleSystem.Emitter.PositionData.Position += Vector3.Left * fEmitterMoveDelta;
 			}
 
-			if (KeyIsDown(Keys.D) || ButtonIsDown(Buttons.DPadRight))
+			if (KeyboardManager.KeyIsDown(Keys.D) || GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.DPadRight))
 			{
 				mcCurrentParticleSystem.Emitter.PositionData.Position += Vector3.Right * fEmitterMoveDelta;
 			}
 
-			if (KeyIsDown(Keys.E) || 
-				(ButtonIsDown(Buttons.DPadUp) && ButtonIsDown(Buttons.RightStick)))
+			if (KeyboardManager.KeyIsDown(Keys.E) || 
+				(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.DPadUp) && GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightStick)))
 			{
 				mcCurrentParticleSystem.Emitter.PositionData.Position += Vector3.Forward * fEmitterMoveDelta;
 			}
 
-			if (KeyIsDown(Keys.Q) ||
-				(ButtonIsDown(Buttons.DPadDown) && ButtonIsDown(Buttons.RightStick)))
+			if (KeyboardManager.KeyIsDown(Keys.Q) ||
+				(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.DPadDown) && GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightStick)))
 			{
 				mcCurrentParticleSystem.Emitter.PositionData.Position += Vector3.Backward * fEmitterMoveDelta;
 			}
 
 			// Check if the Emitter should be rotated
 			if ((meCurrentPS != EPSEffects.Star && meCurrentPS != EPSEffects.Ball) || 
-				(!KeyIsDown(Keys.V) && !KeyIsDown(Keys.B) && !KeyIsDown(Keys.P)))
+				(!KeyboardManager.KeyIsDown(Keys.V) && !KeyboardManager.KeyIsDown(Keys.B) && !KeyboardManager.KeyIsDown(Keys.P)))
 			{
-				if (KeyIsDown(Keys.J) || 
-					(ButtonIsDown(Buttons.RightThumbstickLeft) && !ButtonIsDown(Buttons.RightStick)))
+				if (KeyboardManager.KeyIsDown(Keys.J) || 
+					(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightThumbstickLeft) && !GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightStick)))
 				{
 					// If we should Rotate the Emitter around the Pivot Point
-					if (KeyIsDown(Keys.Y))
+					if (KeyboardManager.KeyIsDown(Keys.Y))
 					{
 						mcCurrentParticleSystem.Emitter.PivotPointData.RotatePositionAndOrientation(Matrix.CreateFromYawPitchRoll(-fEmitterRotateDelta, 0.0f, 0.0f));
 					}
@@ -2710,11 +2562,11 @@ namespace Demo
 					}
 				}
 
-				if (KeyIsDown(Keys.L) || 
-					(ButtonIsDown(Buttons.RightThumbstickRight) && !ButtonIsDown(Buttons.RightStick)))
+				if (KeyboardManager.KeyIsDown(Keys.L) || 
+					(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightThumbstickRight) && !GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightStick)))
 				{
 					// If we should Rotate the Emitter around the Pivot Point
-					if (KeyIsDown(Keys.Y))
+					if (KeyboardManager.KeyIsDown(Keys.Y))
 					{
 						mcCurrentParticleSystem.Emitter.PivotPointData.RotatePositionAndOrientation(Matrix.CreateFromYawPitchRoll(fEmitterRotateDelta, 0.0f, 0.0f));
 					}
@@ -2725,10 +2577,10 @@ namespace Demo
 					}
 				}
 
-				if (KeyIsDown(Keys.I) || ButtonIsDown(Buttons.RightThumbstickUp))
+				if (KeyboardManager.KeyIsDown(Keys.I) || GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightThumbstickUp))
 				{
 					// If we should Rotate the Emitter around the Pivot Point
-					if (KeyIsDown(Keys.Y))
+					if (KeyboardManager.KeyIsDown(Keys.Y))
 					{
 						mcCurrentParticleSystem.Emitter.PivotPointData.RotatePositionAndOrientation(Matrix.CreateFromYawPitchRoll(0.0f, -fEmitterRotateDelta, 0.0f));
 					}
@@ -2739,10 +2591,10 @@ namespace Demo
 					}
 				}
 
-				if (KeyIsDown(Keys.K) || ButtonIsDown(Buttons.RightThumbstickDown))
+				if (KeyboardManager.KeyIsDown(Keys.K) || GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightThumbstickDown))
 				{
 					// If we should Rotate the Emitter around the Pivot Point
-					if (KeyIsDown(Keys.Y))
+					if (KeyboardManager.KeyIsDown(Keys.Y))
 					{
 						mcCurrentParticleSystem.Emitter.PivotPointData.RotatePositionAndOrientation(Matrix.CreateFromYawPitchRoll(0.0f, fEmitterRotateDelta, 0.0f));
 					}
@@ -2753,11 +2605,11 @@ namespace Demo
 					}
 				}
 
-				if (KeyIsDown(Keys.U) ||
-					(ButtonIsDown(Buttons.RightThumbstickLeft) && ButtonIsDown(Buttons.RightStick)))
+				if (KeyboardManager.KeyIsDown(Keys.U) ||
+					(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightThumbstickLeft) && GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightStick)))
 				{
 					// If we should Rotate the Emitter around the Pivot Point
-					if (KeyIsDown(Keys.Y))
+					if (KeyboardManager.KeyIsDown(Keys.Y))
 					{
 						mcCurrentParticleSystem.Emitter.PivotPointData.RotatePositionAndOrientation(Matrix.CreateFromYawPitchRoll(0.0f, 0.0f, fEmitterRotateDelta));
 					}
@@ -2768,11 +2620,11 @@ namespace Demo
 					}
 				}
 
-				if (KeyIsDown(Keys.O) ||
-					(ButtonIsDown(Buttons.RightThumbstickRight) && ButtonIsDown(Buttons.RightStick)))
+				if (KeyboardManager.KeyIsDown(Keys.O) ||
+					(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightThumbstickRight) && GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightStick)))
 				{
 					// If we should Rotate the Emitter around the Pivot Point
-					if (KeyIsDown(Keys.Y))
+					if (KeyboardManager.KeyIsDown(Keys.Y))
 					{
 						mcCurrentParticleSystem.Emitter.PivotPointData.RotatePositionAndOrientation(Matrix.CreateFromYawPitchRoll(0.0f, 0.0f, -fEmitterRotateDelta));
 					}
@@ -2785,14 +2637,14 @@ namespace Demo
 			}
 
 			// Check if the Emitter should be reset
-			if (KeyWasJustPressed(Keys.Z))
+			if (KeyboardManager.KeyWasJustPressed(Keys.Z))
 			{
 				mcCurrentParticleSystem.Emitter.PositionData.Position = Vector3.Zero;
 				mcCurrentParticleSystem.Emitter.OrientationData.Orientation = Quaternion.Identity;
 			}
 
 			// If the Texture should be changed
-			if (KeyWasJustPressed(Keys.T) || ButtonWasJustPressed(Buttons.Y))
+			if (KeyboardManager.KeyWasJustPressed(Keys.T) || GamePadsManager.ButtonWasJustPressed(PlayerIndex.One, Buttons.Y))
 			{
 				if (mcCurrentParticleSystem.Texture != null)
 				{
@@ -2809,7 +2661,7 @@ namespace Demo
 					}
 
 					// If we should go to the previous Texture
-					if (KeyIsDown(Keys.LeftShift) || KeyIsDown(Keys.RightShift))
+					if (KeyboardManager.KeyIsDown(Keys.LeftShift) || KeyboardManager.KeyIsDown(Keys.RightShift))
 					{
 						meCurrentTexture--;
 						if (meCurrentTexture < 0)
@@ -2832,37 +2684,37 @@ namespace Demo
 				}
 			}
 
-			if (KeyWasJustPressed(Keys.Insert))
+			if (KeyboardManager.KeyWasJustPressed(Keys.Insert))
 			{
 				// Add a single Particle
 				mcCurrentParticleSystem.AddParticle();
 			}
 
-			if (KeyIsDown(Keys.Home))
+			if (KeyboardManager.KeyIsDown(Keys.Home))
 			{
 				// Add Particles while the button is pressed
 				mcCurrentParticleSystem.AddParticle();
 			}
 
-			if (KeyIsDown(Keys.PageUp))
+			if (KeyboardManager.KeyIsDown(Keys.PageUp))
 			{
 				// Add the max number of Particles
 				while (mcCurrentParticleSystem.AddParticle()) { }
 			}
 
-			if (KeyWasJustPressed(Keys.Delete) || ButtonWasJustPressed(Buttons.X))
+			if (KeyboardManager.KeyWasJustPressed(Keys.Delete) || GamePadsManager.ButtonWasJustPressed(PlayerIndex.One, Buttons.X))
 			{
 				// Toggle emitting particles on/off
 				mcCurrentParticleSystem.Emitter.EmitParticlesAutomatically = !mcCurrentParticleSystem.Emitter.EmitParticlesAutomatically;
 			}
 
-			if (KeyIsDown(Keys.Add, 0.02f) || KeyIsDown(Keys.OemPlus, 0.02f) || ButtonIsDown(Buttons.RightShoulder, 0.02f))
+			if (KeyboardManager.KeyIsDown(Keys.Add, 0.02f) || KeyboardManager.KeyIsDown(Keys.OemPlus, 0.02f) || GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightShoulder, 0.02f))
 			{
 				// Increase the number of Particles being emitted
 				mcCurrentParticleSystem.Emitter.ParticlesPerSecond++;
 			}
 
-			if (KeyIsDown(Keys.Subtract, 0.02f) || KeyIsDown(Keys.OemMinus, 0.02f) || ButtonIsDown(Buttons.LeftShoulder, 0.02f))
+			if (KeyboardManager.KeyIsDown(Keys.Subtract, 0.02f) || KeyboardManager.KeyIsDown(Keys.OemMinus, 0.02f) || GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.LeftShoulder, 0.02f))
 			{
 				if (mcCurrentParticleSystem.Emitter.ParticlesPerSecond > 1)
 				{
@@ -2871,9 +2723,9 @@ namespace Demo
 				}
 			}
 
-			if (KeyWasJustPressed(Keys.Multiply) || 
-				((KeyIsDown(Keys.LeftShift) || KeyIsDown(Keys.RightShift)) && KeyWasJustPressed(Keys.D8)) || 
-				ButtonWasJustPressed(Buttons.B))
+			if (KeyboardManager.KeyWasJustPressed(Keys.Multiply) || 
+				((KeyboardManager.KeyIsDown(Keys.LeftShift) || KeyboardManager.KeyIsDown(Keys.RightShift)) && KeyboardManager.KeyWasJustPressed(Keys.D8)) || 
+				GamePadsManager.ButtonWasJustPressed(PlayerIndex.One, Buttons.B))
 			{
 				// Increase the Speed of the Particle System simulation
 				mcParticleSystemManager.SimulationSpeed += 0.1f;
@@ -2891,9 +2743,9 @@ namespace Demo
 				}
 			}
 
-			if (KeyWasJustPressed(Keys.Divide) ||
-				(KeyIsUp(Keys.LeftShift) && KeyIsUp(Keys.RightShift) && KeyWasJustPressed(Keys.OemQuestion)) || 
-				ButtonWasJustPressed(Buttons.A))
+			if (KeyboardManager.KeyWasJustPressed(Keys.Divide) ||
+				(KeyboardManager.KeyIsUp(Keys.LeftShift) && KeyboardManager.KeyIsUp(Keys.RightShift) && KeyboardManager.KeyWasJustPressed(Keys.OemQuestion)) || 
+				GamePadsManager.ButtonWasJustPressed(PlayerIndex.One, Buttons.A))
 			{
 				// Decrease the Speed of the Particle System simulation
 				mcParticleSystemManager.SimulationSpeed -= 0.1f;
@@ -2918,17 +2770,17 @@ namespace Demo
 				default: break;
 
 				case EPSEffects.Random:
-					if (KeyWasJustPressed(Keys.X))
+					if (KeyboardManager.KeyWasJustPressed(Keys.X))
 					{
 						mcRandomParticleSystem.LoadRandomEvents();
 					}
 
-					if (KeyWasJustPressed(Keys.C))
+					if (KeyboardManager.KeyWasJustPressed(Keys.C))
 					{
 						mcRandomParticleSystem.LoadRandomSpiralEvents();
 					}
 
-					if (KeyWasJustPressed(Keys.V))
+					if (KeyboardManager.KeyWasJustPressed(Keys.V))
 					{
 						mcRandomParticleSystem.InitialProperties.StartSizeMin += 2.0f;
 
@@ -2943,7 +2795,7 @@ namespace Demo
 							mcRandomParticleSystem.InitialProperties.StartSizeMin;
 					}
 
-					if (KeyWasJustPressed(Keys.B))
+					if (KeyboardManager.KeyWasJustPressed(Keys.B))
 					{
 						mcRandomParticleSystem.InitialProperties.StartSizeMin -= 2.0f;
 
@@ -2958,38 +2810,38 @@ namespace Demo
 							mcRandomParticleSystem.InitialProperties.StartSizeMin;
 					}
 
-					if (KeyWasJustPressed(Keys.N))
+					if (KeyboardManager.KeyWasJustPressed(Keys.N))
 					{
 						mcRandomParticleSystem.InitialProperties.StartColorMin =
 							mcRandomParticleSystem.InitialProperties.StartColorMax =
 							DPSFHelper.LerpColor(Color.Black, Color.White, (float)mcRandom.NextDouble(), (float)mcRandom.NextDouble(), (float)mcRandom.NextDouble(), (float)mcRandom.NextDouble());
 					}
 
-					if (KeyWasJustPressed(Keys.M))
+					if (KeyboardManager.KeyWasJustPressed(Keys.M))
 					{
 						mcRandomParticleSystem.InitialProperties.EndColorMin =
 							mcRandomParticleSystem.InitialProperties.EndColorMax =
 							DPSFHelper.LerpColor(Color.Black, Color.White, (float)mcRandom.NextDouble(), (float)mcRandom.NextDouble(), (float)mcRandom.NextDouble(), (float)mcRandom.NextDouble());
 					}
 
-					if (KeyWasJustPressed(Keys.P))
+					if (KeyboardManager.KeyWasJustPressed(Keys.P))
 					{
 						mcRandomParticleSystem.LoadTubeEvents();
 					}
 					break;
 
 				case EPSEffects.Fire:
-					if (KeyWasJustPressed(Keys.X))
+					if (KeyboardManager.KeyWasJustPressed(Keys.X))
 					{
 						mcFireParticleSystem.ParticleInitializationFunction = mcFireParticleSystem.InitializeParticleFireOnVerticalRing;
 					}
 
-					if (KeyWasJustPressed(Keys.C))
+					if (KeyboardManager.KeyWasJustPressed(Keys.C))
 					{
 						mcFireParticleSystem.ParticleInitializationFunction = mcFireParticleSystem.InitializeParticleFireOnHorizontalRing;
 					}
 
-					if (KeyWasJustPressed(Keys.V))
+					if (KeyboardManager.KeyWasJustPressed(Keys.V))
 					{
 						float fAmount = mcFireParticleSystem.GetAmountOfSmokeBeingReleased();
 						if (fAmount > 0.0f)
@@ -2998,7 +2850,7 @@ namespace Demo
 						}
 					}
 
-					if (KeyWasJustPressed(Keys.B))
+					if (KeyboardManager.KeyWasJustPressed(Keys.B))
 					{
 						float fAmount = mcFireParticleSystem.GetAmountOfSmokeBeingReleased();
 						if (fAmount < 1.0f)
@@ -3007,12 +2859,12 @@ namespace Demo
 						}
 					}
 
-					if (KeyWasJustPressed(Keys.N))
+					if (KeyboardManager.KeyWasJustPressed(Keys.N))
 					{
 						mcFireParticleSystem.ToggleAdditiveBlending();
 					}
 
-					if (KeyWasJustPressed(Keys.M))
+					if (KeyboardManager.KeyWasJustPressed(Keys.M))
 					{
 						if (mcFireParticleSystem.Emitter.PositionData.Velocity == Vector3.Zero)
 						{
@@ -3027,17 +2879,17 @@ namespace Demo
 
 
 				case EPSEffects.FireSprite:
-					if (KeyWasJustPressed(Keys.X))
+					if (KeyboardManager.KeyWasJustPressed(Keys.X))
 					{
 						mcFireSpriteParticleSystem.ParticleInitializationFunction = mcFireSpriteParticleSystem.InitializeParticleFireOnVerticalRing;
 					}
 
-					if (KeyWasJustPressed(Keys.C))
+					if (KeyboardManager.KeyWasJustPressed(Keys.C))
 					{
 						mcFireSpriteParticleSystem.ParticleInitializationFunction = mcFireSpriteParticleSystem.InitializeParticleFireOnHorizontalRing;
 					}
 
-					if (KeyWasJustPressed(Keys.V))
+					if (KeyboardManager.KeyWasJustPressed(Keys.V))
 					{
 						float fAmount = mcFireSpriteParticleSystem.GetAmountOfSmokeBeingReleased();
 						if (fAmount > 0.0f)
@@ -3046,7 +2898,7 @@ namespace Demo
 						}
 					}
 
-					if (KeyWasJustPressed(Keys.B))
+					if (KeyboardManager.KeyWasJustPressed(Keys.B))
 					{
 						float fAmount = mcFireSpriteParticleSystem.GetAmountOfSmokeBeingReleased();
 						if (fAmount < 1.0f)
@@ -3055,12 +2907,12 @@ namespace Demo
 						}
 					}
 
-					if (KeyWasJustPressed(Keys.N))
+					if (KeyboardManager.KeyWasJustPressed(Keys.N))
 					{
 						mcFireSpriteParticleSystem.ToggleAdditiveBlending();
 					}
 
-					if (KeyWasJustPressed(Keys.M))
+					if (KeyboardManager.KeyWasJustPressed(Keys.M))
 					{
 						if (mcFireSpriteParticleSystem.Emitter.PositionData.Velocity == Vector3.Zero)
 						{
@@ -3074,19 +2926,19 @@ namespace Demo
 					break;
 
 				case EPSEffects.Smoke:
-					if (KeyWasJustPressed(Keys.X))
+					if (KeyboardManager.KeyWasJustPressed(Keys.X))
 					{
 						mcSmokeParticleSystem.LoadSmokeEvents();
 						mcSmokeParticleSystem.ParticleInitializationFunction = mcSmokeParticleSystem.InitializeParticleRisingSmoke;
 					}
 
-					if (KeyWasJustPressed(Keys.C))
+					if (KeyboardManager.KeyWasJustPressed(Keys.C))
 					{
 						mcSmokeParticleSystem.LoadSmokeEvents();
 						mcSmokeParticleSystem.ParticleInitializationFunction = mcSmokeParticleSystem.InitializeParticleFoggySmoke;
 					}
 
-					if (KeyWasJustPressed(Keys.V))
+					if (KeyboardManager.KeyWasJustPressed(Keys.V))
 					{
 						mcSphere.bVisible = true;
 						mcSphere.sPosition = mcSmokeParticleSystem.mcExternalObjectPosition = new Vector3(-125, 50, 0);
@@ -3098,7 +2950,7 @@ namespace Demo
 						mcSmokeParticleSystem.MakeParticlesAttractToExternalObject();
 					}
 
-					if (KeyWasJustPressed(Keys.B))
+					if (KeyboardManager.KeyWasJustPressed(Keys.B))
 					{
 						mcSphere.bVisible = true;
 						mcSphere.sPosition = mcSmokeParticleSystem.mcExternalObjectPosition = new Vector3(-125, 50, 0);
@@ -3110,53 +2962,53 @@ namespace Demo
 						mcSmokeParticleSystem.MakeParticlesRepelFromExternalObject();
 					}
 
-					if (KeyWasJustPressed(Keys.N))
+					if (KeyboardManager.KeyWasJustPressed(Keys.N))
 					{
 						mcSmokeParticleSystem.ChangeColor();
 					}
 					break;
 
 				case EPSEffects.Snow:
-					if (KeyWasJustPressed(Keys.X))
+					if (KeyboardManager.KeyWasJustPressed(Keys.X))
 					{
 						mcSnowParticleSystem.AddWindForce();
 					}
 
-					if (KeyWasJustReleased(Keys.C))
+					if (KeyboardManager.KeyWasJustReleased(Keys.C))
 					{
 						mcSnowParticleSystem.RemoveWindForce();
 					}
 					break;
 
 				case EPSEffects.SquarePattern:
-					if (KeyWasJustPressed(Keys.X))
+					if (KeyboardManager.KeyWasJustPressed(Keys.X))
 					{
 						mcSquarePatternParticleSystem.LoadSquarePatternEvents();
 					}
 
-					if (KeyWasJustPressed(Keys.C))
+					if (KeyboardManager.KeyWasJustPressed(Keys.C))
 					{
 						mcSquarePatternParticleSystem.LoadChangeColorEvents();
 					}
 
-					if (KeyWasJustPressed(Keys.V))
+					if (KeyboardManager.KeyWasJustPressed(Keys.V))
 					{
 						mcSquarePatternParticleSystem.ChangeParticlesToRandomColors();
 					}
 					break;
 
 				case EPSEffects.Fountain:
-					if (KeyWasJustPressed(Keys.X))
+					if (KeyboardManager.KeyWasJustPressed(Keys.X))
 					{
 						mcFountainParticleSystem.MakeParticlesBounceOffFloor();
 					}
 
-					if (KeyWasJustPressed(Keys.C))
+					if (KeyboardManager.KeyWasJustPressed(Keys.C))
 					{
 						mcFountainParticleSystem.MakeParticlesNotBounceOffFloor();
 					}
 
-					if (KeyWasJustPressed(Keys.V))
+					if (KeyboardManager.KeyWasJustPressed(Keys.V))
 					{
 						mcFountainParticleSystem.mfBounciness -= 0.05f;
 
@@ -3166,7 +3018,7 @@ namespace Demo
 						}
 					}
 
-					if (KeyWasJustPressed(Keys.B))
+					if (KeyboardManager.KeyWasJustPressed(Keys.B))
 					{
 						mcFountainParticleSystem.mfBounciness += 0.05f;
 
@@ -3176,41 +3028,41 @@ namespace Demo
 						}
 					}
 
-					if (KeyWasJustPressed(Keys.N))
+					if (KeyboardManager.KeyWasJustPressed(Keys.N))
 					{
 						mcFountainParticleSystem.MakeParticlesShrink();
 					}
 
-					if (KeyWasJustPressed(Keys.M))
+					if (KeyboardManager.KeyWasJustPressed(Keys.M))
 					{
 						mcFountainParticleSystem.MakeParticlesNotShrink();
 					}
 
-					if (KeyWasJustPressed(Keys.P))
+					if (KeyboardManager.KeyWasJustPressed(Keys.P))
 					{
 						mcFountainParticleSystem.ToggleAdditiveBlending();
 					}
 					break;
 
 				case EPSEffects.Random2D:
-					if (KeyWasJustPressed(Keys.X))
+					if (KeyboardManager.KeyWasJustPressed(Keys.X))
 					{
 						mcRandom2DParticleSystem.LoadEvents();
 					}
 
-					if (KeyWasJustPressed(Keys.C))
+					if (KeyboardManager.KeyWasJustPressed(Keys.C))
 					{
 						mcRandom2DParticleSystem.LoadExtraEvents();
 					}
 					break;
 
 				case EPSEffects.GasFall:
-					if (KeyWasJustPressed(Keys.X))
+					if (KeyboardManager.KeyWasJustPressed(Keys.X))
 					{
 						mcGasFallParticleSystem.LoadEvents();
 					}
 
-					if (KeyWasJustPressed(Keys.C))
+					if (KeyboardManager.KeyWasJustPressed(Keys.C))
 					{
 						mcGasFallParticleSystem.LoadExtraEvents();
 					}
@@ -3219,24 +3071,24 @@ namespace Demo
 				case EPSEffects.Dot: break;
 
 				case EPSEffects.Fireworks:
-					if (KeyWasJustPressed(Keys.X))
+					if (KeyboardManager.KeyWasJustPressed(Keys.X))
 					{
 						mcFireworksParticleSystem.InitialProperties.PositionMin = new Vector3();
 						mcFireworksParticleSystem.InitialProperties.PositionMax = new Vector3();
 					}
 
-					if (KeyWasJustPressed(Keys.C))
+					if (KeyboardManager.KeyWasJustPressed(Keys.C))
 					{
 						mcFireworksParticleSystem.InitialProperties.PositionMin = new Vector3(-100, 0, 0);
 						mcFireworksParticleSystem.InitialProperties.PositionMax = new Vector3(100, 0, 0);
 					}
 
-					if (KeyWasJustPressed(Keys.V))
+					if (KeyboardManager.KeyWasJustPressed(Keys.V))
 					{
 						mcFireworksParticleSystem.TurnExplosionsOn();
 					}
 
-					if (KeyWasJustPressed(Keys.B))
+					if (KeyboardManager.KeyWasJustPressed(Keys.B))
 					{
 						mcFireworksParticleSystem.TurnExplosionsOff();
 					}
@@ -3245,87 +3097,87 @@ namespace Demo
 				case EPSEffects.Figure8: break;
 
 				case EPSEffects.Star:
-					if (KeyWasJustPressed(Keys.X))
+					if (KeyboardManager.KeyWasJustPressed(Keys.X))
 					{
 						mcStarParticleSystem.ParticleInitializationFunction = mcStarParticleSystem.InitializeParticleStar2D;
 					}
 
-					if (KeyWasJustPressed(Keys.C))
+					if (KeyboardManager.KeyWasJustPressed(Keys.C))
 					{
 						mcStarParticleSystem.ParticleInitializationFunction = mcStarParticleSystem.InitializeParticleStar3D;
 					}
 
 					float fRotationScale = MathHelper.Pi / 18.0f;
 
-					if (KeyIsDown(Keys.V))
+					if (KeyboardManager.KeyIsDown(Keys.V))
 					{
 						// Check if the Emitter is being rotated
-						if (KeyWasJustPressed(Keys.J))
+						if (KeyboardManager.KeyWasJustPressed(Keys.J))
 						{
 							mcStarParticleSystem.Emitter.OrientationData.RotationalVelocity += Vector3.Down * fRotationScale;
 						}
 
-						if (KeyWasJustPressed(Keys.L))
+						if (KeyboardManager.KeyWasJustPressed(Keys.L))
 						{
 							mcStarParticleSystem.Emitter.OrientationData.RotationalVelocity += Vector3.Up * fRotationScale;
 						}
 
-						if (KeyWasJustPressed(Keys.I))
+						if (KeyboardManager.KeyWasJustPressed(Keys.I))
 						{
 							mcStarParticleSystem.Emitter.OrientationData.RotationalVelocity += Vector3.Left * fRotationScale;
 						}
 
-						if (KeyWasJustPressed(Keys.K))
+						if (KeyboardManager.KeyWasJustPressed(Keys.K))
 						{
 							mcStarParticleSystem.Emitter.OrientationData.RotationalVelocity += Vector3.Right * fRotationScale;
 						}
 
-						if (KeyWasJustPressed(Keys.U))
+						if (KeyboardManager.KeyWasJustPressed(Keys.U))
 						{
 							mcStarParticleSystem.Emitter.OrientationData.RotationalVelocity += Vector3.Backward * fRotationScale;
 						}
 
-						if (KeyWasJustPressed(Keys.O))
+						if (KeyboardManager.KeyWasJustPressed(Keys.O))
 						{
 							mcStarParticleSystem.Emitter.OrientationData.RotationalVelocity += Vector3.Forward * fRotationScale;
 						}
 					}
 
-					if (KeyIsDown(Keys.B))
+					if (KeyboardManager.KeyIsDown(Keys.B))
 					{
 						// Check if the Emitter is being rotated
-						if (KeyWasJustPressed(Keys.J))
+						if (KeyboardManager.KeyWasJustPressed(Keys.J))
 						{
 							mcStarParticleSystem.Emitter.OrientationData.RotationalAcceleration += Vector3.Down * fRotationScale;
 						}
 
-						if (KeyWasJustPressed(Keys.L))
+						if (KeyboardManager.KeyWasJustPressed(Keys.L))
 						{
 							mcStarParticleSystem.Emitter.OrientationData.RotationalAcceleration += Vector3.Up * fRotationScale;
 						}
 
-						if (KeyWasJustPressed(Keys.I))
+						if (KeyboardManager.KeyWasJustPressed(Keys.I))
 						{
 							mcStarParticleSystem.Emitter.OrientationData.RotationalAcceleration += Vector3.Left * fRotationScale;
 						}
 
-						if (KeyWasJustPressed(Keys.K))
+						if (KeyboardManager.KeyWasJustPressed(Keys.K))
 						{
 							mcStarParticleSystem.Emitter.OrientationData.RotationalAcceleration += Vector3.Right * fRotationScale;
 						}
 
-						if (KeyWasJustPressed(Keys.U))
+						if (KeyboardManager.KeyWasJustPressed(Keys.U))
 						{
 							mcStarParticleSystem.Emitter.OrientationData.RotationalAcceleration += Vector3.Backward * fRotationScale;
 						}
 
-						if (KeyWasJustPressed(Keys.O))
+						if (KeyboardManager.KeyWasJustPressed(Keys.O))
 						{
 							mcStarParticleSystem.Emitter.OrientationData.RotationalAcceleration += Vector3.Forward * fRotationScale;
 						}
 					}
 
-					if (KeyWasJustPressed(Keys.N))
+					if (KeyboardManager.KeyWasJustPressed(Keys.N))
 					{
 						mcStarParticleSystem.Emitter.PositionData.Velocity = Vector3.Zero;
 						mcStarParticleSystem.Emitter.PositionData.Acceleration = Vector3.Zero;
@@ -3334,171 +3186,171 @@ namespace Demo
 						mcStarParticleSystem.ParticleSystemEvents.RemoveAllEvents();
 					}
 
-					if (KeyWasJustPressed(Keys.M))
+					if (KeyboardManager.KeyWasJustPressed(Keys.M))
 					{
 						mcStarParticleSystem.mbHighlightAxis = !mcStarParticleSystem.mbHighlightAxis;
 					}
 
-					if (KeyIsDown(Keys.P))
+					if (KeyboardManager.KeyIsDown(Keys.P))
 					{
 						// Check if the Emitter is being rotated
-						if (KeyWasJustPressed(Keys.J))
+						if (KeyboardManager.KeyWasJustPressed(Keys.J))
 						{
 							mcStarParticleSystem.LoadSlowRotationalWiggle();
 						}
 
-						if (KeyWasJustPressed(Keys.L))
+						if (KeyboardManager.KeyWasJustPressed(Keys.L))
 						{
 							mcStarParticleSystem.LoadFastRotationalWiggle();
 						}
 
-						if (KeyWasJustPressed(Keys.I))
+						if (KeyboardManager.KeyWasJustPressed(Keys.I))
 						{
 							mcStarParticleSystem.LoadMediumWiggle();
 						}
 
-						if (KeyWasJustPressed(Keys.K))
+						if (KeyboardManager.KeyWasJustPressed(Keys.K))
 						{
 							mcStarParticleSystem.LoadMediumRotationalWiggle();
 						}
 
-						if (KeyWasJustPressed(Keys.U))
+						if (KeyboardManager.KeyWasJustPressed(Keys.U))
 						{
 							mcStarParticleSystem.LoadSlowWiggle();
 						}
 
-						if (KeyWasJustPressed(Keys.O))
+						if (KeyboardManager.KeyWasJustPressed(Keys.O))
 						{
 							mcStarParticleSystem.LoadFastWiggle();
 						}
 					}
 
-					if (KeyWasJustPressed(Keys.OemOpenBrackets))
+					if (KeyboardManager.KeyWasJustPressed(Keys.OemOpenBrackets))
 					{
 						mcStarParticleSystem.ToggleEmitterIntermittance();
 					}
 					break;
 
 				case EPSEffects.Ball:
-					if (KeyIsDown(Keys.X, 0.02f))
+					if (KeyboardManager.KeyIsDown(Keys.X, 0.02f))
 					{
 						mcBallParticleSystem.IncreaseRadius();
 					}
 
-					if (KeyIsDown(Keys.C, 0.02f))
+					if (KeyboardManager.KeyIsDown(Keys.C, 0.02f))
 					{
 						mcBallParticleSystem.DecreaseRadius();
 					}
 
 					float fBallRotationScale = MathHelper.Pi / 18.0f;
 
-					if (KeyIsDown(Keys.V))
+					if (KeyboardManager.KeyIsDown(Keys.V))
 					{
 						// Check if the Emitter is being rotated
-						if (KeyWasJustPressed(Keys.J))
+						if (KeyboardManager.KeyWasJustPressed(Keys.J))
 						{
 							mcBallParticleSystem.Emitter.OrientationData.RotationalVelocity += Vector3.Down * fBallRotationScale;
 						}
 
-						if (KeyWasJustPressed(Keys.L))
+						if (KeyboardManager.KeyWasJustPressed(Keys.L))
 						{
 							mcBallParticleSystem.Emitter.OrientationData.RotationalVelocity += Vector3.Up * fBallRotationScale;
 						}
 
-						if (KeyWasJustPressed(Keys.I))
+						if (KeyboardManager.KeyWasJustPressed(Keys.I))
 						{
 							mcBallParticleSystem.Emitter.OrientationData.RotationalVelocity += Vector3.Left * fBallRotationScale;
 						}
 
-						if (KeyWasJustPressed(Keys.K))
+						if (KeyboardManager.KeyWasJustPressed(Keys.K))
 						{
 							mcBallParticleSystem.Emitter.OrientationData.RotationalVelocity += Vector3.Right * fBallRotationScale;
 						}
 
-						if (KeyWasJustPressed(Keys.U))
+						if (KeyboardManager.KeyWasJustPressed(Keys.U))
 						{
 							mcBallParticleSystem.Emitter.OrientationData.RotationalVelocity += Vector3.Backward * fBallRotationScale;
 						}
 
-						if (KeyWasJustPressed(Keys.O))
+						if (KeyboardManager.KeyWasJustPressed(Keys.O))
 						{
 							mcBallParticleSystem.Emitter.OrientationData.RotationalVelocity += Vector3.Forward * fBallRotationScale;
 						}
 					}
 
-					if (KeyIsDown(Keys.B))
+					if (KeyboardManager.KeyIsDown(Keys.B))
 					{
 						// Check if the Emitter is being rotated
-						if (KeyWasJustPressed(Keys.J))
+						if (KeyboardManager.KeyWasJustPressed(Keys.J))
 						{
 							mcBallParticleSystem.Emitter.OrientationData.RotationalAcceleration += Vector3.Down * fBallRotationScale;
 						}
 
-						if (KeyWasJustPressed(Keys.L))
+						if (KeyboardManager.KeyWasJustPressed(Keys.L))
 						{
 							mcBallParticleSystem.Emitter.OrientationData.RotationalAcceleration += Vector3.Up * fBallRotationScale;
 						}
 
-						if (KeyWasJustPressed(Keys.I))
+						if (KeyboardManager.KeyWasJustPressed(Keys.I))
 						{
 							mcBallParticleSystem.Emitter.OrientationData.RotationalAcceleration += Vector3.Left * fBallRotationScale;
 						}
 
-						if (KeyWasJustPressed(Keys.K))
+						if (KeyboardManager.KeyWasJustPressed(Keys.K))
 						{
 							mcBallParticleSystem.Emitter.OrientationData.RotationalAcceleration += Vector3.Right * fBallRotationScale;
 						}
 
-						if (KeyWasJustPressed(Keys.U))
+						if (KeyboardManager.KeyWasJustPressed(Keys.U))
 						{
 							mcBallParticleSystem.Emitter.OrientationData.RotationalAcceleration += Vector3.Backward * fBallRotationScale;
 						}
 
-						if (KeyWasJustPressed(Keys.O))
+						if (KeyboardManager.KeyWasJustPressed(Keys.O))
 						{
 							mcBallParticleSystem.Emitter.OrientationData.RotationalAcceleration += Vector3.Forward * fBallRotationScale;
 						}
 					}
 
-					if (KeyWasJustPressed(Keys.N))
+					if (KeyboardManager.KeyWasJustPressed(Keys.N))
 					{
 						mcBallParticleSystem.Emitter.OrientationData.RotationalVelocity = Vector3.Zero;
 						mcBallParticleSystem.Emitter.OrientationData.RotationalAcceleration = Vector3.Zero;
 					}
 
-					if (KeyIsDown(Keys.OemOpenBrackets, 0.04f))
+					if (KeyboardManager.KeyIsDown(Keys.OemOpenBrackets, 0.04f))
 					{
 						mcBallParticleSystem.MoreParticles();
 					}
 
-					if (KeyIsDown(Keys.P, 0.04f))
+					if (KeyboardManager.KeyIsDown(Keys.P, 0.04f))
 					{
 						mcBallParticleSystem.LessParticles();
 					}
 
-					if (KeyWasJustPressed(Keys.M))
+					if (KeyboardManager.KeyWasJustPressed(Keys.M))
 					{
 						mcBallParticleSystem.RemoveAllParticles();
 					}
 					break;
 
 				case EPSEffects.RotatingQuad:
-					if (KeyWasJustPressed(Keys.X))
+					if (KeyboardManager.KeyWasJustPressed(Keys.X))
 					{
 						mcRotatingQuadParticleSystem.MakeParticlesFaceWhateverDirection();
 					}
 
-					if (KeyWasJustPressed(Keys.C))
+					if (KeyboardManager.KeyWasJustPressed(Keys.C))
 					{
 						mcRotatingQuadParticleSystem.MakeParticlesFaceTheCamera();
 					}
 
-					if (KeyWasJustPressed(Keys.V))
+					if (KeyboardManager.KeyWasJustPressed(Keys.V))
 					{
 						mcRotatingQuadParticleSystem.MakeParticlesFaceTheCenter();
 					}
 
-					if (KeyWasJustPressed(Keys.B))
+					if (KeyboardManager.KeyWasJustPressed(Keys.B))
 					{
 						mcRotatingQuadParticleSystem.RemoveAllParticles();
 						int iNumberOfParticles = mcRotatingQuadParticleSystem.MaxNumberOfParticlesAllowed;
@@ -3530,39 +3382,39 @@ namespace Demo
 					break;
 
 				case EPSEffects.Box:
-					if (KeyWasJustPressed(Keys.X))
+					if (KeyboardManager.KeyWasJustPressed(Keys.X))
 					{
 						mcBoxParticleSystem.LoadPartiallyTranparentBox();
 					}
 
-					if (KeyWasJustPressed(Keys.C))
+					if (KeyboardManager.KeyWasJustPressed(Keys.C))
 					{
 						mcBoxParticleSystem.LoadOpaqueBoxBars();
 					}
 
-					if (KeyWasJustPressed(Keys.V))
+					if (KeyboardManager.KeyWasJustPressed(Keys.V))
 					{
 						mcBoxParticleSystem.ToggleColorChanges();
 					}
 					break;
 
 				case EPSEffects.Image:
-					if (KeyWasJustPressed(Keys.X))
+					if (KeyboardManager.KeyWasJustPressed(Keys.X))
 					{
 						mcImageParticleSystem.LoadImage();
 					}
 
-					if (KeyWasJustPressed(Keys.C))
+					if (KeyboardManager.KeyWasJustPressed(Keys.C))
 					{
 						mcImageParticleSystem.LoadSpiralIntoFinalImage();
 					}
 
-					if (KeyWasJustPressed(Keys.V))
+					if (KeyboardManager.KeyWasJustPressed(Keys.V))
 					{
 						mcImageParticleSystem.LoadVortexIntoFinalImage();
 					}
 
-					if (KeyWasJustPressed(Keys.B))
+					if (KeyboardManager.KeyWasJustPressed(Keys.B))
 					{
 						string sSpinMode = mcImageParticleSystem.msSpinMode;
 
@@ -3593,17 +3445,17 @@ namespace Demo
 						mcImageParticleSystem.ToggleSpin(sSpinMode);
 					}
 
-					if (KeyWasJustPressed(Keys.N))
+					if (KeyboardManager.KeyWasJustPressed(Keys.N))
 					{
 						mcImageParticleSystem.ToggleUniformSpin();
 					}
 
-					if (KeyWasJustPressed(Keys.M))
+					if (KeyboardManager.KeyWasJustPressed(Keys.M))
 					{
 						mcImageParticleSystem.Scatter();
 					}
 
-					if (KeyWasJustPressed(Keys.P))
+					if (KeyboardManager.KeyWasJustPressed(Keys.P))
 					{
 						int iRows = mcImageParticleSystem.miNumberOfRows;
 						int iColumns = mcImageParticleSystem.miNumberOfColumns;
@@ -3639,7 +3491,7 @@ namespace Demo
 						mcImageParticleSystem.SetNumberOfRowsAndColumns(iRows, iColumns);
 					}
 
-					if (KeyWasJustPressed(Keys.OemOpenBrackets))
+					if (KeyboardManager.KeyWasJustPressed(Keys.OemOpenBrackets))
 					{
 						int iRows = mcImageParticleSystem.miNumberOfRows;
 						int iColumns = mcImageParticleSystem.miNumberOfColumns;
@@ -3680,42 +3532,42 @@ namespace Demo
 
 				case EPSEffects.Sprite:
 					// If the mouse was moved
-					if (mcCurrentMouseState.X != mcPreviousMouseState.X ||
-						mcCurrentMouseState.Y != mcPreviousMouseState.Y)
+					if (MouseManager.CurrentMouseState.X != MouseManager.PreviousMouseState.X ||
+						MouseManager.CurrentMouseState.Y != MouseManager.PreviousMouseState.Y)
 					{
-						mcSpriteParticleSystem.AttractorPosition = new Vector3(mcCurrentMouseState.X, mcCurrentMouseState.Y, 0);
+						mcSpriteParticleSystem.AttractorPosition = new Vector3(MouseManager.CurrentMouseState.X, MouseManager.CurrentMouseState.Y, 0);
 					}
 
 					// If the left mouse button was just pressed
-					if (mcCurrentMouseState.LeftButton == ButtonState.Pressed &&
-						mcPreviousMouseState.LeftButton == ButtonState.Released)
+					if (MouseManager.CurrentMouseState.LeftButton == ButtonState.Pressed &&
+						MouseManager.PreviousMouseState.LeftButton == ButtonState.Released)
 					{
 						mcSpriteParticleSystem.ToggleAttractorMode();
 					}
 
 					// If the right mouse button was just pressed
-					if (mcCurrentMouseState.RightButton == ButtonState.Pressed &&
-						mcPreviousMouseState.RightButton == ButtonState.Released)
+					if (MouseManager.CurrentMouseState.RightButton == ButtonState.Pressed &&
+						MouseManager.PreviousMouseState.RightButton == ButtonState.Released)
 					{
 						mcSpriteParticleSystem.ToggleAttractorStrength();
 					}
 
-					if (KeyWasJustPressed(Keys.X))
+					if (KeyboardManager.KeyWasJustPressed(Keys.X))
 					{
 						mcSpriteParticleSystem.LoadAttractionEvents();
 					}
 
-					if (KeyWasJustPressed(Keys.C))
+					if (KeyboardManager.KeyWasJustPressed(Keys.C))
 					{
 						mcSpriteParticleSystem.LoadCloudEvents();
 					}
 
-					if (KeyWasJustPressed(Keys.V))
+					if (KeyboardManager.KeyWasJustPressed(Keys.V))
 					{
 						mcSpriteParticleSystem.LoadGridEvents();
 					}
 
-					if (KeyWasJustPressed(Keys.B))
+					if (KeyboardManager.KeyWasJustPressed(Keys.B))
 					{
 						mcSpriteParticleSystem.LoadRotatorsEvents();
 					}
@@ -3723,110 +3575,110 @@ namespace Demo
 
 				case EPSEffects.AnimatedSprite:
 					// If the mouse was moved
-					if (mcCurrentMouseState.X != mcPreviousMouseState.X ||
-						mcCurrentMouseState.Y != mcPreviousMouseState.Y)
+					if (MouseManager.CurrentMouseState.X != MouseManager.PreviousMouseState.X ||
+						MouseManager.CurrentMouseState.Y != MouseManager.PreviousMouseState.Y)
 					{
-						mcAnimatedSpriteParticleSystem.MousePosition = new Vector3(mcCurrentMouseState.X, mcCurrentMouseState.Y, 0);
+						mcAnimatedSpriteParticleSystem.MousePosition = new Vector3(MouseManager.CurrentMouseState.X, MouseManager.CurrentMouseState.Y, 0);
 					}
 
 					// If the left mouse button was just pressed
-					if (mcCurrentMouseState.LeftButton == ButtonState.Pressed &&
-						mcPreviousMouseState.LeftButton == ButtonState.Released)
+					if (MouseManager.CurrentMouseState.LeftButton == ButtonState.Pressed &&
+						MouseManager.PreviousMouseState.LeftButton == ButtonState.Released)
 					{
 						mcAnimatedSpriteParticleSystem.ToggleColorAmount();
 					}
 
 					// If the right mouse button was just pressed
-					if (mcCurrentMouseState.RightButton == ButtonState.Pressed &&
-						mcPreviousMouseState.RightButton == ButtonState.Released)
+					if (MouseManager.CurrentMouseState.RightButton == ButtonState.Pressed &&
+						MouseManager.PreviousMouseState.RightButton == ButtonState.Released)
 					{
 						mcAnimatedSpriteParticleSystem.AddParticle();
 					}
 
-					if (KeyWasJustPressed(Keys.X))
+					if (KeyboardManager.KeyWasJustPressed(Keys.X))
 					{
 						mcAnimatedSpriteParticleSystem.LoadExplosionEvents();
 					}
 
-					if (KeyWasJustPressed(Keys.C))
+					if (KeyboardManager.KeyWasJustPressed(Keys.C))
 					{
 						mcAnimatedSpriteParticleSystem.LoadButterflyEvents();
 					}
 					break;
 
 				case EPSEffects.QuadSpray:
-					if (KeyWasJustPressed(Keys.X))
+					if (KeyboardManager.KeyWasJustPressed(Keys.X))
 					{
 						mcQuadSprayParticleSystem.LoadSprayEvents();
 					}
 
-					if (KeyWasJustPressed(Keys.C))
+					if (KeyboardManager.KeyWasJustPressed(Keys.C))
 					{
 						mcQuadSprayParticleSystem.LoadWallEvents();
 					}
 
-					if (KeyWasJustPressed(Keys.V))
+					if (KeyboardManager.KeyWasJustPressed(Keys.V))
 					{
 						mcQuadSprayParticleSystem.ToggleGravity();
 					}
 					break;
 
 				case EPSEffects.Magnets:
-					if (KeyWasJustPressed(Keys.X))
+					if (KeyboardManager.KeyWasJustPressed(Keys.X))
 					{
 						mcMagnetParticleSystem.LoadEmitterMagnetParticleSystem();
 					}
 
-					if (KeyWasJustPressed(Keys.C))
+					if (KeyboardManager.KeyWasJustPressed(Keys.C))
 					{
 						mcMagnetParticleSystem.LoadSeparateEmitterMagnetsParticleSystem();
 					}
 
-					if (KeyWasJustPressed(Keys.V))
+					if (KeyboardManager.KeyWasJustPressed(Keys.V))
 					{
 						mcMagnetParticleSystem.ToggleMagnetsAffectingPositionVsVelocity();
 					}
 					break;
 
 				case EPSEffects.Sparkler:
-					if (KeyWasJustPressed(Keys.X))
+					if (KeyboardManager.KeyWasJustPressed(Keys.X))
 					{
 						mcSparklerParticleSystem.LoadSimpleParticleSystem();
 					}
 
-					if (KeyWasJustPressed(Keys.C))
+					if (KeyboardManager.KeyWasJustPressed(Keys.C))
 					{
 						mcSparklerParticleSystem.LoadComplexParticleSystem();
 					}
 					break;
 
 				case EPSEffects.Sphere:
-					if (KeyIsDown(Keys.X, 0.02f))
+					if (KeyboardManager.KeyIsDown(Keys.X, 0.02f))
 					{
 						mcSphereParticleSystem.ChangeSphereRadius(-5);
 					}
 
-					if (KeyIsDown(Keys.C, 0.02f))
+					if (KeyboardManager.KeyIsDown(Keys.C, 0.02f))
 					{
 						mcSphereParticleSystem.ChangeSphereRadius(5);
 					}
 
-					if (KeyWasJustPressed(Keys.V))
+					if (KeyboardManager.KeyWasJustPressed(Keys.V))
 					{
 						mcSphereParticleSystem.MakeParticlesTravelInTheSameDirection();
 					}
 
-					if (KeyWasJustPressed(Keys.B))
+					if (KeyboardManager.KeyWasJustPressed(Keys.B))
 					{
 						mcSphereParticleSystem.MakeParticlesTravelInRandomDirections();
 					}
 
-					if (KeyWasJustPressed(Keys.N))
+					if (KeyboardManager.KeyWasJustPressed(Keys.N))
 					{
 						mcSphereParticleSystem.ChangeNumberOfParticles(-50);
 					}
 
-					if (KeyWasJustPressed(Keys.M))
+					if (KeyboardManager.KeyWasJustPressed(Keys.M))
 					{
 						mcSphereParticleSystem.ChangeNumberOfParticles(50);
 					}
@@ -3836,30 +3688,30 @@ namespace Demo
 				case EPSEffects.MultipleParticleImagesSprite: break;
 
 				case EPSEffects.ExplosionFireSmoke:
-					if (KeyWasJustPressed(Keys.X))
+					if (KeyboardManager.KeyWasJustPressed(Keys.X))
 					{
 						mcExplosionFireSmokeParticleSystem.ExplosionIntensity -= 5;
 						mcExplosionFireSmokeParticleSystem.ExplosionIntensity = (mcExplosionFireSmokeParticleSystem.ExplosionIntensity < 1 ? 1 : mcExplosionFireSmokeParticleSystem.ExplosionIntensity);
 					}
 
-					if (KeyWasJustPressed(Keys.C))
+					if (KeyboardManager.KeyWasJustPressed(Keys.C))
 					{
 						mcExplosionFireSmokeParticleSystem.ExplosionIntensity += 5;
 						mcExplosionFireSmokeParticleSystem.ExplosionIntensity = (mcExplosionFireSmokeParticleSystem.ExplosionIntensity > 200 ? 200 : mcExplosionFireSmokeParticleSystem.ExplosionIntensity);
 					}
 
-					if (KeyWasJustPressed(Keys.V))
+					if (KeyboardManager.KeyWasJustPressed(Keys.V))
 					{
 						mcExplosionFireSmokeParticleSystem.ChangeExplosionColor();
 					}
 
-					if (KeyWasJustPressed(Keys.B))
+					if (KeyboardManager.KeyWasJustPressed(Keys.B))
 					{
 						mcExplosionFireSmokeParticleSystem.ExplosionParticleSize -= 5;
 						mcExplosionFireSmokeParticleSystem.ExplosionParticleSize = (mcExplosionFireSmokeParticleSystem.ExplosionParticleSize < 1 ? 1 : mcExplosionFireSmokeParticleSystem.ExplosionParticleSize);
 					}
 
-					if (KeyWasJustPressed(Keys.N))
+					if (KeyboardManager.KeyWasJustPressed(Keys.N))
 					{
 						mcExplosionFireSmokeParticleSystem.ExplosionParticleSize += 5;
 						mcExplosionFireSmokeParticleSystem.ExplosionParticleSize = (mcExplosionFireSmokeParticleSystem.ExplosionParticleSize > 100 ? 100 : mcExplosionFireSmokeParticleSystem.ExplosionParticleSize);
@@ -3867,30 +3719,30 @@ namespace Demo
 					break;
 
 				case EPSEffects.ExplosionFlash:
-					if (KeyWasJustPressed(Keys.X))
+					if (KeyboardManager.KeyWasJustPressed(Keys.X))
 					{
 						mcExplosionFlashParticleSystem.ExplosionIntensity -= 5;
 						mcExplosionFlashParticleSystem.ExplosionIntensity = (mcExplosionFlashParticleSystem.ExplosionIntensity < 1 ? 1 : mcExplosionFlashParticleSystem.ExplosionIntensity);
 					}
 
-					if (KeyWasJustPressed(Keys.C))
+					if (KeyboardManager.KeyWasJustPressed(Keys.C))
 					{
 						mcExplosionFlashParticleSystem.ExplosionIntensity += 5;
 						mcExplosionFlashParticleSystem.ExplosionIntensity = (mcExplosionFlashParticleSystem.ExplosionIntensity > 100 ? 100 : mcExplosionFlashParticleSystem.ExplosionIntensity);
 					}
 
-					if (KeyWasJustPressed(Keys.V))
+					if (KeyboardManager.KeyWasJustPressed(Keys.V))
 					{
 						mcExplosionFlashParticleSystem.ChangeExplosionColor();
 					}
 
-					if (KeyWasJustPressed(Keys.B))
+					if (KeyboardManager.KeyWasJustPressed(Keys.B))
 					{
 						mcExplosionFlashParticleSystem.ExplosionParticleSize -= 5;
 						mcExplosionFlashParticleSystem.ExplosionParticleSize = (mcExplosionFlashParticleSystem.ExplosionParticleSize < 1 ? 1 : mcExplosionFlashParticleSystem.ExplosionParticleSize);
 					}
 
-					if (KeyWasJustPressed(Keys.N))
+					if (KeyboardManager.KeyWasJustPressed(Keys.N))
 					{
 						mcExplosionFlashParticleSystem.ExplosionParticleSize += 5;
 						mcExplosionFlashParticleSystem.ExplosionParticleSize = (mcExplosionFlashParticleSystem.ExplosionParticleSize > 100 ? 100 : mcExplosionFlashParticleSystem.ExplosionParticleSize);
@@ -3898,30 +3750,30 @@ namespace Demo
 					break;
 
 				case EPSEffects.ExplosionFlyingSparks:
-					if (KeyWasJustPressed(Keys.X))
+					if (KeyboardManager.KeyWasJustPressed(Keys.X))
 					{
 						mcExplosionFlyingSparksParticleSystem.ExplosionIntensity -= 5;
 						mcExplosionFlyingSparksParticleSystem.ExplosionIntensity = (mcExplosionFlyingSparksParticleSystem.ExplosionIntensity < 1 ? 1 : mcExplosionFlyingSparksParticleSystem.ExplosionIntensity);
 					}
 
-					if (KeyWasJustPressed(Keys.C))
+					if (KeyboardManager.KeyWasJustPressed(Keys.C))
 					{
 						mcExplosionFlyingSparksParticleSystem.ExplosionIntensity += 5;
 						mcExplosionFlyingSparksParticleSystem.ExplosionIntensity = (mcExplosionFlyingSparksParticleSystem.ExplosionIntensity > 200 ? 200 : mcExplosionFlyingSparksParticleSystem.ExplosionIntensity);
 					}
 
-					if (KeyWasJustPressed(Keys.V))
+					if (KeyboardManager.KeyWasJustPressed(Keys.V))
 					{
 						mcExplosionFlyingSparksParticleSystem.ChangeExplosionColor();
 					}
 
-					if (KeyWasJustPressed(Keys.B))
+					if (KeyboardManager.KeyWasJustPressed(Keys.B))
 					{
 						mcExplosionFlyingSparksParticleSystem.ExplosionParticleSize -= 5;
 						mcExplosionFlyingSparksParticleSystem.ExplosionParticleSize = (mcExplosionFlyingSparksParticleSystem.ExplosionParticleSize < 1 ? 1 : mcExplosionFlyingSparksParticleSystem.ExplosionParticleSize);
 					}
 
-					if (KeyWasJustPressed(Keys.N))
+					if (KeyboardManager.KeyWasJustPressed(Keys.N))
 					{
 						mcExplosionFlyingSparksParticleSystem.ExplosionParticleSize += 5;
 						mcExplosionFlyingSparksParticleSystem.ExplosionParticleSize = (mcExplosionFlyingSparksParticleSystem.ExplosionParticleSize > 100 ? 100 : mcExplosionFlyingSparksParticleSystem.ExplosionParticleSize);
@@ -3929,30 +3781,30 @@ namespace Demo
 					break;
 
 				case EPSEffects.ExplosionSmokeTrails:
-					if (KeyWasJustPressed(Keys.X))
+					if (KeyboardManager.KeyWasJustPressed(Keys.X))
 					{
 						mcExplosionSmokeTrailsParticleSystem.ExplosionIntensity -= 5;
 						mcExplosionSmokeTrailsParticleSystem.ExplosionIntensity = (mcExplosionSmokeTrailsParticleSystem.ExplosionIntensity < 1 ? 1 : mcExplosionSmokeTrailsParticleSystem.ExplosionIntensity);
 					}
 
-					if (KeyWasJustPressed(Keys.C))
+					if (KeyboardManager.KeyWasJustPressed(Keys.C))
 					{
 						mcExplosionSmokeTrailsParticleSystem.ExplosionIntensity += 5;
 						mcExplosionSmokeTrailsParticleSystem.ExplosionIntensity = (mcExplosionSmokeTrailsParticleSystem.ExplosionIntensity > 200 ? 200 : mcExplosionSmokeTrailsParticleSystem.ExplosionIntensity);
 					}
 
-					if (KeyWasJustPressed(Keys.V))
+					if (KeyboardManager.KeyWasJustPressed(Keys.V))
 					{
 						mcExplosionSmokeTrailsParticleSystem.ChangeExplosionColor();
 					}
 
-					if (KeyWasJustPressed(Keys.B))
+					if (KeyboardManager.KeyWasJustPressed(Keys.B))
 					{
 						mcExplosionSmokeTrailsParticleSystem.ExplosionParticleSize -= 5;
 						mcExplosionSmokeTrailsParticleSystem.ExplosionParticleSize = (mcExplosionSmokeTrailsParticleSystem.ExplosionParticleSize < 1 ? 1 : mcExplosionSmokeTrailsParticleSystem.ExplosionParticleSize);
 					}
 
-					if (KeyWasJustPressed(Keys.N))
+					if (KeyboardManager.KeyWasJustPressed(Keys.N))
 					{
 						mcExplosionSmokeTrailsParticleSystem.ExplosionParticleSize += 5;
 						mcExplosionSmokeTrailsParticleSystem.ExplosionParticleSize = (mcExplosionSmokeTrailsParticleSystem.ExplosionParticleSize > 100 ? 100 : mcExplosionSmokeTrailsParticleSystem.ExplosionParticleSize);
@@ -3960,30 +3812,30 @@ namespace Demo
 					break;
 
 				case EPSEffects.ExplosionRoundSparks:
-					if (KeyWasJustPressed(Keys.X))
+					if (KeyboardManager.KeyWasJustPressed(Keys.X))
 					{
 						mcExplosionRoundSparksParticleSystem.ExplosionIntensity -= 5;
 						mcExplosionRoundSparksParticleSystem.ExplosionIntensity = (mcExplosionRoundSparksParticleSystem.ExplosionIntensity < 1 ? 1 : mcExplosionRoundSparksParticleSystem.ExplosionIntensity);
 					}
 
-					if (KeyWasJustPressed(Keys.C))
+					if (KeyboardManager.KeyWasJustPressed(Keys.C))
 					{
 						mcExplosionRoundSparksParticleSystem.ExplosionIntensity += 5;
 						mcExplosionRoundSparksParticleSystem.ExplosionIntensity = (mcExplosionRoundSparksParticleSystem.ExplosionIntensity > 100 ? 100 : mcExplosionRoundSparksParticleSystem.ExplosionIntensity);
 					}
 
-					if (KeyWasJustPressed(Keys.V))
+					if (KeyboardManager.KeyWasJustPressed(Keys.V))
 					{
 						mcExplosionRoundSparksParticleSystem.ChangeExplosionColor();
 					}
 
-					if (KeyWasJustPressed(Keys.B))
+					if (KeyboardManager.KeyWasJustPressed(Keys.B))
 					{
 						mcExplosionRoundSparksParticleSystem.ExplosionParticleSize -= 5;
 						mcExplosionRoundSparksParticleSystem.ExplosionParticleSize = (mcExplosionRoundSparksParticleSystem.ExplosionParticleSize < 1 ? 1 : mcExplosionRoundSparksParticleSystem.ExplosionParticleSize);
 					}
 
-					if (KeyWasJustPressed(Keys.N))
+					if (KeyboardManager.KeyWasJustPressed(Keys.N))
 					{
 						mcExplosionRoundSparksParticleSystem.ExplosionParticleSize += 5;
 						mcExplosionRoundSparksParticleSystem.ExplosionParticleSize = (mcExplosionRoundSparksParticleSystem.ExplosionParticleSize > 100 ? 100 : mcExplosionRoundSparksParticleSystem.ExplosionParticleSize);
@@ -3991,30 +3843,30 @@ namespace Demo
 					break;
 
 				case EPSEffects.ExplosionDebris:
-					if (KeyWasJustPressed(Keys.X))
+					if (KeyboardManager.KeyWasJustPressed(Keys.X))
 					{
 						mcExplosionDebrisParticleSystem.ExplosionIntensity -= 5;
 						mcExplosionDebrisParticleSystem.ExplosionIntensity = (mcExplosionDebrisParticleSystem.ExplosionIntensity < 1 ? 1 : mcExplosionDebrisParticleSystem.ExplosionIntensity);
 					}
 
-					if (KeyWasJustPressed(Keys.C))
+					if (KeyboardManager.KeyWasJustPressed(Keys.C))
 					{
 						mcExplosionDebrisParticleSystem.ExplosionIntensity += 5;
 						mcExplosionDebrisParticleSystem.ExplosionIntensity = (mcExplosionDebrisParticleSystem.ExplosionIntensity > 200 ? 200 : mcExplosionDebrisParticleSystem.ExplosionIntensity);
 					}
 
-					if (KeyWasJustPressed(Keys.V))
+					if (KeyboardManager.KeyWasJustPressed(Keys.V))
 					{
 						mcExplosionDebrisParticleSystem.ChangeExplosionColor();
 					}
 
-					if (KeyWasJustPressed(Keys.B))
+					if (KeyboardManager.KeyWasJustPressed(Keys.B))
 					{
 						mcExplosionDebrisParticleSystem.ExplosionParticleSize -= 5;
 						mcExplosionDebrisParticleSystem.ExplosionParticleSize = (mcExplosionDebrisParticleSystem.ExplosionParticleSize < 1 ? 1 : mcExplosionDebrisParticleSystem.ExplosionParticleSize);
 					}
 
-					if (KeyWasJustPressed(Keys.N))
+					if (KeyboardManager.KeyWasJustPressed(Keys.N))
 					{
 						mcExplosionDebrisParticleSystem.ExplosionParticleSize += 5;
 						mcExplosionDebrisParticleSystem.ExplosionParticleSize = (mcExplosionDebrisParticleSystem.ExplosionParticleSize > 100 ? 100 : mcExplosionDebrisParticleSystem.ExplosionParticleSize);
@@ -4022,30 +3874,30 @@ namespace Demo
 					break;
 
 				case EPSEffects.ExplosionDebrisSprite:
-					if (KeyWasJustPressed(Keys.X))
+					if (KeyboardManager.KeyWasJustPressed(Keys.X))
 					{
 						mcExplosionDebrisSpriteParticleSystem.ExplosionIntensity -= 5;
 						mcExplosionDebrisSpriteParticleSystem.ExplosionIntensity = (mcExplosionDebrisSpriteParticleSystem.ExplosionIntensity < 1 ? 1 : mcExplosionDebrisSpriteParticleSystem.ExplosionIntensity);
 					}
 
-					if (KeyWasJustPressed(Keys.C))
+					if (KeyboardManager.KeyWasJustPressed(Keys.C))
 					{
 						mcExplosionDebrisSpriteParticleSystem.ExplosionIntensity += 5;
 						mcExplosionDebrisSpriteParticleSystem.ExplosionIntensity = (mcExplosionDebrisSpriteParticleSystem.ExplosionIntensity > 200 ? 200 : mcExplosionDebrisSpriteParticleSystem.ExplosionIntensity);
 					}
 
-					if (KeyWasJustPressed(Keys.V))
+					if (KeyboardManager.KeyWasJustPressed(Keys.V))
 					{
 						mcExplosionDebrisSpriteParticleSystem.ChangeExplosionColor();
 					}
 
-					if (KeyWasJustPressed(Keys.B))
+					if (KeyboardManager.KeyWasJustPressed(Keys.B))
 					{
 						mcExplosionDebrisSpriteParticleSystem.ExplosionParticleSize -= 5;
 						mcExplosionDebrisSpriteParticleSystem.ExplosionParticleSize = (mcExplosionDebrisSpriteParticleSystem.ExplosionParticleSize < 1 ? 1 : mcExplosionDebrisSpriteParticleSystem.ExplosionParticleSize);
 					}
 
-					if (KeyWasJustPressed(Keys.N))
+					if (KeyboardManager.KeyWasJustPressed(Keys.N))
 					{
 						mcExplosionDebrisSpriteParticleSystem.ExplosionParticleSize += 5;
 						mcExplosionDebrisSpriteParticleSystem.ExplosionParticleSize = (mcExplosionDebrisSpriteParticleSystem.ExplosionParticleSize > 100 ? 100 : mcExplosionDebrisSpriteParticleSystem.ExplosionParticleSize);
@@ -4053,18 +3905,18 @@ namespace Demo
 					break;
 
 				case EPSEffects.ExplosionShockwave:
-					if (KeyWasJustPressed(Keys.V))
+					if (KeyboardManager.KeyWasJustPressed(Keys.V))
 					{
 						mcExplosionShockwaveParticleSystem.ChangeExplosionColor();
 					}
 
-					if (KeyWasJustPressed(Keys.B))
+					if (KeyboardManager.KeyWasJustPressed(Keys.B))
 					{
 						mcExplosionShockwaveParticleSystem.ShockwaveSize -= 5;
 						mcExplosionShockwaveParticleSystem.ShockwaveSize = (mcExplosionShockwaveParticleSystem.ShockwaveSize < 100 ? 100 : mcExplosionShockwaveParticleSystem.ShockwaveSize);
 					}
 
-					if (KeyWasJustPressed(Keys.N))
+					if (KeyboardManager.KeyWasJustPressed(Keys.N))
 					{
 						mcExplosionShockwaveParticleSystem.ShockwaveSize += 5;
 						mcExplosionShockwaveParticleSystem.ShockwaveSize = (mcExplosionShockwaveParticleSystem.ShockwaveSize > 400 ? 400 : mcExplosionShockwaveParticleSystem.ShockwaveSize);
@@ -4072,18 +3924,18 @@ namespace Demo
 					break;
 
 				case EPSEffects.Explosion:
-					if (KeyWasJustPressed(Keys.V))
+					if (KeyboardManager.KeyWasJustPressed(Keys.V))
 					{
 						mcExplosionParticleSystem.ChangeExplosionColor();
 					}
 
-					if (KeyWasJustPressed(Keys.B))
+					if (KeyboardManager.KeyWasJustPressed(Keys.B))
 					{
 						mcExplosionParticleSystem.ExplosionParticleSize -= 5;
 						mcExplosionParticleSystem.ExplosionParticleSize = (mcExplosionParticleSystem.ExplosionParticleSize < 1 ? 1 : mcExplosionParticleSystem.ExplosionParticleSize);
 					}
 
-					if (KeyWasJustPressed(Keys.N))
+					if (KeyboardManager.KeyWasJustPressed(Keys.N))
 					{
 						mcExplosionParticleSystem.ExplosionParticleSize += 5;
 						mcExplosionParticleSystem.ExplosionParticleSize = (mcExplosionParticleSystem.ExplosionParticleSize > 100 ? 100 : mcExplosionParticleSystem.ExplosionParticleSize);

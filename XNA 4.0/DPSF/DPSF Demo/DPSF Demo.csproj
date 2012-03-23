@@ -109,6 +109,11 @@
   <ItemGroup>
     <Compile Include="FPS.cs" />
     <Compile Include="GameMain.cs" />
+    <Compile Include="Input\GamePadManager.cs" />
+    <Compile Include="Input\KeyboardManager.cs" />
+    <Compile Include="Input\MouseManager.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\IWrapParticleSystemsForDPSFDemo.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\RandomPSWrapper.cs" />
     <Compile Include="Particle Systems\AnimatedQuadPS.cs" />
     <Compile Include="Particle Systems\AnimatedSpritePS.cs" />
     <Compile Include="Particle Systems\BallPS.cs" />
