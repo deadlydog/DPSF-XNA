@@ -244,7 +244,7 @@ namespace DPSF
                 for (int iIndex = 0; iIndex < iNumberOfParticleSystems; iIndex++)
                 {
                     // Add this Particle System's Active Particles to the count
-                    iActiveParticleCount += mcParticleSystemListSortedByUpdateOrder[iIndex].NumberOfActiveParticles;
+                    iActiveParticleCount += mcParticleSystemListSortedByUpdateOrder[iIndex].TotalNumberOfActiveParticles;
                 }
 
                 // Return the Total Number of Active Particles
@@ -269,7 +269,7 @@ namespace DPSF
                 for (int iIndex = 0; iIndex < iNumberOfParticleSystems; iIndex++)
                 {
                     // Add this Particle System's Active and Visible Particles to the count
-                    iActiveAndVisibleParticleCount += mcParticleSystemListSortedByUpdateOrder[iIndex].NumberOfParticlesBeingDrawn;
+                    iActiveAndVisibleParticleCount += mcParticleSystemListSortedByUpdateOrder[iIndex].TotalNumberOfParticlesBeingDrawn;
                 }
 
                 // Return the Total Number of Particles being Drawn
@@ -292,7 +292,7 @@ namespace DPSF
                 for (int iIndex = 0; iIndex < iNumberOfParticleSystems; iIndex++)
                 {
                     // Add this Particle System's Active and Visible Particles to the count
-                    iNumberOfParticlesAllocatedInMemory += mcParticleSystemListSortedByUpdateOrder[iIndex].NumberOfParticlesAllocatedInMemory;
+                    iNumberOfParticlesAllocatedInMemory += mcParticleSystemListSortedByUpdateOrder[iIndex].TotalNumberOfParticlesAllocatedInMemory;
                 }
 
                 // Return the Total Number of Particles Allocated In Memory

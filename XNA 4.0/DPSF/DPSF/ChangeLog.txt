@@ -12,6 +12,11 @@ public:
 - Fixed bug in Sprite Particle System Templates and Sprite particle systems where they wouldn't use the SpriteBatch passed into the AutoInitialize() function.
 - Added new ExplosionDebrisSpriteParticleSystem class, that shows the implementation differences between a 3D and 2D Sprite Particle System.
 - Exposed the SpriteBatch object on the particle systems so that it can be retrieved.
+- Added TotalNumberOfActiveParticles, TotalNumberOfParticlesAllocatedInMemory, and TotalNumberOfParticlesBeingDrawn virtual properties that can be overridden
+	to return back more accurate numbers for particle systems that contain other particles systems.
+- Refactored the DPSF Demo particle systems in wrapper classes that implement the new IWrapDPSFDemoParticleSystems interface to make it easier to add new DPSF Demo
+	particle systems and clean up the GameMain.cs file so it is easier to understand.
+
 
 Possible Breaking Changes:
 - Removed the mcRandomNumber particle system class variable. Everything should now just use the RandomNumber public property.

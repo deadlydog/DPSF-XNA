@@ -84,7 +84,7 @@ namespace DPSF.ParticleSystems
             // Specify the particle initialization function
             ParticleInitializationFunction = InitializeParticleExplosion;
 
-            // Setup the behaviours that the particles should have
+            // Setup the behaviors that the particles should have
             ParticleEvents.RemoveAllEvents();
             ParticleEvents.AddEveryTimeEvent(UpdateParticleVelocityUsingExternalForce);
             ParticleEvents.AddEveryTimeEvent(UpdateParticlePositionAndVelocityUsingAcceleration);

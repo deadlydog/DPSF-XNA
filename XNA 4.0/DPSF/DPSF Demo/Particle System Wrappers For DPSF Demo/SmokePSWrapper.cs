@@ -1,181 +1,65 @@
-#region Using Statements
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using DPSF.ParticleSystems;
+using DPSF_Demo.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Content;
-#endregion
+using Microsoft.Xna.Framework.Input;
 
-namespace DPSF.ParticleSystems
+namespace DPSF_Demo.Particle_System_Wrappers_For_DPSF_Demo
 {
-    /// <summary>
-    /// Create a new Particle System class that inherits from a Default DPSF Particle System.
-    /// </summary>
-#if (WINDOWS)
-    [Serializable]
-#endif
-    class SmokeParticleSystem : DefaultSprite3DBillboardParticleSystem
-    {
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public SmokeParticleSystem(Game cGame) : base(cGame) { }
+	class SmokeDPSFDemoParticleSystemWrapper : SmokeParticleSystem, IWrapDPSFDemoParticleSystems
+	{
+        public SmokeDPSFDemoParticleSystemWrapper(Game cGame)
+            : base(cGame)
+        { }
 
-        //===========================================================
-        // Structures and Variables
-        //===========================================================
-        private Color[] msaColors = { Color.White, Color.Gray, Color.Black, Color.Green, Color.Yellow, Color.Red, Color.Pink, Color.Brown, Color.Blue };
-        private int miCurrentColor = 0;
+        public void AfterAutoInitialize()
+        { }
 
-        public float mfColorBlendAmount = 0.5f;
-        public Vector3 mcExternalObjectPosition = Vector3.Zero;
-        public float mfAttractRepelForce = 3.0f;
-        public float mfAttractRepelRange = 50.0f;
+		public void DrawStatusText(DrawTextRequirements draw)
+		{ }
 
-        //===========================================================
-        // Overridden Particle System Functions
-        //===========================================================
+	    public void DrawInputControlsText(DrawTextRequirements draw)
+	    {
+            draw.TextWriter.DrawString(draw.Font, "Rising Smoke Cloud:", new Vector2(5, 250), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "X", new Vector2(195, 250), draw.PropertyTextColor);
 
-        //===========================================================
-        // Initialization Functions
-        //===========================================================
-        public override void AutoInitialize(GraphicsDevice cGraphicsDevice, ContentManager cContentManager, SpriteBatch cSpriteBatch)
-        {
-            InitializeSpriteParticleSystem(cGraphicsDevice, cContentManager, 1000, 50000, "Textures/Smoke", cSpriteBatch);
-            LoadSmokeEvents();
-            Emitter.ParticlesPerSecond = 100;
-            Name = "Smoke";
-        }
+            draw.TextWriter.DrawString(draw.Font, "Dispersed Smoke:", new Vector2(5, 275), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "C", new Vector2(175, 275), draw.PropertyTextColor);
 
-        public void LoadSmokeEvents()
-        {
-            ParticleInitializationFunction = InitializeParticleRisingSmoke;
+            draw.TextWriter.DrawString(draw.Font, "Suction Orb:", new Vector2(5, 300), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "V", new Vector2(120, 300), draw.PropertyTextColor);
 
-            ParticleEvents.RemoveAllEvents();
-            ParticleEvents.AddEveryTimeEvent(UpdateParticlePositionAndVelocityUsingAcceleration, 500);
-            ParticleEvents.AddEveryTimeEvent(UpdateParticleRotationUsingRotationalVelocity);
-            ParticleEvents.AddEveryTimeEvent(UpdateColor);
-            ParticleEvents.AddEveryTimeEvent(UpdateParticleTransparencyWithQuickFadeInAndSlowFadeOut, 100);
-            ParticleEvents.AddEveryTimeEvent(IncreaseSizeBasedOnLifetime);
-        }
+            draw.TextWriter.DrawString(draw.Font, "Repel Orb:", new Vector2(5, 325), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "B", new Vector2(105, 325), draw.PropertyTextColor);
 
-        // Used to generate a single smoke plume
-        public void InitializeParticleRisingSmoke(DefaultSprite3DBillboardParticle cParticle)
-        {
-            cParticle.Lifetime = RandomNumber.Between(1.0f, 7.0f);
+            draw.TextWriter.DrawString(draw.Font, "Change Color:", new Vector2(5, 350), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "N", new Vector2(135, 350), draw.PropertyTextColor);
+	    }
 
-            cParticle.Position = Emitter.PositionData.Position;
-            cParticle.Position += new Vector3(0, 10, 0);
-            cParticle.Size = RandomNumber.Next(10, 25);
-            cParticle.Color = msaColors[miCurrentColor];
-            cParticle.Rotation = RandomNumber.Between(0, MathHelper.TwoPi);
-
-            cParticle.Velocity = new Vector3(RandomNumber.Next(-15, 15), RandomNumber.Next(10, 30), RandomNumber.Next(-15, 15));
-            cParticle.Acceleration = Vector3.Zero;
-            cParticle.RotationalVelocity = RandomNumber.Between(-MathHelper.Pi, MathHelper.Pi);
-
-            cParticle.StartSize = cParticle.Size;
-
-            mfColorBlendAmount = 0.5f;
-        }
-
-        // Used to generate random smoke particles around the floor
-        public void InitializeParticleFoggySmoke(DefaultSprite3DBillboardParticle cParticle)
-        {
-            cParticle.Lifetime = RandomNumber.Between(1.0f, 3.0f);
-
-            cParticle.Position = Emitter.PositionData.Position;
-            cParticle.Position += new Vector3(RandomNumber.Next(-500, 500), 0, RandomNumber.Next(-500, 500));
-            cParticle.Size = RandomNumber.Next(10, 25);
-            cParticle.Color = msaColors[miCurrentColor];
-            cParticle.Rotation = RandomNumber.Between(0, MathHelper.TwoPi);
-
-            cParticle.Velocity = new Vector3(RandomNumber.Next(-30, 30), RandomNumber.Next(0, 10), RandomNumber.Next(-30, 30));
-            cParticle.Acceleration = Vector3.Zero;
-            cParticle.RotationalVelocity = RandomNumber.Between(-MathHelper.Pi, MathHelper.Pi);
-
-            cParticle.StartSize = cParticle.Size;
-
-            mfColorBlendAmount = 0.5f;
-        }
-
-        //===========================================================
-        // Particle Update Functions
-        //===========================================================
-        protected void IncreaseSizeBasedOnLifetime(DefaultSprite3DBillboardParticle cParticle, float fElapsedTimeInSeconds)
-        {
-            cParticle.Size = ((1.0f + cParticle.NormalizedElapsedTime) / 1.0f) * cParticle.StartSize;
-        }
-
-        protected void UpdateColor(DefaultSprite3DBillboardParticle cParticle, float fElapsedTimeInSeconds)
-        {
-            cParticle.Color = msaColors[miCurrentColor];
-        }
-
-        protected void RepelParticleFromExternalObject(DefaultSprite3DBillboardParticle cParticle, float fElapsedTimeInSeconds)
-        {
-            // Calculate Direction away from the Object and how far the Particle is from the Object
-            Vector3 sDirectionAwayFromObject = cParticle.Position - mcExternalObjectPosition;
-            float fDistance = sDirectionAwayFromObject.Length();
-
-            // If the Particle is close enough to the Object to be affected by it
-            if (fDistance < mfAttractRepelRange)
+	    public void ProcessInput()
+	    {
+            if (KeyboardManager.KeyWasJustPressed(Keys.X))
             {
-                // Repel the Particle from the Object
-                sDirectionAwayFromObject.Normalize();
-                cParticle.Velocity += sDirectionAwayFromObject * (mfAttractRepelRange - fDistance) * mfAttractRepelForce;
-                cParticle.RotationalVelocity += 0.005f;
+                this.LoadSmokeEvents();
+                this.ParticleInitializationFunction = this.InitializeParticleRisingSmoke;
             }
-        }
 
-        protected void AttractParticleToExternalObject(DefaultSprite3DBillboardParticle cParticle, float fElapsedTimeInSeconds)
-        {
-            // Calculate Direction towards the Object and how far the Particle is from the Object
-            Vector3 sDirectionTowardsObject = mcExternalObjectPosition - cParticle.Position;
-            float fDistance = sDirectionTowardsObject.Length();
-
-            // If the Particle is close enough to the Object to be affected by it
-            if (fDistance < mfAttractRepelRange)
+            if (KeyboardManager.KeyWasJustPressed(Keys.C))
             {
-                // Attract the Particle to the Object
-                sDirectionTowardsObject.Normalize();
-                cParticle.Velocity = sDirectionTowardsObject * (mfAttractRepelRange - fDistance) * mfAttractRepelForce;
+                this.LoadSmokeEvents();
+                this.ParticleInitializationFunction = this.InitializeParticleFoggySmoke;
             }
-        }
 
-        //===========================================================
-        // Particle System Update Functions
-        //===========================================================
-
-        //===========================================================
-        // Other Particle System Functions
-        //===========================================================
-        public void ChangeColor()
-        {
-            if (++miCurrentColor >= msaColors.Length)
+            if (KeyboardManager.KeyWasJustPressed(Keys.N))
             {
-                miCurrentColor = 0;
+                this.ChangeColor();
             }
-        }
 
-        public void MakeParticlesAttractToExternalObject()
-        {
-            // Make sure we only apply the Attract function once by first removing the function if it already exists
-            this.ParticleEvents.RemoveEveryTimeEvents(AttractParticleToExternalObject);
-            this.ParticleEvents.AddEveryTimeEvent(AttractParticleToExternalObject);
-        }
-
-        public void MakeParticlesRepelFromExternalObject()
-        {
-            // Make sure we only apply the Repel function once by first removing the function if it already exists
-            this.ParticleEvents.RemoveEveryTimeEvents(RepelParticleFromExternalObject);
-            this.ParticleEvents.AddEveryTimeEvent(RepelParticleFromExternalObject);
-        }
-
-        public void StopParticleAttractionAndRepulsionToExternalObject()
-        {
-            this.ParticleEvents.RemoveEveryTimeEvents(RepelParticleFromExternalObject);
-            this.ParticleEvents.RemoveEveryTimeEvents(AttractParticleToExternalObject);
-        }
-    }
+			// V and B keys are processed in GameMain.cs still since they make changes to objects external to the particle system.
+	    }
+	}
 }

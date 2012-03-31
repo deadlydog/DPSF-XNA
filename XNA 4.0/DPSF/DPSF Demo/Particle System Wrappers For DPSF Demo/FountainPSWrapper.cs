@@ -1,162 +1,100 @@
-#region Using Statements
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using DPSF.ParticleSystems;
+using DPSF_Demo.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Content;
-#endregion
+using Microsoft.Xna.Framework.Input;
 
-namespace DPSF.ParticleSystems
+namespace DPSF_Demo.Particle_System_Wrappers_For_DPSF_Demo
 {
-    /// <summary>
-    /// Create a new Particle System class that inherits from a
-    /// Default DPSF Particle System
-    /// </summary>
-#if (WINDOWS)
-    [Serializable]
-#endif
-    class FountainParticleSystem : DefaultSprite3DBillboardParticleSystem
-    {
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public FountainParticleSystem(Game cGame) : base(cGame) { }
+	class FountainDPSFDemoParticleSystemWrapper : FountainParticleSystem, IWrapDPSFDemoParticleSystems
+	{
+        public FountainDPSFDemoParticleSystemWrapper(Game cGame)
+            : base(cGame)
+        { }
 
-        //===========================================================
-        // Structures and Variables
-        //===========================================================
-        // How much the Particle should bounce back off of the floor
-        public float mfBounciness = 0.5f;
-        private bool mbUseAdditiveBlending = false;
+        public void AfterAutoInitialize()
+        { }
 
-        //===========================================================
-        // Overridden Particle System Functions
-        //===========================================================
+	    public void DrawStatusText(DrawTextRequirements draw)
+	    {
+            draw.TextWriter.DrawString(draw.Font, "Bounciness:", new Vector2(draw.TextSafeArea.Left + 300, draw.TextSafeArea.Top + 2), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, this.mfBounciness.ToString("0.00"), new Vector2(draw.TextSafeArea.Left + 410, draw.TextSafeArea.Top + 2), draw.PropertyTextColor);
+	    }
 
-        protected override void InitializeRenderProperties()
-        {
-            base.InitializeRenderProperties();
+	    public void DrawInputControlsText(DrawTextRequirements draw)
+	    {
+            draw.TextWriter.DrawString(draw.Font, "Floor Collision On:", new Vector2(5, 250), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "X", new Vector2(170, 250), draw.PropertyTextColor);
 
-            // Turn on depth buffer writing so particles are drawn in the correct order.
-            // This can cause clipping problems with some textures.
-            RenderProperties.DepthStencilState = DepthStencilState.Default;
-        }
+            draw.TextWriter.DrawString(draw.Font, "Floor Collision Off:", new Vector2(5, 275), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "C", new Vector2(180, 275), draw.PropertyTextColor);
 
-        //===========================================================
-        // Initialization Functions
-        //===========================================================
-        public override void AutoInitialize(GraphicsDevice cGraphicsDevice, ContentManager cContentManager, SpriteBatch cSpriteBatch)
-        {
-            InitializeSpriteParticleSystem(cGraphicsDevice, cContentManager, 1000, 50000, "Textures/Bubble", cSpriteBatch);
-            LoadFountainEvents();
-            Emitter.ParticlesPerSecond = 100;
-            Name = "Fountain";
-        }
+            draw.TextWriter.DrawString(draw.Font, "Decrease Bounciness:", new Vector2(5, 300), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "V", new Vector2(205, 300), draw.PropertyTextColor);
 
-        public void LoadFountainEvents()
-        {
-            ParticleInitializationFunction = InitializeParticleUsingInitialProperties;
+            draw.TextWriter.DrawString(draw.Font, "Increase Bounciness:", new Vector2(5, 325), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "B", new Vector2(195, 325), draw.PropertyTextColor);
 
-            ParticleEvents.RemoveAllEvents();
-            ParticleEvents.AddEveryTimeEvent(UpdateParticleVelocityUsingExternalForce, 400);
-            ParticleEvents.AddEveryTimeEvent(UpdateParticlePositionAndVelocityUsingAcceleration, 500);
-            ParticleEvents.AddEveryTimeEvent(UpdateParticleRotationUsingRotationalVelocity);
-            ParticleEvents.AddEveryTimeEvent(UpdateParticleTransparencyWithQuickFadeInAndQuickFadeOut, 100);
-            ParticleEvents.AddEveryTimeEvent(UpdateParticleBounceOffFloor, 450);
+            draw.TextWriter.DrawString(draw.Font, "Shrinking On:", new Vector2(5, 350), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "N", new Vector2(130, 350), draw.PropertyTextColor);
 
-            Emitter.PositionData.Position = new Vector3(0, 50, 0);
+            draw.TextWriter.DrawString(draw.Font, "Shrinking Off:", new Vector2(5, 375), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "M", new Vector2(135, 375), draw.PropertyTextColor);
 
-            InitialProperties.LifetimeMin = 8.0f;
-            InitialProperties.LifetimeMax = 13.0f;
-            InitialProperties.PositionMin = Vector3.Zero;
-            InitialProperties.PositionMax = Vector3.Zero;
-            InitialProperties.StartSizeMin = 10.0f;
-            InitialProperties.StartSizeMax = 10.0f;
-            InitialProperties.EndSizeMin = 0.0f;
-            InitialProperties.EndSizeMax = 0.0f;
-            InitialProperties.StartColorMin = Color.Black;
-            InitialProperties.StartColorMax = Color.White;
-            InitialProperties.EndColorMin = Color.Red;
-            InitialProperties.EndColorMax = Color.DarkBlue;
-            InitialProperties.InterpolateBetweenMinAndMaxColors = false;
-            InitialProperties.RotationMin = 0;
-            InitialProperties.RotationMax = MathHelper.TwoPi;
-            InitialProperties.VelocityMin = new Vector3(-25, 20, -25);
-            InitialProperties.VelocityMax = new Vector3(25, 75, 25);
-            InitialProperties.AccelerationMin = Vector3.Zero;
-            InitialProperties.AccelerationMax = Vector3.Zero;
-            InitialProperties.RotationalVelocityMin = -MathHelper.TwoPi;
-            InitialProperties.RotationalVelocityMax = MathHelper.TwoPi;
-            InitialProperties.ExternalForceMin = new Vector3(0, -40, 0);
-            InitialProperties.ExternalForceMax = new Vector3(0, -40, 0);
-        }
+            draw.TextWriter.DrawString(draw.Font, "Toggle Additive Blending:", new Vector2(5, 400), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "P", new Vector2(240, 400), draw.PropertyTextColor);
+	    }
 
-        //===========================================================
-        // Particle Update Functions
-        //===========================================================
-        protected void UpdateParticleBounceOffFloor(DefaultSprite3DBillboardParticle cParticle, float fElapsedTimeInSeconds)
-        {
-            // If the Particle has hit the floor and is still travelling downwards
-            if (cParticle.Position.Y <= 0 && cParticle.Velocity.Y < 0)
+	    public void ProcessInput()
+	    {
+            if (KeyboardManager.KeyWasJustPressed(Keys.X))
             {
-                // Make the Particle Bounce upwards
-                cParticle.Velocity.Y *= -mfBounciness;
-
-                // Reduce the Particles X and Z speed
-                cParticle.Velocity.X *= 0.8f;
-                cParticle.Velocity.Z *= 0.8f;
-
-                // Reduce the Particles Rotation speed
-                cParticle.RotationalVelocity *= 0.8f;
+                this.MakeParticlesBounceOffFloor();
             }
-        }
 
-        //===========================================================
-        // Particle System Update Functions
-        //===========================================================
-
-        //===========================================================
-        // Other Particle System Functions
-        //===========================================================
-
-        public void MakeParticlesShrink()
-        {
-            this.ParticleEvents.RemoveEveryTimeEvents(UpdateParticleWidthAndHeightUsingLerp);
-            this.ParticleEvents.AddEveryTimeEvent(UpdateParticleWidthAndHeightUsingLerp);
-        }
-
-        public void MakeParticlesNotShrink()
-        {
-            this.ParticleEvents.RemoveEveryTimeEvents(UpdateParticleWidthAndHeightUsingLerp);
-        }
-
-        public void MakeParticlesBounceOffFloor()
-        {
-            this.ParticleEvents.RemoveEveryTimeEvents(UpdateParticleBounceOffFloor);
-            this.ParticleEvents.AddEveryTimeEvent(UpdateParticleBounceOffFloor);
-        }
-
-        public void MakeParticlesNotBounceOffFloor()
-        {
-            this.ParticleEvents.RemoveEveryTimeEvents(UpdateParticleBounceOffFloor);
-        }
-
-        public void ToggleAdditiveBlending()
-        {
-            // Toggle Additive Blending on/off
-            mbUseAdditiveBlending = !mbUseAdditiveBlending;
-
-            // If Additive Blending should be used
-            if (mbUseAdditiveBlending)
+            if (KeyboardManager.KeyWasJustPressed(Keys.C))
             {
-                // Turn it on
-                RenderProperties.BlendState = BlendState.Additive;
+                this.MakeParticlesNotBounceOffFloor();
             }
-            else
+
+            if (KeyboardManager.KeyWasJustPressed(Keys.V))
             {
-                // Turn off Additive Blending
-                RenderProperties.BlendState = BlendState.AlphaBlend;
+                this.mfBounciness -= 0.05f;
+
+                if (this.mfBounciness < 0.0f)
+                {
+                    this.mfBounciness = 0.0f;
+                }
             }
-        }
-    }
+
+            if (KeyboardManager.KeyWasJustPressed(Keys.B))
+            {
+                this.mfBounciness += 0.05f;
+
+                if (this.mfBounciness > 2.0f)
+                {
+                    this.mfBounciness = 2.0f;
+                }
+            }
+
+            if (KeyboardManager.KeyWasJustPressed(Keys.N))
+            {
+                this.MakeParticlesShrink();
+            }
+
+            if (KeyboardManager.KeyWasJustPressed(Keys.M))
+            {
+                this.MakeParticlesNotShrink();
+            }
+
+            if (KeyboardManager.KeyWasJustPressed(Keys.P))
+            {
+                this.ToggleAdditiveBlending();
+            }
+	    }
+	}
 }

@@ -1,173 +1,83 @@
-﻿#region Using Statements
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using DPSF.ParticleSystems;
+using DPSF_Demo.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Content;
-#endregion
+using Microsoft.Xna.Framework.Input;
 
-namespace DPSF.ParticleSystems
+namespace DPSF_Demo.Particle_System_Wrappers_For_DPSF_Demo
 {
-    /// <summary>
-    /// Create a new Particle System class that inherits from a
-    /// Default DPSF Particle System
-    /// </summary>
-#if (WINDOWS)
-    [Serializable]
-#endif
-    class ExplosionRoundSparksParticleSystem : DefaultSprite3DBillboardTextureCoordinatesParticleSystem
-    {
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public ExplosionRoundSparksParticleSystem(Game game) : base(game) { }
+	class ExplosionRoundSparksDPSFDemoParticleSystemWrapper : ExplosionRoundSparksParticleSystem, IWrapDPSFDemoParticleSystems
+	{
+        public ExplosionRoundSparksDPSFDemoParticleSystemWrapper(Game cGame)
+            : base(cGame)
+        { }
 
-        //===========================================================
-        // Structures and Variables
-        //===========================================================
+	    public void AfterAutoInitialize()
+	    {
+            SetupToAutoExplodeEveryInterval(2);
+	    }
 
-        /// <summary>
-        /// The Color of the explosion.
-        /// </summary>
-        public Color ExplosionColor { get; set; }
+	    public void DrawStatusText(DrawTextRequirements draw)
+	    {
+            draw.TextWriter.DrawString(draw.Font, "Intensity:", new Vector2(draw.TextSafeArea.Left + 330, draw.TextSafeArea.Top + 2), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, this.ExplosionIntensity.ToString(), new Vector2(draw.TextSafeArea.Left + 410, draw.TextSafeArea.Top + 2), draw.PropertyTextColor);
 
-        /// <summary>
-        /// The Size of the individual Particles.
-        /// </summary>
-        public int ExplosionParticleSize { get; set; }
+            draw.TextWriter.DrawString(draw.Font, "Size:", new Vector2(draw.TextSafeArea.Left + 450, draw.TextSafeArea.Top + 2), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, this.ExplosionParticleSize.ToString(), new Vector2(draw.TextSafeArea.Left + 495, draw.TextSafeArea.Top + 2), draw.PropertyTextColor);
+	    }
 
-        /// <summary>
-        /// The Intensity of the explosion.
-        /// </summary>
-        public int ExplosionIntensity { get; set; }
+	    public void DrawInputControlsText(DrawTextRequirements draw)
+	    {
+            draw.TextWriter.DrawString(draw.Font, "Decrease Intensity:", new Vector2(5, 250), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "X", new Vector2(180, 250), draw.PropertyTextColor);
 
-        Rectangle _roundSparkTextureCoordinates = new Rectangle(260, 387, 120, 120);
+            draw.TextWriter.DrawString(draw.Font, "Increase Intensity:", new Vector2(5, 275), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "C", new Vector2(170, 275), draw.PropertyTextColor);
 
-        /// <summary>
-        /// Get / Set the Camera Position used by the particle system
-        /// </summary>
-        public Vector3 CameraPosition { get; set; }
+            draw.TextWriter.DrawString(draw.Font, "Change Color:", new Vector2(5, 300), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "V", new Vector2(135, 300), draw.PropertyTextColor);
 
-        //===========================================================
-        // Overridden Particle System Functions
-        //===========================================================
+            draw.TextWriter.DrawString(draw.Font, "Decrease Particle Size:", new Vector2(5, 325), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "B", new Vector2(220, 325), draw.PropertyTextColor);
 
-        /// <summary>
-        /// Sets the camera position.
-        /// </summary>
-        /// <param name="cameraPosition">The camera position.</param>
-        public override void SetCameraPosition(Vector3 cameraPosition)
-        {
-            this.CameraPosition = cameraPosition;
-        }
+            draw.TextWriter.DrawString(draw.Font, "Increase Particle Size:", new Vector2(5, 350), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "N", new Vector2(210, 350), draw.PropertyTextColor);
+	    }
 
-        /// <summary>
-        /// Function to setup the Render Properties (i.e. BlendState, DepthStencilState, RasterizerState, and SamplerState)
-        /// which will be applied to the Graphics Device before drawing the Particle System's Particles.
-        /// <para>This function is called when initializing the particle system.</para>
-        /// </summary>
-        protected override void InitializeRenderProperties()
-        {
-            base.InitializeRenderProperties();
+	    public void ProcessInput()
+	    {
+            if (KeyboardManager.KeyWasJustPressed(Keys.X))
+            {
+                this.ExplosionIntensity -= 5;
+                this.ExplosionIntensity = (this.ExplosionIntensity < 1 ? 1 : this.ExplosionIntensity);
+            }
 
-            // Use additive blending
-            RenderProperties.BlendState = BlendState.Additive;
-        }
+            if (KeyboardManager.KeyWasJustPressed(Keys.C))
+            {
+                this.ExplosionIntensity += 5;
+                this.ExplosionIntensity = (this.ExplosionIntensity > 100 ? 100 : this.ExplosionIntensity);
+            }
 
+            if (KeyboardManager.KeyWasJustPressed(Keys.V))
+            {
+                this.ChangeExplosionColor();
+            }
 
-        //===========================================================
-        // Initialization Functions
-        //===========================================================
-        public override void AutoInitialize(GraphicsDevice graphicsDevice, ContentManager contentManager, SpriteBatch spriteBatch)
-        {
-            InitializeSpriteParticleSystem(graphicsDevice, contentManager, 1000, 50000, "Textures/ExplosionParticles", spriteBatch);
+            if (KeyboardManager.KeyWasJustPressed(Keys.B))
+            {
+                this.ExplosionParticleSize -= 5;
+                this.ExplosionParticleSize = (this.ExplosionParticleSize < 1 ? 1 : this.ExplosionParticleSize);
+            }
 
-            Name = "Explosion - Round Sparks";
-            LoadEvents();
-        }
-
-        public void LoadEvents()
-        {
-            // Specify the particle initialization function
-            ParticleInitializationFunction = InitializeParticleExplosion;
-
-            // Setup the behaviours that the particles should have
-            ParticleEvents.RemoveAllEvents();
-            ParticleEvents.AddEveryTimeEvent(UpdateParticleVelocityUsingExternalForce);
-            ParticleEvents.AddEveryTimeEvent(UpdateParticlePositionAndVelocityUsingAcceleration);
-            ParticleEvents.AddEveryTimeEvent(UpdateParticleTransparencyWithQuickFadeInAndSlowFadeOut, 100);
-
-            // Setup the emitter
-            Emitter.PositionData.Position = new Vector3(0, 50, 0);
-            Emitter.ParticlesPerSecond = 10000;
-            Emitter.EmitParticlesAutomatically = false; // We will call the Explode() function to release a burst of particles instead of always emitting them
-
-            // Set the default explosion settings
-            ExplosionColor = new Color(255, 120, 0);
-            ExplosionParticleSize = 60;
-            ExplosionIntensity = 30;
-        }
-
-        public void SetupToAutoExplodeEveryInterval(float intervalInSeconds)
-        {
-            // Set the Particle System's Emitter to release a burst of particles after a set interval
-            ParticleSystemEvents.RemoveAllEventsInGroup(1);
-            ParticleSystemEvents.LifetimeData.EndOfLifeOption = CParticleSystemEvents.EParticleSystemEndOfLifeOptions.Repeat;
-            ParticleSystemEvents.LifetimeData.Lifetime = intervalInSeconds;
-            ParticleSystemEvents.AddTimedEvent(0.0f, UpdateParticleSystemToExplode, 0, 1);
-        }
-
-        public void InitializeParticleExplosion(DefaultSprite3DBillboardTextureCoordinatesParticle particle)
-        {
-            particle.Lifetime = RandomNumber.Between(0.5f, 1.0f);
-            particle.Color = ExplosionColor;
-            particle.Position = Emitter.PositionData.Position + new Vector3(RandomNumber.Next(-25, 25), RandomNumber.Next(-25, 25), RandomNumber.Next(-25, 25));
-            particle.Velocity = DPSFHelper.RandomNormalizedVector() * RandomNumber.Next(30, 50);
-            particle.ExternalForce = new Vector3(0, 20, 0);
-            particle.Size = ExplosionParticleSize;
-
-            particle.SetTextureCoordinates(_roundSparkTextureCoordinates);
-        }
-
-        //===========================================================
-        // Particle Update Functions
-        //===========================================================
-
-        //===========================================================
-        // Particle System Update Functions
-        //===========================================================
-        protected void UpdateParticleSystemToExplode(float elapsedTimeInSeconds)
-        {
-            Explode();
-        }
-
-        //===========================================================
-        // Other Particle System Functions
-        //===========================================================
-
-        /// <summary>
-        /// Start the explosion.
-        /// </summary>
-        public void Explode()
-        {
-            this.Emitter.BurstParticles = this.ExplosionIntensity;
-        }
-
-        /// <summary>
-        /// Change the color of the explosion to a random color.
-        /// </summary>
-        public void ChangeExplosionColor()
-        {
-            ExplosionColor = DPSFHelper.RandomColor();
-        }
-
-        /// <summary>
-        /// Change the color of the explosion to the given color.
-        /// </summary>
-        /// <param name="color">The color the explosion should be.</param>
-        public void ChangeExplosionColor(Color color)
-        {
-            ExplosionColor = color;
-        }
-    }
+            if (KeyboardManager.KeyWasJustPressed(Keys.N))
+            {
+                this.ExplosionParticleSize += 5;
+                this.ExplosionParticleSize = (this.ExplosionParticleSize > 100 ? 100 : this.ExplosionParticleSize);
+            }
+	    }
+	}
 }

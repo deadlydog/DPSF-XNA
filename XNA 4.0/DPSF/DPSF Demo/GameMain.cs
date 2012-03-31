@@ -40,22 +40,27 @@ namespace DPSF_Demo
 		// tell you what type of exception occurred and what line of code produced it.
 		// Leave this set to false while debugging to have Visual Studio automatically take you to the 
 		// line that threw the exception.
-		public const bool mbRELEASE_MODE = false;
+		public const bool RELEASE_MODE = false;
 
 		// To allow the game to run as fast as possible, set this to false
-		const bool mbLIMIT_FPS = false;
+		const bool LIMIT_FPS = false;
 
 		// How often the Particle Systems should be updated (zero = update as often as possible)
-		const int miPARTICLE_SYSTEM_UPDATES_PER_SECOND = 0;
+		const int PARTICLE_SYSTEM_UPDATES_PER_SECOND = 0;
 
 		// The Width and Height of the application's window (default is 800x600)
-		int miWINDOW_WIDTH = 800;
-		int miWINDOW_HEIGHT = 600;
+		int WINDOW_WIDTH = 800;
+		int WINDOW_HEIGHT = 600;
 
 		// The background color to use
-		Color msBACKGROUND_COLOR = Color.Black;
+	    private static readonly Color BACKGROUND_COLOR = Color.Black;
 
-		// Static Particle Settings
+	    // Specify the text Colors to use
+	    public static readonly Color PROPERTY_TEXT_COlOR = Color.WhiteSmoke;
+        public static readonly Color VALUE_TEXT_COLOR = Color.Yellow;
+        public static readonly Color CONTROL_TEXT_COLOR = Color.PowderBlue;
+
+	    // Static Particle Settings
 		float mfStaticParticleTimeStep = 1.0f / 30.0f; // The Time Step between the drawing of each frame of the Static Particles (1 / # of fps, example, 1 / 30 = 30fps)
 		float mfStaticParticleTotalTime = 3.0f; // The number of seconds that the Static Particle should be drawn over
 
@@ -75,7 +80,7 @@ namespace DPSF_Demo
 		//===========================================================
 
 		// Class to hold information about the Position, Size, and Visibility of an Object
-		class CObject
+		class SimpleObject
 		{
 			public Vector3 sPosition = Vector3.Zero;
 			public Vector3 sVelocity = Vector3.Zero;
@@ -91,7 +96,7 @@ namespace DPSF_Demo
 		}
 
 		// Enumeration of all the Particle System Effects
-		enum EPSEffects
+		enum PSEffects
 		{
 			Random = 0,
 			Fire,
@@ -142,7 +147,7 @@ namespace DPSF_Demo
 		}
 
 		// List of all the textures
-		enum ETextures
+		enum Textures
 		{
 			AnimatedButterfly = 0,
 			AnimatedExplosion,
@@ -205,10 +210,10 @@ namespace DPSF_Demo
 		}
 
 		// Initialize which Particle System to use
-		EPSEffects meCurrentPS = EPSEffects.Random;
+		PSEffects meCurrentPS = PSEffects.Random;
 
 		// Initialize the Texture to use
-		ETextures meCurrentTexture = ETextures.Bubble;
+		Textures meCurrentTexture = Textures.Bubble;
 
 		GraphicsDeviceManager mcGraphics;       // Handle to the Graphics object
 
@@ -218,7 +223,7 @@ namespace DPSF_Demo
 		Model mcSphereModel;                    // Model of a sphere
 
 		// Initialize the Sphere Object
-		CObject mcSphere = new CObject();
+		SimpleObject mcSphere = new SimpleObject();
 
 		Random mcRandom = new Random();         // Random number generator
 
@@ -246,7 +251,7 @@ namespace DPSF_Demo
 				DPSFDefaultSettings.PerformanceProfilingIsEnabled = mbShowPerformanceText;
 
 				// Set it on the Manager to enable/disable it for the particle system that is currently running.
-				mcParticleSystemManager.SetPerformanceProfilingIsEnabledForAllParticleSystems(mbShowPerformanceText);
+				_particleSystemManager.SetPerformanceProfilingIsEnabledForAllParticleSystems(mbShowPerformanceText);
 
 				// If this value was changed from off to on, hook up the event handler to calculate garbage collection
 				if (mbShowPerformanceText && !previousValue)
@@ -265,7 +270,7 @@ namespace DPSF_Demo
 		/// Handles the FPSUpdated event of the FPS control to calculate the average amount of garbage created each frame in the last second.
 		/// </summary>
 		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="DPSF.FPS.FPSEventArgs"/> instance containing the event data.</param>
+		/// <param name="e">The <see cref="DPSF_Demo.FPS.FPSEventArgs"/> instance containing the event data.</param>
 		void FPS_FPSUpdated(object sender, FPS.FPSEventArgs e)
 		{
 			// Get how much Garbage is waiting to be collected
@@ -277,7 +282,7 @@ namespace DPSF_Demo
 				float garbageCreatedInLastSecondInKB = (currentGarbageAmount - _garbageAmountAtLastFPSUpdate) / 1024f;
 				_garbageAverageCreatedPerFrameInKB = garbageCreatedInLastSecondInKB / e.FPS;
 
-				int updatesPerSecond = mcCurrentParticleSystem.UpdatesPerSecond;
+				int updatesPerSecond = _currentDPSFDemoParticleSystemWrapper.UpdatesPerSecond;
 				updatesPerSecond = updatesPerSecond > 0 ? updatesPerSecond : _updatesPerSecond;
 				_garbageAverageCreatedPerUpdateInKB = garbageCreatedInLastSecondInKB / updatesPerSecond;
 			}
@@ -321,58 +326,58 @@ namespace DPSF_Demo
 		Camera msCamera = new Camera(true);
 
 		// Declare the Particle System Manager to manage the Particle Systems
-		ParticleSystemManager mcParticleSystemManager = new ParticleSystemManager();
+		ParticleSystemManager _particleSystemManager = new ParticleSystemManager();
 
 		// Declare the Particle System Variables
-		DPSFSplashScreenParticleSystem mcDPSFSplashScreenParticleSystem = null;
-		RandomParticleSystemWrapper mcRandomParticleSystem = null;
-		FireParticleSystem mcFireParticleSystem = null;
-		FireSpriteParticleSystem mcFireSpriteParticleSystem = null;
-		SmokeParticleSystem mcSmokeParticleSystem = null;
-		SnowParticleSystem mcSnowParticleSystem = null;
-		SquarePatternParticleSystem mcSquarePatternParticleSystem = null;
-		FountainParticleSystem mcFountainParticleSystem = null;
-		Random2DParticleSystem mcRandom2DParticleSystem = null;
-		GasFallParticleSystem mcGasFallParticleSystem = null;
-		DotParticleSystem mcDotParticleSystem = null;
-		FireworksParticleSystem mcFireworksParticleSystem = null;
-		Figure8ParticleSystem mcFigure8ParticleSystem = null;
-		StarParticleSystem mcStarParticleSystem = null;
-		BallParticleSystem mcBallParticleSystem = null;
-		RotatingQuadsParticleSystem mcRotatingQuadParticleSystem = null;
-		BoxParticleSystem mcBoxParticleSystem = null;
-		ImageParticleSystem mcImageParticleSystem = null;
-		AnimatedQuadParticleSystem mcAnimatedQuadParticleSystem = null;
-		SpriteParticleSystem mcSpriteParticleSystem = null;
-		AnimatedSpriteParticleSystem mcAnimatedSpriteParticleSystem = null;
-		QuadSprayParticleSystem mcQuadSprayParticleSystem = null;
-		MagnetsParticleSystem mcMagnetParticleSystem = null;
-		SparklerParticleSystem mcSparklerParticleSystem = null;
-		GridQuadParticleSystem mcGridQuadParticleSystem = null;
-		SphereParticleSystem mcSphereParticleSystem = null;
-		MultipleParticleImagesParticleSystem mcMultipleImagesParticleSystem = null;
-		MultipleParticleImagesSpriteParticleSystem mcMultipleImagesSpriteParticleSystem = null;
-		ExplosionFireSmokeParticleSystem mcExplosionFireSmokeParticleSystem = null;
-		ExplosionFlashParticleSystem mcExplosionFlashParticleSystem = null;
-		ExplosionFlyingSparksParticleSystem mcExplosionFlyingSparksParticleSystem = null;
-		ExplosionSmokeTrailsParticleSystem mcExplosionSmokeTrailsParticleSystem = null;
-		ExplosionRoundSparksParticleSystem mcExplosionRoundSparksParticleSystem = null;
-		ExplosionDebrisParticleSystem mcExplosionDebrisParticleSystem = null;
-		ExplosionDebrisSpriteParticleSystem mcExplosionDebrisSpriteParticleSystem = null;
-		ExplosionShockwaveParticleSystem mcExplosionShockwaveParticleSystem = null;
-		ExplosionParticleSystem mcExplosionParticleSystem = null;
-		TrailParticleSystem mcTrailParticleSystem = null;
-		SpriteParticleSystemTemplate mcSpriteParticleSystemTemplate = null;
-		Sprite3DBillboardParticleSystemTemplate mcSprite3DBillboardParticleSystemTemplate = null;
-		QuadParticleSystemTemplate mcQuadParticleSystemTemplate = null;
-		TexturedQuadParticleSystemTemplate mcTexturedQuadParticleSystemTemplate = null;
-		DefaultSpriteParticleSystemTemplate mcDefaultSpriteParticleSystemTemplate = null;
-		DefaultSprite3DBillboardParticleSystemTemplate mcDefaultSprite3DBillboardParticleSystemTemplate = null;
-		DefaultQuadParticleSystemTemplate mcDefaultQuadParticleSystemTemplate = null;
-		DefaultTexturedQuadParticleSystemTemplate mcDefaultTexturedQuadParticleSystemTemplate = null;
+		DPSFSplashScreenDPSFDemoParticleSystemWrapper _mcDPSFSplashScreenDPSFDemoParticleSystemWrapper = null;
+		RandomDPSFDemoParticleSystemWrapper _mcRandomDPSFDemoParticleSystemWrapper = null;
+		FireDPSFDemoParticleSystemWrapper _mcFireDPSFDemoParticleSystemWrapper = null;
+		FireSpriteDPSFDemoParticleSystemWrapper _mcFireSpriteDPSFDemoParticleSystemWrapper = null;
+		SmokeDPSFDemoParticleSystemWrapper _mcSmokeDPSFDemoParticleSystemWrapper = null;
+		SnowDPSFDemoParticleSystemWrapper _mcSnowDPSFDemoParticleSystemWrapper = null;
+		SquarePatternDPSFDemoParticleSystemWrapper _mcSquarePatternDPSFDemoParticleSystemWrapper = null;
+		FountainDPSFDemoParticleSystemWrapper _mcFountainDPSFDemoParticleSystemWrapper = null;
+		Random2DDPSFDemoParticleSystemWrapper _mcRandom2DdpsfDemoParticleSystemWrapper = null;
+		GasFallDPSFDemoParticleSystemWrapper _mcGasFallDPSFDemoParticleSystemWrapper = null;
+		DotDPSFDemoParticleSystemWrapper _mcDotDPSFDemoParticleSystemWrapper = null;
+		FireworksDPSFDemoParticleSystemWrapper _mcFireworksDPSFDemoParticleSystemWrapper = null;
+		Figure8DPSFDemoParticleSystemWrapper _mcFigure8DPSFDemoParticleSystemWrapper = null;
+		StarDPSFDemoParticleSystemWrapper _mcStarDPSFDemoParticleSystemWrapper = null;
+		BallDPSFDemoParticleSystemWrapper _mcBallDPSFDemoParticleSystemWrapper = null;
+		RotatingQuadsDPSFDemoParticleSystemWrapper _mcRotatingQuadDPSFDemoParticleSystemWrapper = null;
+		BoxDPSFDemoParticleSystemWrapper _mcBoxDPSFDemoParticleSystemWrapper = null;
+		ImageDPSFDemoParticleSystemWrapper _mcImageDPSFDemoParticleSystemWrapper = null;
+		AnimatedQuadDPSFDemoParticleSystemWrapper _mcAnimatedQuadDPSFDemoParticleSystemWrapper = null;
+		SpriteDPSFDemoParticleSystemWrapper _mcSpriteDPSFDemoParticleSystemWrapper = null;
+		AnimatedSpriteDPSFDemoParticleSystemWrapper _mcAnimatedSpriteDPSFDemoParticleSystemWrapper = null;
+		QuadSprayDPSFDemoParticleSystemWrapper _mcQuadSprayDPSFDemoParticleSystemWrapper = null;
+		MagnetsDPSFDemoParticleSystemWrapper _mcMagnetDPSFDemoParticleSystemWrapper = null;
+		SparklerDPSFDemoParticleSystemWrapper _mcSparklerDPSFDemoParticleSystemWrapper = null;
+		GridQuadDPSFDemoParticleSystemWrapper _mcGridQuadDPSFDemoParticleSystemWrapper = null;
+		SphereDPSFDemoParticleSystemWrapper _mcSphereDPSFDemoParticleSystemWrapper = null;
+		MultipleDPSFDemoParticleImagesDPSFDemoParticleSystemWrapper _mcMultipleDPSFDemoImagesDPSFDemoParticleSystemWrapper = null;
+		MultipleDPSFDemoParticleImagesSpriteDPSFDemoParticleSystemWrapper _mcMultipleDPSFDemoImagesSpriteDPSFDemoParticleSystemWrapper = null;
+		ExplosionFireSmokeDPSFDemoParticleSystemWrapper _mcExplosionFireSmokeDPSFDemoParticleSystemWrapper = null;
+		ExplosionFlashDPSFDemoParticleSystemWrapper _mcExplosionFlashDPSFDemoParticleSystemWrapper = null;
+		ExplosionFlyingSparksDPSFDemoParticleSystemWrapper _mcExplosionFlyingSparksDPSFDemoParticleSystemWrapper = null;
+		ExplosionSmokeTrailsDPSFDemoParticleSystemWrapper _mcExplosionSmokeTrailsDPSFDemoParticleSystemWrapper = null;
+		ExplosionRoundSparksDPSFDemoParticleSystemWrapper _mcExplosionRoundSparksDPSFDemoParticleSystemWrapper = null;
+		ExplosionDebrisDPSFDemoParticleSystemWrapper _mcExplosionDebrisDPSFDemoParticleSystemWrapper = null;
+		ExplosionDebrisSpriteDPSFDemoParticleSystemWrapper _mcExplosionDebrisSpriteDPSFDemoParticleSystemWrapper = null;
+		ExplosionShockwaveDPSFDemoParticleSystemWrapper _mcExplosionShockwaveDPSFDemoParticleSystemWrapper = null;
+		ExplosionDPSFDemoParticleSystemWrapper _mcExplosionDPSFDemoParticleSystemWrapper = null;
+		TrailDPSFDemoParticleSystemWrapper _mcTrailDPSFDemoParticleSystemWrapper = null;
+		SpriteDPSFDemoParticleSystemTemplateWrapper _mcSpriteDPSFDemoParticleSystemTemplateWrapper = null;
+		Sprite3DBillboardDPSFDemoParticleSystemTemplateWrapper _mcSprite3DBillboardDPSFDemoParticleSystemTemplateWrapper = null;
+		QuadDPSFDemoParticleSystemTemplateWrapper _mcQuadDPSFDemoParticleSystemTemplateWrapper = null;
+		TexturedQuadDPSFDemoParticleSystemTemplateWrapper _mcTexturedQuadDPSFDemoParticleSystemTemplateWrapper = null;
+		DefaultSpriteDPSFDemoParticleSystemTemplateWrapper _mcDefaultSpriteDPSFDemoParticleSystemTemplateWrapper = null;
+		DefaultSprite3DBillboardDPSFDemoParticleSystemTemplateWrapper _mcDefaultSprite3DBillboardDPSFDemoParticleSystemTemplateWrapper = null;
+		DefaultQuadDPSFDemoParticleSystemTemplateWrapper _mcDefaultQuadDPSFDemoParticleSystemTemplateWrapper = null;
+		DefaultTexturedQuadDPSFDemoParticleSystemTemplateWrapper _mcDefaultTexturedQuadDPSFDemoParticleSystemTemplateWrapper = null;
 
-		// Declare a Particle System pointer to point to the Current Particle System being used
-		IDPSFParticleSystem mcCurrentParticleSystem;
+		// Declare a Particle System pointer to point to the Current Particle System being used.
+		IWrapDPSFDemoParticleSystems _currentDPSFDemoParticleSystemWrapper;
 
 		#endregion
 
@@ -387,7 +392,7 @@ namespace DPSF_Demo
 			Content.RootDirectory = "Content";
 
 			// If we should not Limit the FPS
-			if (!mbLIMIT_FPS)
+			if (!LIMIT_FPS)
 			{
 				// Make the game run as fast as possible (i.e. don't limit the FPS)
 				this.IsFixedTimeStep = false;
@@ -395,8 +400,8 @@ namespace DPSF_Demo
 			}
 			
 			// Set the resolution
-			mcGraphics.PreferredBackBufferWidth = miWINDOW_WIDTH;
-			mcGraphics.PreferredBackBufferHeight = miWINDOW_HEIGHT;
+			mcGraphics.PreferredBackBufferWidth = WINDOW_WIDTH;
+			mcGraphics.PreferredBackBufferHeight = WINDOW_HEIGHT;
 
 			// Set the Title of the Window
 			Window.Title = "Dynamic Particle System Framework Demo";
@@ -438,158 +443,112 @@ namespace DPSF_Demo
 			mcAxisVertexDeclaration = VertexPositionColor.VertexDeclaration;
 
 			// Instantiate all of the Particle Systems
-			mcDPSFSplashScreenParticleSystem = new DPSFSplashScreenParticleSystem(this);
-			mcRandomParticleSystem = new RandomParticleSystemWrapper(this);
-			mcFireParticleSystem = new FireParticleSystem(this);
-			mcFireSpriteParticleSystem = new FireSpriteParticleSystem(this);
-			mcSmokeParticleSystem = new SmokeParticleSystem(this);
-			mcSnowParticleSystem = new SnowParticleSystem(this);
-			mcSquarePatternParticleSystem = new SquarePatternParticleSystem(this);
-			mcFountainParticleSystem = new FountainParticleSystem(this);
-			mcRandom2DParticleSystem = new Random2DParticleSystem(this);
-			mcGasFallParticleSystem = new GasFallParticleSystem(this);
-			mcDotParticleSystem = new DotParticleSystem(this);
-			mcFireworksParticleSystem = new FireworksParticleSystem(this);
-			mcFigure8ParticleSystem = new Figure8ParticleSystem(this);
-			mcStarParticleSystem = new StarParticleSystem(this);
-			mcBallParticleSystem = new BallParticleSystem(this);
-			mcRotatingQuadParticleSystem = new RotatingQuadsParticleSystem(this);
-			mcBoxParticleSystem = new BoxParticleSystem(this);
-			mcImageParticleSystem = new ImageParticleSystem(this);
-			mcAnimatedQuadParticleSystem = new AnimatedQuadParticleSystem(this);
-			mcSpriteParticleSystem = new SpriteParticleSystem(this);
-			mcAnimatedSpriteParticleSystem = new AnimatedSpriteParticleSystem(this);
-			mcQuadSprayParticleSystem = new QuadSprayParticleSystem(this);
-			mcMagnetParticleSystem = new MagnetsParticleSystem(this);
-			mcSparklerParticleSystem = new SparklerParticleSystem(this);
-			mcGridQuadParticleSystem = new GridQuadParticleSystem(this);
-			mcSphereParticleSystem = new SphereParticleSystem(this);
-			mcMultipleImagesParticleSystem = new MultipleParticleImagesParticleSystem(this);
-			mcMultipleImagesSpriteParticleSystem = new MultipleParticleImagesSpriteParticleSystem(this);
-			mcExplosionFireSmokeParticleSystem = new ExplosionFireSmokeParticleSystem(this);
-			mcExplosionFlashParticleSystem = new ExplosionFlashParticleSystem(this);
-			mcExplosionFlyingSparksParticleSystem = new ExplosionFlyingSparksParticleSystem(this);
-			mcExplosionSmokeTrailsParticleSystem = new ExplosionSmokeTrailsParticleSystem(this);
-			mcExplosionRoundSparksParticleSystem = new ExplosionRoundSparksParticleSystem(this);
-			mcExplosionDebrisParticleSystem = new ExplosionDebrisParticleSystem(this);
-			mcExplosionDebrisSpriteParticleSystem = new ExplosionDebrisSpriteParticleSystem(this);
-			mcExplosionShockwaveParticleSystem = new ExplosionShockwaveParticleSystem(this);
-			mcExplosionParticleSystem = new ExplosionParticleSystem(this);
-			mcTrailParticleSystem = new TrailParticleSystem(this);
-			mcSpriteParticleSystemTemplate = new SpriteParticleSystemTemplate(this);
-			mcSprite3DBillboardParticleSystemTemplate = new Sprite3DBillboardParticleSystemTemplate(this);
-			mcQuadParticleSystemTemplate = new QuadParticleSystemTemplate(this);
-			mcTexturedQuadParticleSystemTemplate = new TexturedQuadParticleSystemTemplate(this);
-			mcDefaultSpriteParticleSystemTemplate = new DefaultSpriteParticleSystemTemplate(this);
-			mcDefaultSprite3DBillboardParticleSystemTemplate = new DefaultSprite3DBillboardParticleSystemTemplate(this);
-			mcDefaultQuadParticleSystemTemplate = new DefaultQuadParticleSystemTemplate(this);
-			mcDefaultTexturedQuadParticleSystemTemplate = new DefaultTexturedQuadParticleSystemTemplate(this);
-
-			mcDPSFSplashScreenParticleSystem.DrawOrder = 10;
-			mcRandomParticleSystem.DrawOrder = 100;
-			mcFireParticleSystem.DrawOrder = 200;
-			mcFireSpriteParticleSystem.DrawOrder = 250;
-			mcSmokeParticleSystem.DrawOrder = 300;
-			mcSnowParticleSystem.DrawOrder = 400;
-			mcSquarePatternParticleSystem.DrawOrder = 500;
-			mcFountainParticleSystem.DrawOrder = 600;
-			mcRandom2DParticleSystem.DrawOrder = 700;
-			mcGasFallParticleSystem.DrawOrder = 800;
-			mcDotParticleSystem.DrawOrder = 900;
-			mcFireworksParticleSystem.DrawOrder = 1000;
-			mcFigure8ParticleSystem.DrawOrder = 1100;
-			mcStarParticleSystem.DrawOrder = 1200;
-			mcBallParticleSystem.DrawOrder = 1300;
-			mcRotatingQuadParticleSystem.DrawOrder = 1400;
-			mcBoxParticleSystem.DrawOrder = 1500;
-			mcImageParticleSystem.DrawOrder = 1600;
-			mcAnimatedQuadParticleSystem.DrawOrder = 1700;
-			mcSpriteParticleSystem.DrawOrder = 1800;
-			mcAnimatedSpriteParticleSystem.DrawOrder = 1900;
-			mcQuadSprayParticleSystem.DrawOrder = 1925;
-			mcMagnetParticleSystem.DrawOrder = 1950;
-			mcSparklerParticleSystem.DrawOrder = 1960;
-			mcGridQuadParticleSystem.DrawOrder = 1980;
-			mcSphereParticleSystem.DrawOrder = 1990;
-			mcMultipleImagesParticleSystem.DrawOrder = 2000;
-			mcMultipleImagesSpriteParticleSystem.DrawOrder = 2005;
-			mcExplosionFireSmokeParticleSystem.DrawOrder = 2010;
-			mcExplosionFlashParticleSystem.DrawOrder = 2020;
-			mcExplosionFlyingSparksParticleSystem.DrawOrder = 2030;
-			mcExplosionSmokeTrailsParticleSystem.DrawOrder = 2040;
-			mcExplosionRoundSparksParticleSystem.DrawOrder = 2050;
-			mcExplosionDebrisParticleSystem.DrawOrder = 2060;
-			mcExplosionDebrisSpriteParticleSystem.DrawOrder = 2065;
-			mcExplosionShockwaveParticleSystem.DrawOrder = 2070;
-			mcExplosionParticleSystem.DrawOrder = 2080;
-			mcTrailParticleSystem.DrawOrder = 2090;
-			mcSpriteParticleSystemTemplate.DrawOrder = 2200;
-			mcSprite3DBillboardParticleSystemTemplate.DrawOrder = 2300;
-			mcQuadParticleSystemTemplate.DrawOrder = 2350;
-			mcTexturedQuadParticleSystemTemplate.DrawOrder = 2400;
-			mcDefaultSpriteParticleSystemTemplate.DrawOrder = 2600;
-			mcDefaultSprite3DBillboardParticleSystemTemplate.DrawOrder = 2700;
-			mcDefaultQuadParticleSystemTemplate.DrawOrder = 2750;
-			mcDefaultTexturedQuadParticleSystemTemplate.DrawOrder = 2800;
+			_mcDPSFSplashScreenDPSFDemoParticleSystemWrapper = new DPSFSplashScreenDPSFDemoParticleSystemWrapper(this);
+			_mcRandomDPSFDemoParticleSystemWrapper = new RandomDPSFDemoParticleSystemWrapper(this);
+            _mcFireDPSFDemoParticleSystemWrapper = new FireDPSFDemoParticleSystemWrapper(this);
+            _mcFireSpriteDPSFDemoParticleSystemWrapper = new FireSpriteDPSFDemoParticleSystemWrapper(this);
+            _mcSmokeDPSFDemoParticleSystemWrapper = new SmokeDPSFDemoParticleSystemWrapper(this);
+            _mcSnowDPSFDemoParticleSystemWrapper = new SnowDPSFDemoParticleSystemWrapper(this);
+            _mcSquarePatternDPSFDemoParticleSystemWrapper = new SquarePatternDPSFDemoParticleSystemWrapper(this);
+            _mcFountainDPSFDemoParticleSystemWrapper = new FountainDPSFDemoParticleSystemWrapper(this);
+            _mcRandom2DdpsfDemoParticleSystemWrapper = new Random2DDPSFDemoParticleSystemWrapper(this);
+            _mcGasFallDPSFDemoParticleSystemWrapper = new GasFallDPSFDemoParticleSystemWrapper(this);
+            _mcDotDPSFDemoParticleSystemWrapper = new DotDPSFDemoParticleSystemWrapper(this);
+            _mcFireworksDPSFDemoParticleSystemWrapper = new FireworksDPSFDemoParticleSystemWrapper(this);
+            _mcFigure8DPSFDemoParticleSystemWrapper = new Figure8DPSFDemoParticleSystemWrapper(this);
+            _mcStarDPSFDemoParticleSystemWrapper = new StarDPSFDemoParticleSystemWrapper(this);
+            _mcBallDPSFDemoParticleSystemWrapper = new BallDPSFDemoParticleSystemWrapper(this);
+            _mcRotatingQuadDPSFDemoParticleSystemWrapper = new RotatingQuadsDPSFDemoParticleSystemWrapper(this);
+            _mcBoxDPSFDemoParticleSystemWrapper = new BoxDPSFDemoParticleSystemWrapper(this);
+            _mcImageDPSFDemoParticleSystemWrapper = new ImageDPSFDemoParticleSystemWrapper(this);
+            _mcAnimatedQuadDPSFDemoParticleSystemWrapper = new AnimatedQuadDPSFDemoParticleSystemWrapper(this);
+            _mcSpriteDPSFDemoParticleSystemWrapper = new SpriteDPSFDemoParticleSystemWrapper(this);
+            _mcAnimatedSpriteDPSFDemoParticleSystemWrapper = new AnimatedSpriteDPSFDemoParticleSystemWrapper(this);
+            _mcQuadSprayDPSFDemoParticleSystemWrapper = new QuadSprayDPSFDemoParticleSystemWrapper(this);
+            _mcMagnetDPSFDemoParticleSystemWrapper = new MagnetsDPSFDemoParticleSystemWrapper(this);
+            _mcSparklerDPSFDemoParticleSystemWrapper = new SparklerDPSFDemoParticleSystemWrapper(this);
+            _mcGridQuadDPSFDemoParticleSystemWrapper = new GridQuadDPSFDemoParticleSystemWrapper(this);
+            _mcSphereDPSFDemoParticleSystemWrapper = new SphereDPSFDemoParticleSystemWrapper(this);
+            _mcMultipleDPSFDemoImagesDPSFDemoParticleSystemWrapper = new MultipleDPSFDemoParticleImagesDPSFDemoParticleSystemWrapper(this);
+            _mcMultipleDPSFDemoImagesSpriteDPSFDemoParticleSystemWrapper = new MultipleDPSFDemoParticleImagesSpriteDPSFDemoParticleSystemWrapper(this);
+            _mcExplosionFireSmokeDPSFDemoParticleSystemWrapper = new ExplosionFireSmokeDPSFDemoParticleSystemWrapper(this);
+            _mcExplosionFlashDPSFDemoParticleSystemWrapper = new ExplosionFlashDPSFDemoParticleSystemWrapper(this);
+            _mcExplosionFlyingSparksDPSFDemoParticleSystemWrapper = new ExplosionFlyingSparksDPSFDemoParticleSystemWrapper(this);
+            _mcExplosionSmokeTrailsDPSFDemoParticleSystemWrapper = new ExplosionSmokeTrailsDPSFDemoParticleSystemWrapper(this);
+            _mcExplosionRoundSparksDPSFDemoParticleSystemWrapper = new ExplosionRoundSparksDPSFDemoParticleSystemWrapper(this);
+            _mcExplosionDebrisDPSFDemoParticleSystemWrapper = new ExplosionDebrisDPSFDemoParticleSystemWrapper(this);
+            _mcExplosionDebrisSpriteDPSFDemoParticleSystemWrapper = new ExplosionDebrisSpriteDPSFDemoParticleSystemWrapper(this);
+            _mcExplosionShockwaveDPSFDemoParticleSystemWrapper = new ExplosionShockwaveDPSFDemoParticleSystemWrapper(this);
+            _mcExplosionDPSFDemoParticleSystemWrapper = new ExplosionDPSFDemoParticleSystemWrapper(this);
+            _mcTrailDPSFDemoParticleSystemWrapper = new TrailDPSFDemoParticleSystemWrapper(this);
+            _mcSpriteDPSFDemoParticleSystemTemplateWrapper = new SpriteDPSFDemoParticleSystemTemplateWrapper(this);
+            _mcSprite3DBillboardDPSFDemoParticleSystemTemplateWrapper = new Sprite3DBillboardDPSFDemoParticleSystemTemplateWrapper(this);
+            _mcQuadDPSFDemoParticleSystemTemplateWrapper = new QuadDPSFDemoParticleSystemTemplateWrapper(this);
+            _mcTexturedQuadDPSFDemoParticleSystemTemplateWrapper = new TexturedQuadDPSFDemoParticleSystemTemplateWrapper(this);
+            _mcDefaultSpriteDPSFDemoParticleSystemTemplateWrapper = new DefaultSpriteDPSFDemoParticleSystemTemplateWrapper(this);
+            _mcDefaultSprite3DBillboardDPSFDemoParticleSystemTemplateWrapper = new DefaultSprite3DBillboardDPSFDemoParticleSystemTemplateWrapper(this);
+            _mcDefaultQuadDPSFDemoParticleSystemTemplateWrapper = new DefaultQuadDPSFDemoParticleSystemTemplateWrapper(this);
+            _mcDefaultTexturedQuadDPSFDemoParticleSystemTemplateWrapper = new DefaultTexturedQuadDPSFDemoParticleSystemTemplateWrapper(this);
 
 			// Add all Particle Systems to the Particle System Manager
-			mcParticleSystemManager.AddParticleSystem(mcDPSFSplashScreenParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcRandomParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcFireParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcFireSpriteParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcSmokeParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcSnowParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcSquarePatternParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcFountainParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcRandom2DParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcGasFallParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcDotParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcFireworksParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcFigure8ParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcStarParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcBallParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcRotatingQuadParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcBoxParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcImageParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcAnimatedQuadParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcSpriteParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcAnimatedSpriteParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcQuadSprayParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcMagnetParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcSparklerParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcGridQuadParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcSphereParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcMultipleImagesParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcMultipleImagesSpriteParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcExplosionFireSmokeParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcExplosionFlashParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcExplosionFlyingSparksParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcExplosionSmokeTrailsParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcExplosionRoundSparksParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcExplosionDebrisParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcExplosionDebrisSpriteParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcExplosionShockwaveParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcExplosionParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcTrailParticleSystem);
-			mcParticleSystemManager.AddParticleSystem(mcSpriteParticleSystemTemplate);
-			mcParticleSystemManager.AddParticleSystem(mcSprite3DBillboardParticleSystemTemplate);
-			mcParticleSystemManager.AddParticleSystem(mcQuadParticleSystemTemplate);
-			mcParticleSystemManager.AddParticleSystem(mcTexturedQuadParticleSystemTemplate);
-			mcParticleSystemManager.AddParticleSystem(mcDefaultSpriteParticleSystemTemplate);
-			mcParticleSystemManager.AddParticleSystem(mcDefaultSprite3DBillboardParticleSystemTemplate);
-			mcParticleSystemManager.AddParticleSystem(mcDefaultQuadParticleSystemTemplate);
-			mcParticleSystemManager.AddParticleSystem(mcDefaultTexturedQuadParticleSystemTemplate);
+			_particleSystemManager.AddParticleSystem(_mcDPSFSplashScreenDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcRandomDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcFireDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcFireSpriteDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcSmokeDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcSnowDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcSquarePatternDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcFountainDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcRandom2DdpsfDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcGasFallDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcDotDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcFireworksDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcFigure8DPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcStarDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcBallDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcRotatingQuadDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcBoxDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcImageDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcAnimatedQuadDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcSpriteDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcAnimatedSpriteDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcQuadSprayDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcMagnetDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcSparklerDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcGridQuadDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcSphereDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcMultipleDPSFDemoImagesDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcMultipleDPSFDemoImagesSpriteDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcExplosionFireSmokeDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcExplosionFlashDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcExplosionFlyingSparksDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcExplosionSmokeTrailsDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcExplosionRoundSparksDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcExplosionDebrisDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcExplosionDebrisSpriteDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcExplosionShockwaveDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcExplosionDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcTrailDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcSpriteDPSFDemoParticleSystemTemplateWrapper);
+			_particleSystemManager.AddParticleSystem(_mcSprite3DBillboardDPSFDemoParticleSystemTemplateWrapper);
+			_particleSystemManager.AddParticleSystem(_mcQuadDPSFDemoParticleSystemTemplateWrapper);
+			_particleSystemManager.AddParticleSystem(_mcTexturedQuadDPSFDemoParticleSystemTemplateWrapper);
+			_particleSystemManager.AddParticleSystem(_mcDefaultSpriteDPSFDemoParticleSystemTemplateWrapper);
+			_particleSystemManager.AddParticleSystem(_mcDefaultSprite3DBillboardDPSFDemoParticleSystemTemplateWrapper);
+			_particleSystemManager.AddParticleSystem(_mcDefaultQuadDPSFDemoParticleSystemTemplateWrapper);
+			_particleSystemManager.AddParticleSystem(_mcDefaultTexturedQuadDPSFDemoParticleSystemTemplateWrapper);
 
 			// Set how often the Particle Systems should be Updated
-			mcParticleSystemManager.UpdatesPerSecond = miPARTICLE_SYSTEM_UPDATES_PER_SECOND;
+			_particleSystemManager.UpdatesPerSecond = PARTICLE_SYSTEM_UPDATES_PER_SECOND;
 
 			// Hide text and other things while displaying the Splash Screen
-			mbShowText = false; mbShowFloor = false;
+			mbShowText = false; 
+            mbShowFloor = false;
 
 			// Setup the Splash Screen to display before anything else
-			mcDPSFSplashScreenParticleSystem.AutoInitialize(this.GraphicsDevice, this.Content, null);
-			mcDPSFSplashScreenParticleSystem.SplashScreenComplete += new EventHandler(mcDPSFSplashScreenParticleSystem_SplashScreenComplete);
-			mcCurrentParticleSystem = mcDPSFSplashScreenParticleSystem;
+			_mcDPSFSplashScreenDPSFDemoParticleSystemWrapper.AutoInitialize(this.GraphicsDevice, this.Content, null);
+			_mcDPSFSplashScreenDPSFDemoParticleSystemWrapper.SplashScreenComplete += new EventHandler(mcDPSFSplashScreenParticleSystem_SplashScreenComplete);
+			_currentDPSFDemoParticleSystemWrapper = _mcDPSFSplashScreenDPSFDemoParticleSystemWrapper;
 		}
 
 		/// <summary>
@@ -601,99 +560,87 @@ namespace DPSF_Demo
 		void mcDPSFSplashScreenParticleSystem_SplashScreenComplete(object sender, EventArgs e)
 		{
 			// Now that the Splash Screen is done displaying, clean it up.
-			mcDPSFSplashScreenParticleSystem.SplashScreenComplete -= new EventHandler(mcDPSFSplashScreenParticleSystem_SplashScreenComplete);
-			mcParticleSystemManager.RemoveParticleSystem(mcDPSFSplashScreenParticleSystem);
-			mcDPSFSplashScreenParticleSystem.Destroy();
-			mcDPSFSplashScreenParticleSystem = null;
+			_mcDPSFSplashScreenDPSFDemoParticleSystemWrapper.SplashScreenComplete -= new EventHandler(mcDPSFSplashScreenParticleSystem_SplashScreenComplete);
+			_particleSystemManager.RemoveParticleSystem(_mcDPSFSplashScreenDPSFDemoParticleSystemWrapper);
+			_mcDPSFSplashScreenDPSFDemoParticleSystemWrapper.Destroy();
+			_mcDPSFSplashScreenDPSFDemoParticleSystemWrapper = null;
 
 			// Reset some of the settings now that the Splash Screen is done.
 			mbShowText = true;
 			mbShowFloor = true;
 
 			// Start displaying the demo's particle systems
-			mcCurrentParticleSystem = null;
+			_currentDPSFDemoParticleSystemWrapper = null;
 			InitializeCurrentParticleSystem();
 		}
 
 		public void InitializeCurrentParticleSystem()
 		{
 			// If the Current Particle System has been set
-			if (mcCurrentParticleSystem != null)
+			if (_currentDPSFDemoParticleSystemWrapper != null)
 			{
 				// Destroy the Current Particle System.
 				// This frees up any resources/memory held by the Particle System, so it's
 				// good to destroy them if we know they won't be used for a while.
-				mcCurrentParticleSystem.Destroy();
+				_currentDPSFDemoParticleSystemWrapper.Destroy();
 			}
 
 			// Initialize the Current Particle System
 			switch (meCurrentPS)
 			{
 				default:
-				case EPSEffects.Random: mcCurrentParticleSystem = mcRandomParticleSystem; break;
-				case EPSEffects.Fire: mcCurrentParticleSystem = mcFireParticleSystem; break;
-				case EPSEffects.FireSprite: mcCurrentParticleSystem = mcFireSpriteParticleSystem; break;
-				case EPSEffects.Smoke: mcCurrentParticleSystem = mcSmokeParticleSystem; break;
-				case EPSEffects.Snow: mcCurrentParticleSystem = mcSnowParticleSystem; break;
-				case EPSEffects.SquarePattern: mcCurrentParticleSystem = mcSquarePatternParticleSystem; break;
-				case EPSEffects.Fountain: mcCurrentParticleSystem = mcFountainParticleSystem; break;
-				case EPSEffects.Random2D: mcCurrentParticleSystem = mcRandom2DParticleSystem; break;
-				case EPSEffects.GasFall: mcCurrentParticleSystem = mcGasFallParticleSystem; break;
-				case EPSEffects.Dot: mcCurrentParticleSystem = mcDotParticleSystem; break;
-				case EPSEffects.Fireworks: mcCurrentParticleSystem = mcFireworksParticleSystem; break;
-				case EPSEffects.Figure8: mcCurrentParticleSystem = mcFigure8ParticleSystem; break;
-				case EPSEffects.Star: mcCurrentParticleSystem = mcStarParticleSystem; break;
-				case EPSEffects.Ball: mcCurrentParticleSystem = mcBallParticleSystem; break;
-				case EPSEffects.RotatingQuad: mcCurrentParticleSystem = mcRotatingQuadParticleSystem; break;
-				case EPSEffects.Box: mcCurrentParticleSystem = mcBoxParticleSystem; break;
-				case EPSEffects.Image: mcCurrentParticleSystem = mcImageParticleSystem; break;
-				case EPSEffects.AnimatedTexturedQuad: mcCurrentParticleSystem = mcAnimatedQuadParticleSystem; break;
-				case EPSEffects.Sprite: mcCurrentParticleSystem = mcSpriteParticleSystem; break;
-				case EPSEffects.AnimatedSprite: mcCurrentParticleSystem = mcAnimatedSpriteParticleSystem; break;
-				case EPSEffects.QuadSpray: mcCurrentParticleSystem = mcQuadSprayParticleSystem; break;
-				case EPSEffects.Magnets: mcCurrentParticleSystem = mcMagnetParticleSystem; break;
-				case EPSEffects.Sparkler: mcCurrentParticleSystem = mcSparklerParticleSystem; break;
-				case EPSEffects.GridQuad: mcCurrentParticleSystem = mcGridQuadParticleSystem; break;
-				case EPSEffects.Sphere: mcCurrentParticleSystem = mcSphereParticleSystem; break;
-				case EPSEffects.MultipleParticleImages: mcCurrentParticleSystem = mcMultipleImagesParticleSystem; break;
-				case EPSEffects.MultipleParticleImagesSprite: mcCurrentParticleSystem = mcMultipleImagesSpriteParticleSystem; break;
-				case EPSEffects.ExplosionFireSmoke: mcCurrentParticleSystem = mcExplosionFireSmokeParticleSystem; break;
-				case EPSEffects.ExplosionFlash: mcCurrentParticleSystem = mcExplosionFlashParticleSystem; break;
-				case EPSEffects.ExplosionFlyingSparks: mcCurrentParticleSystem = mcExplosionFlyingSparksParticleSystem; break;
-				case EPSEffects.ExplosionSmokeTrails: mcCurrentParticleSystem = mcExplosionSmokeTrailsParticleSystem; break;
-				case EPSEffects.ExplosionRoundSparks: mcCurrentParticleSystem = mcExplosionRoundSparksParticleSystem; break;
-				case EPSEffects.ExplosionDebris: mcCurrentParticleSystem = mcExplosionDebrisParticleSystem; break;
-				case EPSEffects.ExplosionDebrisSprite: mcCurrentParticleSystem = mcExplosionDebrisSpriteParticleSystem; break;
-				case EPSEffects.ExplosionShockwave: mcCurrentParticleSystem = mcExplosionShockwaveParticleSystem; break;
-				case EPSEffects.Explosion: mcCurrentParticleSystem = mcExplosionParticleSystem; break;
-				case EPSEffects.Trail: mcCurrentParticleSystem = mcTrailParticleSystem; break;
-				case EPSEffects.SpriteParticleSystemTemplate: mcCurrentParticleSystem = mcSpriteParticleSystemTemplate; break;
-				case EPSEffects.Sprite3DBillboardParticleSystemTemplate: mcCurrentParticleSystem = mcSprite3DBillboardParticleSystemTemplate; break;
-				case EPSEffects.QuadParticleSystemTemplate: mcCurrentParticleSystem = mcQuadParticleSystemTemplate; break;
-				case EPSEffects.TexturedQuadParticleSystemTemplate: mcCurrentParticleSystem = mcTexturedQuadParticleSystemTemplate; break;
-				case EPSEffects.DefaultSpriteParticleSystemTemplate: mcCurrentParticleSystem = mcDefaultSpriteParticleSystemTemplate; break;
-				case EPSEffects.DefaultSprite3DBillboardParticleSystemTemplate: mcCurrentParticleSystem = mcDefaultSprite3DBillboardParticleSystemTemplate; break;
-				case EPSEffects.DefaultQuadParticleSystemTemplate: mcCurrentParticleSystem = mcDefaultQuadParticleSystemTemplate; break;
-				case EPSEffects.DefaultTexturedQuadParticleSystemTemplate: mcCurrentParticleSystem = mcDefaultTexturedQuadParticleSystemTemplate; break;
+				case PSEffects.Random: _currentDPSFDemoParticleSystemWrapper = _mcRandomDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.Fire: _currentDPSFDemoParticleSystemWrapper = _mcFireDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.FireSprite: _currentDPSFDemoParticleSystemWrapper = _mcFireSpriteDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.Smoke: _currentDPSFDemoParticleSystemWrapper = _mcSmokeDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.Snow: _currentDPSFDemoParticleSystemWrapper = _mcSnowDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.SquarePattern: _currentDPSFDemoParticleSystemWrapper = _mcSquarePatternDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.Fountain: _currentDPSFDemoParticleSystemWrapper = _mcFountainDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.Random2D: _currentDPSFDemoParticleSystemWrapper = _mcRandom2DdpsfDemoParticleSystemWrapper; break;
+				case PSEffects.GasFall: _currentDPSFDemoParticleSystemWrapper = _mcGasFallDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.Dot: _currentDPSFDemoParticleSystemWrapper = _mcDotDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.Fireworks: _currentDPSFDemoParticleSystemWrapper = _mcFireworksDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.Figure8: _currentDPSFDemoParticleSystemWrapper = _mcFigure8DPSFDemoParticleSystemWrapper; break;
+				case PSEffects.Star: _currentDPSFDemoParticleSystemWrapper = _mcStarDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.Ball: _currentDPSFDemoParticleSystemWrapper = _mcBallDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.RotatingQuad: _currentDPSFDemoParticleSystemWrapper = _mcRotatingQuadDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.Box: _currentDPSFDemoParticleSystemWrapper = _mcBoxDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.Image: _currentDPSFDemoParticleSystemWrapper = _mcImageDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.AnimatedTexturedQuad: _currentDPSFDemoParticleSystemWrapper = _mcAnimatedQuadDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.Sprite: _currentDPSFDemoParticleSystemWrapper = _mcSpriteDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.AnimatedSprite: _currentDPSFDemoParticleSystemWrapper = _mcAnimatedSpriteDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.QuadSpray: _currentDPSFDemoParticleSystemWrapper = _mcQuadSprayDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.Magnets: _currentDPSFDemoParticleSystemWrapper = _mcMagnetDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.Sparkler: _currentDPSFDemoParticleSystemWrapper = _mcSparklerDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.GridQuad: _currentDPSFDemoParticleSystemWrapper = _mcGridQuadDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.Sphere: _currentDPSFDemoParticleSystemWrapper = _mcSphereDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.MultipleParticleImages: _currentDPSFDemoParticleSystemWrapper = _mcMultipleDPSFDemoImagesDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.MultipleParticleImagesSprite: _currentDPSFDemoParticleSystemWrapper = _mcMultipleDPSFDemoImagesSpriteDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.ExplosionFireSmoke: _currentDPSFDemoParticleSystemWrapper = _mcExplosionFireSmokeDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.ExplosionFlash: _currentDPSFDemoParticleSystemWrapper = _mcExplosionFlashDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.ExplosionFlyingSparks: _currentDPSFDemoParticleSystemWrapper = _mcExplosionFlyingSparksDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.ExplosionSmokeTrails: _currentDPSFDemoParticleSystemWrapper = _mcExplosionSmokeTrailsDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.ExplosionRoundSparks: _currentDPSFDemoParticleSystemWrapper = _mcExplosionRoundSparksDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.ExplosionDebris: _currentDPSFDemoParticleSystemWrapper = _mcExplosionDebrisDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.ExplosionDebrisSprite: _currentDPSFDemoParticleSystemWrapper = _mcExplosionDebrisSpriteDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.ExplosionShockwave: _currentDPSFDemoParticleSystemWrapper = _mcExplosionShockwaveDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.Explosion: _currentDPSFDemoParticleSystemWrapper = _mcExplosionDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.Trail: _currentDPSFDemoParticleSystemWrapper = _mcTrailDPSFDemoParticleSystemWrapper; break;
+				case PSEffects.SpriteParticleSystemTemplate: _currentDPSFDemoParticleSystemWrapper = _mcSpriteDPSFDemoParticleSystemTemplateWrapper; break;
+				case PSEffects.Sprite3DBillboardParticleSystemTemplate: _currentDPSFDemoParticleSystemWrapper = _mcSprite3DBillboardDPSFDemoParticleSystemTemplateWrapper; break;
+				case PSEffects.QuadParticleSystemTemplate: _currentDPSFDemoParticleSystemWrapper = _mcQuadDPSFDemoParticleSystemTemplateWrapper; break;
+				case PSEffects.TexturedQuadParticleSystemTemplate: _currentDPSFDemoParticleSystemWrapper = _mcTexturedQuadDPSFDemoParticleSystemTemplateWrapper; break;
+				case PSEffects.DefaultSpriteParticleSystemTemplate: _currentDPSFDemoParticleSystemWrapper = _mcDefaultSpriteDPSFDemoParticleSystemTemplateWrapper; break;
+				case PSEffects.DefaultSprite3DBillboardParticleSystemTemplate: _currentDPSFDemoParticleSystemWrapper = _mcDefaultSprite3DBillboardDPSFDemoParticleSystemTemplateWrapper; break;
+				case PSEffects.DefaultQuadParticleSystemTemplate: _currentDPSFDemoParticleSystemWrapper = _mcDefaultQuadDPSFDemoParticleSystemTemplateWrapper; break;
+				case PSEffects.DefaultTexturedQuadParticleSystemTemplate: _currentDPSFDemoParticleSystemWrapper = _mcDefaultTexturedQuadDPSFDemoParticleSystemTemplateWrapper; break;
 			}
 
 			// Initialize the Particle System
-			mcCurrentParticleSystem.AutoInitialize(this.GraphicsDevice, this.Content, null);
+			_currentDPSFDemoParticleSystemWrapper.AutoInitialize(this.GraphicsDevice, this.Content, null);
 
-			// Do any necessary after initialization work
-			switch (meCurrentPS)
-			{
-				default: break;
-				case EPSEffects.ExplosionFireSmoke: mcExplosionFireSmokeParticleSystem.SetupToAutoExplodeEveryInterval(1); break;
-				case EPSEffects.ExplosionFlash: mcExplosionFlashParticleSystem.SetupToAutoExplodeEveryInterval(1); break;
-				case EPSEffects.ExplosionFlyingSparks: mcExplosionFlyingSparksParticleSystem.SetupToAutoExplodeEveryInterval(2); break;
-				case EPSEffects.ExplosionSmokeTrails: mcExplosionSmokeTrailsParticleSystem.SetupToAutoExplodeEveryInterval(2); break;
-				case EPSEffects.ExplosionRoundSparks: mcExplosionRoundSparksParticleSystem.SetupToAutoExplodeEveryInterval(2); break;
-				case EPSEffects.ExplosionDebris: mcExplosionDebrisParticleSystem.SetupToAutoExplodeEveryInterval(2); break;
-				case EPSEffects.ExplosionDebrisSprite: mcExplosionDebrisSpriteParticleSystem.SetupToAutoExplodeEveryInterval(2); break;
-				case EPSEffects.ExplosionShockwave: mcExplosionShockwaveParticleSystem.SetupToAutoExplodeEveryInterval(2); break;
-				case EPSEffects.Explosion: mcExplosionParticleSystem.SetupToAutoExplodeEveryInterval(2); break;
-			}
+			// Do any necessary after initialization work 
+			_currentDPSFDemoParticleSystemWrapper.AfterAutoInitialize();
 		}
 
 		#endregion
@@ -716,23 +663,23 @@ namespace DPSF_Demo
 
 			// Update the Quad Particle Systems to know where the Camera is so that they can display
 			// the particles as billboards if needed (i.e. have particle always face the camera).
-			mcParticleSystemManager.SetCameraPositionForAllParticleSystems(msCamera.Position);
+			_particleSystemManager.SetCameraPositionForAllParticleSystems(msCamera.Position);
 
 			// Set the World, View, and Projection Matrices for the Particle Systems
-			mcParticleSystemManager.SetWorldViewProjectionMatricesForAllParticleSystems(msWorldMatrix, msViewMatrix, msProjectionMatrix);
+			_particleSystemManager.SetWorldViewProjectionMatricesForAllParticleSystems(msWorldMatrix, msViewMatrix, msProjectionMatrix);
 
 			// If the Game is Paused
 			if (mbPaused)
 			{
 				// Update the particle systems with 0 elapsed time, just to allow the particles to rotate to face the camera.
-				mcParticleSystemManager.UpdateAllParticleSystems(0);
+				_particleSystemManager.UpdateAllParticleSystems(0);
 
 				// Exit without updating anything
 				return;
 			}
 
 			// If the Current Particle System is Initialized
-			if (mcCurrentParticleSystem != null && mcCurrentParticleSystem.IsInitialized)
+			if (_currentDPSFDemoParticleSystemWrapper != null && _currentDPSFDemoParticleSystemWrapper.IsInitialized)
 			{
 				// If Static Particles should be drawn
 				if (mbDrawStaticPS)
@@ -749,8 +696,8 @@ namespace DPSF_Demo
 						while (fElapsedTime < mfStaticParticleTotalTime)
 						{
 							// Update and draw this frame of the Particle System
-							mcParticleSystemManager.UpdateAllParticleSystems(mfStaticParticleTimeStep);
-							mcParticleSystemManager.DrawAllParticleSystems();
+							_particleSystemManager.UpdateAllParticleSystems(mfStaticParticleTimeStep);
+							_particleSystemManager.DrawAllParticleSystems();
 							fElapsedTime += mfStaticParticleTimeStep;
 						}
 						mbStaticParticlesDrawn = true;
@@ -764,24 +711,24 @@ namespace DPSF_Demo
 				else
 				{
 					// Update all Particle Systems manually
-					mcParticleSystemManager.UpdateAllParticleSystems((float)cGameTime.ElapsedGameTime.TotalSeconds);
+					_particleSystemManager.UpdateAllParticleSystems((float)cGameTime.ElapsedGameTime.TotalSeconds);
 				}
 
 
 				// If the Sphere is Visible and we are on the Smoke Particle System
-				if (mcSphere.bVisible && meCurrentPS == EPSEffects.Smoke)
+				if (mcSphere.bVisible && meCurrentPS == PSEffects.Smoke)
 				{
 					// Update it
 					mcSphere.Update((float)cGameTime.ElapsedGameTime.TotalSeconds);
 
 					// Update the PS's External Object Position to the Sphere's Position
-					mcSmokeParticleSystem.mcExternalObjectPosition = mcSphere.sPosition;
+					_mcSmokeDPSFDemoParticleSystemWrapper.mcExternalObjectPosition = mcSphere.sPosition;
 
 					// If the Sphere has been alive long enough
 					if (mcSphere.cTimeAliveInSeconds > TimeSpan.FromSeconds(6.0f))
 					{
 						mcSphere.bVisible = false;
-						mcSmokeParticleSystem.StopParticleAttractionAndRepulsionToExternalObject();
+						_mcSmokeDPSFDemoParticleSystemWrapper.StopParticleAttractionAndRepulsionToExternalObject();
 					}
 				}
 			}
@@ -843,7 +790,7 @@ namespace DPSF_Demo
 			}
 
 			// Clear the scene
-			GraphicsDevice.Clear(msBACKGROUND_COLOR);
+			GraphicsDevice.Clear(BACKGROUND_COLOR);
 
 			// If the screen should NOT be cleared each frame, draw to a render target instead of right to the screen.
 			if (!mbClearScreenEveryFrame)
@@ -869,7 +816,7 @@ namespace DPSF_Demo
 			base.Draw(cGameTime);
 
 			// Draw the Particle Systems manually
-			mcParticleSystemManager.DrawAllParticleSystems();
+			_particleSystemManager.DrawAllParticleSystems();
 
 
 			// Update the Frames Per Second to be displayed
@@ -897,7 +844,7 @@ namespace DPSF_Demo
 
 			// If we are about to start drawing to the Render Target, clear out any contents it may already have.
 			if (clearRenderTarget)
-				GraphicsDevice.Clear(msBACKGROUND_COLOR);
+				GraphicsDevice.Clear(BACKGROUND_COLOR);
 		}
 
 		/// <summary>
@@ -906,7 +853,7 @@ namespace DPSF_Demo
 		private void DrawRenderTargetToScreen()
 		{
 			GraphicsDevice.SetRenderTarget(null);		// Start drawing to the screen again instead of to the Render Target.
-			GraphicsDevice.Clear(msBACKGROUND_COLOR);
+			GraphicsDevice.Clear(BACKGROUND_COLOR);
 			mcSpriteBatch.Begin();
 			// Draw the Render Target contents to the screen
 			mcSpriteBatch.Draw(_renderTarget, new Rectangle(0, 0, _renderTarget.Width, _renderTarget.Height), Color.White);
@@ -925,879 +872,186 @@ namespace DPSF_Demo
 				return;
 			}
 
-			// Specify the text Colors to use
-			Color sPropertyColor = Color.WhiteSmoke;
-			Color sValueColor = Color.Yellow;
-			Color sControlColor = Color.PowderBlue;
+            // Get area on screen that it is safe to draw text to (so that we are sure it will be displayed on the screen).
+		    Rectangle textSafeArea = GetTextSafeArea();
+
+            // Setup the 
+		    var toolsToDrawText = new DrawTextRequirements()
+		                              {
+                                          TextWriter = mcSpriteBatch,
+		                                  Font = mcFont,
+		                                  TextSafeArea = textSafeArea,
+		                                  ControlTextColor = CONTROL_TEXT_COLOR,
+		                                  PropertyTextColor = PROPERTY_TEXT_COlOR,
+		                                  ValueTextColor = VALUE_TEXT_COLOR
+		                              };
 
 			// If we don't have a handle to a particle system, it is because we serialized it
-			if (mcCurrentParticleSystem == null)
+			if (_currentDPSFDemoParticleSystemWrapper == null)
 			{
 				mcSpriteBatch.Begin();
-				mcSpriteBatch.DrawString(mcFont, "Particle system has been serialized to the file: " + msSerializedPSFileName + ".", new Vector2(25, 200), sPropertyColor);
-				mcSpriteBatch.DrawString(mcFont, "To deserialize the particle system from the file, restoring the instance of", new Vector2(25, 225), sPropertyColor);
-				mcSpriteBatch.DrawString(mcFont, "the particle system,", new Vector2(25, 250), sPropertyColor);
-				mcSpriteBatch.DrawString(mcFont, "press F9", new Vector2(210, 250), sControlColor);
+				mcSpriteBatch.DrawString(mcFont, "Particle system has been serialized to the file: " + msSerializedPSFileName + ".", new Vector2(25, 200), PROPERTY_TEXT_COlOR);
+				mcSpriteBatch.DrawString(mcFont, "To deserialize the particle system from the file, restoring the instance of", new Vector2(25, 225), PROPERTY_TEXT_COlOR);
+				mcSpriteBatch.DrawString(mcFont, "the particle system,", new Vector2(25, 250), PROPERTY_TEXT_COlOR);
+				mcSpriteBatch.DrawString(mcFont, "press F9", new Vector2(210, 250), CONTROL_TEXT_COLOR);
 				mcSpriteBatch.End();
 				return;
 			}
 			
 			// If the Particle System has been destroyed, just write that to the screen and exit
-			if (!mcCurrentParticleSystem.IsInitialized)
+			if (!_currentDPSFDemoParticleSystemWrapper.IsInitialized)
 			{
 				mcSpriteBatch.Begin();
-				mcSpriteBatch.DrawString(mcFont, "The current particle system has been destroyed.", new Vector2(140, 200), sPropertyColor);
-				mcSpriteBatch.DrawString(mcFont, "Press G / H to switch to a different particle system.", new Vector2(125, 225), sPropertyColor);
+				mcSpriteBatch.DrawString(mcFont, "The current particle system has been destroyed.", new Vector2(140, 200), PROPERTY_TEXT_COlOR);
+				mcSpriteBatch.DrawString(mcFont, "Press G / H to switch to a different particle system.", new Vector2(125, 225), PROPERTY_TEXT_COlOR);
 				mcSpriteBatch.End();
 				return;
 			}
 
 			// Get the Name of the Particle System and how many Particles are currently Active
-			string sEffectName = "";
-			int iNumberOfActiveParticles = mcParticleSystemManager.TotalNumberOfActiveParticles;
-			int iNumberOfParticlesAllocatedInMemory = mcParticleSystemManager.TotalNumberOfParticlesAllocatedInMemory;
-			switch (meCurrentPS)
-			{
-				default: break;
-				case EPSEffects.Random: sEffectName = mcRandomParticleSystem.Name; break;
-				case EPSEffects.Fire:
-					sEffectName = mcFireParticleSystem.Name;
+			string sEffectName = _currentDPSFDemoParticleSystemWrapper.Name;
+            int iNumberOfActiveParticles = _currentDPSFDemoParticleSystemWrapper.TotalNumberOfActiveParticles;
+            int iNumberOfParticlesAllocatedInMemory = _currentDPSFDemoParticleSystemWrapper.TotalNumberOfParticlesAllocatedInMemory;
 
-					// Include the Embedded Particle System Particles
-					iNumberOfActiveParticles += mcFireParticleSystem.mcSmokeParticleSystem.NumberOfActiveParticles;
-					iNumberOfParticlesAllocatedInMemory += mcFireParticleSystem.mcSmokeParticleSystem.NumberOfParticlesAllocatedInMemory;
-					break;
-				case EPSEffects.FireSprite:
-					sEffectName = mcFireSpriteParticleSystem.Name;
-
-					// Include the Embedded Particle System Particles
-					iNumberOfActiveParticles += mcFireSpriteParticleSystem.mcSmokeParticleSystem.NumberOfActiveParticles;
-					iNumberOfParticlesAllocatedInMemory += mcFireSpriteParticleSystem.mcSmokeParticleSystem.NumberOfParticlesAllocatedInMemory;
-					break;
-				case EPSEffects.Smoke: sEffectName = mcSmokeParticleSystem.Name; break;
-				case EPSEffects.Snow: sEffectName = mcSnowParticleSystem.Name; break;
-				case EPSEffects.SquarePattern: sEffectName = mcSquarePatternParticleSystem.Name; break;
-				case EPSEffects.Fountain: sEffectName = mcFountainParticleSystem.Name; break;
-				case EPSEffects.Random2D: sEffectName = mcRandom2DParticleSystem.Name; break;
-				case EPSEffects.GasFall: sEffectName = mcGasFallParticleSystem.Name; break;
-				case EPSEffects.Dot: sEffectName = mcDotParticleSystem.Name; break;
-				case EPSEffects.Fireworks:
-					sEffectName = mcFireworksParticleSystem.Name;
-
-					// Included the Embedded Particle System Particles
-					iNumberOfActiveParticles += mcFireworksParticleSystem.mcFireworksExplosionParticleSystem1.NumberOfActiveParticles;
-					iNumberOfActiveParticles += mcFireworksParticleSystem.mcFireworksExplosionParticleSystem2.NumberOfActiveParticles;
-					iNumberOfActiveParticles += mcFireworksParticleSystem.mcFireworksExplosionParticleSystem3.NumberOfActiveParticles;
-					iNumberOfActiveParticles += mcFireworksParticleSystem.mcFireworksExplosionParticleSystem4.NumberOfActiveParticles;
-					iNumberOfActiveParticles += mcFireworksParticleSystem.mcFireworksExplosionSmokeParticleSystem.NumberOfActiveParticles;
-
-					iNumberOfParticlesAllocatedInMemory += mcFireworksParticleSystem.mcFireworksExplosionParticleSystem1.NumberOfParticlesAllocatedInMemory;
-					iNumberOfParticlesAllocatedInMemory += mcFireworksParticleSystem.mcFireworksExplosionParticleSystem2.NumberOfParticlesAllocatedInMemory;
-					iNumberOfParticlesAllocatedInMemory += mcFireworksParticleSystem.mcFireworksExplosionParticleSystem3.NumberOfParticlesAllocatedInMemory;
-					iNumberOfParticlesAllocatedInMemory += mcFireworksParticleSystem.mcFireworksExplosionParticleSystem4.NumberOfParticlesAllocatedInMemory;
-					iNumberOfParticlesAllocatedInMemory += mcFireworksParticleSystem.mcFireworksExplosionSmokeParticleSystem.NumberOfParticlesAllocatedInMemory;
-					break;
-				case EPSEffects.Figure8: sEffectName = mcFigure8ParticleSystem.Name; break;
-				case EPSEffects.Star: sEffectName = mcStarParticleSystem.Name; break;
-				case EPSEffects.Ball: sEffectName = mcBallParticleSystem.Name; break;
-				case EPSEffects.RotatingQuad: sEffectName = mcRotatingQuadParticleSystem.Name; break;
-				case EPSEffects.Box: sEffectName = mcBoxParticleSystem.Name; break;
-				case EPSEffects.Image: sEffectName = mcImageParticleSystem.Name; break;
-				case EPSEffects.AnimatedTexturedQuad: sEffectName = mcAnimatedQuadParticleSystem.Name; break;
-				case EPSEffects.Sprite: sEffectName = mcSpriteParticleSystem.Name; break;
-				case EPSEffects.AnimatedSprite: sEffectName = mcAnimatedSpriteParticleSystem.Name; break;
-				case EPSEffects.QuadSpray: sEffectName = mcQuadSprayParticleSystem.Name; break;
-				case EPSEffects.Magnets: sEffectName = mcMagnetParticleSystem.Name; break;
-				case EPSEffects.Sparkler: sEffectName = mcSparklerParticleSystem.Name; break;
-				case EPSEffects.GridQuad: sEffectName = mcGridQuadParticleSystem.Name; break;
-				case EPSEffects.Sphere: sEffectName = mcSphereParticleSystem.Name; break;
-				case EPSEffects.MultipleParticleImages: sEffectName = mcMultipleImagesParticleSystem.Name; break;
-				case EPSEffects.MultipleParticleImagesSprite: sEffectName = mcMultipleImagesSpriteParticleSystem.Name; break;
-				case EPSEffects.ExplosionFireSmoke: sEffectName = mcExplosionFireSmokeParticleSystem.Name; break;
-				case EPSEffects.ExplosionFlash: sEffectName = mcExplosionFlashParticleSystem.Name; break;
-				case EPSEffects.ExplosionFlyingSparks: sEffectName = mcExplosionFlyingSparksParticleSystem.Name; break;
-				case EPSEffects.ExplosionSmokeTrails: sEffectName = mcExplosionSmokeTrailsParticleSystem.Name; break;
-				case EPSEffects.ExplosionRoundSparks: sEffectName = mcExplosionRoundSparksParticleSystem.Name; break;
-				case EPSEffects.ExplosionDebris: sEffectName = mcExplosionDebrisParticleSystem.Name; break;
-				case EPSEffects.ExplosionDebrisSprite: sEffectName = mcExplosionDebrisSpriteParticleSystem.Name; break;
-				case EPSEffects.ExplosionShockwave: sEffectName = mcExplosionShockwaveParticleSystem.Name; break;
-				case EPSEffects.Explosion:
-					sEffectName = mcExplosionParticleSystem.Name;
-
-					// Included the Embedded Particle System Particles
-					iNumberOfActiveParticles += mcExplosionParticleSystem.TotalNumberOfActiveParticles;
-					iNumberOfParticlesAllocatedInMemory += mcExplosionParticleSystem.TotalNumberOfParticlesAllocatedInMemory;
-					break;
-				case EPSEffects.Trail: sEffectName = mcTrailParticleSystem.Name; break;
-				case EPSEffects.SpriteParticleSystemTemplate: sEffectName = "Sprite Particle System Template"; break;
-				case EPSEffects.Sprite3DBillboardParticleSystemTemplate: sEffectName = "Sprite 3D Billboard Particle System Template"; break;
-				case EPSEffects.QuadParticleSystemTemplate: sEffectName = "Quad Particle System Template"; break;
-				case EPSEffects.TexturedQuadParticleSystemTemplate: sEffectName = "Textured Quad Particle System Template"; break;
-				case EPSEffects.DefaultSpriteParticleSystemTemplate: sEffectName = mcDefaultSpriteParticleSystemTemplate.Name; break;
-				case EPSEffects.DefaultSprite3DBillboardParticleSystemTemplate: sEffectName = mcDefaultSprite3DBillboardParticleSystemTemplate.Name; break;
-				case EPSEffects.DefaultQuadParticleSystemTemplate: sEffectName = mcDefaultQuadParticleSystemTemplate.Name; break;
-				case EPSEffects.DefaultTexturedQuadParticleSystemTemplate: sEffectName = mcDefaultTexturedQuadParticleSystemTemplate.Name; break;
-			}
-
-			// Convert numbers to strings
+			// Convert values to strings
 			string sFPSValue = FPS.CurrentFPS.ToString();
 			string sAvgFPSValue = FPS.AverageFPS.ToString("0.0");
 			string sTotalParticleCountValue = iNumberOfActiveParticles.ToString();
-			string sEmitterOnValue = (mcCurrentParticleSystem.Emitter.EmitParticlesAutomatically ? "On" : "Off");
+			string sEmitterOnValue = (_currentDPSFDemoParticleSystemWrapper.Emitter.EmitParticlesAutomatically ? "On" : "Off");
 			string sParticleSystemEffectValue = sEffectName;
-			string sParticlesPerSecondValue = mcCurrentParticleSystem.Emitter.ParticlesPerSecond.ToString("0.00");
+			string sParticlesPerSecondValue = _currentDPSFDemoParticleSystemWrapper.Emitter.ParticlesPerSecond.ToString("0.00");
 			string sCameraModeValue = msCamera.bUsingFixedCamera ? "Fixed" : "Free";
-			string sPSSpeedScale = mcParticleSystemManager.SimulationSpeed.ToString("0.0");
+			string sPSSpeedScale = _particleSystemManager.SimulationSpeed.ToString("0.0");
 			string sCameraPosition = "(" + msCamera.Position.X.ToString("0") + "," + msCamera.Position.Y.ToString("0") + "," + msCamera.Position.Z.ToString("0") + ")";
 			string sAllocatedParticles = iNumberOfParticlesAllocatedInMemory.ToString();
 			string sTexture = "N/A";
-			if (mcCurrentParticleSystem.Texture != null)
+			if (_currentDPSFDemoParticleSystemWrapper.Texture != null)
 			{
-				sTexture = mcCurrentParticleSystem.Texture.Name.TrimStart("Textures/".ToCharArray());
+				sTexture = _currentDPSFDemoParticleSystemWrapper.Texture.Name.TrimStart("Textures/".ToCharArray());
 			}
 
-			// Draw all of the text
+			// Draw all of the text.
 			mcSpriteBatch.Begin();
 
-			mcSpriteBatch.DrawString(mcFont, "FPS:", new Vector2(GetTextSafeArea().Left + 5, GetTextSafeArea().Bottom - 50), sPropertyColor);
-			mcSpriteBatch.DrawString(mcFont, sFPSValue, new Vector2(GetTextSafeArea().Left + 50, GetTextSafeArea().Bottom - 50), sValueColor);
+            // If the Particle System is Paused, draw a Paused message.
+            if (mbPaused)
+            {
+                mcSpriteBatch.DrawString(mcFont, "Paused", new Vector2(textSafeArea.Left + 350, textSafeArea.Top + 25), VALUE_TEXT_COLOR);
+            }
 
-			mcSpriteBatch.DrawString(mcFont, "Allocated:", new Vector2(GetTextSafeArea().Left + 120, GetTextSafeArea().Bottom - 50), sPropertyColor);
-			mcSpriteBatch.DrawString(mcFont, sAllocatedParticles, new Vector2(GetTextSafeArea().Left + 210, GetTextSafeArea().Bottom - 50), sValueColor);
+            // Draw text that is always displayed.
+			mcSpriteBatch.DrawString(mcFont, "FPS:", new Vector2(textSafeArea.Left + 5, textSafeArea.Bottom - 50), PROPERTY_TEXT_COlOR);
+			mcSpriteBatch.DrawString(mcFont, sFPSValue, new Vector2(textSafeArea.Left + 50, textSafeArea.Bottom - 50), VALUE_TEXT_COLOR);
 
-			//mcSpriteBatch.DrawString(mcFont, "Position:", new Vector2(GetTextSafeArea().Left + 275, GetTextSafeArea().Bottom - 75), sPropertyColor);
-			mcSpriteBatch.DrawString(mcFont, sCameraPosition, new Vector2(GetTextSafeArea().Left + 280, GetTextSafeArea().Bottom - 50), sValueColor);
+			mcSpriteBatch.DrawString(mcFont, "Allocated:", new Vector2(textSafeArea.Left + 120, textSafeArea.Bottom - 50), PROPERTY_TEXT_COlOR);
+			mcSpriteBatch.DrawString(mcFont, sAllocatedParticles, new Vector2(textSafeArea.Left + 210, textSafeArea.Bottom - 50), VALUE_TEXT_COLOR);
 
-			mcSpriteBatch.DrawString(mcFont, "Texture:", new Vector2(GetTextSafeArea().Left + 440, GetTextSafeArea().Bottom - 50), sPropertyColor);
-			mcSpriteBatch.DrawString(mcFont, sTexture, new Vector2(GetTextSafeArea().Left + 520, GetTextSafeArea().Bottom - 50), sValueColor);
+			//mcSpriteBatch.DrawString(mcFont, "Position:", new Vector2(textSafeArea.Left + 275, textSafeArea.Bottom - 75), sPropertyColor);
+			mcSpriteBatch.DrawString(mcFont, sCameraPosition, new Vector2(textSafeArea.Left + 280, textSafeArea.Bottom - 50), VALUE_TEXT_COLOR);
 
-			mcSpriteBatch.DrawString(mcFont, "Speed:", new Vector2(GetTextSafeArea().Right - 100, GetTextSafeArea().Bottom - 50), sPropertyColor);
-			mcSpriteBatch.DrawString(mcFont, sPSSpeedScale, new Vector2(GetTextSafeArea().Right - 35, GetTextSafeArea().Bottom - 50), sValueColor);
+			mcSpriteBatch.DrawString(mcFont, "Texture:", new Vector2(textSafeArea.Left + 440, textSafeArea.Bottom - 50), PROPERTY_TEXT_COlOR);
+			mcSpriteBatch.DrawString(mcFont, sTexture, new Vector2(textSafeArea.Left + 520, textSafeArea.Bottom - 50), VALUE_TEXT_COLOR);
 
-			mcSpriteBatch.DrawString(mcFont, "Avg:", new Vector2(GetTextSafeArea().Left + 5, GetTextSafeArea().Bottom - 25), sPropertyColor);
-			mcSpriteBatch.DrawString(mcFont, sAvgFPSValue, new Vector2(GetTextSafeArea().Left + 50, GetTextSafeArea().Bottom - 25), sValueColor);
+			mcSpriteBatch.DrawString(mcFont, "Speed:", new Vector2(textSafeArea.Right - 100, textSafeArea.Bottom - 50), PROPERTY_TEXT_COlOR);
+			mcSpriteBatch.DrawString(mcFont, sPSSpeedScale, new Vector2(textSafeArea.Right - 35, textSafeArea.Bottom - 50), VALUE_TEXT_COLOR);
 
-			mcSpriteBatch.DrawString(mcFont, "Particles:", new Vector2(GetTextSafeArea().Left + 120, GetTextSafeArea().Bottom - 25), sPropertyColor);
-			mcSpriteBatch.DrawString(mcFont, sTotalParticleCountValue, new Vector2(GetTextSafeArea().Left + 205, GetTextSafeArea().Bottom - 25), sValueColor);
+			mcSpriteBatch.DrawString(mcFont, "Avg:", new Vector2(textSafeArea.Left + 5, textSafeArea.Bottom - 25), PROPERTY_TEXT_COlOR);
+			mcSpriteBatch.DrawString(mcFont, sAvgFPSValue, new Vector2(textSafeArea.Left + 50, textSafeArea.Bottom - 25), VALUE_TEXT_COLOR);
 
-			mcSpriteBatch.DrawString(mcFont, "Emitter:", new Vector2(GetTextSafeArea().Left + 275, GetTextSafeArea().Bottom - 25), sPropertyColor);
-			mcSpriteBatch.DrawString(mcFont, sEmitterOnValue, new Vector2(GetTextSafeArea().Left + 345, GetTextSafeArea().Bottom - 25), sValueColor);
+			mcSpriteBatch.DrawString(mcFont, "Particles:", new Vector2(textSafeArea.Left + 120, textSafeArea.Bottom - 25), PROPERTY_TEXT_COlOR);
+			mcSpriteBatch.DrawString(mcFont, sTotalParticleCountValue, new Vector2(textSafeArea.Left + 205, textSafeArea.Bottom - 25), VALUE_TEXT_COLOR);
 
-			mcSpriteBatch.DrawString(mcFont, "Particles Per Second:", new Vector2(GetTextSafeArea().Left + 390, GetTextSafeArea().Bottom - 25), sPropertyColor);
-			mcSpriteBatch.DrawString(mcFont, sParticlesPerSecondValue, new Vector2(GetTextSafeArea().Left + 585, GetTextSafeArea().Bottom - 25), sValueColor);
+			mcSpriteBatch.DrawString(mcFont, "Emitter:", new Vector2(textSafeArea.Left + 275, textSafeArea.Bottom - 25), PROPERTY_TEXT_COlOR);
+			mcSpriteBatch.DrawString(mcFont, sEmitterOnValue, new Vector2(textSafeArea.Left + 345, textSafeArea.Bottom - 25), VALUE_TEXT_COLOR);
 
-			mcSpriteBatch.DrawString(mcFont, "Camera:", new Vector2(GetTextSafeArea().Left + 660, GetTextSafeArea().Bottom - 25), sPropertyColor);
-			mcSpriteBatch.DrawString(mcFont, sCameraModeValue, new Vector2(GetTextSafeArea().Left + 740, GetTextSafeArea().Bottom - 25), sValueColor);
+			mcSpriteBatch.DrawString(mcFont, "Particles Per Second:", new Vector2(textSafeArea.Left + 390, textSafeArea.Bottom - 25), PROPERTY_TEXT_COlOR);
+			mcSpriteBatch.DrawString(mcFont, sParticlesPerSecondValue, new Vector2(textSafeArea.Left + 585, textSafeArea.Bottom - 25), VALUE_TEXT_COLOR);
 
-			mcSpriteBatch.DrawString(mcFont, "Effect:", new Vector2(GetTextSafeArea().Left + 5, GetTextSafeArea().Top + 2), sPropertyColor);
-			mcSpriteBatch.DrawString(mcFont, sParticleSystemEffectValue, new Vector2(GetTextSafeArea().Left + 70, GetTextSafeArea().Top + 2), sValueColor);
+			mcSpriteBatch.DrawString(mcFont, "Camera:", new Vector2(textSafeArea.Left + 660, textSafeArea.Bottom - 25), PROPERTY_TEXT_COlOR);
+			mcSpriteBatch.DrawString(mcFont, sCameraModeValue, new Vector2(textSafeArea.Left + 740, textSafeArea.Bottom - 25), VALUE_TEXT_COLOR);
 
-			mcSpriteBatch.DrawString(mcFont, "Show/Hide Controls:", new Vector2(GetTextSafeArea().Right - 260, GetTextSafeArea().Top + 2), sPropertyColor);
-			mcSpriteBatch.DrawString(mcFont, "F1 - F4", new Vector2(GetTextSafeArea().Right - 70, GetTextSafeArea().Top + 2), sControlColor);
+			mcSpriteBatch.DrawString(mcFont, "Effect:", new Vector2(textSafeArea.Left + 5, textSafeArea.Top + 2), PROPERTY_TEXT_COlOR);
+			mcSpriteBatch.DrawString(mcFont, sParticleSystemEffectValue, new Vector2(textSafeArea.Left + 70, textSafeArea.Top + 2), VALUE_TEXT_COLOR);
 
-			// Display particle system specific values
-			switch (meCurrentPS)
-			{
-				default: break;
+			mcSpriteBatch.DrawString(mcFont, "Show/Hide Controls:", new Vector2(textSafeArea.Right - 260, textSafeArea.Top + 2), PROPERTY_TEXT_COlOR);
+			mcSpriteBatch.DrawString(mcFont, "F1 - F4", new Vector2(textSafeArea.Right - 70, textSafeArea.Top + 2), CONTROL_TEXT_COLOR);
 
-				case EPSEffects.Random:
-					mcSpriteBatch.DrawString(mcFont, "Particle Size:", new Vector2(GetTextSafeArea().Left + 300, GetTextSafeArea().Top + 2), sPropertyColor);
-					mcSpriteBatch.DrawString(mcFont, mcRandomParticleSystem.InitialProperties.StartSizeMin.ToString(), new Vector2(GetTextSafeArea().Left + 425, GetTextSafeArea().Top + 2), sValueColor);
-					break;
 
-				case EPSEffects.Fire:
-					mcSpriteBatch.DrawString(mcFont, "Smokiness:", new Vector2(GetTextSafeArea().Left + 300, GetTextSafeArea().Top + 2), sPropertyColor);
-					mcSpriteBatch.DrawString(mcFont, mcFireParticleSystem.GetAmountOfSmokeBeingReleased().ToString("0.00"), new Vector2(GetTextSafeArea().Left + 410, GetTextSafeArea().Top + 2), sValueColor);
-					break;
+            // Display particle system specific values.
+            _currentDPSFDemoParticleSystemWrapper.DrawStatusText(toolsToDrawText);
 
-				case EPSEffects.FireSprite:
-					mcSpriteBatch.DrawString(mcFont, "Smokiness:", new Vector2(GetTextSafeArea().Left + 300, GetTextSafeArea().Top + 2), sPropertyColor);
-					mcSpriteBatch.DrawString(mcFont, mcFireSpriteParticleSystem.GetAmountOfSmokeBeingReleased().ToString("0.00"), new Vector2(GetTextSafeArea().Left + 410, GetTextSafeArea().Top + 2), sValueColor);
-					break;
+            // If the Particle System specific Controls should be shown, display them.
+            if (mbShowPSControls)
+            {
+                _currentDPSFDemoParticleSystemWrapper.DrawInputControlsText(toolsToDrawText);
+            }
 
-				case EPSEffects.Fountain:
-					mcSpriteBatch.DrawString(mcFont, "Bounciness:", new Vector2(GetTextSafeArea().Left + 300, GetTextSafeArea().Top + 2), sPropertyColor);
-					mcSpriteBatch.DrawString(mcFont, mcFountainParticleSystem.mfBounciness.ToString("0.00"), new Vector2(GetTextSafeArea().Left + 410, GetTextSafeArea().Top + 2), sValueColor);
-					break;
+            // If the Common Controls should be shown, display them.
+            if (mbShowCommonControls)
+            {
+                mcSpriteBatch.DrawString(mcFont, "Change Particle System:", new Vector2(5, 25), PROPERTY_TEXT_COlOR);
+                mcSpriteBatch.DrawString(mcFont, "G / H", new Vector2(235, 25), CONTROL_TEXT_COLOR);
 
-				case EPSEffects.Star:
-					mcSpriteBatch.DrawString(mcFont, "Emitter Intermittence Mode:", new Vector2(GetTextSafeArea().Left + 180, GetTextSafeArea().Top + 2), sPropertyColor);
-					mcSpriteBatch.DrawString(mcFont, mcStarParticleSystem.miIntermittanceTimeMode.ToString("0"), new Vector2(GetTextSafeArea().Left + 435, GetTextSafeArea().Top + 2), sValueColor);
-					break;
-
-				case EPSEffects.Image:
-					mcSpriteBatch.DrawString(mcFont, "Rows:", new Vector2(GetTextSafeArea().Left + 260, GetTextSafeArea().Top + 2), sPropertyColor);
-					mcSpriteBatch.DrawString(mcFont, mcImageParticleSystem.miNumberOfRows.ToString("0"), new Vector2(GetTextSafeArea().Left + 320, GetTextSafeArea().Top + 2), sValueColor);
-
-					mcSpriteBatch.DrawString(mcFont, "Columns:", new Vector2(GetTextSafeArea().Left + 350, GetTextSafeArea().Top + 2), sPropertyColor);
-					mcSpriteBatch.DrawString(mcFont, mcImageParticleSystem.miNumberOfColumns.ToString("0"), new Vector2(GetTextSafeArea().Left + 435, GetTextSafeArea().Top + 2), sValueColor);
-
-					mcSpriteBatch.DrawString(mcFont, "Spin Mode:", new Vector2(GetTextSafeArea().Left + 5, GetTextSafeArea().Top + 450), sPropertyColor);
-					mcSpriteBatch.DrawString(mcFont, mcImageParticleSystem.msSpinMode, new Vector2(GetTextSafeArea().Left + 105, GetTextSafeArea().Top + 450), sValueColor);
-
-					mcSpriteBatch.DrawString(mcFont, "Uniform:", new Vector2(GetTextSafeArea().Left + 170, GetTextSafeArea().Top + 450), sPropertyColor);
-					mcSpriteBatch.DrawString(mcFont, mcImageParticleSystem.mbUniformSpin.ToString(), new Vector2(GetTextSafeArea().Left + 245, GetTextSafeArea().Top + 450), sValueColor);
-					break;
-
-				case EPSEffects.Sprite:
-					if (mcSpriteParticleSystem.Name.Equals("Sprite Force") || mcSpriteParticleSystem.Name.Equals("Sprite Cloud"))
-					{
-						mcSpriteBatch.DrawString(mcFont, "Force:", new Vector2(GetTextSafeArea().Left + 200, GetTextSafeArea().Top + 2), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, mcSpriteParticleSystem.AttractorMode.ToString(), new Vector2(GetTextSafeArea().Left + 260, GetTextSafeArea().Top + 2), sValueColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Strength:", new Vector2(GetTextSafeArea().Left + 410, GetTextSafeArea().Top + 2), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, mcSpriteParticleSystem.AttractorStrength.ToString("0.0"), new Vector2(GetTextSafeArea().Left + 495, GetTextSafeArea().Top + 2), sValueColor);
-					}
-					break;
-
-				case EPSEffects.Magnets:
-					mcSpriteBatch.DrawString(mcFont, "Magnets Affect:", new Vector2(GetTextSafeArea().Left + 260, GetTextSafeArea().Top + 2), sPropertyColor);
-					mcSpriteBatch.DrawString(mcFont, mcMagnetParticleSystem.mbMagnetsAffectPosition ? "Position" : "Velocity", new Vector2(GetTextSafeArea().Left + 410, GetTextSafeArea().Top + 2), sValueColor);
-					break;
+                mcSpriteBatch.DrawString(mcFont, "Toggle Emitter On/Off:", new Vector2(5, 50), PROPERTY_TEXT_COlOR);
+                mcSpriteBatch.DrawString(mcFont, "Delete", new Vector2(220, 50), CONTROL_TEXT_COLOR);
 
-				case EPSEffects.ExplosionFireSmoke:
-					mcSpriteBatch.DrawString(mcFont, "Intensity:", new Vector2(GetTextSafeArea().Left + 330, GetTextSafeArea().Top + 2), sPropertyColor);
-					mcSpriteBatch.DrawString(mcFont, mcExplosionFireSmokeParticleSystem.ExplosionIntensity.ToString(), new Vector2(GetTextSafeArea().Left + 410, GetTextSafeArea().Top + 2), sValueColor);
+                mcSpriteBatch.DrawString(mcFont, "Increase/Decrease Emitter Speed:", new Vector2(5, 75), PROPERTY_TEXT_COlOR);
+                mcSpriteBatch.DrawString(mcFont, "+ / -", new Vector2(320, 75), CONTROL_TEXT_COLOR);
 
-					mcSpriteBatch.DrawString(mcFont, "Size:", new Vector2(GetTextSafeArea().Left + 450, GetTextSafeArea().Top + 2), sPropertyColor);
-					mcSpriteBatch.DrawString(mcFont, mcExplosionFireSmokeParticleSystem.ExplosionParticleSize.ToString(), new Vector2(GetTextSafeArea().Left + 495, GetTextSafeArea().Top + 2), sValueColor);
-					break;
-
-				case EPSEffects.ExplosionFlash:
-					mcSpriteBatch.DrawString(mcFont, "Intensity:", new Vector2(GetTextSafeArea().Left + 330, GetTextSafeArea().Top + 2), sPropertyColor);
-					mcSpriteBatch.DrawString(mcFont, mcExplosionFlashParticleSystem.ExplosionIntensity.ToString(), new Vector2(GetTextSafeArea().Left + 410, GetTextSafeArea().Top + 2), sValueColor);
-
-					mcSpriteBatch.DrawString(mcFont, "Size:", new Vector2(GetTextSafeArea().Left + 450, GetTextSafeArea().Top + 2), sPropertyColor);
-					mcSpriteBatch.DrawString(mcFont, mcExplosionFlashParticleSystem.ExplosionParticleSize.ToString(), new Vector2(GetTextSafeArea().Left + 495, GetTextSafeArea().Top + 2), sValueColor);
-					break;
+                mcSpriteBatch.DrawString(mcFont, "Add Particle:", new Vector2(5, 100), PROPERTY_TEXT_COlOR);
+                mcSpriteBatch.DrawString(mcFont, "Insert(one), Home(many), PgUp(max)", new Vector2(130, 100), CONTROL_TEXT_COLOR);
 
-				case EPSEffects.ExplosionFlyingSparks:
-					mcSpriteBatch.DrawString(mcFont, "Intensity:", new Vector2(GetTextSafeArea().Left + 330, GetTextSafeArea().Top + 2), sPropertyColor);
-					mcSpriteBatch.DrawString(mcFont, mcExplosionFlyingSparksParticleSystem.ExplosionIntensity.ToString(), new Vector2(GetTextSafeArea().Left + 410, GetTextSafeArea().Top + 2), sValueColor);
+                mcSpriteBatch.DrawString(mcFont, "Move Emitter:", new Vector2(5, 125), PROPERTY_TEXT_COlOR);
+                mcSpriteBatch.DrawString(mcFont, "A/D, W/S, Q/E", new Vector2(135, 125), CONTROL_TEXT_COLOR);
 
-					mcSpriteBatch.DrawString(mcFont, "Size:", new Vector2(GetTextSafeArea().Left + 450, GetTextSafeArea().Top + 2), sPropertyColor);
-					mcSpriteBatch.DrawString(mcFont, mcExplosionFlyingSparksParticleSystem.ExplosionParticleSize.ToString(), new Vector2(GetTextSafeArea().Left + 495, GetTextSafeArea().Top + 2), sValueColor);
-					break;
+                mcSpriteBatch.DrawString(mcFont, "Rotate Emitter:", new Vector2(5, 150), PROPERTY_TEXT_COlOR);
+                mcSpriteBatch.DrawString(mcFont, "J/L(yaw), I/Vertex(pitch), U/O(roll)", new Vector2(150, 150), CONTROL_TEXT_COLOR);
 
-				case EPSEffects.ExplosionSmokeTrails:
-					mcSpriteBatch.DrawString(mcFont, "Intensity:", new Vector2(GetTextSafeArea().Left + 330, GetTextSafeArea().Top + 2), sPropertyColor);
-					mcSpriteBatch.DrawString(mcFont, mcExplosionSmokeTrailsParticleSystem.ExplosionIntensity.ToString(), new Vector2(GetTextSafeArea().Left + 410, GetTextSafeArea().Top + 2), sValueColor);
+                mcSpriteBatch.DrawString(mcFont, "Rotate Emitter Around Pivot:", new Vector2(5, 175), PROPERTY_TEXT_COlOR);
+                mcSpriteBatch.DrawString(mcFont, "Y + Rotate Emitter", new Vector2(275, 175), CONTROL_TEXT_COLOR);
 
-					mcSpriteBatch.DrawString(mcFont, "Size:", new Vector2(GetTextSafeArea().Left + 450, GetTextSafeArea().Top + 2), sPropertyColor);
-					mcSpriteBatch.DrawString(mcFont, mcExplosionSmokeTrailsParticleSystem.ExplosionParticleSize.ToString(), new Vector2(GetTextSafeArea().Left + 495, GetTextSafeArea().Top + 2), sValueColor);
-					break;
+                mcSpriteBatch.DrawString(mcFont, "Reset Emitter's Position and Orientation:", new Vector2(5, 200), PROPERTY_TEXT_COlOR);
+                mcSpriteBatch.DrawString(mcFont, "Z", new Vector2(375, 200), CONTROL_TEXT_COLOR);
 
-				case EPSEffects.ExplosionRoundSparks:
-					mcSpriteBatch.DrawString(mcFont, "Intensity:", new Vector2(GetTextSafeArea().Left + 330, GetTextSafeArea().Top + 2), sPropertyColor);
-					mcSpriteBatch.DrawString(mcFont, mcExplosionRoundSparksParticleSystem.ExplosionIntensity.ToString(), new Vector2(GetTextSafeArea().Left + 410, GetTextSafeArea().Top + 2), sValueColor);
+                mcSpriteBatch.DrawString(mcFont, "Toggle Floor:", new Vector2(485, 25), PROPERTY_TEXT_COlOR);
+                mcSpriteBatch.DrawString(mcFont, "F", new Vector2(610, 25), CONTROL_TEXT_COLOR);
 
-					mcSpriteBatch.DrawString(mcFont, "Size:", new Vector2(GetTextSafeArea().Left + 450, GetTextSafeArea().Top + 2), sPropertyColor);
-					mcSpriteBatch.DrawString(mcFont, mcExplosionRoundSparksParticleSystem.ExplosionParticleSize.ToString(), new Vector2(GetTextSafeArea().Left + 495, GetTextSafeArea().Top + 2), sValueColor);
-					break;
+                mcSpriteBatch.DrawString(mcFont, "Toggle Axis:", new Vector2(650, 25), PROPERTY_TEXT_COlOR);
+                mcSpriteBatch.DrawString(mcFont, "F7", new Vector2(770, 25), CONTROL_TEXT_COLOR);
 
-				case EPSEffects.ExplosionDebris:
-					mcSpriteBatch.DrawString(mcFont, "Intensity:", new Vector2(GetTextSafeArea().Left + 330, GetTextSafeArea().Top + 2), sPropertyColor);
-					mcSpriteBatch.DrawString(mcFont, mcExplosionDebrisParticleSystem.ExplosionIntensity.ToString(), new Vector2(GetTextSafeArea().Left + 410, GetTextSafeArea().Top + 2), sValueColor);
+                mcSpriteBatch.DrawString(mcFont, "Toggle Full Screen:", new Vector2(485, 50), PROPERTY_TEXT_COlOR);
+                mcSpriteBatch.DrawString(mcFont, "End", new Vector2(665, 50), CONTROL_TEXT_COLOR);
 
-					mcSpriteBatch.DrawString(mcFont, "Size:", new Vector2(GetTextSafeArea().Left + 450, GetTextSafeArea().Top + 2), sPropertyColor);
-					mcSpriteBatch.DrawString(mcFont, mcExplosionDebrisParticleSystem.ExplosionParticleSize.ToString(), new Vector2(GetTextSafeArea().Left + 495, GetTextSafeArea().Top + 2), sValueColor);
-					break;
+                mcSpriteBatch.DrawString(mcFont, "Toggle Camera Mode:", new Vector2(485, 75), PROPERTY_TEXT_COlOR);
+                mcSpriteBatch.DrawString(mcFont, "PgDown", new Vector2(690, 75), CONTROL_TEXT_COLOR);
 
-				case EPSEffects.ExplosionDebrisSprite:
-					mcSpriteBatch.DrawString(mcFont, "Intensity:", new Vector2(GetTextSafeArea().Left + 330, GetTextSafeArea().Top + 2), sPropertyColor);
-					mcSpriteBatch.DrawString(mcFont, mcExplosionDebrisSpriteParticleSystem.ExplosionIntensity.ToString(), new Vector2(GetTextSafeArea().Left + 410, GetTextSafeArea().Top + 2), sValueColor);
+                mcSpriteBatch.DrawString(mcFont, "Reset Camera Position:", new Vector2(485, 100), PROPERTY_TEXT_COlOR);
+                mcSpriteBatch.DrawString(mcFont, "R", new Vector2(705, 100), CONTROL_TEXT_COLOR);
 
-					mcSpriteBatch.DrawString(mcFont, "Size:", new Vector2(GetTextSafeArea().Left + 450, GetTextSafeArea().Top + 2), sPropertyColor);
-					mcSpriteBatch.DrawString(mcFont, mcExplosionDebrisSpriteParticleSystem.ExplosionParticleSize.ToString(), new Vector2(GetTextSafeArea().Left + 495, GetTextSafeArea().Top + 2), sValueColor);
-					break;
+                mcSpriteBatch.DrawString(mcFont, "Change Texture:", new Vector2(485, 125), PROPERTY_TEXT_COlOR);
+                mcSpriteBatch.DrawString(mcFont, "T / Shift + T", new Vector2(640, 125), CONTROL_TEXT_COLOR);
 
-				case EPSEffects.ExplosionShockwave:
-					mcSpriteBatch.DrawString(mcFont, "Size:", new Vector2(GetTextSafeArea().Left + 450, GetTextSafeArea().Top + 2), sPropertyColor);
-					mcSpriteBatch.DrawString(mcFont, mcExplosionShockwaveParticleSystem.ShockwaveSize.ToString(), new Vector2(GetTextSafeArea().Left + 495, GetTextSafeArea().Top + 2), sValueColor);
-					break;
+                mcSpriteBatch.DrawString(mcFont, "Pause Particle System:", new Vector2(485, 150), PROPERTY_TEXT_COlOR);
+                mcSpriteBatch.DrawString(mcFont, "Spacebar", new Vector2(700, 150), CONTROL_TEXT_COLOR);
 
-				case EPSEffects.Explosion:
-					mcSpriteBatch.DrawString(mcFont, "Size:", new Vector2(GetTextSafeArea().Left + 450, GetTextSafeArea().Top + 2), sPropertyColor);
-					mcSpriteBatch.DrawString(mcFont, mcExplosionParticleSystem.ExplosionParticleSize.ToString(), new Vector2(GetTextSafeArea().Left + 495, GetTextSafeArea().Top + 2), sValueColor);
-					break;
+                mcSpriteBatch.DrawString(mcFont, "Speed Up/Down PS:", new Vector2(485, 175), PROPERTY_TEXT_COlOR);
+                mcSpriteBatch.DrawString(mcFont, "* / /", new Vector2(680, 175), CONTROL_TEXT_COLOR);
 
-				case EPSEffects.Trail:
-					mcSpriteBatch.DrawString(mcFont, "Move the emitter with (Shift) W/A/S/D", new Vector2(GetTextSafeArea().Left + 5, GetTextSafeArea().Top + 250), sPropertyColor);
-					mcSpriteBatch.DrawString(mcFont, "Change textures with (Shift) T", new Vector2(GetTextSafeArea().Left + 5, GetTextSafeArea().Top + 275), sPropertyColor);
-					break;
-			}
+                mcSpriteBatch.DrawString(mcFont, "Draw Static Particles:", new Vector2(485, 200), PROPERTY_TEXT_COlOR);
+                mcSpriteBatch.DrawString(mcFont, "F6", new Vector2(690, 200), CONTROL_TEXT_COLOR);
 
-			// If the Particle System is Paused
-			if (mbPaused)
-			{
-				mcSpriteBatch.DrawString(mcFont, "Paused", new Vector2(GetTextSafeArea().Left + 350, GetTextSafeArea().Top + 25), sValueColor);
-			}
+                mcSpriteBatch.DrawString(mcFont, "Clear Screen Each Frame:", new Vector2(485, 225), PROPERTY_TEXT_COlOR);
+                mcSpriteBatch.DrawString(mcFont, "F5", new Vector2(730, 225), CONTROL_TEXT_COLOR);
 
-			// If the Common Controls should be shown
-			if (mbShowCommonControls)
-			{
-				mcSpriteBatch.DrawString(mcFont, "Change Particle System:", new Vector2(5, 25), sPropertyColor);
-				mcSpriteBatch.DrawString(mcFont, "G / H", new Vector2(235, 25), sControlColor);
+                mcSpriteBatch.DrawString(mcFont, "Create Animation Images:", new Vector2(485, 250), PROPERTY_TEXT_COlOR);
+                mcSpriteBatch.DrawString(mcFont, "F8", new Vector2(725, 250), CONTROL_TEXT_COLOR);
 
-				mcSpriteBatch.DrawString(mcFont, "Toggle Emitter On/Off:", new Vector2(5, 50), sPropertyColor);
-				mcSpriteBatch.DrawString(mcFont, "Delete", new Vector2(220, 50), sControlColor);
+                mcSpriteBatch.DrawString(mcFont, "Serialize Particle System:", new Vector2(485, 275), PROPERTY_TEXT_COlOR);
+                mcSpriteBatch.DrawString(mcFont, "F9", new Vector2(725, 275), CONTROL_TEXT_COLOR);
 
-				mcSpriteBatch.DrawString(mcFont, "Increase/Decrease Emitter Speed:", new Vector2(5, 75), sPropertyColor);
-				mcSpriteBatch.DrawString(mcFont, "+ / -", new Vector2(320, 75), sControlColor);
-
-				mcSpriteBatch.DrawString(mcFont, "Add Particle:", new Vector2(5, 100), sPropertyColor);
-				mcSpriteBatch.DrawString(mcFont, "Insert(one), Home(many), PgUp(max)", new Vector2(130, 100), sControlColor);
-
-				mcSpriteBatch.DrawString(mcFont, "Move Emitter:", new Vector2(5, 125), sPropertyColor);
-				mcSpriteBatch.DrawString(mcFont, "A/D, W/S, Q/E", new Vector2(135, 125), sControlColor);
-
-				mcSpriteBatch.DrawString(mcFont, "Rotate Emitter:", new Vector2(5, 150), sPropertyColor);
-				mcSpriteBatch.DrawString(mcFont, "J/L(yaw), I/Vertex(pitch), U/O(roll)", new Vector2(150, 150), sControlColor);
-
-				mcSpriteBatch.DrawString(mcFont, "Rotate Emitter Around Pivot:", new Vector2(5, 175), sPropertyColor);
-				mcSpriteBatch.DrawString(mcFont, "Y + Rotate Emitter", new Vector2(275, 175), sControlColor);
-
-				mcSpriteBatch.DrawString(mcFont, "Reset Emitter's Position and Orientation:", new Vector2(5, 200), sPropertyColor);
-				mcSpriteBatch.DrawString(mcFont, "Z", new Vector2(375, 200), sControlColor);
-
-				
-				mcSpriteBatch.DrawString(mcFont, "Toggle Floor:", new Vector2(485, 25), sPropertyColor);
-				mcSpriteBatch.DrawString(mcFont, "F", new Vector2(610, 25), sControlColor);
-
-				mcSpriteBatch.DrawString(mcFont, "Toggle Axis:", new Vector2(650, 25), sPropertyColor);
-				mcSpriteBatch.DrawString(mcFont, "F7", new Vector2(770, 25), sControlColor); 
-
-				mcSpriteBatch.DrawString(mcFont, "Toggle Full Screen:", new Vector2(485, 50), sPropertyColor);
-				mcSpriteBatch.DrawString(mcFont, "End", new Vector2(665, 50), sControlColor);      
-
-				mcSpriteBatch.DrawString(mcFont, "Toggle Camera Mode:", new Vector2(485, 75), sPropertyColor);
-				mcSpriteBatch.DrawString(mcFont, "PgDown", new Vector2(690, 75), sControlColor);
-
-				mcSpriteBatch.DrawString(mcFont, "Reset Camera Position:", new Vector2(485, 100), sPropertyColor);
-				mcSpriteBatch.DrawString(mcFont, "R", new Vector2(705, 100), sControlColor);
-
-				mcSpriteBatch.DrawString(mcFont, "Change Texture:", new Vector2(485, 125), sPropertyColor);
-				mcSpriteBatch.DrawString(mcFont, "T / Shift + T", new Vector2(640, 125), sControlColor);
-
-				mcSpriteBatch.DrawString(mcFont, "Pause Particle System:", new Vector2(485, 150), sPropertyColor);
-				mcSpriteBatch.DrawString(mcFont, "Spacebar", new Vector2(700, 150), sControlColor);
-
-				mcSpriteBatch.DrawString(mcFont, "Speed Up/Down PS:", new Vector2(485, 175), sPropertyColor);
-				mcSpriteBatch.DrawString(mcFont, "* / /", new Vector2(680, 175), sControlColor);
-
-				mcSpriteBatch.DrawString(mcFont, "Draw Static Particles:", new Vector2(485, 200), sPropertyColor);
-				mcSpriteBatch.DrawString(mcFont, "F6", new Vector2(690, 200), sControlColor);
-
-				mcSpriteBatch.DrawString(mcFont, "Clear Screen Each Frame:", new Vector2(485, 225), sPropertyColor);
-				mcSpriteBatch.DrawString(mcFont, "F5", new Vector2(730, 225), sControlColor);
-
-				mcSpriteBatch.DrawString(mcFont, "Create Animation Images:", new Vector2(485, 250), sPropertyColor);
-				mcSpriteBatch.DrawString(mcFont, "F8", new Vector2(725, 250), sControlColor);
-
-				mcSpriteBatch.DrawString(mcFont, "Serialize Particle System:", new Vector2(485, 275), sPropertyColor);
-				mcSpriteBatch.DrawString(mcFont, "F9", new Vector2(725, 275), sControlColor);
-
-				mcSpriteBatch.DrawString(mcFont, "Draw Performance Info:", new Vector2(485, 300), sPropertyColor);
-				mcSpriteBatch.DrawString(mcFont, "F10", new Vector2(705, 300), sControlColor);
-			}
-
-			// If the Particle System specific Controls should be shown
-			if (mbShowPSControls)
-			{
-				// Display particle system specific controls
-				switch (meCurrentPS)
-				{
-					default: break;
-
-					case EPSEffects.Random:
-						mcSpriteBatch.DrawString(mcFont, "Random Pattern:", new Vector2(5, 250), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "X", new Vector2(160, 250), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Spiral Pattern:", new Vector2(5, 275), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "C", new Vector2(140, 275), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Increase Size:", new Vector2(5, 300), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "V", new Vector2(135, 300), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Decrease Size:", new Vector2(5, 325), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "B", new Vector2(145, 325), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Change Start Color:", new Vector2(5, 350), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "N", new Vector2(190, 350), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Change End Color:", new Vector2(5, 375), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "M", new Vector2(180, 375), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Tube Mode:", new Vector2(5, 400), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "P", new Vector2(115, 400), sControlColor);
-					break;
-
-					case EPSEffects.Fire:
-						mcSpriteBatch.DrawString(mcFont, "Vertical Ring:", new Vector2(5, 250), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "X", new Vector2(130, 250), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Horizontal Ring:", new Vector2(5, 275), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "C", new Vector2(150, 275), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Decrease Smoke:", new Vector2(5, 300), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "V", new Vector2(170, 300), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Increase Smoke:", new Vector2(5, 325), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "B", new Vector2(160, 325), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Toggle Additive Blending:", new Vector2(5, 350), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "N", new Vector2(240, 350), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Toggle Ring Movement:", new Vector2(5, 375), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "M", new Vector2(225, 375), sControlColor);
-					break;
-
-					case EPSEffects.FireSprite:
-						mcSpriteBatch.DrawString(mcFont, "Vertical Ring:", new Vector2(5, 250), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "X", new Vector2(130, 250), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Horizontal Ring:", new Vector2(5, 275), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "C", new Vector2(150, 275), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Decrease Smoke:", new Vector2(5, 300), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "V", new Vector2(170, 300), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Increase Smoke:", new Vector2(5, 325), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "B", new Vector2(160, 325), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Toggle Additive Blending:", new Vector2(5, 350), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "N", new Vector2(240, 350), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Toggle Ring Movement:", new Vector2(5, 375), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "M", new Vector2(225, 375), sControlColor);
-					break;
-
-					case EPSEffects.Smoke:
-						mcSpriteBatch.DrawString(mcFont, "Rising Smoke Cloud:", new Vector2(5, 250), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "X", new Vector2(195, 250), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Dispersed Smoke:", new Vector2(5, 275), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "C", new Vector2(175, 275), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Suction Orb:", new Vector2(5, 300), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "V", new Vector2(120, 300), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Repel Orb:", new Vector2(5, 325), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "B", new Vector2(105, 325), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Change Color:", new Vector2(5, 350), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "N", new Vector2(135, 350), sControlColor);
-					break;
-
-					case EPSEffects.Snow:
-						mcSpriteBatch.DrawString(mcFont, "Apply Wind Force:", new Vector2(5, 250), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "X", new Vector2(180, 250), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Remove Wind Force:", new Vector2(5, 275), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "C", new Vector2(200, 275), sControlColor);
-					break;
-
-					case EPSEffects.SquarePattern:
-						mcSpriteBatch.DrawString(mcFont, "Square Pattern:", new Vector2(5, 250), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "X", new Vector2(150, 250), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Multiple Color Changes:", new Vector2(5, 275), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "C", new Vector2(220, 275), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Change Color:", new Vector2(5, 300), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "V", new Vector2(140, 300), sControlColor);
-					break;
-
-					case EPSEffects.Fountain:
-						mcSpriteBatch.DrawString(mcFont, "Floor Collision On:", new Vector2(5, 250), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "X", new Vector2(170, 250), sControlColor);
-						
-						mcSpriteBatch.DrawString(mcFont, "Floor Collision Off:", new Vector2(5, 275), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "C", new Vector2(180, 275), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Decrease Bounciness:", new Vector2(5, 300), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "V", new Vector2(205, 300), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Increase Bounciness:", new Vector2(5, 325), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "B", new Vector2(195, 325), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Shrinking On:", new Vector2(5, 350), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "N", new Vector2(130, 350), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Shrinking Off:", new Vector2(5, 375), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "M", new Vector2(135, 375), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Toggle Additive Blending:", new Vector2(5, 400), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "P", new Vector2(240, 400), sControlColor);
-					break;
-
-					case EPSEffects.Random2D:
-						mcSpriteBatch.DrawString(mcFont, "Straight:", new Vector2(5, 250), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "X", new Vector2(80, 250), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Random Direction Changes:", new Vector2(5, 275), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "C", new Vector2(255, 275), sControlColor);
-					break;
-
-					case EPSEffects.GasFall:
-						mcSpriteBatch.DrawString(mcFont, "Wall:", new Vector2(5, 250), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "X", new Vector2(50, 250), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Split:", new Vector2(5, 275), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "C", new Vector2(50, 275), sControlColor);
-					break;
-
-					case EPSEffects.Dot: break;
-
-					case EPSEffects.Fireworks:
-						mcSpriteBatch.DrawString(mcFont, "Common Origin:", new Vector2(5, 250), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "X", new Vector2(150, 250), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Spread Out Origin:", new Vector2(5, 275), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "C", new Vector2(180, 275), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Explosions On:", new Vector2(5, 300), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "V", new Vector2(140, 300), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Explosions Off:", new Vector2(5, 325), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "B", new Vector2(145, 325), sControlColor);
-					break;
-
-					case EPSEffects.Figure8: break;
-
-					case EPSEffects.Star:
-						mcSpriteBatch.DrawString(mcFont, "2D Star:", new Vector2(5, 250), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "X", new Vector2(85, 250), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "3D Star:", new Vector2(5, 275), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "C", new Vector2(85, 275), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Hold and Rotate Emitter:", new Vector2(5, 300), sPropertyColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Adjust Rotational Velocity:", new Vector2(15, 325), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "V", new Vector2(260, 325), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Adjust Rotational Acceleration:", new Vector2(15, 350), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "B", new Vector2(300, 350), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Wiggle Mode:", new Vector2(15, 375), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "P", new Vector2(140, 375), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Reset Rotational Forces:", new Vector2(5, 400), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "N", new Vector2(230, 400), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Highlight Axis:", new Vector2(5, 425), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "M", new Vector2(135, 425), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Toggle Emitter Intermittence:", new Vector2(5, 450), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "[", new Vector2(270, 450), sControlColor);
-					break;
-
-					case EPSEffects.Ball:
-						mcSpriteBatch.DrawString(mcFont, "Increase Radius:", new Vector2(5, 250), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "X", new Vector2(155, 250), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Decrease Radius:", new Vector2(5, 275), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "C", new Vector2(165, 275), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Hold and Rotate Emitter:", new Vector2(5, 300), sPropertyColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Adjust Rotational Velocity:", new Vector2(15, 325), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "V", new Vector2(260, 325), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Adjust Rotational Acceleration:", new Vector2(15, 350), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "B", new Vector2(300, 350), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Reset Rotational Forces:", new Vector2(5, 375), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "N", new Vector2(230, 375), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Less Particles:", new Vector2(5, 400), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "P", new Vector2(140, 400), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "More Particles:", new Vector2(5, 425), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "[", new Vector2(140, 425), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Rebuild Ball:", new Vector2(5, 450), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "M", new Vector2(120, 450), sControlColor);
-					break;
-
-					case EPSEffects.RotatingQuad:
-						mcSpriteBatch.DrawString(mcFont, "Normal:", new Vector2(5, 250), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "X", new Vector2(75, 250), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Billboards:", new Vector2(5, 275), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "C", new Vector2(100, 275), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Ball:", new Vector2(5, 300), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "V", new Vector2(45, 300), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Number of Particles:", new Vector2(5, 325), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "B", new Vector2(195, 325), sControlColor);
-					break;
-
-					case EPSEffects.Box:
-						mcSpriteBatch.DrawString(mcFont, "Box:", new Vector2(5, 250), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "X", new Vector2(50, 250), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Bars:", new Vector2(5, 275), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "C", new Vector2(50, 275), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Toggle Change Colors:", new Vector2(5, 300), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "V", new Vector2(210, 300), sControlColor);
-					break;
-
-					case EPSEffects.Image:
-						mcSpriteBatch.DrawString(mcFont, "Image:", new Vector2(5, 250), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "X", new Vector2(65, 250), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Spiral:", new Vector2(5, 275), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "C", new Vector2(60, 275), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Vortex:", new Vector2(5, 300), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "V", new Vector2(75, 300), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Toggle Spin Mode:", new Vector2(5, 325), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "B", new Vector2(175, 325), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Toggle Uniform Spin:", new Vector2(5, 350), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "N", new Vector2(195, 350), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Scatter Image:", new Vector2(5, 375), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "M", new Vector2(140, 375), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Toggle Rows:", new Vector2(5, 400), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "P", new Vector2(130, 400), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Toggle Columns:", new Vector2(5, 425), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "[", new Vector2(155, 425), sControlColor);
-					break;
-
-					case EPSEffects.AnimatedTexturedQuad: break;
-
-					case EPSEffects.Sprite:
-						mcSpriteBatch.DrawString(mcFont, "Mouse Attraction:", new Vector2(5, 250), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "X", new Vector2(167, 250), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Mouse Cloud:", new Vector2(5, 275), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "C", new Vector2(125, 275), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Grid:", new Vector2(5, 300), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "V", new Vector2(50, 300), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Rotators:", new Vector2(5, 325), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "B", new Vector2(87, 325), sControlColor);
-
-						if (mcSpriteParticleSystem.Name.Equals("Sprite Force") || mcSpriteParticleSystem.Name.Equals("Sprite Cloud"))
-						{
-							mcSpriteBatch.DrawString(mcFont, "Toggle Force:", new Vector2(5, 350), sPropertyColor);
-							mcSpriteBatch.DrawString(mcFont, "Left Mouse Button", new Vector2(130, 350), sControlColor);
-
-							mcSpriteBatch.DrawString(mcFont, "Toggle Strength:", new Vector2(5, 375), sPropertyColor);
-							mcSpriteBatch.DrawString(mcFont, "Right Mouse Button", new Vector2(155, 375), sControlColor);
-						}
-					break;
-
-					case EPSEffects.AnimatedSprite:
-						mcSpriteBatch.DrawString(mcFont, "Explosion:", new Vector2(5, 250), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "X", new Vector2(95, 250), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Butterfly:", new Vector2(5, 275), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "C", new Vector2(90, 275), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Toggle Color Mode:", new Vector2(5, 300), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "Left Mouse Button", new Vector2(183, 300), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Add Particle:", new Vector2(5, 325), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "Right Mouse Button", new Vector2(125, 325), sControlColor);
-					break;
-
-					case EPSEffects.QuadSpray:
-						mcSpriteBatch.DrawString(mcFont, "Spray:", new Vector2(5, 250), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "X", new Vector2(65, 250), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Wall:", new Vector2(5, 275), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "C", new Vector2(55, 275), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Toggle Gravity:", new Vector2(5, 300), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "V", new Vector2(150, 300), sControlColor);
-					break;
-
-					case EPSEffects.Magnets:
-						mcSpriteBatch.DrawString(mcFont, "Emitter Magnet:", new Vector2(5, 250), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "X", new Vector2(150, 250), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Multiple Magnets:", new Vector2(5, 275), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "C", new Vector2(160, 275), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Toggle Affecting Position vs Velocity:", new Vector2(5, 300), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "V", new Vector2(355, 300), sControlColor);
-					break;
-
-					case EPSEffects.Sparkler:
-						mcSpriteBatch.DrawString(mcFont, "Simple:", new Vector2(5, 250), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "X", new Vector2(70, 250), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Complex:", new Vector2(5, 275), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "C", new Vector2(90, 275), sControlColor);
-					break;
-
-					case EPSEffects.Sphere:
-						mcSpriteBatch.DrawString(mcFont, "Decrease Radius:", new Vector2(5, 250), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "X", new Vector2(165, 250), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Increase Radius:", new Vector2(5, 275), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "C", new Vector2(155, 275), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Same Direction:", new Vector2(5, 300), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "V", new Vector2(150, 300), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Random Direction:", new Vector2(5, 325), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "B", new Vector2(170, 325), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Less Particles:", new Vector2(5, 350), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "N", new Vector2(140, 350), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "More Particles:", new Vector2(5, 375), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "M", new Vector2(140, 375), sControlColor);
-					break;
-
-					case EPSEffects.MultipleParticleImages: break;
-					case EPSEffects.MultipleParticleImagesSprite: break;
-
-					case EPSEffects.ExplosionFireSmoke:
-						mcSpriteBatch.DrawString(mcFont, "Decrease Intensity:", new Vector2(5, 250), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "X", new Vector2(180, 250), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Increase Intensity:", new Vector2(5, 275), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "C", new Vector2(170, 275), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Change Color:", new Vector2(5, 300), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "V", new Vector2(135, 300), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Decrease Particle Size:", new Vector2(5, 325), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "B", new Vector2(220, 325), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Increase Particle Size:", new Vector2(5, 350), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "N", new Vector2(210, 350), sControlColor);
-					break;
-
-					case EPSEffects.ExplosionFlash:
-						mcSpriteBatch.DrawString(mcFont, "Decrease Intensity:", new Vector2(5, 250), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "X", new Vector2(180, 250), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Increase Intensity:", new Vector2(5, 275), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "C", new Vector2(170, 275), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Change Color:", new Vector2(5, 300), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "V", new Vector2(135, 300), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Decrease Particle Size:", new Vector2(5, 325), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "B", new Vector2(220, 325), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Increase Particle Size:", new Vector2(5, 350), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "N", new Vector2(210, 350), sControlColor);
-					break;
-
-					case EPSEffects.ExplosionFlyingSparks:
-						mcSpriteBatch.DrawString(mcFont, "Decrease Intensity:", new Vector2(5, 250), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "X", new Vector2(180, 250), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Increase Intensity:", new Vector2(5, 275), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "C", new Vector2(170, 275), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Change Color:", new Vector2(5, 300), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "V", new Vector2(135, 300), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Decrease Particle Size:", new Vector2(5, 325), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "B", new Vector2(220, 325), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Increase Particle Size:", new Vector2(5, 350), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "N", new Vector2(210, 350), sControlColor);
-					break;
-
-					case EPSEffects.ExplosionSmokeTrails:
-						mcSpriteBatch.DrawString(mcFont, "Decrease Intensity:", new Vector2(5, 250), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "X", new Vector2(180, 250), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Increase Intensity:", new Vector2(5, 275), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "C", new Vector2(170, 275), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Change Color:", new Vector2(5, 300), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "V", new Vector2(135, 300), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Decrease Particle Size:", new Vector2(5, 325), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "B", new Vector2(220, 325), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Increase Particle Size:", new Vector2(5, 350), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "N", new Vector2(210, 350), sControlColor);
-					break;
-
-					case EPSEffects.ExplosionRoundSparks:
-						mcSpriteBatch.DrawString(mcFont, "Decrease Intensity:", new Vector2(5, 250), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "X", new Vector2(180, 250), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Increase Intensity:", new Vector2(5, 275), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "C", new Vector2(170, 275), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Change Color:", new Vector2(5, 300), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "V", new Vector2(135, 300), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Decrease Particle Size:", new Vector2(5, 325), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "B", new Vector2(220, 325), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Increase Particle Size:", new Vector2(5, 350), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "N", new Vector2(210, 350), sControlColor);
-					break;
-
-					case EPSEffects.ExplosionDebris:
-						mcSpriteBatch.DrawString(mcFont, "Decrease Intensity:", new Vector2(5, 250), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "X", new Vector2(180, 250), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Increase Intensity:", new Vector2(5, 275), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "C", new Vector2(170, 275), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Change Color:", new Vector2(5, 300), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "V", new Vector2(135, 300), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Decrease Particle Size:", new Vector2(5, 325), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "B", new Vector2(220, 325), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Increase Particle Size:", new Vector2(5, 350), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "N", new Vector2(210, 350), sControlColor);
-					break;
-
-					case EPSEffects.ExplosionShockwave:
-						mcSpriteBatch.DrawString(mcFont, "Change Color:", new Vector2(5, 300), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "V", new Vector2(135, 300), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Decrease Particle Size:", new Vector2(5, 325), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "B", new Vector2(220, 325), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Increase Particle Size:", new Vector2(5, 350), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "N", new Vector2(210, 350), sControlColor);
-					break;
-
-					case EPSEffects.Explosion:
-						mcSpriteBatch.DrawString(mcFont, "Change Color:", new Vector2(5, 300), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "V", new Vector2(135, 300), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Decrease Particle Size:", new Vector2(5, 325), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "B", new Vector2(220, 325), sControlColor);
-
-						mcSpriteBatch.DrawString(mcFont, "Increase Particle Size:", new Vector2(5, 350), sPropertyColor);
-						mcSpriteBatch.DrawString(mcFont, "N", new Vector2(210, 350), sControlColor);
-					break;
-
-					case EPSEffects.SpriteParticleSystemTemplate: break;
-					case EPSEffects.Sprite3DBillboardParticleSystemTemplate: break;
-					case EPSEffects.QuadParticleSystemTemplate: break;
-					case EPSEffects.TexturedQuadParticleSystemTemplate: break;
-					case EPSEffects.DefaultSpriteParticleSystemTemplate: break;
-					case EPSEffects.DefaultSprite3DBillboardParticleSystemTemplate: break;
-					case EPSEffects.DefaultQuadParticleSystemTemplate: break;
-					case EPSEffects.DefaultTexturedQuadParticleSystemTemplate: break;
-				}
-			}
+                mcSpriteBatch.DrawString(mcFont, "Draw Performance Info:", new Vector2(485, 300), PROPERTY_TEXT_COlOR);
+                mcSpriteBatch.DrawString(mcFont, "F10", new Vector2(705, 300), CONTROL_TEXT_COLOR);
+            }
 
 			// If the Camera Controls should be shown
 			if (mbShowCameraControls)
@@ -1805,27 +1059,27 @@ namespace DPSF_Demo
 				// If we are using a Fixed Camera
 				if (msCamera.bUsingFixedCamera)
 				{
-					mcSpriteBatch.DrawString(mcFont, "Fixed Camera Controls:", new Vector2(5, mcGraphics.PreferredBackBufferHeight - 125), sPropertyColor);
-					mcSpriteBatch.DrawString(mcFont, "Keys: Left/Right Arrows, Up/Down Arrows, Num0/Num1", new Vector2(15, mcGraphics.PreferredBackBufferHeight - 100), sControlColor);
-					mcSpriteBatch.DrawString(mcFont, "Mouse: Left Button + X/Y Movement, Right Button + Y Movement", new Vector2(15, mcGraphics.PreferredBackBufferHeight - 75), sControlColor);
+					mcSpriteBatch.DrawString(mcFont, "Fixed Camera Controls:", new Vector2(5, mcGraphics.PreferredBackBufferHeight - 125), PROPERTY_TEXT_COlOR);
+					mcSpriteBatch.DrawString(mcFont, "Keys: Left/Right Arrows, Up/Down Arrows, Num0/Num1", new Vector2(15, mcGraphics.PreferredBackBufferHeight - 100), CONTROL_TEXT_COLOR);
+					mcSpriteBatch.DrawString(mcFont, "Mouse: Left Button + X/Y Movement, Right Button + Y Movement", new Vector2(15, mcGraphics.PreferredBackBufferHeight - 75), CONTROL_TEXT_COLOR);
 				}
 				// Else we are using a Free Camera
 				else
 				{
-					mcSpriteBatch.DrawString(mcFont, "Free Camera Controls", new Vector2(5, mcGraphics.PreferredBackBufferHeight - 125), sPropertyColor);
-					mcSpriteBatch.DrawString(mcFont, "Keys: Left/Right Arrows, Up/Down Arrows, Num0/Num1, Num4/Num6, Num8/Num2", new Vector2(15, mcGraphics.PreferredBackBufferHeight - 100), sControlColor);
-					mcSpriteBatch.DrawString(mcFont, "Mouse: Left Button + X/Y Movement, Right Button + X/Y Movement, Scroll Wheel", new Vector2(15, mcGraphics.PreferredBackBufferHeight - 75), sControlColor);
+					mcSpriteBatch.DrawString(mcFont, "Free Camera Controls", new Vector2(5, mcGraphics.PreferredBackBufferHeight - 125), PROPERTY_TEXT_COlOR);
+					mcSpriteBatch.DrawString(mcFont, "Keys: Left/Right Arrows, Up/Down Arrows, Num0/Num1, Num4/Num6, Num8/Num2", new Vector2(15, mcGraphics.PreferredBackBufferHeight - 100), CONTROL_TEXT_COLOR);
+					mcSpriteBatch.DrawString(mcFont, "Mouse: Left Button + X/Y Movement, Right Button + X/Y Movement, Scroll Wheel", new Vector2(15, mcGraphics.PreferredBackBufferHeight - 75), CONTROL_TEXT_COLOR);
 				}
 			}
 
 			// If we should draw the number of bytes allocated in memory
 			if (DrawPerformanceText)
 			{
-				mcSpriteBatch.DrawString(mcFont, "Update Time (ms): " + mcParticleSystemManager.TotalPerformanceTimeToDoUpdatesInMilliseconds.ToString("0.000"), new Vector2(529, mcGraphics.PreferredBackBufferHeight - 250), sPropertyColor);
-				mcSpriteBatch.DrawString(mcFont, "Draw Time (ms): " + mcParticleSystemManager.TotalPerformanceTimeToDoDrawsInMilliseconds.ToString("0.000"), new Vector2(545, mcGraphics.PreferredBackBufferHeight - 225), sPropertyColor);
-				mcSpriteBatch.DrawString(mcFont, "Garbage Allocated (KB): " + _garbageCurrentAmountInKB.ToString("0.0"), new Vector2(480, mcGraphics.PreferredBackBufferHeight - 200), sPropertyColor);
-				mcSpriteBatch.DrawString(mcFont, "Avg Garbage Per Update (KB): " + _garbageAverageCreatedPerUpdateInKB.ToString("0.000"), new Vector2(440, mcGraphics.PreferredBackBufferHeight - 175), sPropertyColor);
-				mcSpriteBatch.DrawString(mcFont, "Avg Garbage Per Frame (KB): " + _garbageAverageCreatedPerFrameInKB.ToString("0.000"), new Vector2(445, mcGraphics.PreferredBackBufferHeight - 150), sPropertyColor);
+				mcSpriteBatch.DrawString(mcFont, "Update Time (ms): " + _particleSystemManager.TotalPerformanceTimeToDoUpdatesInMilliseconds.ToString("0.000"), new Vector2(529, mcGraphics.PreferredBackBufferHeight - 250), PROPERTY_TEXT_COlOR);
+				mcSpriteBatch.DrawString(mcFont, "Draw Time (ms): " + _particleSystemManager.TotalPerformanceTimeToDoDrawsInMilliseconds.ToString("0.000"), new Vector2(545, mcGraphics.PreferredBackBufferHeight - 225), PROPERTY_TEXT_COlOR);
+				mcSpriteBatch.DrawString(mcFont, "Garbage Allocated (KB): " + _garbageCurrentAmountInKB.ToString("0.0"), new Vector2(480, mcGraphics.PreferredBackBufferHeight - 200), PROPERTY_TEXT_COlOR);
+				mcSpriteBatch.DrawString(mcFont, "Avg Garbage Per Update (KB): " + _garbageAverageCreatedPerUpdateInKB.ToString("0.000"), new Vector2(440, mcGraphics.PreferredBackBufferHeight - 175), PROPERTY_TEXT_COlOR);
+				mcSpriteBatch.DrawString(mcFont, "Avg Garbage Per Frame (KB): " + _garbageAverageCreatedPerFrameInKB.ToString("0.000"), new Vector2(445, mcGraphics.PreferredBackBufferHeight - 150), PROPERTY_TEXT_COlOR);
 			}
 
 			// Stop drawing text
@@ -1933,12 +1187,12 @@ namespace DPSF_Demo
 			}
 
 			// If we are currently showing the Splash Screen and a key was pressed, skip the Splash Screen.
-			if (mcDPSFSplashScreenParticleSystem != null && 
+			if (_mcDPSFSplashScreenDPSFDemoParticleSystemWrapper != null && 
 				((KeyboardManager.CurrentKeyboardState.GetPressedKeys().Length > 0 && KeyboardManager.CurrentKeyboardState.GetPressedKeys()[0] != Keys.None) || 
 				(MouseManager.CurrentMouseState.LeftButton == ButtonState.Pressed || MouseManager.CurrentMouseState.RightButton == ButtonState.Pressed) ||
 				(mcCurrentGamePadState.IsButtonDown(Buttons.A | Buttons.B | Buttons.X | Buttons.Y | Buttons.Start))))
 			{
-				mcDPSFSplashScreenParticleSystem.IsSplashScreenComplete = true;
+				_mcDPSFSplashScreenDPSFDemoParticleSystemWrapper.IsSplashScreenComplete = true;
 				return;
 			}
 
@@ -2008,7 +1262,7 @@ namespace DPSF_Demo
 			if (KeyboardManager.KeyWasJustPressed(Keys.F8))
 			{
 				// Draw the Particle System Animation to a series of Image Files
-				mcParticleSystemManager.DrawAllParticleSystemsAnimationToFiles(GraphicsDevice, miDrawPSToFilesImageWidth, miDrawPSToFilesImageHeight, 
+				_particleSystemManager.DrawAllParticleSystemsAnimationToFiles(GraphicsDevice, miDrawPSToFilesImageWidth, miDrawPSToFilesImageHeight, 
 							msDrawPSToFilesDirectoryName, mfDrawPSToFilesTotalTime, mfDrawPSToFilesTimeStep, mbCreateAnimatedGIF, mbCreateTileSetImage);
 			}
 
@@ -2019,18 +1273,18 @@ namespace DPSF_Demo
 				if (!DPSFHelper.DPSFInheritsDrawableGameComponent)
 				{
 					// If we have the particle system right now
-					if (mcCurrentParticleSystem != null)
+					if (_currentDPSFDemoParticleSystemWrapper != null)
 					{
 						// Serialize the particle system into a file
 						System.IO.Stream stream = System.IO.File.Open("SerializedParticleSystem.dat", System.IO.FileMode.Create);
 						System.Runtime.Serialization.Formatters.Binary.BinaryFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-						formatter.Serialize(stream, mcCurrentParticleSystem);
+						formatter.Serialize(stream, _currentDPSFDemoParticleSystemWrapper);
 						stream.Close();
 
 						// Remove the particle system from the manager and destroy the particle system in memory
-						mcParticleSystemManager.RemoveParticleSystem(mcCurrentParticleSystem);
-						mcCurrentParticleSystem.Destroy();
-						mcCurrentParticleSystem = null;
+						_particleSystemManager.RemoveParticleSystem(_currentDPSFDemoParticleSystemWrapper);
+						_currentDPSFDemoParticleSystemWrapper.Destroy();
+						_currentDPSFDemoParticleSystemWrapper = null;
 					}
 					// Else we don't have the particle system right now
 					else
@@ -2038,23 +1292,23 @@ namespace DPSF_Demo
 						// Deserialize the particle system from a file
 						System.IO.Stream stream = System.IO.File.Open("SerializedParticleSystem.dat", System.IO.FileMode.Open);
 						System.Runtime.Serialization.Formatters.Binary.BinaryFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-						mcCurrentParticleSystem = (IDPSFParticleSystem)formatter.Deserialize(stream);
+                        _currentDPSFDemoParticleSystemWrapper = (IWrapDPSFDemoParticleSystems)formatter.Deserialize(stream);
 						stream.Close();
 
 						try
 						{
 							// Setup the particle system properties that couldn't be serialized
-							mcCurrentParticleSystem.InitializeNonSerializableProperties(this, this.GraphicsDevice, this.Content);
+							_currentDPSFDemoParticleSystemWrapper.InitializeNonSerializableProperties(this, this.GraphicsDevice, this.Content);
 						}
 						// Catch the case where the Particle System requires a texture, but one wasn't loaded
 						catch (ArgumentNullException)
 						{
 							// Assign the particle system a texture to use
-							mcCurrentParticleSystem.SetTexture("Textures/Bubble");
+							_currentDPSFDemoParticleSystemWrapper.SetTexture("Textures/Bubble");
 						}
 
 						// Readd the particle system to the particle system manager
-						mcParticleSystemManager.AddParticleSystem(mcCurrentParticleSystem);
+						_particleSystemManager.AddParticleSystem(_currentDPSFDemoParticleSystemWrapper);
 					}
 				}
 			}
@@ -2318,7 +1572,7 @@ namespace DPSF_Demo
 			if (KeyboardManager.KeyWasJustPressed(Keys.H) || GamePadsManager.ButtonWasJustPressed(PlayerIndex.One, Buttons.RightTrigger))
 			{
 				meCurrentPS++;
-				if (meCurrentPS > EPSEffects.LastInList)
+				if (meCurrentPS > PSEffects.LastInList)
 				{
 					meCurrentPS = 0;
 				}
@@ -2332,7 +1586,7 @@ namespace DPSF_Demo
 				meCurrentPS--;
 				if (meCurrentPS < 0)
 				{
-					meCurrentPS = EPSEffects.LastInList;
+					meCurrentPS = PSEffects.LastInList;
 				}
 
 				// Initialize the new Particle System
@@ -2340,7 +1594,7 @@ namespace DPSF_Demo
 			}
 
 			// If the Current Particle System is not Initialized
-			if (mcCurrentParticleSystem == null || !mcCurrentParticleSystem.IsInitialized)
+			if (_currentDPSFDemoParticleSystemWrapper == null || !_currentDPSFDemoParticleSystemWrapper.IsInitialized)
 			{
 				return;
 			}
@@ -2359,39 +1613,39 @@ namespace DPSF_Demo
 			if (KeyboardManager.KeyIsDown(Keys.W) || 
 				(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.DPadUp) && !GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightStick)))
 			{
-				mcCurrentParticleSystem.Emitter.PositionData.Position += Vector3.Up * fEmitterMoveDelta;
+				_currentDPSFDemoParticleSystemWrapper.Emitter.PositionData.Position += Vector3.Up * fEmitterMoveDelta;
 			}
 
 			if (KeyboardManager.KeyIsDown(Keys.S) || 
 				(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.DPadDown) && !GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightStick)))
 			{
-				mcCurrentParticleSystem.Emitter.PositionData.Position += Vector3.Down * fEmitterMoveDelta;
+				_currentDPSFDemoParticleSystemWrapper.Emitter.PositionData.Position += Vector3.Down * fEmitterMoveDelta;
 			}
 
 			if (KeyboardManager.KeyIsDown(Keys.A) || GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.DPadLeft))
 			{
-				mcCurrentParticleSystem.Emitter.PositionData.Position += Vector3.Left * fEmitterMoveDelta;
+				_currentDPSFDemoParticleSystemWrapper.Emitter.PositionData.Position += Vector3.Left * fEmitterMoveDelta;
 			}
 
 			if (KeyboardManager.KeyIsDown(Keys.D) || GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.DPadRight))
 			{
-				mcCurrentParticleSystem.Emitter.PositionData.Position += Vector3.Right * fEmitterMoveDelta;
+				_currentDPSFDemoParticleSystemWrapper.Emitter.PositionData.Position += Vector3.Right * fEmitterMoveDelta;
 			}
 
 			if (KeyboardManager.KeyIsDown(Keys.E) || 
 				(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.DPadUp) && GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightStick)))
 			{
-				mcCurrentParticleSystem.Emitter.PositionData.Position += Vector3.Forward * fEmitterMoveDelta;
+				_currentDPSFDemoParticleSystemWrapper.Emitter.PositionData.Position += Vector3.Forward * fEmitterMoveDelta;
 			}
 
 			if (KeyboardManager.KeyIsDown(Keys.Q) ||
 				(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.DPadDown) && GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightStick)))
 			{
-				mcCurrentParticleSystem.Emitter.PositionData.Position += Vector3.Backward * fEmitterMoveDelta;
+				_currentDPSFDemoParticleSystemWrapper.Emitter.PositionData.Position += Vector3.Backward * fEmitterMoveDelta;
 			}
 
 			// Check if the Emitter should be rotated
-			if ((meCurrentPS != EPSEffects.Star && meCurrentPS != EPSEffects.Ball) || 
+			if ((meCurrentPS != PSEffects.Star && meCurrentPS != PSEffects.Ball) || 
 				(!KeyboardManager.KeyIsDown(Keys.V) && !KeyboardManager.KeyIsDown(Keys.B) && !KeyboardManager.KeyIsDown(Keys.P)))
 			{
 				if (KeyboardManager.KeyIsDown(Keys.J) || 
@@ -2400,12 +1654,12 @@ namespace DPSF_Demo
 					// If we should Rotate the Emitter around the Pivot Point
 					if (KeyboardManager.KeyIsDown(Keys.Y))
 					{
-						mcCurrentParticleSystem.Emitter.PivotPointData.RotatePositionAndOrientation(Matrix.CreateFromYawPitchRoll(-fEmitterRotateDelta, 0.0f, 0.0f));
+						_currentDPSFDemoParticleSystemWrapper.Emitter.PivotPointData.RotatePositionAndOrientation(Matrix.CreateFromYawPitchRoll(-fEmitterRotateDelta, 0.0f, 0.0f));
 					}
 					// Else we should just Rotate the Emitter about its center
 					else
 					{
-						mcCurrentParticleSystem.Emitter.OrientationData.Rotate(Matrix.CreateFromYawPitchRoll(-fEmitterRotateDelta, 0.0f, 0.0f));
+						_currentDPSFDemoParticleSystemWrapper.Emitter.OrientationData.Rotate(Matrix.CreateFromYawPitchRoll(-fEmitterRotateDelta, 0.0f, 0.0f));
 					}
 				}
 
@@ -2415,12 +1669,12 @@ namespace DPSF_Demo
 					// If we should Rotate the Emitter around the Pivot Point
 					if (KeyboardManager.KeyIsDown(Keys.Y))
 					{
-						mcCurrentParticleSystem.Emitter.PivotPointData.RotatePositionAndOrientation(Matrix.CreateFromYawPitchRoll(fEmitterRotateDelta, 0.0f, 0.0f));
+						_currentDPSFDemoParticleSystemWrapper.Emitter.PivotPointData.RotatePositionAndOrientation(Matrix.CreateFromYawPitchRoll(fEmitterRotateDelta, 0.0f, 0.0f));
 					}
 					// Else we should just Rotate the Emitter about its center
 					else
 					{
-						mcCurrentParticleSystem.Emitter.OrientationData.Rotate(Matrix.CreateFromYawPitchRoll(fEmitterRotateDelta, 0.0f, 0.0f));
+						_currentDPSFDemoParticleSystemWrapper.Emitter.OrientationData.Rotate(Matrix.CreateFromYawPitchRoll(fEmitterRotateDelta, 0.0f, 0.0f));
 					}
 				}
 
@@ -2429,12 +1683,12 @@ namespace DPSF_Demo
 					// If we should Rotate the Emitter around the Pivot Point
 					if (KeyboardManager.KeyIsDown(Keys.Y))
 					{
-						mcCurrentParticleSystem.Emitter.PivotPointData.RotatePositionAndOrientation(Matrix.CreateFromYawPitchRoll(0.0f, -fEmitterRotateDelta, 0.0f));
+						_currentDPSFDemoParticleSystemWrapper.Emitter.PivotPointData.RotatePositionAndOrientation(Matrix.CreateFromYawPitchRoll(0.0f, -fEmitterRotateDelta, 0.0f));
 					}
 					// Else we should just Rotate the Emitter about its center
 					else
 					{
-						mcCurrentParticleSystem.Emitter.OrientationData.Rotate(Matrix.CreateFromYawPitchRoll(0.0f, -fEmitterRotateDelta, 0.0f));
+						_currentDPSFDemoParticleSystemWrapper.Emitter.OrientationData.Rotate(Matrix.CreateFromYawPitchRoll(0.0f, -fEmitterRotateDelta, 0.0f));
 					}
 				}
 
@@ -2443,12 +1697,12 @@ namespace DPSF_Demo
 					// If we should Rotate the Emitter around the Pivot Point
 					if (KeyboardManager.KeyIsDown(Keys.Y))
 					{
-						mcCurrentParticleSystem.Emitter.PivotPointData.RotatePositionAndOrientation(Matrix.CreateFromYawPitchRoll(0.0f, fEmitterRotateDelta, 0.0f));
+						_currentDPSFDemoParticleSystemWrapper.Emitter.PivotPointData.RotatePositionAndOrientation(Matrix.CreateFromYawPitchRoll(0.0f, fEmitterRotateDelta, 0.0f));
 					}
 					// Else we should just Rotate the Emitter about its center
 					else
 					{
-						mcCurrentParticleSystem.Emitter.OrientationData.Rotate(Matrix.CreateFromYawPitchRoll(0.0f, fEmitterRotateDelta, 0.0f));
+						_currentDPSFDemoParticleSystemWrapper.Emitter.OrientationData.Rotate(Matrix.CreateFromYawPitchRoll(0.0f, fEmitterRotateDelta, 0.0f));
 					}
 				}
 
@@ -2458,12 +1712,12 @@ namespace DPSF_Demo
 					// If we should Rotate the Emitter around the Pivot Point
 					if (KeyboardManager.KeyIsDown(Keys.Y))
 					{
-						mcCurrentParticleSystem.Emitter.PivotPointData.RotatePositionAndOrientation(Matrix.CreateFromYawPitchRoll(0.0f, 0.0f, fEmitterRotateDelta));
+						_currentDPSFDemoParticleSystemWrapper.Emitter.PivotPointData.RotatePositionAndOrientation(Matrix.CreateFromYawPitchRoll(0.0f, 0.0f, fEmitterRotateDelta));
 					}
 					// Else we should just Rotate the Emitter about its center
 					else
 					{
-						mcCurrentParticleSystem.Emitter.OrientationData.Rotate(Matrix.CreateFromYawPitchRoll(0.0f, 0.0f, fEmitterRotateDelta));
+						_currentDPSFDemoParticleSystemWrapper.Emitter.OrientationData.Rotate(Matrix.CreateFromYawPitchRoll(0.0f, 0.0f, fEmitterRotateDelta));
 					}
 				}
 
@@ -2473,12 +1727,12 @@ namespace DPSF_Demo
 					// If we should Rotate the Emitter around the Pivot Point
 					if (KeyboardManager.KeyIsDown(Keys.Y))
 					{
-						mcCurrentParticleSystem.Emitter.PivotPointData.RotatePositionAndOrientation(Matrix.CreateFromYawPitchRoll(0.0f, 0.0f, -fEmitterRotateDelta));
+						_currentDPSFDemoParticleSystemWrapper.Emitter.PivotPointData.RotatePositionAndOrientation(Matrix.CreateFromYawPitchRoll(0.0f, 0.0f, -fEmitterRotateDelta));
 					}
 					// Else we should just Rotate the Emitter about its center
 					else
 					{
-						mcCurrentParticleSystem.Emitter.OrientationData.Rotate(Matrix.CreateFromYawPitchRoll(0.0f, 0.0f, -fEmitterRotateDelta));
+						_currentDPSFDemoParticleSystemWrapper.Emitter.OrientationData.Rotate(Matrix.CreateFromYawPitchRoll(0.0f, 0.0f, -fEmitterRotateDelta));
 					}
 				}
 			}
@@ -2486,24 +1740,24 @@ namespace DPSF_Demo
 			// Check if the Emitter should be reset
 			if (KeyboardManager.KeyWasJustPressed(Keys.Z))
 			{
-				mcCurrentParticleSystem.Emitter.PositionData.Position = Vector3.Zero;
-				mcCurrentParticleSystem.Emitter.OrientationData.Orientation = Quaternion.Identity;
+				_currentDPSFDemoParticleSystemWrapper.Emitter.PositionData.Position = Vector3.Zero;
+				_currentDPSFDemoParticleSystemWrapper.Emitter.OrientationData.Orientation = Quaternion.Identity;
 			}
 
 			// If the Texture should be changed
 			if (KeyboardManager.KeyWasJustPressed(Keys.T) || GamePadsManager.ButtonWasJustPressed(PlayerIndex.One, Buttons.Y))
 			{
-				if (mcCurrentParticleSystem.Texture != null)
+				if (_currentDPSFDemoParticleSystemWrapper.Texture != null)
 				{
 					// Get which Texture is currently being used for sure
-					for (int i = 0; i < (int)ETextures.LastInList + 1; i++)
+					for (int i = 0; i < (int)Textures.LastInList + 1; i++)
 					{
-						ETextures eTexture = (ETextures)i;
+						Textures eTexture = (Textures)i;
 						string sName = eTexture.ToString();
 
-						if (mcCurrentParticleSystem.Texture.Name.Equals(sName))
+						if (_currentDPSFDemoParticleSystemWrapper.Texture.Name.Equals(sName))
 						{
-							meCurrentTexture = (ETextures)i;
+							meCurrentTexture = (Textures)i;
 						}
 					}
 
@@ -2513,60 +1767,60 @@ namespace DPSF_Demo
 						meCurrentTexture--;
 						if (meCurrentTexture < 0)
 						{
-							meCurrentTexture = ETextures.LastInList;
+							meCurrentTexture = Textures.LastInList;
 						}
 					}
 					// Else we should go to the next Texture
 					else
 					{
 						meCurrentTexture++;
-						if (meCurrentTexture > ETextures.LastInList)
+						if (meCurrentTexture > Textures.LastInList)
 						{
 							meCurrentTexture = 0;
 						}
 					}
 
 					// Change the Texture being used to draw the Particles
-					mcCurrentParticleSystem.SetTexture("Textures/" + meCurrentTexture.ToString());
+					_currentDPSFDemoParticleSystemWrapper.SetTexture("Textures/" + meCurrentTexture.ToString());
 				}
 			}
 
 			if (KeyboardManager.KeyWasJustPressed(Keys.Insert))
 			{
 				// Add a single Particle
-				mcCurrentParticleSystem.AddParticle();
+				_currentDPSFDemoParticleSystemWrapper.AddParticle();
 			}
 
 			if (KeyboardManager.KeyIsDown(Keys.Home))
 			{
 				// Add Particles while the button is pressed
-				mcCurrentParticleSystem.AddParticle();
+				_currentDPSFDemoParticleSystemWrapper.AddParticle();
 			}
 
 			if (KeyboardManager.KeyIsDown(Keys.PageUp))
 			{
 				// Add the max number of Particles
-				while (mcCurrentParticleSystem.AddParticle()) { }
+				while (_currentDPSFDemoParticleSystemWrapper.AddParticle()) { }
 			}
 
 			if (KeyboardManager.KeyWasJustPressed(Keys.Delete) || GamePadsManager.ButtonWasJustPressed(PlayerIndex.One, Buttons.X))
 			{
 				// Toggle emitting particles on/off
-				mcCurrentParticleSystem.Emitter.EmitParticlesAutomatically = !mcCurrentParticleSystem.Emitter.EmitParticlesAutomatically;
+				_currentDPSFDemoParticleSystemWrapper.Emitter.EmitParticlesAutomatically = !_currentDPSFDemoParticleSystemWrapper.Emitter.EmitParticlesAutomatically;
 			}
 
 			if (KeyboardManager.KeyIsDown(Keys.Add, 0.02f) || KeyboardManager.KeyIsDown(Keys.OemPlus, 0.02f) || GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightShoulder, 0.02f))
 			{
 				// Increase the number of Particles being emitted
-				mcCurrentParticleSystem.Emitter.ParticlesPerSecond++;
+				_currentDPSFDemoParticleSystemWrapper.Emitter.ParticlesPerSecond++;
 			}
 
 			if (KeyboardManager.KeyIsDown(Keys.Subtract, 0.02f) || KeyboardManager.KeyIsDown(Keys.OemMinus, 0.02f) || GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.LeftShoulder, 0.02f))
 			{
-				if (mcCurrentParticleSystem.Emitter.ParticlesPerSecond > 1)
+				if (_currentDPSFDemoParticleSystemWrapper.Emitter.ParticlesPerSecond > 1)
 				{
 					// Decrease the number of Particles being emitted
-					mcCurrentParticleSystem.Emitter.ParticlesPerSecond--;
+					_currentDPSFDemoParticleSystemWrapper.Emitter.ParticlesPerSecond--;
 				}
 			}
 
@@ -2575,18 +1829,18 @@ namespace DPSF_Demo
 				GamePadsManager.ButtonWasJustPressed(PlayerIndex.One, Buttons.B))
 			{
 				// Increase the Speed of the Particle System simulation
-				mcParticleSystemManager.SimulationSpeed += 0.1f;
+				_particleSystemManager.SimulationSpeed += 0.1f;
 
-				if (mcParticleSystemManager.SimulationSpeed > 5.0f)
+				if (_particleSystemManager.SimulationSpeed > 5.0f)
 				{
-					mcParticleSystemManager.SimulationSpeed = 5.0f;
+					_particleSystemManager.SimulationSpeed = 5.0f;
 				}
 
 				// If DPSF is not inheriting from DrawableGameComponent then we need
 				// to set the individual particle system's Simulation Speeds
 				if (DPSFHelper.DPSFInheritsDrawableGameComponent)
 				{
-					mcParticleSystemManager.SetSimulationSpeedForAllParticleSystems(mcParticleSystemManager.SimulationSpeed);
+					_particleSystemManager.SetSimulationSpeedForAllParticleSystems(_particleSystemManager.SimulationSpeed);
 				}
 			}
 
@@ -2595,1208 +1849,60 @@ namespace DPSF_Demo
 				GamePadsManager.ButtonWasJustPressed(PlayerIndex.One, Buttons.A))
 			{
 				// Decrease the Speed of the Particle System simulation
-				mcParticleSystemManager.SimulationSpeed -= 0.1f;
+				_particleSystemManager.SimulationSpeed -= 0.1f;
 
-				if (mcParticleSystemManager.SimulationSpeed < 0.1f)
+				if (_particleSystemManager.SimulationSpeed < 0.1f)
 				{
-					mcParticleSystemManager.SimulationSpeed = 0.1f;
+					_particleSystemManager.SimulationSpeed = 0.1f;
 				}
 
 				// If DPSF is not inheriting from DrawableGameComponent then we need
 				// to set the individual particle system's Simulation Speeds
 				if (DPSFHelper.DPSFInheritsDrawableGameComponent)
 				{
-					mcParticleSystemManager.SetSimulationSpeedForAllParticleSystems(mcParticleSystemManager.SimulationSpeed);
+					_particleSystemManager.SetSimulationSpeedForAllParticleSystems(_particleSystemManager.SimulationSpeed);
 				}
 			}
 
+            // Perform particle system-specific input processing.
+		    _currentDPSFDemoParticleSystemWrapper.ProcessInput();
 
-			// Check which Particle System is being used
+			// Perform any particle system-specific input processing that affects objects external to the particle system.
 			switch (meCurrentPS)
 			{
-				default: break;
-
-				case EPSEffects.Random:
-					if (KeyboardManager.KeyWasJustPressed(Keys.X))
-					{
-						mcRandomParticleSystem.LoadRandomEvents();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.C))
-					{
-						mcRandomParticleSystem.LoadRandomSpiralEvents();
-					}
-
+				case PSEffects.Smoke:
 					if (KeyboardManager.KeyWasJustPressed(Keys.V))
 					{
-						mcRandomParticleSystem.InitialProperties.StartSizeMin += 2.0f;
+						SmokeParticleSystem smokeParticleSystem = _currentDPSFDemoParticleSystemWrapper as SmokeParticleSystem;
 
-						if (mcRandomParticleSystem.InitialProperties.StartSizeMin > 100.0f)
-						{
-							mcRandomParticleSystem.InitialProperties.StartSizeMin = 100.0f;
-						}
-
-						mcRandomParticleSystem.InitialProperties.StartSizeMax =
-							mcRandomParticleSystem.InitialProperties.EndSizeMin =
-							mcRandomParticleSystem.InitialProperties.EndSizeMax =
-							mcRandomParticleSystem.InitialProperties.StartSizeMin;
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.B))
-					{
-						mcRandomParticleSystem.InitialProperties.StartSizeMin -= 2.0f;
-
-						if (mcRandomParticleSystem.InitialProperties.StartSizeMin < 2.0f)
-						{
-							mcRandomParticleSystem.InitialProperties.StartSizeMin = 2.0f;
-						}
-
-						mcRandomParticleSystem.InitialProperties.StartSizeMax =
-							mcRandomParticleSystem.InitialProperties.EndSizeMin =
-							mcRandomParticleSystem.InitialProperties.EndSizeMax =
-							mcRandomParticleSystem.InitialProperties.StartSizeMin;
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.N))
-					{
-						mcRandomParticleSystem.InitialProperties.StartColorMin =
-							mcRandomParticleSystem.InitialProperties.StartColorMax =
-							DPSFHelper.LerpColor(Color.Black, Color.White, (float)mcRandom.NextDouble(), (float)mcRandom.NextDouble(), (float)mcRandom.NextDouble(), (float)mcRandom.NextDouble());
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.M))
-					{
-						mcRandomParticleSystem.InitialProperties.EndColorMin =
-							mcRandomParticleSystem.InitialProperties.EndColorMax =
-							DPSFHelper.LerpColor(Color.Black, Color.White, (float)mcRandom.NextDouble(), (float)mcRandom.NextDouble(), (float)mcRandom.NextDouble(), (float)mcRandom.NextDouble());
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.P))
-					{
-						mcRandomParticleSystem.LoadTubeEvents();
-					}
-					break;
-
-				case EPSEffects.Fire:
-					if (KeyboardManager.KeyWasJustPressed(Keys.X))
-					{
-						mcFireParticleSystem.ParticleInitializationFunction = mcFireParticleSystem.InitializeParticleFireOnVerticalRing;
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.C))
-					{
-						mcFireParticleSystem.ParticleInitializationFunction = mcFireParticleSystem.InitializeParticleFireOnHorizontalRing;
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.V))
-					{
-						float fAmount = mcFireParticleSystem.GetAmountOfSmokeBeingReleased();
-						if (fAmount > 0.0f)
-						{
-							mcFireParticleSystem.SetAmountOfSmokeToRelease(fAmount - 0.05f);
-						}
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.B))
-					{
-						float fAmount = mcFireParticleSystem.GetAmountOfSmokeBeingReleased();
-						if (fAmount < 1.0f)
-						{
-							mcFireParticleSystem.SetAmountOfSmokeToRelease(fAmount + 0.05f);
-						}
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.N))
-					{
-						mcFireParticleSystem.ToggleAdditiveBlending();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.M))
-					{
-						if (mcFireParticleSystem.Emitter.PositionData.Velocity == Vector3.Zero)
-						{
-							mcFireParticleSystem.Emitter.PositionData.Velocity = new Vector3(30, 0, 0);
-						}
-						else
-						{
-							mcFireParticleSystem.Emitter.PositionData.Velocity = Vector3.Zero;
-						}
-					}
-					break;
-
-
-				case EPSEffects.FireSprite:
-					if (KeyboardManager.KeyWasJustPressed(Keys.X))
-					{
-						mcFireSpriteParticleSystem.ParticleInitializationFunction = mcFireSpriteParticleSystem.InitializeParticleFireOnVerticalRing;
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.C))
-					{
-						mcFireSpriteParticleSystem.ParticleInitializationFunction = mcFireSpriteParticleSystem.InitializeParticleFireOnHorizontalRing;
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.V))
-					{
-						float fAmount = mcFireSpriteParticleSystem.GetAmountOfSmokeBeingReleased();
-						if (fAmount > 0.0f)
-						{
-							mcFireSpriteParticleSystem.SetAmountOfSmokeToRelease(fAmount - 0.05f);
-						}
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.B))
-					{
-						float fAmount = mcFireSpriteParticleSystem.GetAmountOfSmokeBeingReleased();
-						if (fAmount < 1.0f)
-						{
-							mcFireSpriteParticleSystem.SetAmountOfSmokeToRelease(fAmount + 0.05f);
-						}
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.N))
-					{
-						mcFireSpriteParticleSystem.ToggleAdditiveBlending();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.M))
-					{
-						if (mcFireSpriteParticleSystem.Emitter.PositionData.Velocity == Vector3.Zero)
-						{
-							mcFireSpriteParticleSystem.Emitter.PositionData.Velocity = new Vector3(30, 0, 0);
-						}
-						else
-						{
-							mcFireSpriteParticleSystem.Emitter.PositionData.Velocity = Vector3.Zero;
-						}
-					}
-					break;
-
-				case EPSEffects.Smoke:
-					if (KeyboardManager.KeyWasJustPressed(Keys.X))
-					{
-						mcSmokeParticleSystem.LoadSmokeEvents();
-						mcSmokeParticleSystem.ParticleInitializationFunction = mcSmokeParticleSystem.InitializeParticleRisingSmoke;
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.C))
-					{
-						mcSmokeParticleSystem.LoadSmokeEvents();
-						mcSmokeParticleSystem.ParticleInitializationFunction = mcSmokeParticleSystem.InitializeParticleFoggySmoke;
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.V))
-					{
+						// Setup the sphere to pass by the particle system.
 						mcSphere.bVisible = true;
-						mcSphere.sPosition = mcSmokeParticleSystem.mcExternalObjectPosition = new Vector3(-125, 50, 0);
+						mcSphere.sPosition = smokeParticleSystem.mcExternalObjectPosition = new Vector3(-125, 50, 0);
 						mcSphere.sVelocity = new Vector3(50, 0, 0);
 						mcSphere.cTimeAliveInSeconds = TimeSpan.Zero;
-						mcSmokeParticleSystem.mfAttractRepelRange = mcSphere.fSize * 2;
-						mcSmokeParticleSystem.mfAttractRepelForce = 3.0f;
 
-						mcSmokeParticleSystem.MakeParticlesAttractToExternalObject();
+						// Setup the particle system to be affected by the sphere.
+						smokeParticleSystem.mfAttractRepelRange = mcSphere.fSize * 2;
+						smokeParticleSystem.mfAttractRepelForce = 3.0f;
+						smokeParticleSystem.MakeParticlesAttractToExternalObject();
 					}
 
 					if (KeyboardManager.KeyWasJustPressed(Keys.B))
 					{
+						SmokeParticleSystem smokeParticleSystem = _currentDPSFDemoParticleSystemWrapper as SmokeParticleSystem;
+
+						// Setup the sphere to pass by the particle system.
 						mcSphere.bVisible = true;
-						mcSphere.sPosition = mcSmokeParticleSystem.mcExternalObjectPosition = new Vector3(-125, 50, 0);
+						mcSphere.sPosition = smokeParticleSystem.mcExternalObjectPosition = new Vector3(-125, 50, 0);
 						mcSphere.sVelocity = new Vector3(50, 0, 0);
 						mcSphere.cTimeAliveInSeconds = TimeSpan.Zero;
-						mcSmokeParticleSystem.mfAttractRepelRange = mcSphere.fSize * 2f;
-						mcSmokeParticleSystem.mfAttractRepelForce = 0.5f;
 
-						mcSmokeParticleSystem.MakeParticlesRepelFromExternalObject();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.N))
-					{
-						mcSmokeParticleSystem.ChangeColor();
+						// Setup the particle system to be affected by the sphere.
+						smokeParticleSystem.mfAttractRepelRange = mcSphere.fSize * 2f;
+						smokeParticleSystem.mfAttractRepelForce = 0.5f;
+						smokeParticleSystem.MakeParticlesRepelFromExternalObject();
 					}
 					break;
-
-				case EPSEffects.Snow:
-					if (KeyboardManager.KeyWasJustPressed(Keys.X))
-					{
-						mcSnowParticleSystem.AddWindForce();
-					}
-
-					if (KeyboardManager.KeyWasJustReleased(Keys.C))
-					{
-						mcSnowParticleSystem.RemoveWindForce();
-					}
-					break;
-
-				case EPSEffects.SquarePattern:
-					if (KeyboardManager.KeyWasJustPressed(Keys.X))
-					{
-						mcSquarePatternParticleSystem.LoadSquarePatternEvents();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.C))
-					{
-						mcSquarePatternParticleSystem.LoadChangeColorEvents();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.V))
-					{
-						mcSquarePatternParticleSystem.ChangeParticlesToRandomColors();
-					}
-					break;
-
-				case EPSEffects.Fountain:
-					if (KeyboardManager.KeyWasJustPressed(Keys.X))
-					{
-						mcFountainParticleSystem.MakeParticlesBounceOffFloor();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.C))
-					{
-						mcFountainParticleSystem.MakeParticlesNotBounceOffFloor();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.V))
-					{
-						mcFountainParticleSystem.mfBounciness -= 0.05f;
-
-						if (mcFountainParticleSystem.mfBounciness < 0.0f)
-						{
-							mcFountainParticleSystem.mfBounciness = 0.0f;
-						}
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.B))
-					{
-						mcFountainParticleSystem.mfBounciness += 0.05f;
-
-						if (mcFountainParticleSystem.mfBounciness > 2.0f)
-						{
-							mcFountainParticleSystem.mfBounciness = 2.0f;
-						}
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.N))
-					{
-						mcFountainParticleSystem.MakeParticlesShrink();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.M))
-					{
-						mcFountainParticleSystem.MakeParticlesNotShrink();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.P))
-					{
-						mcFountainParticleSystem.ToggleAdditiveBlending();
-					}
-					break;
-
-				case EPSEffects.Random2D:
-					if (KeyboardManager.KeyWasJustPressed(Keys.X))
-					{
-						mcRandom2DParticleSystem.LoadEvents();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.C))
-					{
-						mcRandom2DParticleSystem.LoadExtraEvents();
-					}
-					break;
-
-				case EPSEffects.GasFall:
-					if (KeyboardManager.KeyWasJustPressed(Keys.X))
-					{
-						mcGasFallParticleSystem.LoadEvents();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.C))
-					{
-						mcGasFallParticleSystem.LoadExtraEvents();
-					}
-					break;
-
-				case EPSEffects.Dot: break;
-
-				case EPSEffects.Fireworks:
-					if (KeyboardManager.KeyWasJustPressed(Keys.X))
-					{
-						mcFireworksParticleSystem.InitialProperties.PositionMin = new Vector3();
-						mcFireworksParticleSystem.InitialProperties.PositionMax = new Vector3();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.C))
-					{
-						mcFireworksParticleSystem.InitialProperties.PositionMin = new Vector3(-100, 0, 0);
-						mcFireworksParticleSystem.InitialProperties.PositionMax = new Vector3(100, 0, 0);
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.V))
-					{
-						mcFireworksParticleSystem.TurnExplosionsOn();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.B))
-					{
-						mcFireworksParticleSystem.TurnExplosionsOff();
-					}
-					break;
-
-				case EPSEffects.Figure8: break;
-
-				case EPSEffects.Star:
-					if (KeyboardManager.KeyWasJustPressed(Keys.X))
-					{
-						mcStarParticleSystem.ParticleInitializationFunction = mcStarParticleSystem.InitializeParticleStar2D;
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.C))
-					{
-						mcStarParticleSystem.ParticleInitializationFunction = mcStarParticleSystem.InitializeParticleStar3D;
-					}
-
-					float fRotationScale = MathHelper.Pi / 18.0f;
-
-					if (KeyboardManager.KeyIsDown(Keys.V))
-					{
-						// Check if the Emitter is being rotated
-						if (KeyboardManager.KeyWasJustPressed(Keys.J))
-						{
-							mcStarParticleSystem.Emitter.OrientationData.RotationalVelocity += Vector3.Down * fRotationScale;
-						}
-
-						if (KeyboardManager.KeyWasJustPressed(Keys.L))
-						{
-							mcStarParticleSystem.Emitter.OrientationData.RotationalVelocity += Vector3.Up * fRotationScale;
-						}
-
-						if (KeyboardManager.KeyWasJustPressed(Keys.I))
-						{
-							mcStarParticleSystem.Emitter.OrientationData.RotationalVelocity += Vector3.Left * fRotationScale;
-						}
-
-						if (KeyboardManager.KeyWasJustPressed(Keys.K))
-						{
-							mcStarParticleSystem.Emitter.OrientationData.RotationalVelocity += Vector3.Right * fRotationScale;
-						}
-
-						if (KeyboardManager.KeyWasJustPressed(Keys.U))
-						{
-							mcStarParticleSystem.Emitter.OrientationData.RotationalVelocity += Vector3.Backward * fRotationScale;
-						}
-
-						if (KeyboardManager.KeyWasJustPressed(Keys.O))
-						{
-							mcStarParticleSystem.Emitter.OrientationData.RotationalVelocity += Vector3.Forward * fRotationScale;
-						}
-					}
-
-					if (KeyboardManager.KeyIsDown(Keys.B))
-					{
-						// Check if the Emitter is being rotated
-						if (KeyboardManager.KeyWasJustPressed(Keys.J))
-						{
-							mcStarParticleSystem.Emitter.OrientationData.RotationalAcceleration += Vector3.Down * fRotationScale;
-						}
-
-						if (KeyboardManager.KeyWasJustPressed(Keys.L))
-						{
-							mcStarParticleSystem.Emitter.OrientationData.RotationalAcceleration += Vector3.Up * fRotationScale;
-						}
-
-						if (KeyboardManager.KeyWasJustPressed(Keys.I))
-						{
-							mcStarParticleSystem.Emitter.OrientationData.RotationalAcceleration += Vector3.Left * fRotationScale;
-						}
-
-						if (KeyboardManager.KeyWasJustPressed(Keys.K))
-						{
-							mcStarParticleSystem.Emitter.OrientationData.RotationalAcceleration += Vector3.Right * fRotationScale;
-						}
-
-						if (KeyboardManager.KeyWasJustPressed(Keys.U))
-						{
-							mcStarParticleSystem.Emitter.OrientationData.RotationalAcceleration += Vector3.Backward * fRotationScale;
-						}
-
-						if (KeyboardManager.KeyWasJustPressed(Keys.O))
-						{
-							mcStarParticleSystem.Emitter.OrientationData.RotationalAcceleration += Vector3.Forward * fRotationScale;
-						}
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.N))
-					{
-						mcStarParticleSystem.Emitter.PositionData.Velocity = Vector3.Zero;
-						mcStarParticleSystem.Emitter.PositionData.Acceleration = Vector3.Zero;
-						mcStarParticleSystem.Emitter.OrientationData.RotationalVelocity = Vector3.Zero;
-						mcStarParticleSystem.Emitter.OrientationData.RotationalAcceleration = Vector3.Zero;
-						mcStarParticleSystem.ParticleSystemEvents.RemoveAllEvents();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.M))
-					{
-						mcStarParticleSystem.mbHighlightAxis = !mcStarParticleSystem.mbHighlightAxis;
-					}
-
-					if (KeyboardManager.KeyIsDown(Keys.P))
-					{
-						// Check if the Emitter is being rotated
-						if (KeyboardManager.KeyWasJustPressed(Keys.J))
-						{
-							mcStarParticleSystem.LoadSlowRotationalWiggle();
-						}
-
-						if (KeyboardManager.KeyWasJustPressed(Keys.L))
-						{
-							mcStarParticleSystem.LoadFastRotationalWiggle();
-						}
-
-						if (KeyboardManager.KeyWasJustPressed(Keys.I))
-						{
-							mcStarParticleSystem.LoadMediumWiggle();
-						}
-
-						if (KeyboardManager.KeyWasJustPressed(Keys.K))
-						{
-							mcStarParticleSystem.LoadMediumRotationalWiggle();
-						}
-
-						if (KeyboardManager.KeyWasJustPressed(Keys.U))
-						{
-							mcStarParticleSystem.LoadSlowWiggle();
-						}
-
-						if (KeyboardManager.KeyWasJustPressed(Keys.O))
-						{
-							mcStarParticleSystem.LoadFastWiggle();
-						}
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.OemOpenBrackets))
-					{
-						mcStarParticleSystem.ToggleEmitterIntermittance();
-					}
-					break;
-
-				case EPSEffects.Ball:
-					if (KeyboardManager.KeyIsDown(Keys.X, 0.02f))
-					{
-						mcBallParticleSystem.IncreaseRadius();
-					}
-
-					if (KeyboardManager.KeyIsDown(Keys.C, 0.02f))
-					{
-						mcBallParticleSystem.DecreaseRadius();
-					}
-
-					float fBallRotationScale = MathHelper.Pi / 18.0f;
-
-					if (KeyboardManager.KeyIsDown(Keys.V))
-					{
-						// Check if the Emitter is being rotated
-						if (KeyboardManager.KeyWasJustPressed(Keys.J))
-						{
-							mcBallParticleSystem.Emitter.OrientationData.RotationalVelocity += Vector3.Down * fBallRotationScale;
-						}
-
-						if (KeyboardManager.KeyWasJustPressed(Keys.L))
-						{
-							mcBallParticleSystem.Emitter.OrientationData.RotationalVelocity += Vector3.Up * fBallRotationScale;
-						}
-
-						if (KeyboardManager.KeyWasJustPressed(Keys.I))
-						{
-							mcBallParticleSystem.Emitter.OrientationData.RotationalVelocity += Vector3.Left * fBallRotationScale;
-						}
-
-						if (KeyboardManager.KeyWasJustPressed(Keys.K))
-						{
-							mcBallParticleSystem.Emitter.OrientationData.RotationalVelocity += Vector3.Right * fBallRotationScale;
-						}
-
-						if (KeyboardManager.KeyWasJustPressed(Keys.U))
-						{
-							mcBallParticleSystem.Emitter.OrientationData.RotationalVelocity += Vector3.Backward * fBallRotationScale;
-						}
-
-						if (KeyboardManager.KeyWasJustPressed(Keys.O))
-						{
-							mcBallParticleSystem.Emitter.OrientationData.RotationalVelocity += Vector3.Forward * fBallRotationScale;
-						}
-					}
-
-					if (KeyboardManager.KeyIsDown(Keys.B))
-					{
-						// Check if the Emitter is being rotated
-						if (KeyboardManager.KeyWasJustPressed(Keys.J))
-						{
-							mcBallParticleSystem.Emitter.OrientationData.RotationalAcceleration += Vector3.Down * fBallRotationScale;
-						}
-
-						if (KeyboardManager.KeyWasJustPressed(Keys.L))
-						{
-							mcBallParticleSystem.Emitter.OrientationData.RotationalAcceleration += Vector3.Up * fBallRotationScale;
-						}
-
-						if (KeyboardManager.KeyWasJustPressed(Keys.I))
-						{
-							mcBallParticleSystem.Emitter.OrientationData.RotationalAcceleration += Vector3.Left * fBallRotationScale;
-						}
-
-						if (KeyboardManager.KeyWasJustPressed(Keys.K))
-						{
-							mcBallParticleSystem.Emitter.OrientationData.RotationalAcceleration += Vector3.Right * fBallRotationScale;
-						}
-
-						if (KeyboardManager.KeyWasJustPressed(Keys.U))
-						{
-							mcBallParticleSystem.Emitter.OrientationData.RotationalAcceleration += Vector3.Backward * fBallRotationScale;
-						}
-
-						if (KeyboardManager.KeyWasJustPressed(Keys.O))
-						{
-							mcBallParticleSystem.Emitter.OrientationData.RotationalAcceleration += Vector3.Forward * fBallRotationScale;
-						}
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.N))
-					{
-						mcBallParticleSystem.Emitter.OrientationData.RotationalVelocity = Vector3.Zero;
-						mcBallParticleSystem.Emitter.OrientationData.RotationalAcceleration = Vector3.Zero;
-					}
-
-					if (KeyboardManager.KeyIsDown(Keys.OemOpenBrackets, 0.04f))
-					{
-						mcBallParticleSystem.MoreParticles();
-					}
-
-					if (KeyboardManager.KeyIsDown(Keys.P, 0.04f))
-					{
-						mcBallParticleSystem.LessParticles();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.M))
-					{
-						mcBallParticleSystem.RemoveAllParticles();
-					}
-					break;
-
-				case EPSEffects.RotatingQuad:
-					if (KeyboardManager.KeyWasJustPressed(Keys.X))
-					{
-						mcRotatingQuadParticleSystem.MakeParticlesFaceWhateverDirection();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.C))
-					{
-						mcRotatingQuadParticleSystem.MakeParticlesFaceTheCamera();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.V))
-					{
-						mcRotatingQuadParticleSystem.MakeParticlesFaceTheCenter();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.B))
-					{
-						mcRotatingQuadParticleSystem.RemoveAllParticles();
-						int iNumberOfParticles = mcRotatingQuadParticleSystem.MaxNumberOfParticlesAllowed;
-
-						switch (iNumberOfParticles)
-						{
-							default:
-							case 1:
-								mcRotatingQuadParticleSystem.MaxNumberOfParticlesAllowed = 10;
-								break;
-
-							case 10:
-								mcRotatingQuadParticleSystem.MaxNumberOfParticlesAllowed = 100;
-								break;
-
-							case 100:
-								mcRotatingQuadParticleSystem.MaxNumberOfParticlesAllowed = 500;
-								break;
-
-							case 500:
-								mcRotatingQuadParticleSystem.MaxNumberOfParticlesAllowed = 1000;
-								break;
-
-							case 1000:
-								mcRotatingQuadParticleSystem.MaxNumberOfParticlesAllowed = 1;
-								break;
-						}
-					}
-					break;
-
-				case EPSEffects.Box:
-					if (KeyboardManager.KeyWasJustPressed(Keys.X))
-					{
-						mcBoxParticleSystem.LoadPartiallyTranparentBox();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.C))
-					{
-						mcBoxParticleSystem.LoadOpaqueBoxBars();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.V))
-					{
-						mcBoxParticleSystem.ToggleColorChanges();
-					}
-					break;
-
-				case EPSEffects.Image:
-					if (KeyboardManager.KeyWasJustPressed(Keys.X))
-					{
-						mcImageParticleSystem.LoadImage();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.C))
-					{
-						mcImageParticleSystem.LoadSpiralIntoFinalImage();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.V))
-					{
-						mcImageParticleSystem.LoadVortexIntoFinalImage();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.B))
-					{
-						string sSpinMode = mcImageParticleSystem.msSpinMode;
-
-						switch (sSpinMode)
-						{
-							case "Pitch":
-								sSpinMode = "Yaw";
-								break;
-
-							case "Yaw":
-								sSpinMode = "Roll";
-								break;
-
-							case "Roll":
-								sSpinMode = "All";
-								break;
-
-							case "All":
-								sSpinMode = "None";
-								break;
-
-							default:
-							case "None":
-								sSpinMode = "Pitch";
-								break;
-						}
-
-						mcImageParticleSystem.ToggleSpin(sSpinMode);
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.N))
-					{
-						mcImageParticleSystem.ToggleUniformSpin();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.M))
-					{
-						mcImageParticleSystem.Scatter();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.P))
-					{
-						int iRows = mcImageParticleSystem.miNumberOfRows;
-						int iColumns = mcImageParticleSystem.miNumberOfColumns;
-
-						switch (iRows)
-						{
-							default:
-							case 2:
-								iRows = 4;
-								break;
-
-							case 4:
-								iRows = 8;
-								break;
-
-							case 8:
-								iRows = 16;
-								break;
-
-							case 16:
-								iRows = 32;
-								break;
-
-							case 32:
-								iRows = 64;
-								break;
-
-							case 64:
-								iRows = 2;
-								break;
-						}
-
-						mcImageParticleSystem.SetNumberOfRowsAndColumns(iRows, iColumns);
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.OemOpenBrackets))
-					{
-						int iRows = mcImageParticleSystem.miNumberOfRows;
-						int iColumns = mcImageParticleSystem.miNumberOfColumns;
-
-						switch (iColumns)
-						{
-							default:
-							case 2:
-								iColumns = 4;
-								break;
-
-							case 4:
-								iColumns = 8;
-								break;
-
-							case 8:
-								iColumns = 16;
-								break;
-
-							case 16:
-								iColumns = 32;
-								break;
-
-							case 32:
-								iColumns = 64;
-								break;
-
-							case 64:
-								iColumns = 2;
-								break;
-						}
-
-						mcImageParticleSystem.SetNumberOfRowsAndColumns(iRows, iColumns);
-					}
-					break;
-
-				case EPSEffects.AnimatedTexturedQuad: break;
-
-				case EPSEffects.Sprite:
-					// If the mouse was moved
-					if (MouseManager.CurrentMouseState.X != MouseManager.PreviousMouseState.X ||
-						MouseManager.CurrentMouseState.Y != MouseManager.PreviousMouseState.Y)
-					{
-						mcSpriteParticleSystem.AttractorPosition = new Vector3(MouseManager.CurrentMouseState.X, MouseManager.CurrentMouseState.Y, 0);
-					}
-
-					// If the left mouse button was just pressed
-					if (MouseManager.CurrentMouseState.LeftButton == ButtonState.Pressed &&
-						MouseManager.PreviousMouseState.LeftButton == ButtonState.Released)
-					{
-						mcSpriteParticleSystem.ToggleAttractorMode();
-					}
-
-					// If the right mouse button was just pressed
-					if (MouseManager.CurrentMouseState.RightButton == ButtonState.Pressed &&
-						MouseManager.PreviousMouseState.RightButton == ButtonState.Released)
-					{
-						mcSpriteParticleSystem.ToggleAttractorStrength();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.X))
-					{
-						mcSpriteParticleSystem.LoadAttractionEvents();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.C))
-					{
-						mcSpriteParticleSystem.LoadCloudEvents();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.V))
-					{
-						mcSpriteParticleSystem.LoadGridEvents();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.B))
-					{
-						mcSpriteParticleSystem.LoadRotatorsEvents();
-					}
-					break;
-
-				case EPSEffects.AnimatedSprite:
-					// If the mouse was moved
-					if (MouseManager.CurrentMouseState.X != MouseManager.PreviousMouseState.X ||
-						MouseManager.CurrentMouseState.Y != MouseManager.PreviousMouseState.Y)
-					{
-						mcAnimatedSpriteParticleSystem.MousePosition = new Vector3(MouseManager.CurrentMouseState.X, MouseManager.CurrentMouseState.Y, 0);
-					}
-
-					// If the left mouse button was just pressed
-					if (MouseManager.CurrentMouseState.LeftButton == ButtonState.Pressed &&
-						MouseManager.PreviousMouseState.LeftButton == ButtonState.Released)
-					{
-						mcAnimatedSpriteParticleSystem.ToggleColorAmount();
-					}
-
-					// If the right mouse button was just pressed
-					if (MouseManager.CurrentMouseState.RightButton == ButtonState.Pressed &&
-						MouseManager.PreviousMouseState.RightButton == ButtonState.Released)
-					{
-						mcAnimatedSpriteParticleSystem.AddParticle();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.X))
-					{
-						mcAnimatedSpriteParticleSystem.LoadExplosionEvents();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.C))
-					{
-						mcAnimatedSpriteParticleSystem.LoadButterflyEvents();
-					}
-					break;
-
-				case EPSEffects.QuadSpray:
-					if (KeyboardManager.KeyWasJustPressed(Keys.X))
-					{
-						mcQuadSprayParticleSystem.LoadSprayEvents();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.C))
-					{
-						mcQuadSprayParticleSystem.LoadWallEvents();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.V))
-					{
-						mcQuadSprayParticleSystem.ToggleGravity();
-					}
-					break;
-
-				case EPSEffects.Magnets:
-					if (KeyboardManager.KeyWasJustPressed(Keys.X))
-					{
-						mcMagnetParticleSystem.LoadEmitterMagnetParticleSystem();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.C))
-					{
-						mcMagnetParticleSystem.LoadSeparateEmitterMagnetsParticleSystem();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.V))
-					{
-						mcMagnetParticleSystem.ToggleMagnetsAffectingPositionVsVelocity();
-					}
-					break;
-
-				case EPSEffects.Sparkler:
-					if (KeyboardManager.KeyWasJustPressed(Keys.X))
-					{
-						mcSparklerParticleSystem.LoadSimpleParticleSystem();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.C))
-					{
-						mcSparklerParticleSystem.LoadComplexParticleSystem();
-					}
-					break;
-
-				case EPSEffects.Sphere:
-					if (KeyboardManager.KeyIsDown(Keys.X, 0.02f))
-					{
-						mcSphereParticleSystem.ChangeSphereRadius(-5);
-					}
-
-					if (KeyboardManager.KeyIsDown(Keys.C, 0.02f))
-					{
-						mcSphereParticleSystem.ChangeSphereRadius(5);
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.V))
-					{
-						mcSphereParticleSystem.MakeParticlesTravelInTheSameDirection();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.B))
-					{
-						mcSphereParticleSystem.MakeParticlesTravelInRandomDirections();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.N))
-					{
-						mcSphereParticleSystem.ChangeNumberOfParticles(-50);
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.M))
-					{
-						mcSphereParticleSystem.ChangeNumberOfParticles(50);
-					}
-					break;
-
-				case EPSEffects.MultipleParticleImages: break;
-				case EPSEffects.MultipleParticleImagesSprite: break;
-
-				case EPSEffects.ExplosionFireSmoke:
-					if (KeyboardManager.KeyWasJustPressed(Keys.X))
-					{
-						mcExplosionFireSmokeParticleSystem.ExplosionIntensity -= 5;
-						mcExplosionFireSmokeParticleSystem.ExplosionIntensity = (mcExplosionFireSmokeParticleSystem.ExplosionIntensity < 1 ? 1 : mcExplosionFireSmokeParticleSystem.ExplosionIntensity);
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.C))
-					{
-						mcExplosionFireSmokeParticleSystem.ExplosionIntensity += 5;
-						mcExplosionFireSmokeParticleSystem.ExplosionIntensity = (mcExplosionFireSmokeParticleSystem.ExplosionIntensity > 200 ? 200 : mcExplosionFireSmokeParticleSystem.ExplosionIntensity);
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.V))
-					{
-						mcExplosionFireSmokeParticleSystem.ChangeExplosionColor();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.B))
-					{
-						mcExplosionFireSmokeParticleSystem.ExplosionParticleSize -= 5;
-						mcExplosionFireSmokeParticleSystem.ExplosionParticleSize = (mcExplosionFireSmokeParticleSystem.ExplosionParticleSize < 1 ? 1 : mcExplosionFireSmokeParticleSystem.ExplosionParticleSize);
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.N))
-					{
-						mcExplosionFireSmokeParticleSystem.ExplosionParticleSize += 5;
-						mcExplosionFireSmokeParticleSystem.ExplosionParticleSize = (mcExplosionFireSmokeParticleSystem.ExplosionParticleSize > 100 ? 100 : mcExplosionFireSmokeParticleSystem.ExplosionParticleSize);
-					}
-					break;
-
-				case EPSEffects.ExplosionFlash:
-					if (KeyboardManager.KeyWasJustPressed(Keys.X))
-					{
-						mcExplosionFlashParticleSystem.ExplosionIntensity -= 5;
-						mcExplosionFlashParticleSystem.ExplosionIntensity = (mcExplosionFlashParticleSystem.ExplosionIntensity < 1 ? 1 : mcExplosionFlashParticleSystem.ExplosionIntensity);
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.C))
-					{
-						mcExplosionFlashParticleSystem.ExplosionIntensity += 5;
-						mcExplosionFlashParticleSystem.ExplosionIntensity = (mcExplosionFlashParticleSystem.ExplosionIntensity > 100 ? 100 : mcExplosionFlashParticleSystem.ExplosionIntensity);
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.V))
-					{
-						mcExplosionFlashParticleSystem.ChangeExplosionColor();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.B))
-					{
-						mcExplosionFlashParticleSystem.ExplosionParticleSize -= 5;
-						mcExplosionFlashParticleSystem.ExplosionParticleSize = (mcExplosionFlashParticleSystem.ExplosionParticleSize < 1 ? 1 : mcExplosionFlashParticleSystem.ExplosionParticleSize);
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.N))
-					{
-						mcExplosionFlashParticleSystem.ExplosionParticleSize += 5;
-						mcExplosionFlashParticleSystem.ExplosionParticleSize = (mcExplosionFlashParticleSystem.ExplosionParticleSize > 100 ? 100 : mcExplosionFlashParticleSystem.ExplosionParticleSize);
-					}
-					break;
-
-				case EPSEffects.ExplosionFlyingSparks:
-					if (KeyboardManager.KeyWasJustPressed(Keys.X))
-					{
-						mcExplosionFlyingSparksParticleSystem.ExplosionIntensity -= 5;
-						mcExplosionFlyingSparksParticleSystem.ExplosionIntensity = (mcExplosionFlyingSparksParticleSystem.ExplosionIntensity < 1 ? 1 : mcExplosionFlyingSparksParticleSystem.ExplosionIntensity);
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.C))
-					{
-						mcExplosionFlyingSparksParticleSystem.ExplosionIntensity += 5;
-						mcExplosionFlyingSparksParticleSystem.ExplosionIntensity = (mcExplosionFlyingSparksParticleSystem.ExplosionIntensity > 200 ? 200 : mcExplosionFlyingSparksParticleSystem.ExplosionIntensity);
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.V))
-					{
-						mcExplosionFlyingSparksParticleSystem.ChangeExplosionColor();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.B))
-					{
-						mcExplosionFlyingSparksParticleSystem.ExplosionParticleSize -= 5;
-						mcExplosionFlyingSparksParticleSystem.ExplosionParticleSize = (mcExplosionFlyingSparksParticleSystem.ExplosionParticleSize < 1 ? 1 : mcExplosionFlyingSparksParticleSystem.ExplosionParticleSize);
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.N))
-					{
-						mcExplosionFlyingSparksParticleSystem.ExplosionParticleSize += 5;
-						mcExplosionFlyingSparksParticleSystem.ExplosionParticleSize = (mcExplosionFlyingSparksParticleSystem.ExplosionParticleSize > 100 ? 100 : mcExplosionFlyingSparksParticleSystem.ExplosionParticleSize);
-					}
-					break;
-
-				case EPSEffects.ExplosionSmokeTrails:
-					if (KeyboardManager.KeyWasJustPressed(Keys.X))
-					{
-						mcExplosionSmokeTrailsParticleSystem.ExplosionIntensity -= 5;
-						mcExplosionSmokeTrailsParticleSystem.ExplosionIntensity = (mcExplosionSmokeTrailsParticleSystem.ExplosionIntensity < 1 ? 1 : mcExplosionSmokeTrailsParticleSystem.ExplosionIntensity);
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.C))
-					{
-						mcExplosionSmokeTrailsParticleSystem.ExplosionIntensity += 5;
-						mcExplosionSmokeTrailsParticleSystem.ExplosionIntensity = (mcExplosionSmokeTrailsParticleSystem.ExplosionIntensity > 200 ? 200 : mcExplosionSmokeTrailsParticleSystem.ExplosionIntensity);
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.V))
-					{
-						mcExplosionSmokeTrailsParticleSystem.ChangeExplosionColor();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.B))
-					{
-						mcExplosionSmokeTrailsParticleSystem.ExplosionParticleSize -= 5;
-						mcExplosionSmokeTrailsParticleSystem.ExplosionParticleSize = (mcExplosionSmokeTrailsParticleSystem.ExplosionParticleSize < 1 ? 1 : mcExplosionSmokeTrailsParticleSystem.ExplosionParticleSize);
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.N))
-					{
-						mcExplosionSmokeTrailsParticleSystem.ExplosionParticleSize += 5;
-						mcExplosionSmokeTrailsParticleSystem.ExplosionParticleSize = (mcExplosionSmokeTrailsParticleSystem.ExplosionParticleSize > 100 ? 100 : mcExplosionSmokeTrailsParticleSystem.ExplosionParticleSize);
-					}
-					break;
-
-				case EPSEffects.ExplosionRoundSparks:
-					if (KeyboardManager.KeyWasJustPressed(Keys.X))
-					{
-						mcExplosionRoundSparksParticleSystem.ExplosionIntensity -= 5;
-						mcExplosionRoundSparksParticleSystem.ExplosionIntensity = (mcExplosionRoundSparksParticleSystem.ExplosionIntensity < 1 ? 1 : mcExplosionRoundSparksParticleSystem.ExplosionIntensity);
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.C))
-					{
-						mcExplosionRoundSparksParticleSystem.ExplosionIntensity += 5;
-						mcExplosionRoundSparksParticleSystem.ExplosionIntensity = (mcExplosionRoundSparksParticleSystem.ExplosionIntensity > 100 ? 100 : mcExplosionRoundSparksParticleSystem.ExplosionIntensity);
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.V))
-					{
-						mcExplosionRoundSparksParticleSystem.ChangeExplosionColor();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.B))
-					{
-						mcExplosionRoundSparksParticleSystem.ExplosionParticleSize -= 5;
-						mcExplosionRoundSparksParticleSystem.ExplosionParticleSize = (mcExplosionRoundSparksParticleSystem.ExplosionParticleSize < 1 ? 1 : mcExplosionRoundSparksParticleSystem.ExplosionParticleSize);
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.N))
-					{
-						mcExplosionRoundSparksParticleSystem.ExplosionParticleSize += 5;
-						mcExplosionRoundSparksParticleSystem.ExplosionParticleSize = (mcExplosionRoundSparksParticleSystem.ExplosionParticleSize > 100 ? 100 : mcExplosionRoundSparksParticleSystem.ExplosionParticleSize);
-					}
-					break;
-
-				case EPSEffects.ExplosionDebris:
-					if (KeyboardManager.KeyWasJustPressed(Keys.X))
-					{
-						mcExplosionDebrisParticleSystem.ExplosionIntensity -= 5;
-						mcExplosionDebrisParticleSystem.ExplosionIntensity = (mcExplosionDebrisParticleSystem.ExplosionIntensity < 1 ? 1 : mcExplosionDebrisParticleSystem.ExplosionIntensity);
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.C))
-					{
-						mcExplosionDebrisParticleSystem.ExplosionIntensity += 5;
-						mcExplosionDebrisParticleSystem.ExplosionIntensity = (mcExplosionDebrisParticleSystem.ExplosionIntensity > 200 ? 200 : mcExplosionDebrisParticleSystem.ExplosionIntensity);
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.V))
-					{
-						mcExplosionDebrisParticleSystem.ChangeExplosionColor();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.B))
-					{
-						mcExplosionDebrisParticleSystem.ExplosionParticleSize -= 5;
-						mcExplosionDebrisParticleSystem.ExplosionParticleSize = (mcExplosionDebrisParticleSystem.ExplosionParticleSize < 1 ? 1 : mcExplosionDebrisParticleSystem.ExplosionParticleSize);
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.N))
-					{
-						mcExplosionDebrisParticleSystem.ExplosionParticleSize += 5;
-						mcExplosionDebrisParticleSystem.ExplosionParticleSize = (mcExplosionDebrisParticleSystem.ExplosionParticleSize > 100 ? 100 : mcExplosionDebrisParticleSystem.ExplosionParticleSize);
-					}
-					break;
-
-				case EPSEffects.ExplosionDebrisSprite:
-					if (KeyboardManager.KeyWasJustPressed(Keys.X))
-					{
-						mcExplosionDebrisSpriteParticleSystem.ExplosionIntensity -= 5;
-						mcExplosionDebrisSpriteParticleSystem.ExplosionIntensity = (mcExplosionDebrisSpriteParticleSystem.ExplosionIntensity < 1 ? 1 : mcExplosionDebrisSpriteParticleSystem.ExplosionIntensity);
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.C))
-					{
-						mcExplosionDebrisSpriteParticleSystem.ExplosionIntensity += 5;
-						mcExplosionDebrisSpriteParticleSystem.ExplosionIntensity = (mcExplosionDebrisSpriteParticleSystem.ExplosionIntensity > 200 ? 200 : mcExplosionDebrisSpriteParticleSystem.ExplosionIntensity);
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.V))
-					{
-						mcExplosionDebrisSpriteParticleSystem.ChangeExplosionColor();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.B))
-					{
-						mcExplosionDebrisSpriteParticleSystem.ExplosionParticleSize -= 5;
-						mcExplosionDebrisSpriteParticleSystem.ExplosionParticleSize = (mcExplosionDebrisSpriteParticleSystem.ExplosionParticleSize < 1 ? 1 : mcExplosionDebrisSpriteParticleSystem.ExplosionParticleSize);
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.N))
-					{
-						mcExplosionDebrisSpriteParticleSystem.ExplosionParticleSize += 5;
-						mcExplosionDebrisSpriteParticleSystem.ExplosionParticleSize = (mcExplosionDebrisSpriteParticleSystem.ExplosionParticleSize > 100 ? 100 : mcExplosionDebrisSpriteParticleSystem.ExplosionParticleSize);
-					}
-					break;
-
-				case EPSEffects.ExplosionShockwave:
-					if (KeyboardManager.KeyWasJustPressed(Keys.V))
-					{
-						mcExplosionShockwaveParticleSystem.ChangeExplosionColor();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.B))
-					{
-						mcExplosionShockwaveParticleSystem.ShockwaveSize -= 5;
-						mcExplosionShockwaveParticleSystem.ShockwaveSize = (mcExplosionShockwaveParticleSystem.ShockwaveSize < 100 ? 100 : mcExplosionShockwaveParticleSystem.ShockwaveSize);
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.N))
-					{
-						mcExplosionShockwaveParticleSystem.ShockwaveSize += 5;
-						mcExplosionShockwaveParticleSystem.ShockwaveSize = (mcExplosionShockwaveParticleSystem.ShockwaveSize > 400 ? 400 : mcExplosionShockwaveParticleSystem.ShockwaveSize);
-					}
-					break;
-
-				case EPSEffects.Explosion:
-					if (KeyboardManager.KeyWasJustPressed(Keys.V))
-					{
-						mcExplosionParticleSystem.ChangeExplosionColor();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.B))
-					{
-						mcExplosionParticleSystem.ExplosionParticleSize -= 5;
-						mcExplosionParticleSystem.ExplosionParticleSize = (mcExplosionParticleSystem.ExplosionParticleSize < 1 ? 1 : mcExplosionParticleSystem.ExplosionParticleSize);
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.N))
-					{
-						mcExplosionParticleSystem.ExplosionParticleSize += 5;
-						mcExplosionParticleSystem.ExplosionParticleSize = (mcExplosionParticleSystem.ExplosionParticleSize > 100 ? 100 : mcExplosionParticleSystem.ExplosionParticleSize);
-					}
-					break;
-
-				case EPSEffects.SpriteParticleSystemTemplate: break;
-				case EPSEffects.Sprite3DBillboardParticleSystemTemplate: break;
-				case EPSEffects.QuadParticleSystemTemplate: break;
-				case EPSEffects.TexturedQuadParticleSystemTemplate: break;
-				case EPSEffects.DefaultSpriteParticleSystemTemplate: break;
-				case EPSEffects.DefaultSprite3DBillboardParticleSystemTemplate: break;
-				case EPSEffects.DefaultQuadParticleSystemTemplate: break;
-				case EPSEffects.DefaultTexturedQuadParticleSystemTemplate: break;
 			}
 		}
 
@@ -3853,7 +1959,7 @@ namespace DPSF_Demo
 				}
 
 				// If we are in Release Mode
-				if (GameMain.mbRELEASE_MODE)
+				if (GameMain.RELEASE_MODE)
 				{
 					try
 					{

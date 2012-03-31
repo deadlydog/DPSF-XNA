@@ -1,329 +1,97 @@
-﻿#region Using Statements
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using DPSF.ParticleSystems;
+using DPSF_Demo.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Content;
-#endregion
+using Microsoft.Xna.Framework.Input;
 
-namespace DPSF.ParticleSystems
+namespace DPSF_Demo.Particle_System_Wrappers_For_DPSF_Demo
 {
-    /// <summary>
-    /// Create a new Particle System class that inherits from a Default DPSF Particle System
-    /// </summary>
-#if (WINDOWS)
-    [Serializable]
-#endif
-    class FireSpriteParticleSystem : DefaultSprite3DBillboardParticleSystem
-    {
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public FireSpriteParticleSystem(Game cGame) : base(cGame) { }
+	class FireSpriteDPSFDemoParticleSystemWrapper : FireSpriteParticleSystem, IWrapDPSFDemoParticleSystems
+	{
+        public FireSpriteDPSFDemoParticleSystemWrapper(Game cGame)
+            : base(cGame)
+        { }
 
-        //===========================================================
-        // Structures and Variables
-        //===========================================================
-        private bool mbUseAdditiveBlending = false;
-        private float mfAmountOfSmokeToRelease = 0f;
-        public SmokeRingSpriteParticleSystem mcSmokeParticleSystem = null;
+        public void AfterAutoInitialize()
+        { }
 
-        /// <summary>
-        /// Get / Set the Camera Position used by the particle system
-        /// </summary>
-        public Vector3 CameraPosition { get; set; }
+	    public void DrawStatusText(DrawTextRequirements draw)
+	    {
+            draw.TextWriter.DrawString(draw.Font, "Smokiness:", new Vector2(draw.TextSafeArea.Left + 300, draw.TextSafeArea.Top + 2), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, this.GetAmountOfSmokeBeingReleased().ToString("0.00"), new Vector2(draw.TextSafeArea.Left + 410, draw.TextSafeArea.Top + 2), draw.PropertyTextColor);
+	    }
 
-        //===========================================================
-        // Overridden Particle System Functions
-        //===========================================================
+	    public void DrawInputControlsText(DrawTextRequirements draw)
+	    {
+            draw.TextWriter.DrawString(draw.Font, "Vertical Ring:", new Vector2(5, 250), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "X", new Vector2(130, 250), draw.PropertyTextColor);
 
-        /// <summary>
-        /// Sets the camera position.
-        /// </summary>
-        /// <param name="cameraPosition">The camera position.</param>
-        public override void SetCameraPosition(Vector3 cameraPosition)
-        {
-            this.CameraPosition = cameraPosition;
-        }
+            draw.TextWriter.DrawString(draw.Font, "Horizontal Ring:", new Vector2(5, 275), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "C", new Vector2(150, 275), draw.PropertyTextColor);
 
-        protected override void InitializeRenderProperties()
-        {
-            base.InitializeRenderProperties();
-            mbUseAdditiveBlending = false;
-            ToggleAdditiveBlending();
+            draw.TextWriter.DrawString(draw.Font, "Decrease Smoke:", new Vector2(5, 300), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "V", new Vector2(170, 300), draw.PropertyTextColor);
 
-            AlphaTestEffect effect = this.Effect as AlphaTestEffect;
-            if (effect != null)
+            draw.TextWriter.DrawString(draw.Font, "Increase Smoke:", new Vector2(5, 325), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "B", new Vector2(160, 325), draw.PropertyTextColor);
+
+            draw.TextWriter.DrawString(draw.Font, "Toggle Additive Blending:", new Vector2(5, 350), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "N", new Vector2(240, 350), draw.PropertyTextColor);
+
+            draw.TextWriter.DrawString(draw.Font, "Toggle Ring Movement:", new Vector2(5, 375), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "M", new Vector2(225, 375), draw.PropertyTextColor);
+	    }
+
+	    public void ProcessInput()
+	    {
+            if (KeyboardManager.KeyWasJustPressed(Keys.X))
             {
-                effect.VertexColorEnabled = false;
+                this.ParticleInitializationFunction = this.InitializeParticleFireOnVerticalRing;
             }
-        }
 
-        protected override void AfterInitialize()
-        {
-            mcSmokeParticleSystem = new SmokeRingSpriteParticleSystem(this.Game);
-
-            // Initialize the Smoke Particle System
-            mcSmokeParticleSystem.AutoInitialize(this.GraphicsDevice, this.ContentManager, this.SpriteBatch);
-            mcSmokeParticleSystem.DrawOrder = 100;
-        }
-
-        protected override void AfterDestroy()
-        {
-            if (mcSmokeParticleSystem != null)
+            if (KeyboardManager.KeyWasJustPressed(Keys.C))
             {
-                mcSmokeParticleSystem.Destroy();
-                mcSmokeParticleSystem = null;
+                this.ParticleInitializationFunction = this.InitializeParticleFireOnHorizontalRing;
             }
-        }
 
-        protected override void AfterUpdate(float fElapsedTimeInSeconds)
-        {
-            // If the Smoke Particle System is Initialized
-            if (mcSmokeParticleSystem.IsInitialized)
+            if (KeyboardManager.KeyWasJustPressed(Keys.V))
             {
-                // Update the Smoke Particle System manually
-                mcSmokeParticleSystem.CameraPosition = this.CameraPosition;
-                mcSmokeParticleSystem.Update(fElapsedTimeInSeconds);
-            }
-        }
-
-        protected override void AfterDraw()
-        {
-            // Set the World, View, and Projection matrices so the Smoke Particle System knows how to draw the particles on screen properly
-            mcSmokeParticleSystem.SetWorldViewProjectionMatrices(World, View, Projection);
-
-            // If the Smoke Particle System is Initialized
-            if (mcSmokeParticleSystem.IsInitialized)
-            {
-                // Draw the Smoke Particles manually
-                mcSmokeParticleSystem.Draw();
-            }
-        }
-
-        //===========================================================
-        // Initialization Functions
-        //===========================================================
-        public override void AutoInitialize(GraphicsDevice cGraphicsDevice, ContentManager cContentManager, SpriteBatch cSpriteBatch)
-        {
-            InitializeSpriteParticleSystem(cGraphicsDevice, cContentManager, 1000, 50000, "Textures/Fire", cSpriteBatch);
-            Name = "Fire and Smoke (Sprites)";
-            LoadFireRingEvents();
-            Emitter.ParticlesPerSecond = 500;
-            SetAmountOfSmokeToRelease(0.25f);
-        }
-
-        public void LoadFireRingEvents()
-        {
-            ParticleInitializationFunction = InitializeParticleFireOnVerticalRing;
-
-            // Set the Events to use
-            ParticleEvents.RemoveAllEvents();
-            ParticleEvents.AddEveryTimeEvent(UpdateParticlePositionAndVelocityUsingAcceleration);
-            ParticleEvents.AddEveryTimeEvent(UpdateParticleRotationUsingRotationalVelocity);
-            ParticleEvents.AddEveryTimeEvent(UpdateParticleTransparencyWithQuickFadeInAndSlowFadeOut, 100);
-            ParticleEvents.AddEveryTimeEvent(ReduceSizeBasedOnLifetime);
-            ParticleEvents.AddNormalizedTimedEvent(0.5f, GenerateSmokeParticle);
-
-            Emitter.PositionData.Position = new Vector3(0, 50, 0);
-
-            // Set the Fire Ring Settings
-            InitialProperties.LifetimeMin = 0.1f;
-            InitialProperties.LifetimeMax = 3.0f;
-            InitialProperties.PositionMin = Vector3.Zero;
-            InitialProperties.PositionMax = Vector3.Zero;
-            InitialProperties.StartSizeMin = 25.0f;
-            InitialProperties.StartSizeMax = 50.0f;
-            InitialProperties.EndSizeMin = 4.0f;
-            InitialProperties.EndSizeMax = 20.0f;
-            InitialProperties.StartColorMin = Color.White;
-            InitialProperties.StartColorMax = Color.White;
-            InitialProperties.EndColorMin = Color.White;
-            InitialProperties.EndColorMax = Color.White;
-            InitialProperties.InterpolateBetweenMinAndMaxColors = false;
-            InitialProperties.RotationMin = 0;
-            InitialProperties.RotationMax = MathHelper.TwoPi;
-            InitialProperties.VelocityMin = new Vector3(-10, 15, -10);
-            InitialProperties.VelocityMax = new Vector3(10, 30, 10);
-            InitialProperties.AccelerationMin = Vector3.Zero;
-            InitialProperties.AccelerationMax = Vector3.Zero;
-            InitialProperties.RotationalVelocityMin = -MathHelper.TwoPi;
-            InitialProperties.RotationalVelocityMax = MathHelper.TwoPi;
-
-            mcSmokeParticleSystem.LoadEvents();
-        }
-
-        public void InitializeParticleFireOnVerticalRing(DefaultSprite3DBillboardParticle cParticle)
-        {
-            Quaternion cBackup = Emitter.OrientationData.Orientation;
-            Emitter.OrientationData.Orientation = Quaternion.Identity;
-            InitializeParticleUsingInitialProperties(cParticle);
-            Emitter.OrientationData.Orientation = cBackup;
-
-            cParticle.Position = DPSFHelper.PointOnSphere(MathHelper.PiOver2, RandomNumber.Between(0, MathHelper.TwoPi), 40);
-            cParticle.Position = Vector3.Transform(cParticle.Position, Emitter.OrientationData.Orientation);
-            cParticle.Position += Emitter.PositionData.Position;
-        }
-
-        public void InitializeParticleFireOnHorizontalRing(DefaultSprite3DBillboardParticle cParticle)
-        {
-            Quaternion cBackup = Emitter.OrientationData.Orientation;
-            Emitter.OrientationData.Orientation = Quaternion.Identity;
-            InitializeParticleUsingInitialProperties(cParticle);
-            Emitter.OrientationData.Orientation = cBackup;
-
-            cParticle.Position = DPSFHelper.PointOnSphere(RandomNumber.Between(0, MathHelper.TwoPi), 0, 100);
-            cParticle.Position = Vector3.Transform(cParticle.Position, Emitter.OrientationData.Orientation);
-            cParticle.Position += Emitter.PositionData.Position;
-        }
-
-        //===========================================================
-        // Particle Update Functions
-        //===========================================================
-        protected void ReduceSizeBasedOnLifetime(DefaultSprite3DBillboardParticle cParticle, float fElapsedTimeInSeconds)
-        {
-            cParticle.Size = ((1.0f - cParticle.NormalizedElapsedTime) / 1.0f) * cParticle.StartSize;
-        }
-
-        protected void GenerateSmokeParticle(DefaultSprite3DBillboardParticle cParticle, float fElapsedTimeInSeconds)
-        {
-            // If the Smoke Particle System is initialized
-            if (mcSmokeParticleSystem != null && mcSmokeParticleSystem.IsInitialized)
-            {
-                // Only create a Smoke Particles some of the time
-                if (RandomNumber.NextFloat() < mfAmountOfSmokeToRelease)
+                float fAmount = this.GetAmountOfSmokeBeingReleased();
+                if (fAmount > 0.0f)
                 {
-                    // Create a new Smoke Particle at the same Position as this Fire Particle
-                    DefaultSprite3DBillboardParticle cSmokeParticle = new DefaultSprite3DBillboardParticle();
-                    mcSmokeParticleSystem.InitializeParticle(cSmokeParticle);
-                    cSmokeParticle.Position = cParticle.Position;
-
-                    // Add the Particle to the Smoke Particle System
-                    mcSmokeParticleSystem.AddParticle(cSmokeParticle);
-                }
-            }
-        }
-
-        //===========================================================
-        // Particle System Update Functions
-        //===========================================================
-
-        //===========================================================
-        // Other Particle System Functions
-        //===========================================================
-
-        public void ToggleAdditiveBlending()
-        {
-            // Toggle Additive Blending on/off
-            mbUseAdditiveBlending = !mbUseAdditiveBlending;
-
-            // If Additive Blending should be used
-            if (mbUseAdditiveBlending)
-            {
-                // Turn it on
-                RenderProperties.BlendState = BlendState.Additive;
-            }
-            else
-            {
-                // Turn off Additive Blending
-                RenderProperties.BlendState = BlendState.AlphaBlend;
-            }
-        }
-
-        /// <summary>
-        /// Sets how much Smoke the Fire should produce
-        /// </summary>
-        /// <param name="fNormalizedAmount">0.0 = No smoke, 1.0 = Max smoke</param>
-        public void SetAmountOfSmokeToRelease(float fNormalizedAmount)
-        {
-            if (fNormalizedAmount < 0.0f)
-            {
-                fNormalizedAmount = 0.0f;
-            }
-            else if (fNormalizedAmount > 1.0f)
-            {
-                fNormalizedAmount = 1.0f;
-            }
-
-            mfAmountOfSmokeToRelease = fNormalizedAmount / 2.0f;
-        }
-
-        public float GetAmountOfSmokeBeingReleased()
-        {
-            return mfAmountOfSmokeToRelease * 2.0f;
-        }
-
-
-#if (WINDOWS)
-        [Serializable]
-#endif
-        public class SmokeRingSpriteParticleSystem : DefaultSprite3DBillboardParticleSystem
-        {
-            public SmokeRingSpriteParticleSystem(Game cGame) : base(cGame) { }
-
-            /// <summary>
-            /// Get / Set the Camera Position used by the particle system
-            /// </summary>
-            public Vector3 CameraPosition { get; set; }
-
-            //===========================================================
-            // Overridden Particle System Functions
-            //===========================================================
-
-            /// <summary>
-            /// Sets the camera position.
-            /// </summary>
-            /// <param name="cameraPosition">The camera position.</param>
-            public override void SetCameraPosition(Vector3 cameraPosition)
-            {
-                this.CameraPosition = cameraPosition;
-            }
-
-            public override void AutoInitialize(GraphicsDevice cGraphicsDevice, ContentManager cContentManager, SpriteBatch cSpriteBatch)
-            {
-                InitializeSpriteParticleSystem(cGraphicsDevice, cContentManager, 1000, 50000, "Textures/Smoke", cSpriteBatch);
-                LoadEvents();
-            }
-
-            protected override void InitializeRenderProperties()
-            {
-                base.InitializeRenderProperties();
-
-				// Turn coloring tinting off, so that we just use the original texture as is
-                AlphaTestEffect effect = this.Effect as AlphaTestEffect;
-                if (effect != null)
-                {
-                    effect.VertexColorEnabled = false;
+                    this.SetAmountOfSmokeToRelease(fAmount - 0.05f);
                 }
             }
 
-            public void LoadEvents()
+            if (KeyboardManager.KeyWasJustPressed(Keys.B))
             {
-                ParticleInitializationFunction = InitializeSmokeRingParticle;
-
-                ParticleEvents.RemoveAllEvents();
-                ParticleEvents.AddEveryTimeEvent(UpdateParticlePositionAndVelocityUsingAcceleration);
-                ParticleEvents.AddEveryTimeEvent(UpdateParticleRotationUsingRotationalVelocity);
-                ParticleEvents.AddEveryTimeEvent(UpdateParticleTransparencyWithQuickFadeInAndSlowFadeOut, 100);
-                ParticleEvents.AddEveryTimeEvent(UpdateParticleWidthAndHeightUsingLerp);
+                float fAmount = this.GetAmountOfSmokeBeingReleased();
+                if (fAmount < 1.0f)
+                {
+                    this.SetAmountOfSmokeToRelease(fAmount + 0.05f);
+                }
             }
 
-            // Used to generate smoke coming off the ring of fire
-            public void InitializeSmokeRingParticle(DefaultSprite3DBillboardParticle cParticle)
+            if (KeyboardManager.KeyWasJustPressed(Keys.N))
             {
-                cParticle.Lifetime = RandomNumber.Between(1.0f, 5.0f);
-
-                cParticle.Position = new Vector3(0, 10, 0);
-                cParticle.StartSize = RandomNumber.Next(10, 40);
-                cParticle.EndSize = RandomNumber.Next(20, 60);
-                cParticle.Size = cParticle.StartSize;
-                cParticle.Color = Color.White; //Color.Gray;
-                cParticle.Rotation = RandomNumber.Between(0, MathHelper.TwoPi);
-
-                cParticle.Velocity = new Vector3(RandomNumber.Next(0, 30), RandomNumber.Next(10, 30), RandomNumber.Next(-20, 10));
-                cParticle.Acceleration = Vector3.Zero;
-                cParticle.RotationalVelocity = RandomNumber.Between(-MathHelper.Pi, MathHelper.Pi);
+                this.ToggleAdditiveBlending();
             }
-        }
-    }
+
+            if (KeyboardManager.KeyWasJustPressed(Keys.M))
+            {
+                if (this.Emitter.PositionData.Velocity == Vector3.Zero)
+                {
+                    this.Emitter.PositionData.Velocity = new Vector3(30, 0, 0);
+                }
+                else
+                {
+                    this.Emitter.PositionData.Velocity = Vector3.Zero;
+                }
+            }
+	    }
+	}
 }

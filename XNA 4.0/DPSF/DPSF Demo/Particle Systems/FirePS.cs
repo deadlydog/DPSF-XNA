@@ -82,6 +82,11 @@ namespace DPSF.ParticleSystems
             }
         }
 
+        public override int TotalNumberOfActiveParticles { get { return base.TotalNumberOfActiveParticles + mcSmokeParticleSystem.TotalNumberOfActiveParticles; } }
+        public override int TotalNumberOfParticlesAllocatedInMemory { get { return base.TotalNumberOfParticlesAllocatedInMemory + mcSmokeParticleSystem.TotalNumberOfParticlesAllocatedInMemory; } }
+        public override int TotalNumberOfParticlesBeingDrawn { get { return base.TotalNumberOfParticlesBeingDrawn + mcSmokeParticleSystem.TotalNumberOfParticlesBeingDrawn; } }
+
+
         //===========================================================
         // Initialization Functions
         //===========================================================

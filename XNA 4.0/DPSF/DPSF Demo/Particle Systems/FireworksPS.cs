@@ -107,6 +107,45 @@ namespace DPSF.ParticleSystems
 			mcParticleSystemManager.DrawAllParticleSystems();
 		}
 
+	    public override int TotalNumberOfActiveParticles
+	    {
+            get
+            {
+                return base.TotalNumberOfActiveParticles +
+                       mcFireworksExplosionParticleSystem1.TotalNumberOfActiveParticles +
+                       mcFireworksExplosionParticleSystem2.TotalNumberOfActiveParticles +
+                       mcFireworksExplosionParticleSystem3.TotalNumberOfActiveParticles +
+                       mcFireworksExplosionParticleSystem2.TotalNumberOfActiveParticles +
+                       mcFireworksExplosionSmokeParticleSystem.TotalNumberOfActiveParticles;
+            }
+	    }
+
+	    public override int TotalNumberOfParticlesAllocatedInMemory
+	    {
+	        get
+	        {
+                return base.TotalNumberOfParticlesAllocatedInMemory +
+                       mcFireworksExplosionParticleSystem1.TotalNumberOfParticlesAllocatedInMemory +
+                       mcFireworksExplosionParticleSystem2.TotalNumberOfParticlesAllocatedInMemory +
+                       mcFireworksExplosionParticleSystem3.TotalNumberOfParticlesAllocatedInMemory +
+                       mcFireworksExplosionParticleSystem2.TotalNumberOfParticlesAllocatedInMemory +
+                       mcFireworksExplosionSmokeParticleSystem.TotalNumberOfParticlesAllocatedInMemory;
+	        }
+	    }
+
+	    public override int TotalNumberOfParticlesBeingDrawn
+	    {
+	        get
+	        {
+                return base.TotalNumberOfParticlesBeingDrawn +
+                       mcFireworksExplosionParticleSystem1.TotalNumberOfParticlesBeingDrawn +
+                       mcFireworksExplosionParticleSystem2.TotalNumberOfParticlesBeingDrawn +
+                       mcFireworksExplosionParticleSystem3.TotalNumberOfParticlesBeingDrawn +
+                       mcFireworksExplosionParticleSystem2.TotalNumberOfParticlesBeingDrawn +
+                       mcFireworksExplosionSmokeParticleSystem.TotalNumberOfParticlesBeingDrawn;
+	        }
+	    }
+
 		//===========================================================
 		// Initialization Functions
 		//===========================================================

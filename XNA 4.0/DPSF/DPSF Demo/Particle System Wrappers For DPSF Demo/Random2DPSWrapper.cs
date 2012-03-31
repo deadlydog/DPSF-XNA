@@ -1,120 +1,47 @@
-#region Using Statements
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using DPSF.ParticleSystems;
+using DPSF_Demo.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Content;
-#endregion
+using Microsoft.Xna.Framework.Input;
 
-namespace DPSF.ParticleSystems
+namespace DPSF_Demo.Particle_System_Wrappers_For_DPSF_Demo
 {
-	/// <summary>
-	/// Create a new Particle System class that inherits from a
-	/// Default DPSF Particle System
-	/// </summary>
-#if (WINDOWS)
-	[Serializable]
-#endif
-	class Random2DParticleSystem : DefaultTexturedQuadParticleSystem
+	class Random2DDPSFDemoParticleSystemWrapper : Random2DParticleSystem, IWrapDPSFDemoParticleSystems
 	{
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		public Random2DParticleSystem(Game cGame) : base(cGame) { }
+        public Random2DDPSFDemoParticleSystemWrapper(Game cGame)
+            : base(cGame)
+        { }
 
-		//===========================================================
-		// Structures and Variables
-		//===========================================================
+        public void AfterAutoInitialize()
+        { }
 
-		//===========================================================
-		// Overridden Particle System Functions
-		//===========================================================
+	    public void DrawStatusText(DrawTextRequirements draw)
+	    { }
 
-		/// <summary>
-		/// Function to setup the Render Properties (i.e. BlendState, DepthStencilState, RasterizerState, and SamplerState)
-		/// which will be applied to the Graphics Device before drawing the Particle System's Particles.
-		/// <para>This function is called when initializing the particle system.</para>
-		/// </summary>
-		protected override void InitializeRenderProperties()
-		{
-			base.InitializeRenderProperties();
+	    public void DrawInputControlsText(DrawTextRequirements draw)
+	    {
+            draw.TextWriter.DrawString(draw.Font, "Straight:", new Vector2(5, 250), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "X", new Vector2(80, 250), draw.PropertyTextColor);
 
-			// Use additive blending
-			RenderProperties.BlendState = BlendState.Additive;
-		}
+            draw.TextWriter.DrawString(draw.Font, "Random Direction Changes:", new Vector2(5, 275), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "C", new Vector2(255, 275), draw.PropertyTextColor);
+	    }
 
-		//===========================================================
-		// Initialization Functions
-		//===========================================================
-		public override void AutoInitialize(GraphicsDevice cGraphicsDevice, ContentManager cContentManager, SpriteBatch cSpriteBatch)
-		{
-			InitializeTexturedQuadParticleSystem(cGraphicsDevice, cContentManager, 1000, 50000,
-												UpdateVertexProperties, "Textures/Fire");
-			LoadEvents();
-			Emitter.ParticlesPerSecond = 100;
-			Name = "Random 2D";
-		}
+	    public void ProcessInput()
+	    {
+            if (KeyboardManager.KeyWasJustPressed(Keys.X))
+            {
+                this.LoadEvents();
+            }
 
-		public void LoadEvents()
-		{
-			ParticleInitializationFunction = InitializeParticleRandom2D;
-
-			Emitter.PositionData.Position = new Vector3(0, 50, 0);
-
-			ParticleEvents.RemoveAllEvents();
-			ParticleEvents.AddEveryTimeEvent(UpdateParticlePositionAndVelocityUsingAcceleration);
-			ParticleEvents.AddEveryTimeEvent(UpdateParticleTransparencyWithQuickFadeInAndSlowFadeOut, 100);
-			ParticleEvents.AddEveryTimeEvent(UpdateParticleToFaceTheCamera, 200);
-		}
-
-		public void LoadExtraEvents()
-		{
-			ParticleInitializationFunction = InitializeParticleRandom2D;
-
-			Emitter.PositionData.Position = new Vector3(0, 50, 0);
-
-			ParticleEvents.RemoveAllEvents();
-			ParticleEvents.AddEveryTimeEvent(UpdateParticlePositionAndVelocityUsingAcceleration);
-			ParticleEvents.AddEveryTimeEvent(UpdateParticleTransparencyWithQuickFadeInAndSlowFadeOut, 100);
-			ParticleEvents.AddEveryTimeEvent(UpdateParticleToFaceTheCamera, 200);
-
-			ParticleEvents.AddNormalizedTimedEvent(0.2f, ChangeDirection);
-			ParticleEvents.AddNormalizedTimedEvent(0.4f, ChangeDirection);
-			ParticleEvents.AddNormalizedTimedEvent(0.6f, ChangeDirection);
-			ParticleEvents.AddNormalizedTimedEvent(0.8f, ChangeDirection);
-		}
-
-		public void InitializeParticleRandom2D(DefaultTexturedQuadParticle cParticle)
-		{
-			cParticle.Lifetime = 1.5f;
-
-			cParticle.Position = Vector3.Zero;
-			cParticle.Position = PivotPoint3D.RotatePosition(Matrix.CreateFromQuaternion(Emitter.OrientationData.Orientation), Emitter.PivotPointData.PivotPoint, cParticle.Position);
-			cParticle.Position += Emitter.PositionData.Position;
-			cParticle.Size = 30.0f;
-			cParticle.Color = Color.White;
-
-			cParticle.Velocity = new Vector3(RandomNumber.Next(-50, 50), RandomNumber.Next(-50, 50), 0);
-			cParticle.Velocity = PivotPoint3D.RotatePosition(Matrix.CreateFromQuaternion(Emitter.OrientationData.Orientation), Emitter.PivotPointData.PivotPoint, cParticle.Velocity);
-			cParticle.Acceleration = Vector3.Zero;
-
-			cParticle.StartSize = cParticle.Size;
-		}
-
-		//===========================================================
-		// Particle Update Functions
-		//===========================================================
-		protected void ChangeDirection(DefaultTexturedQuadParticle cParticle, float fElapsedTimeInSeconds)
-		{
-			cParticle.Velocity = new Vector3(RandomNumber.Next(-50, 50), RandomNumber.Next(-50, 50), 0);
-		}
-
-		//===========================================================
-		// Particle System Update Functions
-		//===========================================================
-		
-		//===========================================================
-		// Other Particle System Functions
-		//===========================================================
+            if (KeyboardManager.KeyWasJustPressed(Keys.C))
+            {
+                this.LoadExtraEvents();
+            }
+	    }
 	}
 }

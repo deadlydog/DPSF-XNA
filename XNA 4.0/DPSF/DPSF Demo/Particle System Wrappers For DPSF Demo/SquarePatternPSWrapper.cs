@@ -1,150 +1,55 @@
-#region Using Statements
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using DPSF.ParticleSystems;
+using DPSF_Demo.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Content;
-#endregion
+using Microsoft.Xna.Framework.Input;
 
-namespace DPSF.ParticleSystems
+namespace DPSF_Demo.Particle_System_Wrappers_For_DPSF_Demo
 {
-	/// <summary>
-	/// Create a new Particle System class that inherits from a Default DPSF Particle System.
-	/// </summary>
-#if (WINDOWS)
-	[Serializable]
-#endif
-	class SquarePatternParticleSystem : DefaultSprite3DBillboardParticleSystem
+	class SquarePatternDPSFDemoParticleSystemWrapper : SquarePatternParticleSystem, IWrapDPSFDemoParticleSystems
 	{
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		public SquarePatternParticleSystem(Game cGame) : base(cGame) { }
+        public SquarePatternDPSFDemoParticleSystemWrapper(Game cGame)
+            : base(cGame)
+        { }
 
-		//===========================================================
-		// Structures and Variables
-		//===========================================================
+        public void AfterAutoInitialize()
+        { }
 
-		//===========================================================
-		// Overridden Particle System Functions
-		//===========================================================
+	    public void DrawStatusText(DrawTextRequirements draw)
+	    { }
 
-		//===========================================================
-		// Initialization Functions
-		//===========================================================
-		public override void AutoInitialize(GraphicsDevice cGraphicsDevice, ContentManager cContentManager, SpriteBatch cSpriteBatch)
-		{
-			InitializeSpriteParticleSystem(cGraphicsDevice, cContentManager, 1000, 50000, "Textures/Bubble", cSpriteBatch);
-			LoadSquarePatternEvents();
-			Emitter.ParticlesPerSecond = 100;
-			Name = "Square Pattern";
-		}
+	    public void DrawInputControlsText(DrawTextRequirements draw)
+	    {
+            draw.TextWriter.DrawString(draw.Font, "Square Pattern:", new Vector2(5, 250), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "X", new Vector2(150, 250), draw.PropertyTextColor);
 
-		public void LoadSquarePatternEvents()
-		{
-			ParticleInitializationFunction = InitializeParticleSquarePattern;
+            draw.TextWriter.DrawString(draw.Font, "Multiple Color Changes:", new Vector2(5, 275), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "C", new Vector2(220, 275), draw.PropertyTextColor);
 
-			Emitter.PositionData.Position = new Vector3(0, 50, 0);
+            draw.TextWriter.DrawString(draw.Font, "Change Color:", new Vector2(5, 300), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "V", new Vector2(140, 300), draw.PropertyTextColor);
+	    }
 
-			ParticleEvents.RemoveAllEvents();
-			ParticleEvents.AddEveryTimeEvent(UpdateParticlePositionAndVelocityUsingAcceleration);
-			ParticleEvents.AddNormalizedTimedEvent(0.25f, UpdateParticleChangeDirection1);
-			ParticleEvents.AddNormalizedTimedEvent(0.5f, UpdateParticleChangeDirection2);
-			ParticleEvents.AddNormalizedTimedEvent(0.75f, UpdateParticleChangeDirection3);
-		}
+	    public void ProcessInput()
+	    {
+            if (KeyboardManager.KeyWasJustPressed(Keys.X))
+            {
+                this.LoadSquarePatternEvents();
+            }
 
-		public void LoadChangeColorEvents()
-		{
-			ParticleInitializationFunction = InitializeParticleChangeColor;
+            if (KeyboardManager.KeyWasJustPressed(Keys.C))
+            {
+                this.LoadChangeColorEvents();
+            }
 
-			ParticleEvents.RemoveAllEvents();
-			ParticleEvents.AddEveryTimeEvent(UpdateParticlePositionAndVelocityUsingAcceleration);
-			ParticleEvents.AddNormalizedTimedEvent(0.25f, UpdateParticleChangeColor1);
-			ParticleEvents.AddNormalizedTimedEvent(0.5f, UpdateParticleChangeColor2);
-			ParticleEvents.AddNormalizedTimedEvent(0.75f, UpdateParticleChangeColor3);
-		}
-
-		public void InitializeParticleSquarePattern(DefaultSprite3DBillboardParticle cParticle)
-		{
-			cParticle.Lifetime = (float)(5.0f);
-
-			cParticle.Position = Emitter.PositionData.Position;
-			cParticle.Position += new Vector3(RandomNumber.Next(-50, 50), RandomNumber.Next(-50, 50), RandomNumber.Next(-50, 50));
-			cParticle.Size = RandomNumber.Next(5, 20);
-			cParticle.Color = new Color(0, RandomNumber.NextFloat(), 0);
-
-			// Move Right
-			cParticle.Velocity = new Vector3(50, 0, 0);
-			cParticle.Acceleration = Vector3.Zero;
-		}
-
-        public void InitializeParticleChangeColor(DefaultSprite3DBillboardParticle cParticle)
-		{
-			cParticle.Lifetime = (float)(4.0f);
-
-			cParticle.Position = Emitter.PositionData.Position;
-			cParticle.Position += new Vector3(-100, RandomNumber.Next(0, 100), RandomNumber.Next(-50, 50));
-			cParticle.Size = RandomNumber.Next(5, 20);
-			cParticle.Color = Color.Red;
-
-			cParticle.Velocity = new Vector3(50, 0, 0);
-			cParticle.Acceleration = Vector3.Zero;
-		}
-
-		//===========================================================
-		// Particle Update Functions
-		//===========================================================
-
-        protected void UpdateParticleChangeParticleColor(DefaultSprite3DBillboardParticle cParticle, float fElapsedTimeInSeconds)
-		{
-			// Assign this Particle a new Random Color
-			cParticle.Color = DPSFHelper.RandomColor();
-		}
-
-        protected void UpdateParticleChangeDirection1(DefaultSprite3DBillboardParticle cParticle, float fElapsedTimeInSeconds)
-		{
-			// Move Up
-			cParticle.Velocity = new Vector3(0, 50, 0);
-		}
-
-        protected void UpdateParticleChangeDirection2(DefaultSprite3DBillboardParticle cParticle, float fElapsedTimeInSeconds)
-		{
-			// Move Left
-			cParticle.Velocity = new Vector3(-50, 0, 0);
-		}
-
-        protected void UpdateParticleChangeDirection3(DefaultSprite3DBillboardParticle cParticle, float fElapsedTimeInSeconds)
-		{
-			// Move Down
-			cParticle.Velocity = new Vector3(0, -50, 0);
-		}
-
-        protected void UpdateParticleChangeColor1(DefaultSprite3DBillboardParticle cParticle, float fElapsedTimeInSeconds)
-		{
-			cParticle.Color = Color.Green;
-		}
-
-        protected void UpdateParticleChangeColor2(DefaultSprite3DBillboardParticle cParticle, float fElapsedTimeInSeconds)
-		{
-			cParticle.Color = Color.Yellow;
-		}
-
-        protected void UpdateParticleChangeColor3(DefaultSprite3DBillboardParticle cParticle, float fElapsedTimeInSeconds)
-		{
-			cParticle.Color = Color.Blue;
-		}
-
-		//===========================================================
-		// Particle System Update Functions
-		//===========================================================
-		
-		//===========================================================
-		// Other Particle System Functions
-		//===========================================================
-
-		public void ChangeParticlesToRandomColors()
-		{
-			this.ParticleEvents.AddOneTimeEvent(UpdateParticleChangeParticleColor);
-		}
+            if (KeyboardManager.KeyWasJustPressed(Keys.V))
+            {
+                this.ChangeParticlesToRandomColors();
+            }
+	    }
 	}
 }

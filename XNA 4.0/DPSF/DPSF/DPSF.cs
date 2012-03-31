@@ -4052,6 +4052,14 @@ namespace DPSF
 			}
 		}
 
+        /// <summary>
+        /// Get the number of particles that memory has been allocated for, for both this particle system and any particle systems contained within this one.
+        /// <para>NOTE: Because a particle system may contain other particle systems, this is a virtual function that may be overridden to return the 
+        /// NumberOfParticlesAllocatedInMemory for both this particle system and any child particle systems that are contained within this one.</para>
+        /// <para>NOTE: By default this just returns this particle system's NumberOfParticlesAllocatedInMemory.</para>
+        /// </summary>
+        public virtual int TotalNumberOfParticlesAllocatedInMemory { get { return NumberOfParticlesAllocatedInMemory; } }
+
 		/// <summary>
 		/// Get / Set the Max Number of Particles this Particle System is Allowed to contain at any given time.
 		/// <para>NOTE: The Automatic Memory Manager will never allocate space for more Particles than this.</para>
@@ -4077,7 +4085,7 @@ namespace DPSF
 		}
 
 		/// <summary>
-		/// Get the number of Particles that are currently Active
+		/// Get the number of Particles that are currently Active.
 		/// </summary>
 		public int NumberOfActiveParticles
 		{
@@ -4098,14 +4106,29 @@ namespace DPSF
 			}
 		}
 
+        /// <summary>
+        /// Get the number of particles that are currently Active, in both this particle system and any particle systems contained within this one.
+        /// <para>NOTE: Because a particle system may contain other particle systems, this is a virtual function that may be overridden to return the 
+        /// NumberOfActiveParticles for both this particle system and any child particle systems that are contained within this one.</para>
+        /// <para>NOTE: By default this just returns this particle system's NumberOfActiveParticles.</para>
+        /// </summary>
+        public virtual int TotalNumberOfActiveParticles { get { return NumberOfActiveParticles; } }
+
 		/// <summary>
-		/// Get the number of Particles being Drawn. That is, how many Particles 
-		/// are both Active AND Visible.
+		/// Get the number of Particles being Drawn. That is, how many Particles are both Active AND Visible.
 		/// </summary>
 		public int NumberOfParticlesBeingDrawn
 		{
 			get { return miNumberOfParticlesToDraw; }
 		}
+
+        /// <summary>
+        /// Get the number of particles that are being Drawn, in both this particle system and any particle systems contained within this one.
+        /// <para>NOTE: Because a particle system may contain other particle systems, this is a virtual function that may be overridden to return the 
+        /// NumberOfParticlesBeingDrawn for both this particle system and any child particle systems that are contained within this one.</para>
+        /// <para>NOTE: By default this just returns this particle system's NumberOfParticlesBeingDrawn.</para>
+        /// </summary>
+        public virtual int TotalNumberOfParticlesBeingDrawn { get { return NumberOfParticlesBeingDrawn; } }
 
 		/// <summary>
 		/// Get the number of Particles that may still be added before reaching the

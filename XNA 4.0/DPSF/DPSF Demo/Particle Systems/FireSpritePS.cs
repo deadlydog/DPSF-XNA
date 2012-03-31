@@ -63,8 +63,13 @@ namespace DPSF.ParticleSystems
         {
             mcSmokeParticleSystem = new SmokeRingSpriteParticleSystem(this.Game);
 
+            // Determine which Sprite Batch object to pass into the Smoke Particle System.
+            // If a custom one was provided to the Fire Particle System, we want to use it, otherwise we want
+            // the Smoke Particle System to use its own Sprite Batch, so we just pass in null.
+            SpriteBatch spriteBatch = this.UsingExternalSpriteBatchToDrawParticles ? this.SpriteBatch : null;
+
             // Initialize the Smoke Particle System
-            mcSmokeParticleSystem.AutoInitialize(this.GraphicsDevice, this.ContentManager, this.SpriteBatch);
+            mcSmokeParticleSystem.AutoInitialize(this.GraphicsDevice, this.ContentManager, spriteBatch);
             mcSmokeParticleSystem.DrawOrder = 100;
         }
 
@@ -100,6 +105,10 @@ namespace DPSF.ParticleSystems
                 mcSmokeParticleSystem.Draw();
             }
         }
+
+        public override int TotalNumberOfActiveParticles { get { return base.TotalNumberOfActiveParticles + mcSmokeParticleSystem.TotalNumberOfActiveParticles; } }
+        public override int TotalNumberOfParticlesAllocatedInMemory { get { return base.TotalNumberOfParticlesAllocatedInMemory + mcSmokeParticleSystem.TotalNumberOfParticlesAllocatedInMemory; } }
+        public override int TotalNumberOfParticlesBeingDrawn { get { return base.TotalNumberOfParticlesBeingDrawn + mcSmokeParticleSystem.TotalNumberOfParticlesBeingDrawn; } }
 
         //===========================================================
         // Initialization Functions

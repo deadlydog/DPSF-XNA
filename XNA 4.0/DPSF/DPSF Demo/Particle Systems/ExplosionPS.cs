@@ -55,34 +55,6 @@ namespace DPSF.ParticleSystems
         /// </summary>
         public int ExplosionIntensity { get; set; }
 
-        /// <summary>
-        /// Get the Total Number Of Active Particles currently used in the explosion.
-        /// </summary>
-        public int TotalNumberOfActiveParticles
-        {
-            get
-            {
-                if (_particleSystemManager != null)
-                    return _particleSystemManager.TotalNumberOfActiveParticles;
-                else
-                    return 0;
-            }
-        }
-
-        /// <summary>
-        /// Get the Total Number Of Particles Allocated In Memory for the explosion.
-        /// </summary>
-        public int TotalNumberOfParticlesAllocatedInMemory
-        {
-            get
-            {
-                if (_particleSystemManager != null)
-                    return _particleSystemManager.TotalNumberOfParticlesAllocatedInMemory;
-                else
-                    return 0;
-            }
-        }
-
         ParticleSystemManager _particleSystemManager = null;
         ExplosionDebrisParticleSystem _debrisParticleSystem = null;
         ExplosionFireSmokeParticleSystem _fireSmokeParticleSystem = null;
@@ -206,6 +178,28 @@ namespace DPSF.ParticleSystems
             _particleSystemManager.DrawAllParticleSystems();
         }
 
+        public override int TotalNumberOfActiveParticles { get { return base.TotalNumberOfActiveParticles + _particleSystemManager.TotalNumberOfActiveParticles; } }
+        public override int TotalNumberOfParticlesAllocatedInMemory { get { return base.TotalNumberOfParticlesAllocatedInMemory + _particleSystemManager.TotalNumberOfParticlesAllocatedInMemory; } }
+        public override int TotalNumberOfParticlesBeingDrawn { get { return base.TotalNumberOfParticlesBeingDrawn + _particleSystemManager.TotalNumberOfParticlesBeingDrawn; } }
+
+        //===========================================================
+        // Initialization Functions
+        //===========================================================
+        public override void AutoInitialize(GraphicsDevice graphicsDevice, ContentManager contentManager, SpriteBatch spriteBatch)
+        {
+            InitializeNoDisplayParticleSystem(10, 100);
+
+            // A No Display particle system doesn't take a graphics device or content manager, so we can't
+            // override the AfterInitialize() function to initialize our other particle systems. So we just
+            // create another function to do it after setting the graphics device and content manager.
+            SetGraphicsDevice(graphicsDevice);
+            this.ContentManager = contentManager;
+            AutoInitializeOtherParticleSystems();
+
+            Name = "Explosion";
+            LoadLargeExplosion();
+        }
+
         /// <summary>
         /// Initialize all of the particle systems used by this particle system class.
         /// </summary>
@@ -230,7 +224,7 @@ namespace DPSF.ParticleSystems
             _roundSparksParticleSystem.DrawOrder = 200;
             _shockwaveParticleSystem.DrawOrder = 200;
             _smokeTrailsParticleSystem.DrawOrder = 200;
-            
+
             // Add all of the particle systems to the manager
             _particleSystemManager.AddParticleSystem(_debrisParticleSystem);
             _particleSystemManager.AddParticleSystem(_fireSmokeParticleSystem);
@@ -241,25 +235,7 @@ namespace DPSF.ParticleSystems
             _particleSystemManager.AddParticleSystem(_smokeTrailsParticleSystem);
 
             // Initialize all of the particle systems
-			_particleSystemManager.AutoInitializeAllParticleSystems(this.GraphicsDevice, this.ContentManager, null);
-        }
-
-        //===========================================================
-        // Initialization Functions
-        //===========================================================
-        public override void AutoInitialize(GraphicsDevice graphicsDevice, ContentManager contentManager, SpriteBatch spriteBatch)
-        {
-            InitializeNoDisplayParticleSystem(10, 100);
-
-            // A No Display particle system doesn't take a graphics device or content manager, so we can't
-            // override the AfterInitialize() function to initialize our other particle systems. So we just
-            // create another function to do it after setting the graphics device and content manager.
-            SetGraphicsDevice(graphicsDevice);
-            this.ContentManager = contentManager;
-            AutoInitializeOtherParticleSystems();
-
-            Name = "Explosion";
-            LoadLargeExplosion();
+            _particleSystemManager.AutoInitializeAllParticleSystems(this.GraphicsDevice, this.ContentManager, null);
         }
 
         public void LoadLargeExplosion()

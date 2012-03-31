@@ -1,184 +1,158 @@
-#region Using Statements
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using DPSF.ParticleSystems;
+using DPSF_Demo.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Content;
-#endregion
+using Microsoft.Xna.Framework.Input;
 
-namespace DPSF.ParticleSystems
+namespace DPSF_Demo.Particle_System_Wrappers_For_DPSF_Demo
 {
-    // Create a new type of Particle for this Particle System
-#if (WINDOWS)
-    [Serializable]
-#endif
-    class BallParticle : DefaultTexturedQuadParticle
-    {
-        // We need another variable to hold the Particle's untransformed Position (it's Emitter Independent Position)
-        public Vector3 sEmitterIndependentPosition;
+	class BallDPSFDemoParticleSystemWrapper : BallParticleSystem, IWrapDPSFDemoParticleSystems
+	{
+        public BallDPSFDemoParticleSystemWrapper(Game cGame)
+            : base(cGame)
+        { }
 
-        public BallParticle()
-        {
-            Reset();
-        }
+        public void AfterAutoInitialize()
+        { }
 
-        public override void Reset()
-        {
-            base.Reset();
-            sEmitterIndependentPosition = Vector3.Zero;
-        }
+	    public void DrawStatusText(DrawTextRequirements draw)
+	    { }
 
-        public override void CopyFrom(DPSFParticle ParticleToCopy)
-        {
-            // Cast the Particle to the type it really is
-            BallParticle cParticleToCopy = (BallParticle)ParticleToCopy;
+	    public void DrawInputControlsText(DrawTextRequirements draw)
+	    {
+            draw.TextWriter.DrawString(draw.Font, "Increase Radius:", new Vector2(5, 250), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "X", new Vector2(155, 250), draw.PropertyTextColor);
 
-            base.CopyFrom(cParticleToCopy);
-            sEmitterIndependentPosition = cParticleToCopy.sEmitterIndependentPosition;
-        }
-    }
+            draw.TextWriter.DrawString(draw.Font, "Decrease Radius:", new Vector2(5, 275), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "C", new Vector2(165, 275), draw.PropertyTextColor);
 
-    /// <summary>
-    /// Create a new Particle System class that inherits from a
-    /// Default DPSF Particle System
-    /// </summary>
-#if (WINDOWS)
-    [Serializable]
-#endif
-    class BallParticleSystem : DPSFDefaultTexturedQuadParticleSystem<BallParticle, DefaultTexturedQuadParticleVertex>
-    {
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public BallParticleSystem(Game cGame) : base(cGame) { }
+            draw.TextWriter.DrawString(draw.Font, "Hold and Rotate Emitter:", new Vector2(5, 300), draw.PropertyTextColor);
 
-        //===========================================================
-        // Structures and Variables
-        //===========================================================
-        private int miBallRadius = 50;
+            draw.TextWriter.DrawString(draw.Font, "Adjust Rotational Velocity:", new Vector2(15, 325), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "V", new Vector2(260, 325), draw.PropertyTextColor);
 
-        //===========================================================
-        // Overridden Particle System Functions
-        //===========================================================
+            draw.TextWriter.DrawString(draw.Font, "Adjust Rotational Acceleration:", new Vector2(15, 350), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "B", new Vector2(300, 350), draw.PropertyTextColor);
 
-        //===========================================================
-        // Initialization Functions
-        //===========================================================
-        public override void AutoInitialize(GraphicsDevice cGraphicsDevice, ContentManager cContentManager, SpriteBatch cSpriteBatch)
-        {
-            InitializeTexturedQuadParticleSystem(cGraphicsDevice, cContentManager, 1000, 50000,
-                                                    UpdateVertexProperties, "Textures/Particle");
-            Name = "Ball";
-            LoadParticleSystem();
-        }
+            draw.TextWriter.DrawString(draw.Font, "Reset Rotational Forces:", new Vector2(5, 375), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "N", new Vector2(230, 375), draw.PropertyTextColor);
 
-        private void LoadParticleSystem()
-        {
-            ParticleInitializationFunction = InitializeParticleBall;
+            draw.TextWriter.DrawString(draw.Font, "Less Particles:", new Vector2(5, 400), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "P", new Vector2(140, 400), draw.PropertyTextColor);
 
-            ParticleEvents.RemoveAllEvents();
-            ParticleEvents.AddEveryTimeEvent(UpdateParticlePositionAccordingToEmitter);
-            ParticleEvents.AddEveryTimeEvent(UpdateParticleToFaceTheCamera, 100);
+            draw.TextWriter.DrawString(draw.Font, "More Particles:", new Vector2(5, 425), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "[", new Vector2(140, 425), draw.PropertyTextColor);
 
-            miBallRadius = 50;
+            draw.TextWriter.DrawString(draw.Font, "Rebuild Ball:", new Vector2(5, 450), draw.PropertyTextColor);
+            draw.TextWriter.DrawString(draw.Font, "M", new Vector2(120, 450), draw.PropertyTextColor);
+	    }
 
-            Emitter.PositionData.Position = new Vector3(0, miBallRadius, 0);
-            Emitter.ParticlesPerSecond = 100;
-
-            MaxNumberOfParticlesAllowed = 300;
-        }
-
-        public void InitializeParticleBall(BallParticle cParticle)
-        {
-            cParticle.Lifetime = 0.0f;  // Particle never dies
-            cParticle.Size = 10.0f;
-
-            // Calculate the distance between each Particle on the Ball
-            int iOneThirdOfParticlesAllowed = MaxNumberOfParticlesAllowed / 3;
-            float fStepSize = MathHelper.TwoPi / (float)iOneThirdOfParticlesAllowed;
-
-            // If we are initializing the first third of Particles (Z-axis)
-            if (NumberOfActiveParticles < iOneThirdOfParticlesAllowed)
+	    public void ProcessInput()
+	    {
+            if (KeyboardManager.KeyIsDown(Keys.X, 0.02f))
             {
-                // Find Particle's position on the Vertical Circle
-                float fAngle = fStepSize * NumberOfActiveParticles;
-                cParticle.sEmitterIndependentPosition = DPSFHelper.PointOnSphere(-MathHelper.PiOver2, fAngle, miBallRadius);
-                cParticle.Color = Color.Blue;
+                this.IncreaseRadius();
             }
-            // Else we are initializing the second third of Particles (Y-axis)
-            else if (NumberOfActiveParticles < (2 * iOneThirdOfParticlesAllowed))
+
+            if (KeyboardManager.KeyIsDown(Keys.C, 0.02f))
             {
-                // Find Particle's position on the Vertical Circle
-                float fAngle = fStepSize * NumberOfActiveParticles;
-                cParticle.sEmitterIndependentPosition = DPSFHelper.PointOnSphere(0, fAngle, miBallRadius);
-                cParticle.Color = Color.Green;
+                this.DecreaseRadius();
             }
-            // Else we are initializing the last third of Particles (X-axis)
-            else
+
+            float fBallRotationScale = MathHelper.Pi / 18.0f;
+
+            if (KeyboardManager.KeyIsDown(Keys.V))
             {
-                // Find Particle's position on the Horizontal Circle
-                float fAngle = fStepSize * (NumberOfActiveParticles - iOneThirdOfParticlesAllowed);
-                fAngle += MathHelper.Pi;    // Have this circle start at the other side of the ring
-                cParticle.sEmitterIndependentPosition = DPSFHelper.PointOnSphere(fAngle, 0, miBallRadius);
-                cParticle.Color = Color.Red;
+                // Check if the Emitter is being rotated
+                if (KeyboardManager.KeyWasJustPressed(Keys.J))
+                {
+                    this.Emitter.OrientationData.RotationalVelocity += Vector3.Down * fBallRotationScale;
+                }
+
+                if (KeyboardManager.KeyWasJustPressed(Keys.L))
+                {
+                    this.Emitter.OrientationData.RotationalVelocity += Vector3.Up * fBallRotationScale;
+                }
+
+                if (KeyboardManager.KeyWasJustPressed(Keys.I))
+                {
+                    this.Emitter.OrientationData.RotationalVelocity += Vector3.Left * fBallRotationScale;
+                }
+
+                if (KeyboardManager.KeyWasJustPressed(Keys.K))
+                {
+                    this.Emitter.OrientationData.RotationalVelocity += Vector3.Right * fBallRotationScale;
+                }
+
+                if (KeyboardManager.KeyWasJustPressed(Keys.U))
+                {
+                    this.Emitter.OrientationData.RotationalVelocity += Vector3.Backward * fBallRotationScale;
+                }
+
+                if (KeyboardManager.KeyWasJustPressed(Keys.O))
+                {
+                    this.Emitter.OrientationData.RotationalVelocity += Vector3.Forward * fBallRotationScale;
+                }
             }
-        }
 
-        //===========================================================
-        // Particle Update Functions
-        //===========================================================
-        protected void UpdateParticlePositionAccordingToEmitter(BallParticle cParticle, float fElapsedTimeInSeconds)
-        {
-            // Rotate the Particle around the Emitter according to the Emitters Orientation
-            cParticle.Position = Vector3.Transform(cParticle.sEmitterIndependentPosition, Emitter.OrientationData.Orientation);
-            cParticle.Position += Emitter.PositionData.Position;
-        }
-
-        //===========================================================
-        // Particle System Update Functions
-        //===========================================================
-
-        //===========================================================
-        // Other Particle System Functions
-        //===========================================================
-        public void IncreaseRadius()
-        {
-            miBallRadius++;
-            RecreateBall();
-        }
-
-        public void DecreaseRadius()
-        {
-            miBallRadius--;
-
-            if (miBallRadius < 10)
+            if (KeyboardManager.KeyIsDown(Keys.B))
             {
-                miBallRadius = 10;
+                // Check if the Emitter is being rotated
+                if (KeyboardManager.KeyWasJustPressed(Keys.J))
+                {
+                    this.Emitter.OrientationData.RotationalAcceleration += Vector3.Down * fBallRotationScale;
+                }
+
+                if (KeyboardManager.KeyWasJustPressed(Keys.L))
+                {
+                    this.Emitter.OrientationData.RotationalAcceleration += Vector3.Up * fBallRotationScale;
+                }
+
+                if (KeyboardManager.KeyWasJustPressed(Keys.I))
+                {
+                    this.Emitter.OrientationData.RotationalAcceleration += Vector3.Left * fBallRotationScale;
+                }
+
+                if (KeyboardManager.KeyWasJustPressed(Keys.K))
+                {
+                    this.Emitter.OrientationData.RotationalAcceleration += Vector3.Right * fBallRotationScale;
+                }
+
+                if (KeyboardManager.KeyWasJustPressed(Keys.U))
+                {
+                    this.Emitter.OrientationData.RotationalAcceleration += Vector3.Backward * fBallRotationScale;
+                }
+
+                if (KeyboardManager.KeyWasJustPressed(Keys.O))
+                {
+                    this.Emitter.OrientationData.RotationalAcceleration += Vector3.Forward * fBallRotationScale;
+                }
             }
-            RecreateBall();
-        }
 
-        public void MoreParticles()
-        {
-            MaxNumberOfParticlesAllowed += 3;
-            RecreateBall();
-        }
-
-        public void LessParticles()
-        {
-            MaxNumberOfParticlesAllowed -= 3;
-            if (MaxNumberOfParticlesAllowed < 3)
+            if (KeyboardManager.KeyWasJustPressed(Keys.N))
             {
-                MaxNumberOfParticlesAllowed = 3;
+                this.Emitter.OrientationData.RotationalVelocity = Vector3.Zero;
+                this.Emitter.OrientationData.RotationalAcceleration = Vector3.Zero;
             }
-            RecreateBall();
-        }
 
-        private void RecreateBall()
-        {
-            RemoveAllParticles();
-            while (AddParticle())
-            { }
-        }
-    }
+            if (KeyboardManager.KeyIsDown(Keys.OemOpenBrackets, 0.04f))
+            {
+                this.MoreParticles();
+            }
+
+            if (KeyboardManager.KeyIsDown(Keys.P, 0.04f))
+            {
+                this.LessParticles();
+            }
+
+            if (KeyboardManager.KeyWasJustPressed(Keys.M))
+            {
+                this.RemoveAllParticles();
+            }
+	    }
+	}
 }

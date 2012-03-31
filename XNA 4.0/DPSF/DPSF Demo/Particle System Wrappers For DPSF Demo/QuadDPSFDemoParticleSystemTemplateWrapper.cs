@@ -8,11 +8,16 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace DPSF_Demo.Particle_System_Wrappers_For_DPSF_Demo
 {
-	class AnimatedQuadDPSFDemoParticleSystemWrapper : AnimatedQuadParticleSystem, IWrapDPSFDemoParticleSystems
+	class QuadDPSFDemoParticleSystemTemplateWrapper : QuadParticleSystemTemplate, IWrapDPSFDemoParticleSystems
 	{
-        public AnimatedQuadDPSFDemoParticleSystemWrapper(Game cGame)
+        public QuadDPSFDemoParticleSystemTemplateWrapper(Game cGame)
             : base(cGame)
         { }
+
+	    public string Name
+	    {
+            get { return "Quad Particle System Template"; }
+	    }
 
         public void AfterAutoInitialize()
         { }
