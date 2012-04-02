@@ -37,6 +37,7 @@ namespace DPSF
 
         /// <summary>
         /// Gets / Sets the default particle system updates per second.
+        /// <para>NOTE: Zero means update as often as possible.</para>
         /// </summary>
         public static int UpdatesPerSecond { get; set; }
 

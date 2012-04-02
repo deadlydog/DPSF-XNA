@@ -12,19 +12,19 @@ namespace DPSF_Demo.Input
 		/// <summary>
 		/// Used to control user input speeds.
 		/// </summary>
-		private static Dictionary<PlayerIndex, TimeSpan> _inputTimeSpans = new Dictionary<PlayerIndex,TimeSpan>();
+		private static readonly Dictionary<PlayerIndex, TimeSpan> _inputTimeSpans = new Dictionary<PlayerIndex,TimeSpan>();
 
 		/// <summary>
 		/// Gets the current state of the game pads.
 		/// </summary>
 		public static Dictionary<PlayerIndex, GamePadState> CurrentGamePadStates { get { return _currentGamePadStates; } }
-		private static Dictionary<PlayerIndex, GamePadState> _currentGamePadStates = new Dictionary<PlayerIndex, GamePadState>();
+		private static readonly Dictionary<PlayerIndex, GamePadState> _currentGamePadStates = new Dictionary<PlayerIndex, GamePadState>();
 
 		/// <summary>
 		/// Gets the previous state of the game pads (i.e. their states at the last frame).
 		/// </summary>
 		public static Dictionary<PlayerIndex, GamePadState> PreviousGamePadStates { get { return _previousGamePadStates; } }
-		private static Dictionary<PlayerIndex, GamePadState> _previousGamePadStates = new Dictionary<PlayerIndex, GamePadState>();
+		private static readonly Dictionary<PlayerIndex, GamePadState> _previousGamePadStates = new Dictionary<PlayerIndex, GamePadState>();
 
 		/// <summary>
 		/// Initializes the <see cref="GamePadsManager"/> class.
@@ -81,27 +81,27 @@ namespace DPSF_Demo.Input
 		/// Returns true if the GamePad Button is down.
 		/// </summary>
 		/// <param name="player">The GamePad to check.</param>
-		/// <param name="cButton">The Button to check.</param>
+		/// <param name="buttons">The Buttons to check.</param>
 		/// <returns>Returns true if the GamePad Button is down, false if not.</returns>
-		public static bool ButtonIsDown(PlayerIndex player, Buttons cButton)
+		public static bool ButtonIsDown(PlayerIndex player, Buttons buttons)
 		{
-			return _currentGamePadStates[player].IsButtonDown(cButton);
+			return _currentGamePadStates[player].IsButtonDown(buttons);
 		}
 
 		/// <summary>
 		/// Returns true if the Button is being pressed down, and no other input was received in the last TimeInSeconds seconds.
 		/// </summary>
 		/// <param name="player">The GamePad to check.</param>
-		/// <param name="button">The Button to check</param>
-		/// <param name="fTimeInSeconds">The amount of time in seconds that must have passed since the last input for the Button to be considered pressed down.</param>
+		/// <param name="buttons">The Buttons to check</param>
+		/// <param name="timeInSeconds">The amount of time in seconds that must have passed since the last input for the Button to be considered pressed down.</param>
 		/// <returns>Returns true if the Button is being pressed down, and no other input was received in the last TimeInSeconds seconds.</returns>
-		public static bool ButtonIsDown(PlayerIndex player, Buttons button, float fTimeInSeconds)
+		public static bool ButtonIsDown(PlayerIndex player, Buttons buttons, float timeInSeconds)
 		{
 			// If the Button is being pressed down
-			if (ButtonIsDown(player, button))
+			if (ButtonIsDown(player, buttons))
 			{
 				// If the specified Time In Seconds has passed since any input was received
-				if (_inputTimeSpans[player].TotalSeconds >= fTimeInSeconds)
+				if (_inputTimeSpans[player].TotalSeconds >= timeInSeconds)
 				{
 					// Reset the Input Timer
 					_inputTimeSpans[player] = TimeSpan.Zero;
@@ -120,33 +120,33 @@ namespace DPSF_Demo.Input
 		/// Returns true if the GamePad Button is up.
 		/// </summary>
 		/// <param name="player">The GamePad to check.</param>
-		/// <param name="button">The Button to check.</param>
+		/// <param name="buttons">The Buttons to check.</param>
 		/// <returns>Returns true if the GamePad Button is up, false if not.</returns>
-		public static bool ButtonIsUp(PlayerIndex player, Buttons button)
+		public static bool ButtonIsUp(PlayerIndex player, Buttons buttons)
 		{
-			return _currentGamePadStates[player].IsButtonUp(button);
+			return _currentGamePadStates[player].IsButtonUp(buttons);
 		}
 
 		/// <summary>
 		/// Returns true if the GamePad Button was just pressed
 		/// </summary>
 		/// <param name="player">The GamePad to check.</param>
-		/// <param name="button">The Button to check.</param>
+		/// <param name="buttons">The Buttons to check.</param>
 		/// <returns>Returns true if the GamePad Button was just pressed, false if not.</returns>
-		public static bool ButtonWasJustPressed(PlayerIndex player, Buttons button)
+		public static bool ButtonWasJustPressed(PlayerIndex player, Buttons buttons)
 		{
-			return (_currentGamePadStates[player].IsButtonDown(button) && !_previousGamePadStates[player].IsButtonDown(button));
+			return (_currentGamePadStates[player].IsButtonDown(buttons) && !_previousGamePadStates[player].IsButtonDown(buttons));
 		}
 
 		/// <summary>
 		/// Returns true if the GamePad Button was just released.
 		/// </summary>
 		/// <param name="player">The GamePad to check.</param>
-		/// <param name="button">The Button to check.</param>
+		/// <param name="buttons">The Buttons to check.</param>
 		/// <returns>Returns true if the GamePad Button was just released, false if not.</returns>
-		public static bool ButtonWasJustReleased(PlayerIndex player, Buttons button)
+		public static bool ButtonWasJustReleased(PlayerIndex player, Buttons buttons)
 		{
-			return (_currentGamePadStates[player].IsButtonUp(button) && !_previousGamePadStates[player].IsButtonUp(button));
+			return (_currentGamePadStates[player].IsButtonUp(buttons) && !_previousGamePadStates[player].IsButtonUp(buttons));
 		}
 	}	
 }

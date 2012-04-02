@@ -27,7 +27,7 @@ namespace DPSF_Demo
 	/// <summary>
 	/// Application class showing how to use the Dynamic Particle System Framework
 	/// </summary>
-	public class GameMain : Microsoft.Xna.Framework.Game
+	public class DemoBase : Microsoft.Xna.Framework.Game
 	{
 		#region Fields
 
@@ -61,8 +61,8 @@ namespace DPSF_Demo
         public static readonly Color CONTROL_TEXT_COLOR = Color.PowderBlue;
 
 	    // Static Particle Settings
-		float mfStaticParticleTimeStep = 1.0f / 30.0f; // The Time Step between the drawing of each frame of the Static Particles (1 / # of fps, example, 1 / 30 = 30fps)
-		float mfStaticParticleTotalTime = 3.0f; // The number of seconds that the Static Particle should be drawn over
+		float mfStaticParticleTimeStep = 1.0f / 30.0f;	// The Time Step between the drawing of each frame of the Static Particles (1 / # of fps, example, 1 / 30 = 30fps).
+		float mfStaticParticleTotalTime = 3.0f;			// The number of seconds that the Static Particle should be drawn over.
 
 		// "Draw To Files" Settings
 		float mfDrawPSToFilesTimeStep = 1.0f / 10.0f;
@@ -225,12 +225,6 @@ namespace DPSF_Demo
 		// Initialize the Sphere Object
 		SimpleObject mcSphere = new SimpleObject();
 
-		Random mcRandom = new Random();         // Random number generator
-
-		// Input States
-		GamePadState mcCurrentGamePadState;     // Holds the GamePad's Current State
-		GamePadState mcPreviousGamePadState;    // Holds the GamePad's Previous State
-
 		bool mbShowText = true;                 // Tells if Text should be shown or not
 		bool mbShowCommonControls = false;      // Tells if the Common Controls should be shown or not
 		bool mbShowPSControls = false;          // Tells if the Particle System specific Controls should be shown or not
@@ -386,7 +380,7 @@ namespace DPSF_Demo
 		/// <summary>
 		/// Constructor
 		/// </summary>
-		public GameMain()
+		public DemoBase()
 		{
 			mcGraphics = new GraphicsDeviceManager(this);
 			Content.RootDirectory = "Content";
@@ -733,10 +727,10 @@ namespace DPSF_Demo
 				}
 			}
 		
-			// Update any other Drawable Game Components
+			// Update any other Drawable Game Components.
 			base.Update(cGameTime);
 
-			// If we are drawing garbage collection info
+			// If we are drawing garbage collection info.
 			if (DrawPerformanceText)
 			{
 				// Record how much Garbage is waiting to be collected in Kilobytes.
@@ -755,11 +749,11 @@ namespace DPSF_Demo
 			// Compute the Aspect Ratio of the window
 			float fAspectRatio = (float)GraphicsDevice.Viewport.Width / (float)GraphicsDevice.Viewport.Height;
 
-			// Setup the View matrix depending on which Camera mode is being used
-			// If we are using the Fixed Camera
+			// Setup the View matrix depending on which Camera mode is being used.
+			// If we are using the Fixed Camera.
 			if (msCamera.bUsingFixedCamera)
 			{
-				// Set up the View matrix according to the Camera's arc, rotation, and distance from the Offset position
+				// Set up the View matrix according to the Camera's arc, rotation, and distance from the Offset position.
 				msViewMatrix = Matrix.CreateTranslation(msCamera.sFixedCameraLookAtPosition) *
 									 Matrix.CreateRotationY(MathHelper.ToRadians(msCamera.fCameraRotation)) *
 									 Matrix.CreateRotationX(MathHelper.ToRadians(msCamera.fCameraArc)) *
@@ -769,7 +763,7 @@ namespace DPSF_Demo
 			// Else we are using the Free Camera
 			else
 			{
-				// Set up our View matrix specifying the Camera position, a point to look-at, and a direction for which way is up
+				// Set up our View matrix specifying the Camera position, a point to look-at, and a direction for which way is up.
 				msViewMatrix = Matrix.CreateLookAt(msCamera.sVRP, msCamera.sVRP + msCamera.cVPN, msCamera.cVUP);
 			}
 
@@ -1175,11 +1169,6 @@ namespace DPSF_Demo
 			MouseManager.UpdateMouseStateForThisFrame(cGameTime.ElapsedGameTime);
 			GamePadsManager.UpdateGamePadStatesForThisFrame(cGameTime.ElapsedGameTime);
 
-			// Save the GamePad State and get its new State
-			mcPreviousGamePadState = mcCurrentGamePadState;
-			mcCurrentGamePadState = GamePad.GetState(PlayerIndex.One);
-
-
 			// If we should Exit
 			if (KeyboardManager.KeyIsDown(Keys.Escape) || GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.Back))
 			{
@@ -1190,7 +1179,7 @@ namespace DPSF_Demo
 			if (_mcDPSFSplashScreenDPSFDemoParticleSystemWrapper != null && 
 				((KeyboardManager.CurrentKeyboardState.GetPressedKeys().Length > 0 && KeyboardManager.CurrentKeyboardState.GetPressedKeys()[0] != Keys.None) || 
 				(MouseManager.CurrentMouseState.LeftButton == ButtonState.Pressed || MouseManager.CurrentMouseState.RightButton == ButtonState.Pressed) ||
-				(mcCurrentGamePadState.IsButtonDown(Buttons.A | Buttons.B | Buttons.X | Buttons.Y | Buttons.Start))))
+				(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.A | Buttons.B | Buttons.X | Buttons.Y | Buttons.Start))))
 			{
 				_mcDPSFSplashScreenDPSFDemoParticleSystemWrapper.IsSplashScreenComplete = true;
 				return;
@@ -1918,7 +1907,7 @@ namespace DPSF_Demo
 	{
 		static void Main()
 		{
-			using (GameMain Game = new GameMain())
+			using (DemoBase Game = new DemoBase())
 			{
 #if (WINDOWS)
 				// String to hold any prerequisites error messages
@@ -1959,7 +1948,7 @@ namespace DPSF_Demo
 				}
 
 				// If we are in Release Mode
-				if (GameMain.RELEASE_MODE)
+				if (DemoBase.RELEASE_MODE)
 				{
 					try
 					{

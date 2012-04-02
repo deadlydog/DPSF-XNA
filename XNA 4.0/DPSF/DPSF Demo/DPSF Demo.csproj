@@ -107,6 +107,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DPSFDemo.cs" />
     <Compile Include="Particle System Wrappers For DPSF Demo\AnimatedQuadPSWrapper.cs" />
     <Compile Include="Particle System Wrappers For DPSF Demo\AnimatedSpritePSWrapper.cs" />
     <Compile Include="Particle System Wrappers For DPSF Demo\BallPSWrapper.cs" />
@@ -155,7 +156,7 @@
     <Compile Include="Particle System Wrappers For DPSF Demo\TrailPSWrapper.cs" />
     <Compile Include="View\Camera.cs" />
     <Compile Include="FPS.cs" />
-    <Compile Include="GameMain.cs" />
+    <Compile Include="DemoBase.cs" />
     <Compile Include="Input\GamePadsManager.cs" />
     <Compile Include="Input\KeyboardManager.cs" />
     <Compile Include="Input\MouseManager.cs" />

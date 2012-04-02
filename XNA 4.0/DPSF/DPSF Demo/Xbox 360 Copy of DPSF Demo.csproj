@@ -72,8 +72,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DemoBase.cs" />
+    <Compile Include="DPSFDemo.cs" />
     <Compile Include="FPS.cs" />
-    <Compile Include="GameMain.cs" />
     <Compile Include="Input\GamePadsManager.cs" />
     <Compile Include="Input\KeyboardManager.cs" />
     <Compile Include="Input\MouseManager.cs" />
