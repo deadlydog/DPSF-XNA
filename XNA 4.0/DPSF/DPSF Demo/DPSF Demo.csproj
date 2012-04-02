@@ -107,6 +107,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationEntryPoint.cs" />
     <Compile Include="DPSFDemo.cs" />
     <Compile Include="Particle System Wrappers For DPSF Demo\AnimatedQuadPSWrapper.cs" />
     <Compile Include="Particle System Wrappers For DPSF Demo\AnimatedSpritePSWrapper.cs" />
