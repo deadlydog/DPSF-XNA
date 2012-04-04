@@ -68,7 +68,7 @@ namespace DPSF_Demo
 					game.Run();
 				}
 #else
-				Game.Run();
+				game.Run();
 #endif
 			}
 		}

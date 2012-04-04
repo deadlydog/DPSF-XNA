@@ -34,7 +34,7 @@ namespace DPSF_Demo
 		//===========================================================
 		// Global Constants - User Settings
 		//===========================================================
-		
+
 		/// <summary>
 		/// If this is set to true, a MessageBox will display any unhandled exceptions that occur. This
 		/// is useful when not debugging (i.e. when running directly from the executable) as it will still 
@@ -65,11 +65,11 @@ namespace DPSF_Demo
 		/// <summary>
 		/// The color to wipe the screen with each frame.
 		/// </summary>
-	    protected static Color BACKGROUND_COLOR = Color.Black;
+		protected static Color BACKGROUND_COLOR = Color.Black;
 
-	    /// <summary>
-	    /// The color that information text and property descriptions should be drawn in.
-	    /// </summary>
+		/// <summary>
+		/// The color that information text and property descriptions should be drawn in.
+		/// </summary>
 		protected static Color PROPERTY_TEXT_COlOR = Color.WhiteSmoke;
 
 		/// <summary>
@@ -96,11 +96,16 @@ namespace DPSF_Demo
 		/// A Sprite Batch that can be used to draw sprites and text.
 		/// </summary>
 		protected SpriteBatch SpriteBatch { get; set; }
-		
+
 		/// <summary>
 		/// The default Font to draw text with.
 		/// </summary>
 		protected SpriteFont Font { get; set; }
+
+		/// <summary>
+		/// Tells if the Common Controls should be shown or not.
+		/// </summary>
+		protected bool ShowCommonControls { get; set; }
 
 		/// <summary>
 		/// Tells if we should draw Performance info or not, such as how much memory is currently set to be collected by the Garbage Collector.
@@ -155,10 +160,7 @@ namespace DPSF_Demo
 			{
 				float garbageCreatedInLastSecondInKB = (currentGarbageAmount - _garbageAmountAtLastFPSUpdate) / 1024f;
 				_garbageAverageCreatedPerFrameInKB = garbageCreatedInLastSecondInKB / e.FPS;
-
-				int updatesPerSecond = _currentDPSFDemoParticleSystemWrapper.UpdatesPerSecond;
-				updatesPerSecond = updatesPerSecond > 0 ? updatesPerSecond : _updatesPerSecond;
-				_garbageAverageCreatedPerUpdateInKB = garbageCreatedInLastSecondInKB / updatesPerSecond;
+				_garbageAverageCreatedPerUpdateInKB = garbageCreatedInLastSecondInKB / _updatesPerSecond;
 			}
 
 			// Record the current amount of garbage to use to calculate the Garbage Created Per Second on the next update
@@ -188,6 +190,7 @@ namespace DPSF_Demo
 		/// Tells if the Floor should be shown or not.
 		/// </summary>
 		protected bool ShowFloor { get; set; }
+		private Model _floorModel { get; set; }	// Model of the Floor.
 
 		/// <summary>
 		/// Tells if the game should be paused or not.
@@ -222,10 +225,10 @@ namespace DPSF_Demo
 		private VertexDeclaration mcAxisVertexDeclaration;
 		private BasicEffect mcAxisEffect;
 
-		private Model _floorModel { get; set; }	// Model of the Floor.
-
-		// Initialize the Camera and use a Fixed camera by default.
-		Camera msCamera = new Camera(true);
+		/// <summary>
+		/// The Camera used to view the virtual world from.
+		/// </summary>
+		protected Camera Camera { get; set; }
 
 		#endregion
 
@@ -246,7 +249,7 @@ namespace DPSF_Demo
 				this.IsFixedTimeStep = false;
 				GraphicsDeviceManager.SynchronizeWithVerticalRetrace = false;
 			}
-			
+
 			// Set the resolution.
 			GraphicsDeviceManager.PreferredBackBufferWidth = WINDOW_WIDTH;
 			GraphicsDeviceManager.PreferredBackBufferHeight = WINDOW_HEIGHT;
@@ -260,9 +263,13 @@ namespace DPSF_Demo
 			// Setup default property values.
 			ShowText = true;
 			ShowFloor = true;
+			ClearScreenEveryFrame = true;
 			WorldMatrix = Matrix.Identity;
 			ViewMatrix = Matrix.Identity;
 			ProjectionMatrix = Matrix.Identity;
+
+			// Initialize the Camera and use a Fixed camera by default.
+			Camera = new Camera(true);
 		}
 
 		/// <summary>
@@ -279,7 +286,7 @@ namespace DPSF_Demo
 			// Setup our render target to draw to when we want draws to persist across multiple frames
 			_renderTarget = new RenderTarget2D(GraphicsDeviceManager.GraphicsDevice, GraphicsDeviceManager.PreferredBackBufferWidth, GraphicsDeviceManager.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 
-			// Specify vertices indicating positive axis directions
+			// Specify vertices indicating positive axis directions.
 			int iLineLength = 50;
 			msaAxisDirectionVertices = new VertexPositionColor[6];
 			msaAxisDirectionVertices[0] = new VertexPositionColor(new Vector3(0, 1, 0), Color.Red);
@@ -288,7 +295,8 @@ namespace DPSF_Demo
 			msaAxisDirectionVertices[3] = new VertexPositionColor(new Vector3(0, iLineLength, 0), Color.Green);
 			msaAxisDirectionVertices[4] = new VertexPositionColor(new Vector3(0, 1, 0), Color.Blue);
 			msaAxisDirectionVertices[5] = new VertexPositionColor(new Vector3(0, 1, iLineLength), Color.Blue);
-			
+
+			// Setup the effect used to draw the positive axis directions.
 			mcAxisEffect = new BasicEffect(GraphicsDevice);
 			mcAxisEffect.VertexColorEnabled = true;
 			mcAxisEffect.LightingEnabled = false;
@@ -302,93 +310,24 @@ namespace DPSF_Demo
 		#region Update and Draw
 
 		/// <summary>
-		/// Allows the game to run logic
+		/// Perform the base classes game logic.
 		/// </summary>
-		protected override void Update(GameTime cGameTime)
+		/// <param name="gameTime">How much time has elapsed in the game and between updates.</param>
+		protected override void Update(GameTime gameTime)
 		{
-			// Get and process user Input
-			ProcessInput(cGameTime);
+			// Get and process user Input before anything else.
+			ProcessInput(gameTime);
 
-			// Allow the camera to be moved around, even if the particle systems are paused
-
-			// Update the World, View, and Projection matrices
+			// Allow the camera to be moved around, even if the particle systems are paused.
+			// Update the World, View, and Projection matrices.
 			UpdateWorldViewProjectionMatrices();
 
+			// Perform any other game updates.
+			UpdateGame(gameTime);
 
-			// Update the Quad Particle Systems to know where the Camera is so that they can display
-			// the particles as billboards if needed (i.e. have particle always face the camera).
-			_particleSystemManager.SetCameraPositionForAllParticleSystems(msCamera.Position);
-
-			// Set the World, View, and Projection Matrices for the Particle Systems
-			_particleSystemManager.SetWorldViewProjectionMatricesForAllParticleSystems(WorldMatrix, ViewMatrix, ProjectionMatrix);
-
-			// If the Game is Paused
-			if (Paused)
-			{
-				// Update the particle systems with 0 elapsed time, just to allow the particles to rotate to face the camera.
-				_particleSystemManager.UpdateAllParticleSystems(0);
-
-				// Exit without updating anything
-				return;
-			}
-
-			// If the Current Particle System is Initialized
-			if (_currentDPSFDemoParticleSystemWrapper != null && _currentDPSFDemoParticleSystemWrapper.IsInitialized)
-			{
-				// If Static Particles should be drawn
-				if (_drawStaticParticles)
-				{
-					// If the Static Particles haven't been drawn yet
-					if (!_staticParticlesDrawn)
-					{
-						// Draw this frame to a Render Target so we can have it persist across frames.
-						SetupToDrawToRenderTarget(true);
-
-						// Update the Particle System iteratively by the Time Step amount until the 
-						// Particle System behavior over the Total Time has been drawn
-						float fElapsedTime = 0;
-						while (fElapsedTime < _staticParticleTotalTime)
-						{
-							// Update and draw this frame of the Particle System
-							_particleSystemManager.UpdateAllParticleSystems(_staticParticleTimeStep);
-							_particleSystemManager.DrawAllParticleSystems();
-							fElapsedTime += _staticParticleTimeStep;
-						}
-						_staticParticlesDrawn = true;
-
-						SpriteBatch.Begin();
-						SpriteBatch.DrawString(Font, "F6 to continue", new Vector2(310, 25), Color.LawnGreen);
-						SpriteBatch.End();
-					}
-				}
-				// Else the Particle Systems should be drawn normally
-				else
-				{
-					// Update all Particle Systems manually
-					_particleSystemManager.UpdateAllParticleSystems((float)cGameTime.ElapsedGameTime.TotalSeconds);
-				}
-
-
-				// If the Sphere is Visible and we are on the Smoke Particle System
-				if (_sphereObject.bVisible && _currentParticleSystem == ParticleSystemEffects.Smoke)
-				{
-					// Update it
-					_sphereObject.Update((float)cGameTime.ElapsedGameTime.TotalSeconds);
-
-					// Update the PS's External Object Position to the Sphere's Position
-					_mcSmokeDPSFDemoParticleSystemWrapper.mcExternalObjectPosition = _sphereObject.sPosition;
-
-					// If the Sphere has been alive long enough
-					if (_sphereObject.cTimeAliveInSeconds > TimeSpan.FromSeconds(6.0f))
-					{
-						_sphereObject.bVisible = false;
-						_mcSmokeDPSFDemoParticleSystemWrapper.StopParticleAttractionAndRepulsionToExternalObject();
-					}
-				}
-			}
-		
-			// Update any other Drawable Game Components.
-			base.Update(cGameTime);
+			// If the game is not paused, update any other Drawable Game Components.
+			if (!Paused)
+				base.Update(gameTime);
 
 			// If we are drawing garbage collection info.
 			if (ShowPerformanceText)
@@ -402,6 +341,12 @@ namespace DPSF_Demo
 		}
 
 		/// <summary>
+		/// Perform any game logic.
+		/// </summary>
+		/// <param name="gameTime">How much time has elapsed in the game and between updates.</param>
+		protected virtual void UpdateGame(GameTime gameTime) { }
+
+		/// <summary>
 		/// Updates the World, View, and Projection matrices according to the Camera's current position.
 		/// </summary>
 		private void UpdateWorldViewProjectionMatrices()
@@ -411,20 +356,20 @@ namespace DPSF_Demo
 
 			// Setup the View matrix depending on which Camera mode is being used.
 			// If we are using the Fixed Camera.
-			if (msCamera.bUsingFixedCamera)
+			if (Camera.bUsingFixedCamera)
 			{
 				// Set up the View matrix according to the Camera's arc, rotation, and distance from the Offset position.
-				ViewMatrix = Matrix.CreateTranslation(msCamera.sFixedCameraLookAtPosition) *
-									 Matrix.CreateRotationY(MathHelper.ToRadians(msCamera.fCameraRotation)) *
-									 Matrix.CreateRotationX(MathHelper.ToRadians(msCamera.fCameraArc)) *
-									 Matrix.CreateLookAt(new Vector3(0, 0, -msCamera.fCameraDistance),
+				ViewMatrix = Matrix.CreateTranslation(Camera.sFixedCameraLookAtPosition) *
+									 Matrix.CreateRotationY(MathHelper.ToRadians(Camera.fCameraRotation)) *
+									 Matrix.CreateRotationX(MathHelper.ToRadians(Camera.fCameraArc)) *
+									 Matrix.CreateLookAt(new Vector3(0, 0, -Camera.fCameraDistance),
 														 new Vector3(0, 0, 0), Vector3.Up);
 			}
 			// Else we are using the Free Camera
 			else
 			{
 				// Set up our View matrix specifying the Camera position, a point to look-at, and a direction for which way is up.
-				ViewMatrix = Matrix.CreateLookAt(msCamera.sVRP, msCamera.sVRP + msCamera.cVPN, msCamera.cVUP);
+				ViewMatrix = Matrix.CreateLookAt(Camera.sVRP, Camera.sVRP + Camera.cVPN, Camera.cVUP);
 			}
 
 			// Setup the Projection matrix by specifying the field of view (1/4 pi), aspect ratio, and the near and far clipping planes
@@ -432,18 +377,16 @@ namespace DPSF_Demo
 		}
 
 		/// <summary>
-		/// This is called when the game should draw itself
+		/// Draw the base class's components.
 		/// </summary>
-		protected override void Draw(GameTime cGameTime)
+		/// <param name="gameTime">How much time has elapsed in the game and between updates.</param>
+		protected override void Draw(GameTime gameTime)
 		{
-			// If Static Particles were drawn to the Render Target, draw the Render Target to the screen and exit without drawing anything else.
-			if (_drawStaticParticles)
-			{
-				DrawRenderTargetToScreen();
+			// Do any pre-Draw work and exit without drawing anything if told.
+			if (!BeforeDrawGame(gameTime))
 				return;
-			}
 
-			// Clear the scene
+			// Clear the scene.
 			GraphicsDevice.Clear(BACKGROUND_COLOR);
 
 			// If the screen should NOT be cleared each frame, draw to a render target instead of right to the screen.
@@ -452,46 +395,66 @@ namespace DPSF_Demo
 				SetupToDrawToRenderTarget(_clearScreenEveryFrameJustToggled);
 				_clearScreenEveryFrameJustToggled = false;
 			}
-			
-			// Draw the Floor at the origin (0,0,0) and any other models
+
+			// Draw the Floor at the origin (0,0,0) and any other models.
 			DrawModels(WorldMatrix, ViewMatrix, ProjectionMatrix);
 
 			// If the Axis' should be drawn
 			if (ShowPositiveDirectionAxis)
 			{
-				// Draw lines at the origin (0,0,0) indicating positive axis directions
+				// Draw lines at the origin (0,0,0) indicating positive axis directions.
 				DrawAxis(WorldMatrix, ViewMatrix, ProjectionMatrix);
 			}
 
-
 			// Draw any other Drawable Game Components that may need to be drawn.
-			// Call this before drawing our Particle Systems, so that our 2D Sprite particles
-			// show up on top of the any other 2D Sprites drawn.
-			base.Draw(cGameTime);
-
-			// Draw the Particle Systems manually
-			_particleSystemManager.DrawAllParticleSystems();
+			// Call this before drawing other things, so that any 2D sprites show up on top of the any other 2D Sprites already drawn.
+			base.Draw(gameTime);
 
 
-			// Update the Frames Per Second to be displayed
-			FPS.Update((float)cGameTime.ElapsedGameTime.TotalSeconds);
+			// Draw everything else.
+			DrawGame(gameTime);
 
-			// Draw the Text to the screen last, so it is always on top
+
+			// Update the Frames Per Second to be displayed.
+			FPS.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+
+			// Draw the Text to the screen last, so it is always on top.
 			DrawText();
-
 
 			// If we were drawing this frame to the Render Target, draw the Render Target to the screen.
 			if (!ClearScreenEveryFrame)
 			{
 				DrawRenderTargetToScreen();
 			}
+
+			// Do any post-draw work.
+			AfterDrawGame(gameTime);
 		}
+
+		/// <summary>
+		/// Called before anything is drawn to the screen.
+		/// <para>NOTE: If this returns false the Draw() function will exit immediately without drawing anything.</para>
+		/// </summary>
+		/// <param name="gameTime">How much time has elapsed in the game and between updates.</param>
+		protected virtual bool BeforeDrawGame(GameTime gameTime) { return true; }
+
+		/// <summary>
+		/// Called after everything has been drawn to the screen.
+		/// </summary>
+		/// <param name="gameTime">How much time has elapsed in the game and between updates.</param>
+		protected virtual void AfterDrawGame(GameTime gameTime) { }
+
+		/// <summary>
+		/// Draw any game components to the screen.
+		/// </summary>
+		/// <param name="gameTime">How much time has elapsed in the game and between updates.</param>
+		protected virtual void DrawGame(GameTime gameTime) { }
 
 		/// <summary>
 		/// Sets up the app to draw to the render target instead of directly to the screen.
 		/// </summary>
 		/// <param name="clearRenderTarget">If true the Render Target will be cleared before anything else is drawn to it.</param>
-		private void SetupToDrawToRenderTarget(bool clearRenderTarget)
+		protected void SetupToDrawToRenderTarget(bool clearRenderTarget)
 		{
 			// Draw this frame to a Render Target so we can have it persist across frames.
 			GraphicsDevice.SetRenderTarget(_renderTarget);
@@ -504,7 +467,7 @@ namespace DPSF_Demo
 		/// <summary>
 		/// Draws the Render Target contents to the screen.
 		/// </summary>
-		private void DrawRenderTargetToScreen()
+		protected void DrawRenderTargetToScreen()
 		{
 			GraphicsDevice.SetRenderTarget(null);		// Start drawing to the screen again instead of to the Render Target.
 			GraphicsDevice.Clear(BACKGROUND_COLOR);
@@ -515,209 +478,87 @@ namespace DPSF_Demo
 		}
 
 		/// <summary>
-		/// Function to draw Text to the screen
+		/// Draw Text to the screen.
 		/// </summary>
 		void DrawText()
 		{
-			// If no Text should be shown
+			// If no Text should be shown, exit the function before drawing any text.
 			if (!ShowText)
-			{
-				// Exit the function before drawing any Text
 				return;
-			}
 
-            // Get area on screen that it is safe to draw text to (so that we are sure it will be displayed on the screen).
-		    Rectangle textSafeArea = GetTextSafeArea();
-
-            // Setup the 
-		    var toolsToDrawText = new DrawTextRequirements()
-		                              {
-                                          TextWriter = SpriteBatch,
-		                                  Font = Font,
-		                                  TextSafeArea = textSafeArea,
-		                                  ControlTextColor = CONTROL_TEXT_COLOR,
-		                                  PropertyTextColor = PROPERTY_TEXT_COlOR,
-		                                  ValueTextColor = VALUE_TEXT_COLOR
-		                              };
-
-			// If we don't have a handle to a particle system, it is because we serialized it
-			if (_currentDPSFDemoParticleSystemWrapper == null)
-			{
-				SpriteBatch.Begin();
-				SpriteBatch.DrawString(Font, "Particle system has been serialized to the file: " + _serializedParticleSystemFileName + ".", new Vector2(25, 200), PROPERTY_TEXT_COlOR);
-				SpriteBatch.DrawString(Font, "To deserialize the particle system from the file, restoring the instance of", new Vector2(25, 225), PROPERTY_TEXT_COlOR);
-				SpriteBatch.DrawString(Font, "the particle system,", new Vector2(25, 250), PROPERTY_TEXT_COlOR);
-				SpriteBatch.DrawString(Font, "press F9", new Vector2(210, 250), CONTROL_TEXT_COLOR);
-				SpriteBatch.End();
-				return;
-			}
-			
-			// If the Particle System has been destroyed, just write that to the screen and exit
-			if (!_currentDPSFDemoParticleSystemWrapper.IsInitialized)
-			{
-				SpriteBatch.Begin();
-				SpriteBatch.DrawString(Font, "The current particle system has been destroyed.", new Vector2(140, 200), PROPERTY_TEXT_COlOR);
-				SpriteBatch.DrawString(Font, "Press G / H to switch to a different particle system.", new Vector2(125, 225), PROPERTY_TEXT_COlOR);
-				SpriteBatch.End();
-				return;
-			}
-
-			// Get the Name of the Particle System and how many Particles are currently Active
-			string sEffectName = _currentDPSFDemoParticleSystemWrapper.Name;
-            int iNumberOfActiveParticles = _currentDPSFDemoParticleSystemWrapper.TotalNumberOfActiveParticles;
-            int iNumberOfParticlesAllocatedInMemory = _currentDPSFDemoParticleSystemWrapper.TotalNumberOfParticlesAllocatedInMemory;
+			// Get area on screen that it is safe to draw text to (so that we are sure it will be displayed on the screen).
+			Rectangle textSafeArea = GetTextSafeArea();
 
 			// Convert values to strings
 			string sFPSValue = FPS.CurrentFPS.ToString();
 			string sAvgFPSValue = FPS.AverageFPS.ToString("0.0");
-			string sTotalParticleCountValue = iNumberOfActiveParticles.ToString();
-			string sEmitterOnValue = (_currentDPSFDemoParticleSystemWrapper.Emitter.EmitParticlesAutomatically ? "On" : "Off");
-			string sParticleSystemEffectValue = sEffectName;
-			string sParticlesPerSecondValue = _currentDPSFDemoParticleSystemWrapper.Emitter.ParticlesPerSecond.ToString("0.00");
-			string sCameraModeValue = msCamera.bUsingFixedCamera ? "Fixed" : "Free";
-			string sPSSpeedScale = _particleSystemManager.SimulationSpeed.ToString("0.0");
-			string sCameraPosition = "(" + msCamera.Position.X.ToString("0") + "," + msCamera.Position.Y.ToString("0") + "," + msCamera.Position.Z.ToString("0") + ")";
-			string sAllocatedParticles = iNumberOfParticlesAllocatedInMemory.ToString();
-			string sTexture = "N/A";
-			if (_currentDPSFDemoParticleSystemWrapper.Texture != null)
-			{
-				sTexture = _currentDPSFDemoParticleSystemWrapper.Texture.Name.TrimStart("Textures/".ToCharArray());
-			}
+			string sCameraModeValue = Camera.bUsingFixedCamera ? "Fixed" : "Free";
+			string sCameraPosition = "(" + Camera.Position.X.ToString("0") + "," + Camera.Position.Y.ToString("0") + "," + Camera.Position.Z.ToString("0") + ")";
 
 			// Draw all of the text.
 			SpriteBatch.Begin();
 
-            // If the Particle System is Paused, draw a Paused message.
-            if (Paused)
-            {
-                SpriteBatch.DrawString(Font, "Paused", new Vector2(textSafeArea.Left + 350, textSafeArea.Top + 25), VALUE_TEXT_COLOR);
-            }
+			// If the Particle System is Paused, draw a Paused message.
+			if (Paused)
+			{
+				SpriteBatch.DrawString(Font, "Paused", new Vector2(textSafeArea.Left + 350, textSafeArea.Top + 25), VALUE_TEXT_COLOR);
+			}
 
-            // Draw text that is always displayed.
+			// Draw text that is always displayed.
 			SpriteBatch.DrawString(Font, "FPS:", new Vector2(textSafeArea.Left + 5, textSafeArea.Bottom - 50), PROPERTY_TEXT_COlOR);
 			SpriteBatch.DrawString(Font, sFPSValue, new Vector2(textSafeArea.Left + 50, textSafeArea.Bottom - 50), VALUE_TEXT_COLOR);
 
-			SpriteBatch.DrawString(Font, "Allocated:", new Vector2(textSafeArea.Left + 120, textSafeArea.Bottom - 50), PROPERTY_TEXT_COlOR);
-			SpriteBatch.DrawString(Font, sAllocatedParticles, new Vector2(textSafeArea.Left + 210, textSafeArea.Bottom - 50), VALUE_TEXT_COLOR);
-
-			//mcSpriteBatch.DrawString(mcFont, "Position:", new Vector2(textSafeArea.Left + 275, textSafeArea.Bottom - 75), sPropertyColor);
-			SpriteBatch.DrawString(Font, sCameraPosition, new Vector2(textSafeArea.Left + 280, textSafeArea.Bottom - 50), VALUE_TEXT_COLOR);
-
-			SpriteBatch.DrawString(Font, "Texture:", new Vector2(textSafeArea.Left + 440, textSafeArea.Bottom - 50), PROPERTY_TEXT_COlOR);
-			SpriteBatch.DrawString(Font, sTexture, new Vector2(textSafeArea.Left + 520, textSafeArea.Bottom - 50), VALUE_TEXT_COLOR);
-
-			SpriteBatch.DrawString(Font, "Speed:", new Vector2(textSafeArea.Right - 100, textSafeArea.Bottom - 50), PROPERTY_TEXT_COlOR);
-			SpriteBatch.DrawString(Font, sPSSpeedScale, new Vector2(textSafeArea.Right - 35, textSafeArea.Bottom - 50), VALUE_TEXT_COLOR);
-
 			SpriteBatch.DrawString(Font, "Avg:", new Vector2(textSafeArea.Left + 5, textSafeArea.Bottom - 25), PROPERTY_TEXT_COlOR);
 			SpriteBatch.DrawString(Font, sAvgFPSValue, new Vector2(textSafeArea.Left + 50, textSafeArea.Bottom - 25), VALUE_TEXT_COLOR);
-
-			SpriteBatch.DrawString(Font, "Particles:", new Vector2(textSafeArea.Left + 120, textSafeArea.Bottom - 25), PROPERTY_TEXT_COlOR);
-			SpriteBatch.DrawString(Font, sTotalParticleCountValue, new Vector2(textSafeArea.Left + 205, textSafeArea.Bottom - 25), VALUE_TEXT_COLOR);
-
-			SpriteBatch.DrawString(Font, "Emitter:", new Vector2(textSafeArea.Left + 275, textSafeArea.Bottom - 25), PROPERTY_TEXT_COlOR);
-			SpriteBatch.DrawString(Font, sEmitterOnValue, new Vector2(textSafeArea.Left + 345, textSafeArea.Bottom - 25), VALUE_TEXT_COLOR);
-
-			SpriteBatch.DrawString(Font, "Particles Per Second:", new Vector2(textSafeArea.Left + 390, textSafeArea.Bottom - 25), PROPERTY_TEXT_COlOR);
-			SpriteBatch.DrawString(Font, sParticlesPerSecondValue, new Vector2(textSafeArea.Left + 585, textSafeArea.Bottom - 25), VALUE_TEXT_COLOR);
+			
+			//mcSpriteBatch.DrawString(mcFont, "Position:", new Vector2(textSafeArea.Left + 275, textSafeArea.Bottom - 75), sPropertyColor);
+			SpriteBatch.DrawString(Font, sCameraPosition, new Vector2(textSafeArea.Left + 280, textSafeArea.Bottom - 50), VALUE_TEXT_COLOR);
 
 			SpriteBatch.DrawString(Font, "Camera:", new Vector2(textSafeArea.Left + 660, textSafeArea.Bottom - 25), PROPERTY_TEXT_COlOR);
 			SpriteBatch.DrawString(Font, sCameraModeValue, new Vector2(textSafeArea.Left + 740, textSafeArea.Bottom - 25), VALUE_TEXT_COLOR);
 
-			SpriteBatch.DrawString(Font, "Effect:", new Vector2(textSafeArea.Left + 5, textSafeArea.Top + 2), PROPERTY_TEXT_COlOR);
-			SpriteBatch.DrawString(Font, sParticleSystemEffectValue, new Vector2(textSafeArea.Left + 70, textSafeArea.Top + 2), VALUE_TEXT_COLOR);
-
 			SpriteBatch.DrawString(Font, "Show/Hide Controls:", new Vector2(textSafeArea.Right - 260, textSafeArea.Top + 2), PROPERTY_TEXT_COlOR);
 			SpriteBatch.DrawString(Font, "F1 - F4", new Vector2(textSafeArea.Right - 70, textSafeArea.Top + 2), CONTROL_TEXT_COLOR);
 
+			// If the Common Controls should be shown, display them.
+			if (ShowCommonControls)
+			{
+				SpriteBatch.DrawString(Font, "Toggle Floor:", new Vector2(485, 25), PROPERTY_TEXT_COlOR);
+				SpriteBatch.DrawString(Font, "F", new Vector2(610, 25), CONTROL_TEXT_COLOR);
 
-            // Display particle system specific values.
-            _currentDPSFDemoParticleSystemWrapper.DrawStatusText(toolsToDrawText);
+				SpriteBatch.DrawString(Font, "Toggle Axis:", new Vector2(650, 25), PROPERTY_TEXT_COlOR);
+				SpriteBatch.DrawString(Font, "F7", new Vector2(770, 25), CONTROL_TEXT_COLOR);
 
-            // If the Particle System specific Controls should be shown, display them.
-            if (_showParticleSystemControls)
-            {
-                _currentDPSFDemoParticleSystemWrapper.DrawInputControlsText(toolsToDrawText);
-            }
+				SpriteBatch.DrawString(Font, "Toggle Full Screen:", new Vector2(485, 50), PROPERTY_TEXT_COlOR);
+				SpriteBatch.DrawString(Font, "End", new Vector2(665, 50), CONTROL_TEXT_COLOR);
 
-            // If the Common Controls should be shown, display them.
-            if (_showCommonControls)
-            {
-                SpriteBatch.DrawString(Font, "Change Particle System:", new Vector2(5, 25), PROPERTY_TEXT_COlOR);
-                SpriteBatch.DrawString(Font, "G / H", new Vector2(235, 25), CONTROL_TEXT_COLOR);
+				SpriteBatch.DrawString(Font, "Toggle Camera Mode:", new Vector2(485, 75), PROPERTY_TEXT_COlOR);
+				SpriteBatch.DrawString(Font, "PgDown", new Vector2(690, 75), CONTROL_TEXT_COLOR);
 
-                SpriteBatch.DrawString(Font, "Toggle Emitter On/Off:", new Vector2(5, 50), PROPERTY_TEXT_COlOR);
-                SpriteBatch.DrawString(Font, "Delete", new Vector2(220, 50), CONTROL_TEXT_COLOR);
+				SpriteBatch.DrawString(Font, "Reset Camera Position:", new Vector2(485, 100), PROPERTY_TEXT_COlOR);
+				SpriteBatch.DrawString(Font, "R", new Vector2(705, 100), CONTROL_TEXT_COLOR);
 
-                SpriteBatch.DrawString(Font, "Increase/Decrease Emitter Speed:", new Vector2(5, 75), PROPERTY_TEXT_COlOR);
-                SpriteBatch.DrawString(Font, "+ / -", new Vector2(320, 75), CONTROL_TEXT_COLOR);
+				SpriteBatch.DrawString(Font, "Pause Particle System:", new Vector2(485, 150), PROPERTY_TEXT_COlOR);
+				SpriteBatch.DrawString(Font, "Spacebar", new Vector2(700, 150), CONTROL_TEXT_COLOR);
 
-                SpriteBatch.DrawString(Font, "Add Particle:", new Vector2(5, 100), PROPERTY_TEXT_COlOR);
-                SpriteBatch.DrawString(Font, "Insert(one), Home(many), PgUp(max)", new Vector2(130, 100), CONTROL_TEXT_COLOR);
+				SpriteBatch.DrawString(Font, "Clear Screen Each Frame:", new Vector2(485, 225), PROPERTY_TEXT_COlOR);
+				SpriteBatch.DrawString(Font, "F5", new Vector2(730, 225), CONTROL_TEXT_COLOR);
 
-                SpriteBatch.DrawString(Font, "Move Emitter:", new Vector2(5, 125), PROPERTY_TEXT_COlOR);
-                SpriteBatch.DrawString(Font, "A/D, W/S, Q/E", new Vector2(135, 125), CONTROL_TEXT_COLOR);
+				SpriteBatch.DrawString(Font, "Draw Performance Info:", new Vector2(485, 300), PROPERTY_TEXT_COlOR);
+				SpriteBatch.DrawString(Font, "F10", new Vector2(705, 300), CONTROL_TEXT_COLOR);
+			}
 
-                SpriteBatch.DrawString(Font, "Rotate Emitter:", new Vector2(5, 150), PROPERTY_TEXT_COlOR);
-                SpriteBatch.DrawString(Font, "J/L(yaw), I/Vertex(pitch), U/O(roll)", new Vector2(150, 150), CONTROL_TEXT_COLOR);
-
-                SpriteBatch.DrawString(Font, "Rotate Emitter Around Pivot:", new Vector2(5, 175), PROPERTY_TEXT_COlOR);
-                SpriteBatch.DrawString(Font, "Y + Rotate Emitter", new Vector2(275, 175), CONTROL_TEXT_COLOR);
-
-                SpriteBatch.DrawString(Font, "Reset Emitter's Position and Orientation:", new Vector2(5, 200), PROPERTY_TEXT_COlOR);
-                SpriteBatch.DrawString(Font, "Z", new Vector2(375, 200), CONTROL_TEXT_COLOR);
-
-                SpriteBatch.DrawString(Font, "Toggle Floor:", new Vector2(485, 25), PROPERTY_TEXT_COlOR);
-                SpriteBatch.DrawString(Font, "F", new Vector2(610, 25), CONTROL_TEXT_COLOR);
-
-                SpriteBatch.DrawString(Font, "Toggle Axis:", new Vector2(650, 25), PROPERTY_TEXT_COlOR);
-                SpriteBatch.DrawString(Font, "F7", new Vector2(770, 25), CONTROL_TEXT_COLOR);
-
-                SpriteBatch.DrawString(Font, "Toggle Full Screen:", new Vector2(485, 50), PROPERTY_TEXT_COlOR);
-                SpriteBatch.DrawString(Font, "End", new Vector2(665, 50), CONTROL_TEXT_COLOR);
-
-                SpriteBatch.DrawString(Font, "Toggle Camera Mode:", new Vector2(485, 75), PROPERTY_TEXT_COlOR);
-                SpriteBatch.DrawString(Font, "PgDown", new Vector2(690, 75), CONTROL_TEXT_COLOR);
-
-                SpriteBatch.DrawString(Font, "Reset Camera Position:", new Vector2(485, 100), PROPERTY_TEXT_COlOR);
-                SpriteBatch.DrawString(Font, "R", new Vector2(705, 100), CONTROL_TEXT_COLOR);
-
-                SpriteBatch.DrawString(Font, "Change Texture:", new Vector2(485, 125), PROPERTY_TEXT_COlOR);
-                SpriteBatch.DrawString(Font, "T / Shift + T", new Vector2(640, 125), CONTROL_TEXT_COLOR);
-
-                SpriteBatch.DrawString(Font, "Pause Particle System:", new Vector2(485, 150), PROPERTY_TEXT_COlOR);
-                SpriteBatch.DrawString(Font, "Spacebar", new Vector2(700, 150), CONTROL_TEXT_COLOR);
-
-                SpriteBatch.DrawString(Font, "Speed Up/Down PS:", new Vector2(485, 175), PROPERTY_TEXT_COlOR);
-                SpriteBatch.DrawString(Font, "* / /", new Vector2(680, 175), CONTROL_TEXT_COLOR);
-
-                SpriteBatch.DrawString(Font, "Draw Static Particles:", new Vector2(485, 200), PROPERTY_TEXT_COlOR);
-                SpriteBatch.DrawString(Font, "F6", new Vector2(690, 200), CONTROL_TEXT_COLOR);
-
-                SpriteBatch.DrawString(Font, "Clear Screen Each Frame:", new Vector2(485, 225), PROPERTY_TEXT_COlOR);
-                SpriteBatch.DrawString(Font, "F5", new Vector2(730, 225), CONTROL_TEXT_COLOR);
-
-                SpriteBatch.DrawString(Font, "Create Animation Images:", new Vector2(485, 250), PROPERTY_TEXT_COlOR);
-                SpriteBatch.DrawString(Font, "F8", new Vector2(725, 250), CONTROL_TEXT_COLOR);
-
-                SpriteBatch.DrawString(Font, "Serialize Particle System:", new Vector2(485, 275), PROPERTY_TEXT_COlOR);
-                SpriteBatch.DrawString(Font, "F9", new Vector2(725, 275), CONTROL_TEXT_COLOR);
-
-                SpriteBatch.DrawString(Font, "Draw Performance Info:", new Vector2(485, 300), PROPERTY_TEXT_COlOR);
-                SpriteBatch.DrawString(Font, "F10", new Vector2(705, 300), CONTROL_TEXT_COLOR);
-            }
-
-			// If the Camera Controls should be shown
+			// If the Camera Controls should be shown.
 			if (ShowCameraControls)
 			{
-				// If we are using a Fixed Camera
-				if (msCamera.bUsingFixedCamera)
+				// If we are using a Fixed Camera.
+				if (Camera.bUsingFixedCamera)
 				{
 					SpriteBatch.DrawString(Font, "Fixed Camera Controls:", new Vector2(5, GraphicsDeviceManager.PreferredBackBufferHeight - 125), PROPERTY_TEXT_COlOR);
 					SpriteBatch.DrawString(Font, "Keys: Left/Right Arrows, Up/Down Arrows, Num0/Num1", new Vector2(15, GraphicsDeviceManager.PreferredBackBufferHeight - 100), CONTROL_TEXT_COLOR);
 					SpriteBatch.DrawString(Font, "Mouse: Left Button + X/Y Movement, Right Button + Y Movement", new Vector2(15, GraphicsDeviceManager.PreferredBackBufferHeight - 75), CONTROL_TEXT_COLOR);
 				}
-				// Else we are using a Free Camera
+				// Else we are using a Free Camera.
 				else
 				{
 					SpriteBatch.DrawString(Font, "Free Camera Controls", new Vector2(5, GraphicsDeviceManager.PreferredBackBufferHeight - 125), PROPERTY_TEXT_COlOR);
@@ -726,25 +567,32 @@ namespace DPSF_Demo
 				}
 			}
 
-			// If we should draw the number of bytes allocated in memory
+			// If performance related text should be drawn, draw the number of bytes allocated in memory.
 			if (ShowPerformanceText)
 			{
-				SpriteBatch.DrawString(Font, "Update Time (ms): " + _particleSystemManager.TotalPerformanceTimeToDoUpdatesInMilliseconds.ToString("0.000"), new Vector2(529, GraphicsDeviceManager.PreferredBackBufferHeight - 250), PROPERTY_TEXT_COlOR);
-				SpriteBatch.DrawString(Font, "Draw Time (ms): " + _particleSystemManager.TotalPerformanceTimeToDoDrawsInMilliseconds.ToString("0.000"), new Vector2(545, GraphicsDeviceManager.PreferredBackBufferHeight - 225), PROPERTY_TEXT_COlOR);
 				SpriteBatch.DrawString(Font, "Garbage Allocated (KB): " + _garbageCurrentAmountInKB.ToString("0.0"), new Vector2(480, GraphicsDeviceManager.PreferredBackBufferHeight - 200), PROPERTY_TEXT_COlOR);
 				SpriteBatch.DrawString(Font, "Avg Garbage Per Update (KB): " + _garbageAverageCreatedPerUpdateInKB.ToString("0.000"), new Vector2(440, GraphicsDeviceManager.PreferredBackBufferHeight - 175), PROPERTY_TEXT_COlOR);
 				SpriteBatch.DrawString(Font, "Avg Garbage Per Frame (KB): " + _garbageAverageCreatedPerFrameInKB.ToString("0.000"), new Vector2(445, GraphicsDeviceManager.PreferredBackBufferHeight - 150), PROPERTY_TEXT_COlOR);
 			}
+
+			// Draw any text from inheriting classes.
+			DrawGameText();
 
 			// Stop drawing text
 			SpriteBatch.End();
 		}
 
 		/// <summary>
+		/// Draws any game text to the screen.
+		/// <para>NOTE: SpriteBatch.Begin() has already been called, so all you need to do is call SpriteBatch.DrawString().</para>
+		/// </summary>
+		protected virtual void DrawGameText() { }
+
+		/// <summary>
 		/// Returns the Area of the Screen that it is safe to draw Text to (as this differs on PC and TVs).
 		/// </summary>
 		/// <returns>Returns the Area of the Screen that it is safe to draw Text to (as this differs on PC and TVs).</returns>
-		Rectangle GetTextSafeArea()
+		protected Rectangle GetTextSafeArea()
 		{
 			return GetTextSafeArea(0.9f);
 		}
@@ -755,7 +603,7 @@ namespace DPSF_Demo
 		/// <param name="fNormalizedPercent">The amount of screen space (normalized between 0.0 - 1.0) that should 
 		/// safe to draw to (e.g. 0.8 to have a 10% border on all sides)</param>
 		/// <returns>Returns the Area of the Screen that it is safe to draw Text to (as this differs on PC and TVs).</returns>
-		Rectangle GetTextSafeArea(float fNormalizedPercent)
+		protected Rectangle GetTextSafeArea(float fNormalizedPercent)
 		{
 			Rectangle rTextSafeArea = new Rectangle(GraphicsDevice.Viewport.X, GraphicsDevice.Viewport.Y,
 											GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
@@ -771,37 +619,34 @@ namespace DPSF_Demo
 		}
 
 		/// <summary>
-		/// Helper for drawing the Models
+		/// Draw any models to the screen.
 		/// </summary>
-		void DrawModels(Matrix cWorldMatrix, Matrix cViewMatrix, Matrix cProjectionMatrix)
+		/// <param name="worldMatrix">The world matrix.</param>
+		/// <param name="viewMatrix">The view matrix.</param>
+		/// <param name="projectionMatrix">The projection matrix.</param>
+		protected virtual void DrawModels(Matrix worldMatrix, Matrix viewMatrix, Matrix projectionMatrix)
 		{
-			// Set our sampler state to allow the ground to have a repeated texture
+			// Set our sampler state to allow the ground to have a repeated texture.
 			GraphicsDevice.BlendState = BlendState.Opaque;
 			GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 			GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
 			GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
 
-			// If the Floor should be drawn
+			// If the Floor should be drawn.
 			if (ShowFloor)
 			{
-				_floorModel.Draw(cWorldMatrix, cViewMatrix, cProjectionMatrix);
-			}
-
-			// If the Sphere should be visible
-			if (_sphereObject.bVisible)
-			{
-				_sphereModel.Draw(Matrix.CreateScale(_sphereObject.fSize) * Matrix.CreateTranslation(_sphereObject.sPosition), cViewMatrix, cProjectionMatrix);
+				_floorModel.Draw(worldMatrix, viewMatrix, projectionMatrix);
 			}
 		}
 
 		/// <summary>
-		/// Helper for drawing lines showing the positive axis directions
+		/// Helper for drawing lines showing the positive axis directions.
 		/// </summary>
-		void DrawAxis(Matrix cWorldMatrix, Matrix cViewMatrix, Matrix cProjectionMatrix)
+		private void DrawAxis(Matrix worldMatrix, Matrix viewMatrix, Matrix projectionMatrix)
 		{
-			mcAxisEffect.World = cWorldMatrix;
-			mcAxisEffect.View = cViewMatrix;
-			mcAxisEffect.Projection = cProjectionMatrix;
+			mcAxisEffect.World = worldMatrix;
+			mcAxisEffect.View = viewMatrix;
+			mcAxisEffect.Projection = projectionMatrix;
 
 			// Draw the lines
 			foreach (EffectPass cPass in mcAxisEffect.CurrentTechnique.Passes)
@@ -816,210 +661,143 @@ namespace DPSF_Demo
 
 		#region Handle Input
 
+
 		/// <summary>
-		/// Gets and processes all user input
+		/// Gets and processes all user input.
 		/// </summary>
-		void ProcessInput(GameTime cGameTime)
+		/// <param name="gameTime">How much time has elapsed in the game and between updates.</param>
+		private void ProcessInput(GameTime gameTime)
 		{
-			// Save how long it's been since the last time Input was Handled
-			float fTimeInSeconds = (float)cGameTime.ElapsedGameTime.TotalSeconds;
+			// Save how long it's been since the last time Input was Handled.
+			float timeInSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-			// Save the state of the input devices at this frame
-			KeyboardManager.UpdateKeyboardStateForThisFrame(cGameTime.ElapsedGameTime);
-			MouseManager.UpdateMouseStateForThisFrame(cGameTime.ElapsedGameTime);
-			GamePadsManager.UpdateGamePadStatesForThisFrame(cGameTime.ElapsedGameTime);
+			// Save the state of the input devices at this frame.
+			KeyboardManager.UpdateKeyboardStateForThisFrame(gameTime.ElapsedGameTime);
+			MouseManager.UpdateMouseStateForThisFrame(gameTime.ElapsedGameTime);
+			GamePadsManager.UpdateGamePadStatesForThisFrame(gameTime.ElapsedGameTime);
 
-			// If we should Exit
+			// If we should Exit.
 			if (KeyboardManager.KeyIsDown(Keys.Escape) || GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.Back))
 			{
 				Exit();
 			}
 
-			// If we are currently showing the Splash Screen and a key was pressed, skip the Splash Screen.
-			if (_mcDPSFSplashScreenDPSFDemoParticleSystemWrapper != null && 
-				((KeyboardManager.CurrentKeyboardState.GetPressedKeys().Length > 0 && KeyboardManager.CurrentKeyboardState.GetPressedKeys()[0] != Keys.None) || 
-				(MouseManager.CurrentMouseState.LeftButton == ButtonState.Pressed || MouseManager.CurrentMouseState.RightButton == ButtonState.Pressed) ||
-				(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.A | Buttons.B | Buttons.X | Buttons.Y | Buttons.Start))))
-			{
-				_mcDPSFSplashScreenDPSFDemoParticleSystemWrapper.IsSplashScreenComplete = true;
+			// Handle any game-related input.
+			if (!ProcessInputForGame(gameTime))
 				return;
-			}
 
-			// If we should toggle showing the Floor
+			// If we should toggle showing the Floor.
 			if (KeyboardManager.KeyWasJustPressed(Keys.F))
 			{
 				ShowFloor = !ShowFloor;
 			}
 
-			// If we should toggle Pausing the game
+			// If we should toggle Pausing the game.
 			if (KeyboardManager.KeyWasJustPressed(Keys.Space) || GamePadsManager.ButtonWasJustPressed(PlayerIndex.One, Buttons.Start))
 			{
 				Paused = !Paused;
 			}
 
-			// If we should toggle between Full Screen and Windowed mode
+			// If we should toggle between Full Screen and Windowed mode.
 			if (KeyboardManager.KeyWasJustPressed(Keys.End))
 			{
 				GraphicsDeviceManager.ToggleFullScreen();
 			}
 
-			// If we should toggle showing the Common Controls
+			// If we should toggle showing the Common Controls.
 			if (KeyboardManager.KeyWasJustPressed(Keys.F1))
 			{
-				_showCommonControls = !_showCommonControls;
+				ShowCommonControls = !ShowCommonControls;
 			}
 
-			// If we should toggle showing the Particle System specific Controls
-			if (KeyboardManager.KeyWasJustPressed(Keys.F2))
-			{
-				_showParticleSystemControls = !_showParticleSystemControls;
-			}
-
-			// If we should toggle showing the Camera Controls
+			// If we should toggle showing the Camera Controls.
 			if (KeyboardManager.KeyWasJustPressed(Keys.F3))
 			{
 				ShowCameraControls = !ShowCameraControls;
 			}
 
-			// If we should toggle showing the Common Controls
+			// If we should toggle showing the Common Controls.
 			if (KeyboardManager.KeyWasJustPressed(Keys.F4))
 			{
 				ShowText = !ShowText;
 			}
 
-			// If we should toggle Clearing the Screen each Frame
+			// If we should toggle Clearing the Screen each Frame.
 			if (KeyboardManager.KeyWasJustPressed(Keys.F5))
 			{
 				ClearScreenEveryFrame = !ClearScreenEveryFrame;
 				_clearScreenEveryFrameJustToggled = true;
 			}
-			
-			// If the particle lifetimes should be drawn in one frame
-			if (KeyboardManager.KeyWasJustPressed(Keys.F6))
-			{
-				_drawStaticParticles = !_drawStaticParticles;
-				_staticParticlesDrawn = false;
-			}
 
-			// If the Axis should be toggled on/off
+			// If the Axis should be toggled on/off.
 			if (KeyboardManager.KeyWasJustPressed(Keys.F7))
 			{
 				ShowPositiveDirectionAxis = !ShowPositiveDirectionAxis;
 			}
-#if (WINDOWS)
-			// If the PS should be drawn to files
-			if (KeyboardManager.KeyWasJustPressed(Keys.F8))
-			{
-				// Draw the Particle System Animation to a series of Image Files
-				_particleSystemManager.DrawAllParticleSystemsAnimationToFiles(GraphicsDevice, _drawPSToFilesImageWidth, _drawPSToFilesImageHeight, 
-							_drawPSToFilesDirectoryName, _drawPSToFilesTotalTime, _drawPSToFilesTimeStep, _createAnimatedGIF, _createTileSetImage);
-			}
 
-			// If the PS should be serialized to a file
-			if (KeyboardManager.KeyWasJustPressed(Keys.F9))
-			{
-				// Only particle systems that do not inherit the DrawableGameComponent can be serialized.
-				if (!DPSFHelper.DPSFInheritsDrawableGameComponent)
-				{
-					// If we have the particle system right now
-					if (_currentDPSFDemoParticleSystemWrapper != null)
-					{
-						// Serialize the particle system into a file
-						System.IO.Stream stream = System.IO.File.Open("SerializedParticleSystem.dat", System.IO.FileMode.Create);
-						System.Runtime.Serialization.Formatters.Binary.BinaryFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-						formatter.Serialize(stream, _currentDPSFDemoParticleSystemWrapper);
-						stream.Close();
-
-						// Remove the particle system from the manager and destroy the particle system in memory
-						_particleSystemManager.RemoveParticleSystem(_currentDPSFDemoParticleSystemWrapper);
-						_currentDPSFDemoParticleSystemWrapper.Destroy();
-						_currentDPSFDemoParticleSystemWrapper = null;
-					}
-					// Else we don't have the particle system right now
-					else
-					{
-						// Deserialize the particle system from a file
-						System.IO.Stream stream = System.IO.File.Open("SerializedParticleSystem.dat", System.IO.FileMode.Open);
-						System.Runtime.Serialization.Formatters.Binary.BinaryFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                        _currentDPSFDemoParticleSystemWrapper = (IWrapDPSFDemoParticleSystems)formatter.Deserialize(stream);
-						stream.Close();
-
-						try
-						{
-							// Setup the particle system properties that couldn't be serialized
-							_currentDPSFDemoParticleSystemWrapper.InitializeNonSerializableProperties(this, this.GraphicsDevice, this.Content);
-						}
-						// Catch the case where the Particle System requires a texture, but one wasn't loaded
-						catch (ArgumentNullException)
-						{
-							// Assign the particle system a texture to use
-							_currentDPSFDemoParticleSystemWrapper.SetTexture("Textures/Bubble");
-						}
-
-						// Readd the particle system to the particle system manager
-						_particleSystemManager.AddParticleSystem(_currentDPSFDemoParticleSystemWrapper);
-					}
-				}
-			}
-#endif
-			// If the Performance Profiling was toggled
+			// If the Performance Profiling was toggled.
 			if (KeyboardManager.KeyWasJustPressed(Keys.F10))
 			{
-				// Toggle if the Performance Profiling text should be drawn
+				// Toggle if the Performance Profiling text should be drawn.
 				ShowPerformanceText = !ShowPerformanceText;
 			}
 
-			// Handle input for moving the Camera
-			ProcessInputForCamera(fTimeInSeconds);
-
-			// Handle input for controlling the Particle Systems
-			ProcessInputForParticleSystem(fTimeInSeconds);
+			// Handle input for moving the Camera.
+			ProcessInputForCamera(timeInSeconds);
 		}
+
+		/// <summary>
+		/// Process any input for game events.
+		/// <para>This is called after the new input device states have been obtained, but before any other input is processed.</para>
+		/// <para>NOTE: If this returns false any other input will not be processed.</para>
+		/// </summary>
+		/// <param name="gameTime">How much time has elapsed in the game and between updates.</param>
+		protected virtual bool ProcessInputForGame(GameTime gameTime) { return true; }
 
 		/// <summary>
 		/// Handle input for moving the Camera
 		/// </summary>
-		public void ProcessInputForCamera(float fTimeInSeconds)
+		private void ProcessInputForCamera(float fTimeInSeconds)
 		{
 			// If we are using the Fixed Camera
-			if (msCamera.bUsingFixedCamera)
+			if (Camera.bUsingFixedCamera)
 			{
 				// If the Camera should be rotated vertically
 				if (KeyboardManager.KeyIsDown(Keys.NumPad1) || (KeyboardManager.KeyIsUp(Keys.LeftShift) && KeyboardManager.KeyIsUp(Keys.RightShift) && KeyboardManager.KeyIsDown(Keys.D1)) ||
 					(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.LeftThumbstickUp) && GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.LeftStick)))
 				{
-					msCamera.fCameraArc -= fTimeInSeconds * 25;
+					Camera.fCameraArc -= fTimeInSeconds * 25;
 				}
 
 				if (KeyboardManager.KeyIsDown(Keys.NumPad0) || (KeyboardManager.KeyIsUp(Keys.LeftShift) && KeyboardManager.KeyIsUp(Keys.RightShift) && KeyboardManager.KeyIsDown(Keys.D0)) ||
 					(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.LeftThumbstickDown) && GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.LeftStick)))
 				{
-					msCamera.fCameraArc += fTimeInSeconds * 25;
+					Camera.fCameraArc += fTimeInSeconds * 25;
 				}
 
 				// If the Camera should rotate horizontally
 				if (KeyboardManager.KeyIsDown(Keys.Right) || GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.LeftThumbstickRight))
 				{
-					msCamera.fCameraRotation -= fTimeInSeconds * 50;
+					Camera.fCameraRotation -= fTimeInSeconds * 50;
 				}
 
 				if (KeyboardManager.KeyIsDown(Keys.Left) || GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.LeftThumbstickLeft))
 				{
-					msCamera.fCameraRotation += fTimeInSeconds * 50;
+					Camera.fCameraRotation += fTimeInSeconds * 50;
 				}
 
 				// If Camera should be zoomed out
-				if (KeyboardManager.KeyIsDown(Keys.Down) || 
+				if (KeyboardManager.KeyIsDown(Keys.Down) ||
 					(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.LeftThumbstickDown) && !GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.LeftStick)))
 				{
-					msCamera.fCameraDistance += fTimeInSeconds * 250;
+					Camera.fCameraDistance += fTimeInSeconds * 250;
 				}
 
 				// If Camera should be zoomed in
-				if (KeyboardManager.KeyIsDown(Keys.Up) || 
+				if (KeyboardManager.KeyIsDown(Keys.Up) ||
 					(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.LeftThumbstickUp) && !GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.LeftStick)))
 				{
-					msCamera.fCameraDistance -= fTimeInSeconds * 250;
+					Camera.fCameraDistance -= fTimeInSeconds * 250;
 				}
 
 
@@ -1037,13 +815,13 @@ namespace DPSF_Demo
 					// If the Camera should rotate horizontally
 					if (iXMovement != 0)
 					{
-						msCamera.fCameraRotation -= (iXMovement * fMOUSE_ROTATION_SPEED);
+						Camera.fCameraRotation -= (iXMovement * fMOUSE_ROTATION_SPEED);
 					}
 
 					// If the Camera should rotate vertically
 					if (iYMovement != 0)
 					{
-						msCamera.fCameraArc -= (-iYMovement * fMOUSE_ROTATION_SPEED);
+						Camera.fCameraArc -= (-iYMovement * fMOUSE_ROTATION_SPEED);
 					}
 				}
 
@@ -1053,29 +831,29 @@ namespace DPSF_Demo
 					// If the Camera should zoom in/out
 					if (iYMovement != 0)
 					{
-						msCamera.fCameraDistance += iYMovement * fMOUSE_MOVEMENT_SPEED;
+						Camera.fCameraDistance += iYMovement * fMOUSE_MOVEMENT_SPEED;
 					}
 				}
 
 
 				// Limit the Arc movement
-				if (msCamera.fCameraArc > 90.0f)
+				if (Camera.fCameraArc > 90.0f)
 				{
-					msCamera.fCameraArc = 90.0f;
+					Camera.fCameraArc = 90.0f;
 				}
-				else if (msCamera.fCameraArc < -90.0f)
+				else if (Camera.fCameraArc < -90.0f)
 				{
-					msCamera.fCameraArc = -90.0f;
+					Camera.fCameraArc = -90.0f;
 				}
 
 				// Limit the Camera zoom distance
-				if (msCamera.fCameraDistance > 2000)
+				if (Camera.fCameraDistance > 2000)
 				{
-					msCamera.fCameraDistance = 2000;
+					Camera.fCameraDistance = 2000;
 				}
-				else if (msCamera.fCameraDistance < 1)
+				else if (Camera.fCameraDistance < 1)
 				{
-					msCamera.fCameraDistance = 1;
+					Camera.fCameraDistance = 1;
 				}
 			}
 			// Else we are using the Free Camera
@@ -1092,61 +870,61 @@ namespace DPSF_Demo
 				// If the Camera should move forward
 				if (KeyboardManager.KeyIsDown(Keys.Up))
 				{
-					msCamera.MoveCameraForwardOrBackward(iSPEED * fTimeInSeconds);
+					Camera.MoveCameraForwardOrBackward(iSPEED * fTimeInSeconds);
 				}
 
 				// If the Camera should move backwards
 				if (KeyboardManager.KeyIsDown(Keys.Down))
 				{
-					msCamera.MoveCameraForwardOrBackward(-iSPEED * fTimeInSeconds);
+					Camera.MoveCameraForwardOrBackward(-iSPEED * fTimeInSeconds);
 				}
 
 				// If the Camera should strafe right
 				if (KeyboardManager.KeyIsDown(Keys.Right))
 				{
-					msCamera.MoveCameraHorizontally(-iSPEED * fTimeInSeconds);
+					Camera.MoveCameraHorizontally(-iSPEED * fTimeInSeconds);
 				}
 
 				// If the Camera should strafe left
 				if (KeyboardManager.KeyIsDown(Keys.Left))
 				{
-					msCamera.MoveCameraHorizontally(iSPEED * fTimeInSeconds);
+					Camera.MoveCameraHorizontally(iSPEED * fTimeInSeconds);
 				}
 
 				// If the Camera should move upwards
 				if (KeyboardManager.KeyIsDown(Keys.NumPad1) || (KeyboardManager.KeyIsUp(Keys.LeftShift) && KeyboardManager.KeyIsUp(Keys.RightShift) && KeyboardManager.KeyIsDown(Keys.D1)))
 				{
-					msCamera.MoveCameraVertically((iSPEED / 2) * fTimeInSeconds);
+					Camera.MoveCameraVertically((iSPEED / 2) * fTimeInSeconds);
 				}
 
 				// If the Camera should move downwards
 				if (KeyboardManager.KeyIsDown(Keys.NumPad0) || (KeyboardManager.KeyIsUp(Keys.LeftShift) && KeyboardManager.KeyIsUp(Keys.RightShift) && KeyboardManager.KeyIsDown(Keys.D0)))
 				{
-					msCamera.MoveCameraVertically((-iSPEED / 2) * fTimeInSeconds);
+					Camera.MoveCameraVertically((-iSPEED / 2) * fTimeInSeconds);
 				}
 
 				// If the Camera should yaw left
 				if (KeyboardManager.KeyIsDown(Keys.NumPad4) || (KeyboardManager.KeyIsUp(Keys.LeftShift) && KeyboardManager.KeyIsUp(Keys.RightShift) && KeyboardManager.KeyIsDown(Keys.D4)))
 				{
-					msCamera.RotateCameraHorizontally(fROTATE_SPEED * fTimeInSeconds);
+					Camera.RotateCameraHorizontally(fROTATE_SPEED * fTimeInSeconds);
 				}
 
 				// If the Camera should yaw right
 				if (KeyboardManager.KeyIsDown(Keys.NumPad6) || (KeyboardManager.KeyIsUp(Keys.LeftShift) && KeyboardManager.KeyIsUp(Keys.RightShift) && KeyboardManager.KeyIsDown(Keys.D6)))
 				{
-					msCamera.RotateCameraHorizontally(-fROTATE_SPEED * fTimeInSeconds);
+					Camera.RotateCameraHorizontally(-fROTATE_SPEED * fTimeInSeconds);
 				}
 
 				// If the Camera should pitch up
 				if (KeyboardManager.KeyIsDown(Keys.NumPad8) || (KeyboardManager.KeyIsUp(Keys.LeftShift) && KeyboardManager.KeyIsUp(Keys.RightShift) && KeyboardManager.KeyIsDown(Keys.D8)))
 				{
-					msCamera.RotateCameraVertically(-fROTATE_SPEED * fTimeInSeconds);
+					Camera.RotateCameraVertically(-fROTATE_SPEED * fTimeInSeconds);
 				}
 
 				// If the Camera should pitch down
 				if (KeyboardManager.KeyIsDown(Keys.NumPad2) || (KeyboardManager.KeyIsUp(Keys.LeftShift) && KeyboardManager.KeyIsUp(Keys.RightShift) && KeyboardManager.KeyIsDown(Keys.D2)))
 				{
-					msCamera.RotateCameraVertically(fROTATE_SPEED * fTimeInSeconds);
+					Camera.RotateCameraVertically(fROTATE_SPEED * fTimeInSeconds);
 				}
 
 
@@ -1164,13 +942,13 @@ namespace DPSF_Demo
 					// If the Camera should yaw
 					if (iXMovement != 0)
 					{
-						msCamera.RotateCameraHorizontally(-iXMovement * fMOUSE_ROTATION_SPEED);
+						Camera.RotateCameraHorizontally(-iXMovement * fMOUSE_ROTATION_SPEED);
 					}
 
 					// If the Camera should pitch
 					if (iYMovement != 0)
 					{
-						msCamera.RotateCameraVertically(iYMovement * fMOUSE_ROTATION_SPEED);
+						Camera.RotateCameraVertically(iYMovement * fMOUSE_ROTATION_SPEED);
 					}
 				}
 
@@ -1180,378 +958,35 @@ namespace DPSF_Demo
 					// If the Camera should strafe
 					if (iXMovement != 0)
 					{
-						msCamera.MoveCameraHorizontally(-iXMovement * fMOUSE_MOVEMENT_SPEED);
+						Camera.MoveCameraHorizontally(-iXMovement * fMOUSE_MOVEMENT_SPEED);
 					}
 
 					// If the Camera should move forward or backward
 					if (iYMovement != 0)
 					{
-						msCamera.MoveCameraForwardOrBackward(-iYMovement * (fMOUSE_MOVEMENT_SPEED * 2.0f));
+						Camera.MoveCameraForwardOrBackward(-iYMovement * (fMOUSE_MOVEMENT_SPEED * 2.0f));
 					}
 				}
 
 				// If the Middle Mouse Button is scrolled
 				if (iZMovement != 0)
 				{
-					msCamera.MoveCameraVertically(iZMovement * (fMOUSE_MOVEMENT_SPEED / 10.0f));
+					Camera.MoveCameraVertically(iZMovement * (fMOUSE_MOVEMENT_SPEED / 10.0f));
 				}
 			}
 
 			// If the Camera Mode should be switched
 			if (KeyboardManager.KeyWasJustPressed(Keys.PageDown))
 			{
-				msCamera.bUsingFixedCamera = !msCamera.bUsingFixedCamera;
+				Camera.bUsingFixedCamera = !Camera.bUsingFixedCamera;
 			}
 
 			// If the Camera values should be Reset
-			if (KeyboardManager.KeyIsDown(Keys.R) || 
+			if (KeyboardManager.KeyIsDown(Keys.R) ||
 				(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.LeftShoulder) && GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightShoulder)))
 			{
-				msCamera.ResetFreeCameraVariables();
-				msCamera.ResetFixedCameraVariables();
-			}
-		}
-
-		/// <summary>
-		/// Function to control the Particle Systems based on user input
-		/// </summary>
-		public void ProcessInputForParticleSystem(float fElapsedTimeInSeconds)
-		{
-			// If the Current Particle System should be changed to the next Particle System
-			if (KeyboardManager.KeyWasJustPressed(Keys.H) || GamePadsManager.ButtonWasJustPressed(PlayerIndex.One, Buttons.RightTrigger))
-			{
-				_currentParticleSystem++;
-				if (_currentParticleSystem > ParticleSystemEffects.LastInList)
-				{
-					_currentParticleSystem = 0;
-				}
-
-				// Initialize the new Particle System
-				InitializeCurrentParticleSystem();
-			}
-			// Else if the Current Particle System should be changed back to the previous Particle System
-			else if (KeyboardManager.KeyWasJustPressed(Keys.G) || GamePadsManager.ButtonWasJustPressed(PlayerIndex.One, Buttons.LeftTrigger))
-			{
-				_currentParticleSystem--;
-				if (_currentParticleSystem < 0)
-				{
-					_currentParticleSystem = ParticleSystemEffects.LastInList;
-				}
-
-				// Initialize the new Particle System
-				InitializeCurrentParticleSystem();
-			}
-
-			// If the Current Particle System is not Initialized
-			if (_currentDPSFDemoParticleSystemWrapper == null || !_currentDPSFDemoParticleSystemWrapper.IsInitialized)
-			{
-				return;
-			}
-
-			// Define how fast the user can move and rotate the Emitter
-			float fEmitterMoveDelta = 75 * fElapsedTimeInSeconds;
-			float fEmitterRotateDelta = MathHelper.Pi * fElapsedTimeInSeconds;
-
-			// If the Shift key is down, move faster
-			if (KeyboardManager.KeyIsDown(Keys.LeftShift) || KeyboardManager.KeyIsDown(Keys.RightShift))
-			{
-				fEmitterMoveDelta *= 2;
-			}
-
-			// Check if the Emitter should be moved
-			if (KeyboardManager.KeyIsDown(Keys.W) || 
-				(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.DPadUp) && !GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightStick)))
-			{
-				_currentDPSFDemoParticleSystemWrapper.Emitter.PositionData.Position += Vector3.Up * fEmitterMoveDelta;
-			}
-
-			if (KeyboardManager.KeyIsDown(Keys.S) || 
-				(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.DPadDown) && !GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightStick)))
-			{
-				_currentDPSFDemoParticleSystemWrapper.Emitter.PositionData.Position += Vector3.Down * fEmitterMoveDelta;
-			}
-
-			if (KeyboardManager.KeyIsDown(Keys.A) || GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.DPadLeft))
-			{
-				_currentDPSFDemoParticleSystemWrapper.Emitter.PositionData.Position += Vector3.Left * fEmitterMoveDelta;
-			}
-
-			if (KeyboardManager.KeyIsDown(Keys.D) || GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.DPadRight))
-			{
-				_currentDPSFDemoParticleSystemWrapper.Emitter.PositionData.Position += Vector3.Right * fEmitterMoveDelta;
-			}
-
-			if (KeyboardManager.KeyIsDown(Keys.E) || 
-				(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.DPadUp) && GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightStick)))
-			{
-				_currentDPSFDemoParticleSystemWrapper.Emitter.PositionData.Position += Vector3.Forward * fEmitterMoveDelta;
-			}
-
-			if (KeyboardManager.KeyIsDown(Keys.Q) ||
-				(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.DPadDown) && GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightStick)))
-			{
-				_currentDPSFDemoParticleSystemWrapper.Emitter.PositionData.Position += Vector3.Backward * fEmitterMoveDelta;
-			}
-
-			// Check if the Emitter should be rotated
-			if ((_currentParticleSystem != ParticleSystemEffects.Star && _currentParticleSystem != ParticleSystemEffects.Ball) || 
-				(!KeyboardManager.KeyIsDown(Keys.V) && !KeyboardManager.KeyIsDown(Keys.B) && !KeyboardManager.KeyIsDown(Keys.P)))
-			{
-				if (KeyboardManager.KeyIsDown(Keys.J) || 
-					(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightThumbstickLeft) && !GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightStick)))
-				{
-					// If we should Rotate the Emitter around the Pivot Point
-					if (KeyboardManager.KeyIsDown(Keys.Y))
-					{
-						_currentDPSFDemoParticleSystemWrapper.Emitter.PivotPointData.RotatePositionAndOrientation(Matrix.CreateFromYawPitchRoll(-fEmitterRotateDelta, 0.0f, 0.0f));
-					}
-					// Else we should just Rotate the Emitter about its center
-					else
-					{
-						_currentDPSFDemoParticleSystemWrapper.Emitter.OrientationData.Rotate(Matrix.CreateFromYawPitchRoll(-fEmitterRotateDelta, 0.0f, 0.0f));
-					}
-				}
-
-				if (KeyboardManager.KeyIsDown(Keys.L) || 
-					(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightThumbstickRight) && !GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightStick)))
-				{
-					// If we should Rotate the Emitter around the Pivot Point
-					if (KeyboardManager.KeyIsDown(Keys.Y))
-					{
-						_currentDPSFDemoParticleSystemWrapper.Emitter.PivotPointData.RotatePositionAndOrientation(Matrix.CreateFromYawPitchRoll(fEmitterRotateDelta, 0.0f, 0.0f));
-					}
-					// Else we should just Rotate the Emitter about its center
-					else
-					{
-						_currentDPSFDemoParticleSystemWrapper.Emitter.OrientationData.Rotate(Matrix.CreateFromYawPitchRoll(fEmitterRotateDelta, 0.0f, 0.0f));
-					}
-				}
-
-				if (KeyboardManager.KeyIsDown(Keys.I) || GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightThumbstickUp))
-				{
-					// If we should Rotate the Emitter around the Pivot Point
-					if (KeyboardManager.KeyIsDown(Keys.Y))
-					{
-						_currentDPSFDemoParticleSystemWrapper.Emitter.PivotPointData.RotatePositionAndOrientation(Matrix.CreateFromYawPitchRoll(0.0f, -fEmitterRotateDelta, 0.0f));
-					}
-					// Else we should just Rotate the Emitter about its center
-					else
-					{
-						_currentDPSFDemoParticleSystemWrapper.Emitter.OrientationData.Rotate(Matrix.CreateFromYawPitchRoll(0.0f, -fEmitterRotateDelta, 0.0f));
-					}
-				}
-
-				if (KeyboardManager.KeyIsDown(Keys.K) || GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightThumbstickDown))
-				{
-					// If we should Rotate the Emitter around the Pivot Point
-					if (KeyboardManager.KeyIsDown(Keys.Y))
-					{
-						_currentDPSFDemoParticleSystemWrapper.Emitter.PivotPointData.RotatePositionAndOrientation(Matrix.CreateFromYawPitchRoll(0.0f, fEmitterRotateDelta, 0.0f));
-					}
-					// Else we should just Rotate the Emitter about its center
-					else
-					{
-						_currentDPSFDemoParticleSystemWrapper.Emitter.OrientationData.Rotate(Matrix.CreateFromYawPitchRoll(0.0f, fEmitterRotateDelta, 0.0f));
-					}
-				}
-
-				if (KeyboardManager.KeyIsDown(Keys.U) ||
-					(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightThumbstickLeft) && GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightStick)))
-				{
-					// If we should Rotate the Emitter around the Pivot Point
-					if (KeyboardManager.KeyIsDown(Keys.Y))
-					{
-						_currentDPSFDemoParticleSystemWrapper.Emitter.PivotPointData.RotatePositionAndOrientation(Matrix.CreateFromYawPitchRoll(0.0f, 0.0f, fEmitterRotateDelta));
-					}
-					// Else we should just Rotate the Emitter about its center
-					else
-					{
-						_currentDPSFDemoParticleSystemWrapper.Emitter.OrientationData.Rotate(Matrix.CreateFromYawPitchRoll(0.0f, 0.0f, fEmitterRotateDelta));
-					}
-				}
-
-				if (KeyboardManager.KeyIsDown(Keys.O) ||
-					(GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightThumbstickRight) && GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightStick)))
-				{
-					// If we should Rotate the Emitter around the Pivot Point
-					if (KeyboardManager.KeyIsDown(Keys.Y))
-					{
-						_currentDPSFDemoParticleSystemWrapper.Emitter.PivotPointData.RotatePositionAndOrientation(Matrix.CreateFromYawPitchRoll(0.0f, 0.0f, -fEmitterRotateDelta));
-					}
-					// Else we should just Rotate the Emitter about its center
-					else
-					{
-						_currentDPSFDemoParticleSystemWrapper.Emitter.OrientationData.Rotate(Matrix.CreateFromYawPitchRoll(0.0f, 0.0f, -fEmitterRotateDelta));
-					}
-				}
-			}
-
-			// Check if the Emitter should be reset
-			if (KeyboardManager.KeyWasJustPressed(Keys.Z))
-			{
-				_currentDPSFDemoParticleSystemWrapper.Emitter.PositionData.Position = Vector3.Zero;
-				_currentDPSFDemoParticleSystemWrapper.Emitter.OrientationData.Orientation = Quaternion.Identity;
-			}
-
-			// If the Texture should be changed
-			if (KeyboardManager.KeyWasJustPressed(Keys.T) || GamePadsManager.ButtonWasJustPressed(PlayerIndex.One, Buttons.Y))
-			{
-				if (_currentDPSFDemoParticleSystemWrapper.Texture != null)
-				{
-					// Get which Texture is currently being used for sure
-					for (int i = 0; i < (int)Textures.LastInList + 1; i++)
-					{
-						Textures eTexture = (Textures)i;
-						string sName = eTexture.ToString();
-
-						if (_currentDPSFDemoParticleSystemWrapper.Texture.Name.Equals(sName))
-						{
-							_currentTexture = (Textures)i;
-						}
-					}
-
-					// If we should go to the previous Texture
-					if (KeyboardManager.KeyIsDown(Keys.LeftShift) || KeyboardManager.KeyIsDown(Keys.RightShift))
-					{
-						_currentTexture--;
-						if (_currentTexture < 0)
-						{
-							_currentTexture = Textures.LastInList;
-						}
-					}
-					// Else we should go to the next Texture
-					else
-					{
-						_currentTexture++;
-						if (_currentTexture > Textures.LastInList)
-						{
-							_currentTexture = 0;
-						}
-					}
-
-					// Change the Texture being used to draw the Particles
-					_currentDPSFDemoParticleSystemWrapper.SetTexture("Textures/" + _currentTexture.ToString());
-				}
-			}
-
-			if (KeyboardManager.KeyWasJustPressed(Keys.Insert))
-			{
-				// Add a single Particle
-				_currentDPSFDemoParticleSystemWrapper.AddParticle();
-			}
-
-			if (KeyboardManager.KeyIsDown(Keys.Home))
-			{
-				// Add Particles while the button is pressed
-				_currentDPSFDemoParticleSystemWrapper.AddParticle();
-			}
-
-			if (KeyboardManager.KeyIsDown(Keys.PageUp))
-			{
-				// Add the max number of Particles
-				while (_currentDPSFDemoParticleSystemWrapper.AddParticle()) { }
-			}
-
-			if (KeyboardManager.KeyWasJustPressed(Keys.Delete) || GamePadsManager.ButtonWasJustPressed(PlayerIndex.One, Buttons.X))
-			{
-				// Toggle emitting particles on/off
-				_currentDPSFDemoParticleSystemWrapper.Emitter.EmitParticlesAutomatically = !_currentDPSFDemoParticleSystemWrapper.Emitter.EmitParticlesAutomatically;
-			}
-
-			if (KeyboardManager.KeyIsDown(Keys.Add, 0.02f) || KeyboardManager.KeyIsDown(Keys.OemPlus, 0.02f) || GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.RightShoulder, 0.02f))
-			{
-				// Increase the number of Particles being emitted
-				_currentDPSFDemoParticleSystemWrapper.Emitter.ParticlesPerSecond++;
-			}
-
-			if (KeyboardManager.KeyIsDown(Keys.Subtract, 0.02f) || KeyboardManager.KeyIsDown(Keys.OemMinus, 0.02f) || GamePadsManager.ButtonIsDown(PlayerIndex.One, Buttons.LeftShoulder, 0.02f))
-			{
-				if (_currentDPSFDemoParticleSystemWrapper.Emitter.ParticlesPerSecond > 1)
-				{
-					// Decrease the number of Particles being emitted
-					_currentDPSFDemoParticleSystemWrapper.Emitter.ParticlesPerSecond--;
-				}
-			}
-
-			if (KeyboardManager.KeyWasJustPressed(Keys.Multiply) || 
-				((KeyboardManager.KeyIsDown(Keys.LeftShift) || KeyboardManager.KeyIsDown(Keys.RightShift)) && KeyboardManager.KeyWasJustPressed(Keys.D8)) || 
-				GamePadsManager.ButtonWasJustPressed(PlayerIndex.One, Buttons.B))
-			{
-				// Increase the Speed of the Particle System simulation
-				_particleSystemManager.SimulationSpeed += 0.1f;
-
-				if (_particleSystemManager.SimulationSpeed > 5.0f)
-				{
-					_particleSystemManager.SimulationSpeed = 5.0f;
-				}
-
-				// If DPSF is not inheriting from DrawableGameComponent then we need
-				// to set the individual particle system's Simulation Speeds
-				if (DPSFHelper.DPSFInheritsDrawableGameComponent)
-				{
-					_particleSystemManager.SetSimulationSpeedForAllParticleSystems(_particleSystemManager.SimulationSpeed);
-				}
-			}
-
-			if (KeyboardManager.KeyWasJustPressed(Keys.Divide) ||
-				(KeyboardManager.KeyIsUp(Keys.LeftShift) && KeyboardManager.KeyIsUp(Keys.RightShift) && KeyboardManager.KeyWasJustPressed(Keys.OemQuestion)) || 
-				GamePadsManager.ButtonWasJustPressed(PlayerIndex.One, Buttons.A))
-			{
-				// Decrease the Speed of the Particle System simulation
-				_particleSystemManager.SimulationSpeed -= 0.1f;
-
-				if (_particleSystemManager.SimulationSpeed < 0.1f)
-				{
-					_particleSystemManager.SimulationSpeed = 0.1f;
-				}
-
-				// If DPSF is not inheriting from DrawableGameComponent then we need
-				// to set the individual particle system's Simulation Speeds
-				if (DPSFHelper.DPSFInheritsDrawableGameComponent)
-				{
-					_particleSystemManager.SetSimulationSpeedForAllParticleSystems(_particleSystemManager.SimulationSpeed);
-				}
-			}
-
-            // Perform particle system-specific input processing.
-		    _currentDPSFDemoParticleSystemWrapper.ProcessInput();
-
-			// Perform any particle system-specific input processing that affects objects external to the particle system.
-			switch (_currentParticleSystem)
-			{
-				case ParticleSystemEffects.Smoke:
-					if (KeyboardManager.KeyWasJustPressed(Keys.V))
-					{
-						SmokeParticleSystem smokeParticleSystem = _currentDPSFDemoParticleSystemWrapper as SmokeParticleSystem;
-
-						// Setup the sphere to pass by the particle system.
-						_sphereObject.bVisible = true;
-						_sphereObject.sPosition = smokeParticleSystem.mcExternalObjectPosition = new Vector3(-125, 50, 0);
-						_sphereObject.sVelocity = new Vector3(50, 0, 0);
-						_sphereObject.cTimeAliveInSeconds = TimeSpan.Zero;
-
-						// Setup the particle system to be affected by the sphere.
-						smokeParticleSystem.mfAttractRepelRange = _sphereObject.fSize * 2;
-						smokeParticleSystem.mfAttractRepelForce = 3.0f;
-						smokeParticleSystem.MakeParticlesAttractToExternalObject();
-					}
-
-					if (KeyboardManager.KeyWasJustPressed(Keys.B))
-					{
-						SmokeParticleSystem smokeParticleSystem = _currentDPSFDemoParticleSystemWrapper as SmokeParticleSystem;
-
-						// Setup the sphere to pass by the particle system.
-						_sphereObject.bVisible = true;
-						_sphereObject.sPosition = smokeParticleSystem.mcExternalObjectPosition = new Vector3(-125, 50, 0);
-						_sphereObject.sVelocity = new Vector3(50, 0, 0);
-						_sphereObject.cTimeAliveInSeconds = TimeSpan.Zero;
-
-						// Setup the particle system to be affected by the sphere.
-						smokeParticleSystem.mfAttractRepelRange = _sphereObject.fSize * 2f;
-						smokeParticleSystem.mfAttractRepelForce = 0.5f;
-						smokeParticleSystem.MakeParticlesRepelFromExternalObject();
-					}
-					break;
+				Camera.ResetFreeCameraVariables();
+				Camera.ResetFixedCameraVariables();
 			}
 		}
 
