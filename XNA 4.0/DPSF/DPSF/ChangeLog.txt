@@ -19,10 +19,11 @@ public:
 - Refactored the DPSF Demo particle systems in wrapper classes that implement the new IWrapDPSFDemoParticleSystems interface to make it easier to add new DPSF Demo
 	particle systems and clean up the GameMain.cs file so it is easier to understand.
 - Refactored the DPSF Demo a lot, breaking the 5000+ line file into several smaller files and creating more reusable components (e.g. input managers, camera, DemoBase.cs).
-
+	Created stand-alone BasicVirtualEnvironment project that houses all of these reusable components.
 
 Possible Breaking Changes:
 - Removed the mcRandomNumber particle system class variable. Everything should now just use the RandomNumber public property.
+- Changed namespace of particle systems in the DPSF Demo from DPSF.ParticleSystems to DPSF_Demo.ParticleSystems.
 
 
 Changes made after Version 2.2.1:
