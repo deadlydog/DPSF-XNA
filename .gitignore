@@ -1,6 +1,7 @@
 *.cache
 *.cachefile
 *.docstates
+*.ncrunchsolution
 *.pdb
 *.suo
 *.user

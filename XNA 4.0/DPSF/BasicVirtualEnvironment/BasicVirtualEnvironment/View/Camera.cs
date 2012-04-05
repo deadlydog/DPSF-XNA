@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
-namespace DPSF_Demo.View
+namespace BasicVirtualEnvironment.View
 {
 	/// <summary>
 	/// Class to hold the Camera's position and orientation.

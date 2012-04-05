@@ -7,13 +7,14 @@
     <Platform Condition=" '$(Platform)' == '' ">Xbox 360</Platform>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DPSF_Demo</RootNamespace>
+    <RootNamespace>BasicVirtualEnvironment</RootNamespace>
     <AssemblyName>DPSF Demo Xbox360</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
     <XnaPlatform>Xbox 360</XnaPlatform>
     <XnaCrossPlatformGroupID>69857363-f19a-4fc2-90d1-1f9c820af299</XnaCrossPlatformGroupID>
-    <ApplicationIcon>Game.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
     <Thumbnail>
     </Thumbnail>
     <IsWebBootstrapper>false</IsWebBootstrapper>
@@ -65,6 +66,10 @@
     <XnaCompressContent>true</XnaCompressContent>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BasicVirtualEnvironment\BasicVirtualEnvironment\Xbox 360 Copy of BasicVirtualEnvironment.csproj">
+      <Project>{5E466EAE-9DCE-4DEE-9710-EC548B0EC97D}</Project>
+      <Name>Xbox 360 Copy of BasicVirtualEnvironment</Name>
+    </ProjectReference>
     <ProjectReference Include="Content\DPSF DemoContent.contentproj">
       <Project>{788E6321-6F20-4A66-8B2D-51ECFD7EB458}</Project>
       <Name>DPSF DemoContent %28Content%29</Name>
@@ -72,13 +77,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApplicationEntryPoint.cs" />
-    <Compile Include="DemoBase.cs" />
+    <Compile Include="ApplicationEntryPoint.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DPSFDemo.cs" />
-    <Compile Include="FPS.cs" />
-    <Compile Include="Input\GamePadsManager.cs" />
-    <Compile Include="Input\KeyboardManager.cs" />
-    <Compile Include="Input\MouseManager.cs" />
     <Compile Include="Particle System Wrappers For DPSF Demo\AnimatedQuadPSWrapper.cs" />
     <Compile Include="Particle System Wrappers For DPSF Demo\AnimatedSpritePSWrapper.cs" />
     <Compile Include="Particle System Wrappers For DPSF Demo\BallPSWrapper.cs" />
@@ -174,10 +176,6 @@
     <Compile Include="Templates\Sprite3DBillboardParticleSystemTemplate.cs" />
     <Compile Include="Templates\SpriteParticleSystemTemplate.cs" />
     <Compile Include="Templates\TexturedQuadParticleSystemTemplate.cs" />
-    <Compile Include="View\Camera.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Game.ico" />
   </ItemGroup>
   <ItemGroup>
     <NestedContentProject Include="Content\Content.contentproj">

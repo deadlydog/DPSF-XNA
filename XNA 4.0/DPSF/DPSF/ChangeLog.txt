@@ -4,7 +4,9 @@ as well as the larger changes that the users should be aware of (public)
 =====================================================================
 
 TODO - Move Particle Position and Lerping to the Emitter function, so it returns back a list of Position/Orientations that should be applied to the particles (hmmm, or
-move it to the helper functions, since we will want to do this for both new and existing particles being updated).
+move it to the helper functions, since we will want to do this for both new and existing particles being updated). http://dpsf.freeforums.org/handling-multiple-effects-eg-smoke-trails-for-bullets-t125.html
+
+TODO - Investigate using Tasks and running on multiple threads to boost performance.
 
 
 Changes made after Version 2.2.2:
@@ -16,6 +18,7 @@ public:
 	to return back more accurate numbers for particle systems that contain other particles systems.
 - Refactored the DPSF Demo particle systems in wrapper classes that implement the new IWrapDPSFDemoParticleSystems interface to make it easier to add new DPSF Demo
 	particle systems and clean up the GameMain.cs file so it is easier to understand.
+- Refactored the DPSF Demo a lot, breaking the 5000+ line file into several smaller files and creating more reusable components (e.g. input managers, camera, DemoBase.cs).
 
 
 Possible Breaking Changes:

@@ -7,13 +7,14 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DPSF_Demo</RootNamespace>
+    <RootNamespace>BasicVirtualEnvironment</RootNamespace>
     <AssemblyName>DPSF Demo</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
     <XnaPlatform>Windows</XnaPlatform>
     <XnaCrossPlatformGroupID>69857363-f19a-4fc2-90d1-1f9c820af299</XnaCrossPlatformGroupID>
-    <ApplicationIcon>Game.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
     <Thumbnail>
     </Thumbnail>
     <IsWebBootstrapper>false</IsWebBootstrapper>
@@ -155,12 +156,6 @@
     <Compile Include="Particle System Wrappers For DPSF Demo\StarPSWrapper.cs" />
     <Compile Include="Particle System Wrappers For DPSF Demo\TexturedQuadDPSFDemoParticleSystemTemplateWrapper.cs" />
     <Compile Include="Particle System Wrappers For DPSF Demo\TrailPSWrapper.cs" />
-    <Compile Include="View\Camera.cs" />
-    <Compile Include="FPS.cs" />
-    <Compile Include="DemoBase.cs" />
-    <Compile Include="Input\GamePadsManager.cs" />
-    <Compile Include="Input\KeyboardManager.cs" />
-    <Compile Include="Input\MouseManager.cs" />
     <Compile Include="Particle System Wrappers For DPSF Demo\IWrapDPSFDemoParticleSystems.cs" />
     <Compile Include="Particle System Wrappers For DPSF Demo\RandomPSWrapper.cs" />
     <Compile Include="Particle Systems\AnimatedQuadPS.cs" />
@@ -212,9 +207,6 @@
     <Compile Include="Templates\TexturedQuadParticleSystemTemplate.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Game.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <NestedContentProject Include="Content\Content.contentproj">
       <Project>788e6321-6f20-4a66-8b2d-51ecfd7eb458</Project>
       <Visible>False</Visible>
@@ -263,6 +255,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BasicVirtualEnvironment\BasicVirtualEnvironment\BasicVirtualEnvironment.csproj">
+      <Project>{AA695311-58DA-4112-944D-DAA3F90C03C6}</Project>
+      <Name>BasicVirtualEnvironment</Name>
+    </ProjectReference>
     <ProjectReference Include="Content\DPSF DemoContent.contentproj">
       <Project>{788E6321-6F20-4A66-8B2D-51ECFD7EB458}</Project>
       <Name>DPSF DemoContent %28Content%29</Name>

@@ -1,4 +1,3 @@
-using System;
 
 namespace DPSF_Demo__Phone_
 {

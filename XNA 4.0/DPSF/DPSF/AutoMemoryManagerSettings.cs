@@ -1,11 +1,5 @@
-﻿#region Using Statements
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;       // Used for Conditional Attributes
+﻿using System;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Content;
-#endregion
 
 namespace DPSF
 {

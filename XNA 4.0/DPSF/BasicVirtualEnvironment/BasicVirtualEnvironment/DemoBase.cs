@@ -2,7 +2,8 @@
 //===================================================================
 // GameMain.cs
 //
-// This is the application file used to test the Dynamic Particle System Framework
+// This class provides a basic virtual environment as an easy starting 
+// point to inherit from and build off of.
 //
 // Copyright Daniel Schroeder 2008
 //===================================================================
@@ -10,19 +11,15 @@
 
 #region Using Statements
 using System;
-using System.Collections.Generic;
-using DPSF_Demo.Input;
-using DPSF_Demo.Particle_System_Wrappers_For_DPSF_Demo;
-using DPSF_Demo.View;
+using BasicVirtualEnvironment.Diagnostics;
+using BasicVirtualEnvironment.Input;
+using BasicVirtualEnvironment.View;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using DPSF;
-using DPSF.ParticleSystems;
 #endregion
 
-namespace DPSF_Demo
+namespace BasicVirtualEnvironment
 {
 	/// <summary>
 	/// Class that provides a basic virtual environment with common requirements (floor, camera, process input, draw text, etc.).
@@ -149,7 +146,7 @@ namespace DPSF_Demo
 		/// Handles the FPSUpdated event of the FPS control to calculate the average amount of garbage created each frame in the last second.
 		/// </summary>
 		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="DPSF_Demo.FPS.FPSEventArgs"/> instance containing the event data.</param>
+		/// <param name="e">The <see cref="FPS.FPSEventArgs"/> instance containing the event data.</param>
 		private void FPS_FPSUpdated(object sender, FPS.FPSEventArgs e)
 		{
 			// Get how much Garbage is waiting to be collected
@@ -538,8 +535,8 @@ namespace DPSF_Demo
 				SpriteBatch.DrawString(Font, "Reset Camera Position:", new Vector2(485, 100), PROPERTY_TEXT_COlOR);
 				SpriteBatch.DrawString(Font, "R", new Vector2(705, 100), CONTROL_TEXT_COLOR);
 
-				SpriteBatch.DrawString(Font, "Pause Particle System:", new Vector2(485, 150), PROPERTY_TEXT_COlOR);
-				SpriteBatch.DrawString(Font, "Spacebar", new Vector2(700, 150), CONTROL_TEXT_COLOR);
+				SpriteBatch.DrawString(Font, "Pause Simulation:", new Vector2(485, 150), PROPERTY_TEXT_COlOR);
+				SpriteBatch.DrawString(Font, "Spacebar", new Vector2(645, 150), CONTROL_TEXT_COLOR);
 
 				SpriteBatch.DrawString(Font, "Clear Screen Each Frame:", new Vector2(485, 225), PROPERTY_TEXT_COlOR);
 				SpriteBatch.DrawString(Font, "F5", new Vector2(730, 225), CONTROL_TEXT_COLOR);
