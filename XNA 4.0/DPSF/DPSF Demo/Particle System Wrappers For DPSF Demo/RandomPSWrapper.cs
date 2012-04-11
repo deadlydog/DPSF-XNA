@@ -24,25 +24,25 @@ namespace DPSF_Demo.Particle_System_Wrappers_For_DPSF_Demo
 	    public void DrawInputControlsText(DrawTextRequirements draw)
 	    {
             draw.TextWriter.DrawString(draw.Font, "Random Pattern:", new Vector2(5, 250), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "X", new Vector2(160, 250), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "X", new Vector2(160, 250), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Spiral Pattern:", new Vector2(5, 275), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "C", new Vector2(140, 275), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "C", new Vector2(140, 275), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Increase Size:", new Vector2(5, 300), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "V", new Vector2(135, 300), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "V", new Vector2(135, 300), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Decrease Size:", new Vector2(5, 325), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "B", new Vector2(145, 325), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "B", new Vector2(145, 325), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Change Start Color:", new Vector2(5, 350), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "N", new Vector2(190, 350), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "N", new Vector2(190, 350), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Change End Color:", new Vector2(5, 375), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "M", new Vector2(180, 375), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "M", new Vector2(180, 375), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Tube Mode:", new Vector2(5, 400), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "P", new Vector2(115, 400), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "P", new Vector2(115, 400), draw.ControlTextColor);
 	    }
 
 	    public void ProcessInput()

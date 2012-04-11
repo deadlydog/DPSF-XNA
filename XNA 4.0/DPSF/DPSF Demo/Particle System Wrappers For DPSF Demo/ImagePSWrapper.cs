@@ -32,28 +32,28 @@ namespace DPSF_Demo.Particle_System_Wrappers_For_DPSF_Demo
 	    public void DrawInputControlsText(DrawTextRequirements draw)
 	    {
             draw.TextWriter.DrawString(draw.Font, "Image:", new Vector2(5, 250), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "X", new Vector2(65, 250), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "X", new Vector2(65, 250), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Spiral:", new Vector2(5, 275), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "C", new Vector2(60, 275), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "C", new Vector2(60, 275), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Vortex:", new Vector2(5, 300), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "V", new Vector2(75, 300), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "V", new Vector2(75, 300), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Toggle Spin Mode:", new Vector2(5, 325), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "B", new Vector2(175, 325), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "B", new Vector2(175, 325), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Toggle Uniform Spin:", new Vector2(5, 350), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "N", new Vector2(195, 350), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "N", new Vector2(195, 350), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Scatter Image:", new Vector2(5, 375), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "M", new Vector2(140, 375), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "M", new Vector2(140, 375), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Toggle Rows:", new Vector2(5, 400), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "P", new Vector2(130, 400), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "P", new Vector2(130, 400), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Toggle Columns:", new Vector2(5, 425), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "[", new Vector2(155, 425), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "[", new Vector2(155, 425), draw.ControlTextColor);
 	    }
 
 	    public void ProcessInput()

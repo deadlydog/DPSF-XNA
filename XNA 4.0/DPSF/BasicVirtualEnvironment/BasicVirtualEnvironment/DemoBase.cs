@@ -184,6 +184,12 @@ namespace BasicVirtualEnvironment
 		protected bool ShowCameraControls { get; set; }
 
 		/// <summary>
+		/// By default the base class has F1 toggle showing all text, F2 does environment text, and F3 camera controls, so this property returns "F3" by default.
+		/// If you want to have F4, F5, etc. toggle other text, override this to have it return that last sequential F-key that toggles displaying text. 
+		/// </summary>
+		protected virtual string LastToggleTextFunctionKey { get { return "F3"; } }
+
+		/// <summary>
 		/// Tells if the Floor should be shown or not.
 		/// </summary>
 		protected bool ShowFloor { get; set; }
@@ -416,7 +422,8 @@ namespace BasicVirtualEnvironment
 			FPS.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
 
 			// Draw the Text to the screen last, so it is always on top.
-			DrawText();
+			if (ShowText)
+				DrawText();
 
 			// If we were drawing this frame to the Render Target, draw the Render Target to the screen.
 			if (!ClearScreenEveryFrame)
@@ -479,10 +486,6 @@ namespace BasicVirtualEnvironment
 		/// </summary>
 		void DrawText()
 		{
-			// If no Text should be shown, exit the function before drawing any text.
-			if (!ShowText)
-				return;
-
 			// Get area on screen that it is safe to draw text to (so that we are sure it will be displayed on the screen).
 			Rectangle textSafeArea = GetTextSafeArea();
 
@@ -515,7 +518,7 @@ namespace BasicVirtualEnvironment
 			SpriteBatch.DrawString(Font, sCameraModeValue, new Vector2(textSafeArea.Left + 740, textSafeArea.Bottom - 25), VALUE_TEXT_COLOR);
 
 			SpriteBatch.DrawString(Font, "Show/Hide Controls:", new Vector2(textSafeArea.Right - 260, textSafeArea.Top + 2), PROPERTY_TEXT_COlOR);
-			SpriteBatch.DrawString(Font, "F1 - F4", new Vector2(textSafeArea.Right - 70, textSafeArea.Top + 2), CONTROL_TEXT_COLOR);
+			SpriteBatch.DrawString(Font, "F1 - " + LastToggleTextFunctionKey, new Vector2(textSafeArea.Right - 70, textSafeArea.Top + 2), CONTROL_TEXT_COLOR);
 
 			// If the Common Controls should be shown, display them.
 			if (ShowCommonControls)
@@ -704,6 +707,12 @@ namespace BasicVirtualEnvironment
 			// If we should toggle showing the Common Controls.
 			if (KeyboardManager.KeyWasJustPressed(Keys.F1))
 			{
+				ShowText = !ShowText;
+			}
+
+			// If we should toggle showing the Common Controls.
+			if (KeyboardManager.KeyWasJustPressed(Keys.F2))
+			{
 				ShowCommonControls = !ShowCommonControls;
 			}
 
@@ -711,12 +720,6 @@ namespace BasicVirtualEnvironment
 			if (KeyboardManager.KeyWasJustPressed(Keys.F3))
 			{
 				ShowCameraControls = !ShowCameraControls;
-			}
-
-			// If we should toggle showing the Common Controls.
-			if (KeyboardManager.KeyWasJustPressed(Keys.F4))
-			{
-				ShowText = !ShowText;
 			}
 
 			// If we should toggle Clearing the Screen each Frame.

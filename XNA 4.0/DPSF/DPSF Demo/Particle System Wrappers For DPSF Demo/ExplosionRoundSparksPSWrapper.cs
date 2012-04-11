@@ -28,19 +28,19 @@ namespace DPSF_Demo.Particle_System_Wrappers_For_DPSF_Demo
 	    public void DrawInputControlsText(DrawTextRequirements draw)
 	    {
             draw.TextWriter.DrawString(draw.Font, "Decrease Intensity:", new Vector2(5, 250), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "X", new Vector2(180, 250), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "X", new Vector2(180, 250), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Increase Intensity:", new Vector2(5, 275), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "C", new Vector2(170, 275), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "C", new Vector2(170, 275), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Change Color:", new Vector2(5, 300), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "V", new Vector2(135, 300), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "V", new Vector2(135, 300), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Decrease Particle Size:", new Vector2(5, 325), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "B", new Vector2(220, 325), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "B", new Vector2(220, 325), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Increase Particle Size:", new Vector2(5, 350), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "N", new Vector2(210, 350), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "N", new Vector2(210, 350), draw.ControlTextColor);
 	    }
 
 	    public void ProcessInput()

@@ -196,6 +196,8 @@ namespace DPSF_Demo
 		Model _sphereModel;
 		SimpleObject _sphereObject = new SimpleObject();
 
+		protected override string LastToggleTextFunctionKey { get { return "F4"; } }
+
 		bool _showParticleSystemControls = false;          // Tells if the Particle System specific Controls should be shown or not
 
 		protected override void ShowPerformanceTextToggled(bool enabled)
@@ -774,7 +776,7 @@ namespace DPSF_Demo
 			base.ProcessInputForGame(gameTime);
 
 			// If we should toggle showing the Particle System specific Controls.
-			if (KeyboardManager.KeyWasJustPressed(Keys.F2))
+			if (KeyboardManager.KeyWasJustPressed(Keys.F4))
 			{
 				_showParticleSystemControls = !_showParticleSystemControls;
 			}

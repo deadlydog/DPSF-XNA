@@ -23,22 +23,22 @@ namespace DPSF_Demo.Particle_System_Wrappers_For_DPSF_Demo
 	    public void DrawInputControlsText(DrawTextRequirements draw)
 	    {
             draw.TextWriter.DrawString(draw.Font, "Vertical Ring:", new Vector2(5, 250), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "X", new Vector2(130, 250), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "X", new Vector2(130, 250), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Horizontal Ring:", new Vector2(5, 275), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "C", new Vector2(150, 275), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "C", new Vector2(150, 275), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Decrease Smoke:", new Vector2(5, 300), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "V", new Vector2(170, 300), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "V", new Vector2(170, 300), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Increase Smoke:", new Vector2(5, 325), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "B", new Vector2(160, 325), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "B", new Vector2(160, 325), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Toggle Additive Blending:", new Vector2(5, 350), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "N", new Vector2(240, 350), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "N", new Vector2(240, 350), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Toggle Ring Movement:", new Vector2(5, 375), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "M", new Vector2(225, 375), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "M", new Vector2(225, 375), draw.ControlTextColor);
 	    }
 
 	    public void ProcessInput()

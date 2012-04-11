@@ -20,16 +20,16 @@ namespace DPSF_Demo.Particle_System_Wrappers_For_DPSF_Demo
 	    public void DrawInputControlsText(DrawTextRequirements draw)
 	    {
             draw.TextWriter.DrawString(draw.Font, "Explosion:", new Vector2(5, 250), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "X", new Vector2(95, 250), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "X", new Vector2(95, 250), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Butterfly:", new Vector2(5, 275), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "C", new Vector2(90, 275), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "C", new Vector2(90, 275), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Toggle Color Mode:", new Vector2(5, 300), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "Left Mouse Button", new Vector2(183, 300), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "Left Mouse Button", new Vector2(183, 300), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Add Particle:", new Vector2(5, 325), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "Right Mouse Button", new Vector2(125, 325), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "Right Mouse Button", new Vector2(125, 325), draw.ControlTextColor);
 	    }
 
 	    public void ProcessInput()

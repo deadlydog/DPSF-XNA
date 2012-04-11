@@ -1,7 +1,7 @@
 #==========================================================
 # Do any necessary setup.
 #==========================================================
-# Import any necessary modules (i.e. libraries)
+# Import any necessary modules (i.e. libraries).
 require 'FileUtils'
 require 'rake'
 require 'albacore'
@@ -13,7 +13,7 @@ Dir.chdir(thisFilesAbsoluteDirectoryPath)
 #==========================================================
 # Define any necessary variables, such as file paths.
 #==========================================================
-# Create function to return the absolute path of a relative file path
+# Create function to return the absolute path of a relative file path.
 def AbsoluteFilePath(relativeFilePath)
 	return File.join(File.dirname(__FILE__), relativeFilePath)
 end

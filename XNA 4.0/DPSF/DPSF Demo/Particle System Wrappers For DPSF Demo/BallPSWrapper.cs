@@ -20,30 +20,30 @@ namespace DPSF_Demo.Particle_System_Wrappers_For_DPSF_Demo
 	    public void DrawInputControlsText(DrawTextRequirements draw)
 	    {
             draw.TextWriter.DrawString(draw.Font, "Increase Radius:", new Vector2(5, 250), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "X", new Vector2(155, 250), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "X", new Vector2(155, 250), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Decrease Radius:", new Vector2(5, 275), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "C", new Vector2(165, 275), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "C", new Vector2(165, 275), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Hold and Rotate Emitter:", new Vector2(5, 300), draw.PropertyTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Adjust Rotational Velocity:", new Vector2(15, 325), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "V", new Vector2(260, 325), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "V", new Vector2(260, 325), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Adjust Rotational Acceleration:", new Vector2(15, 350), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "B", new Vector2(300, 350), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "B", new Vector2(300, 350), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Reset Rotational Forces:", new Vector2(5, 375), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "N", new Vector2(230, 375), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "N", new Vector2(230, 375), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Less Particles:", new Vector2(5, 400), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "P", new Vector2(140, 400), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "P", new Vector2(140, 400), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "More Particles:", new Vector2(5, 425), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "[", new Vector2(140, 425), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "[", new Vector2(140, 425), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Rebuild Ball:", new Vector2(5, 450), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "M", new Vector2(120, 450), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "M", new Vector2(120, 450), draw.ControlTextColor);
 	    }
 
 	    public void ProcessInput()

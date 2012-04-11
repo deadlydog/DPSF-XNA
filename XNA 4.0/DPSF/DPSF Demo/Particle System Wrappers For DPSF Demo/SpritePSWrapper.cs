@@ -29,24 +29,24 @@ namespace DPSF_Demo.Particle_System_Wrappers_For_DPSF_Demo
 	    public void DrawInputControlsText(DrawTextRequirements draw)
 	    {
             draw.TextWriter.DrawString(draw.Font, "Mouse Attraction:", new Vector2(5, 250), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "X", new Vector2(167, 250), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "X", new Vector2(167, 250), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Mouse Cloud:", new Vector2(5, 275), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "C", new Vector2(125, 275), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "C", new Vector2(125, 275), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Grid:", new Vector2(5, 300), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "V", new Vector2(50, 300), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "V", new Vector2(50, 300), draw.ControlTextColor);
 
             draw.TextWriter.DrawString(draw.Font, "Rotators:", new Vector2(5, 325), draw.PropertyTextColor);
-            draw.TextWriter.DrawString(draw.Font, "B", new Vector2(87, 325), draw.PropertyTextColor);
+			draw.TextWriter.DrawString(draw.Font, "B", new Vector2(87, 325), draw.ControlTextColor);
 
             if (this.Name.Equals("Sprite Force") || this.Name.Equals("Sprite Cloud"))
             {
                 draw.TextWriter.DrawString(draw.Font, "Toggle Force:", new Vector2(5, 350), draw.PropertyTextColor);
-                draw.TextWriter.DrawString(draw.Font, "Left Mouse Button", new Vector2(130, 350), draw.PropertyTextColor);
+				draw.TextWriter.DrawString(draw.Font, "Left Mouse Button", new Vector2(130, 350), draw.ControlTextColor);
 
                 draw.TextWriter.DrawString(draw.Font, "Toggle Strength:", new Vector2(5, 375), draw.PropertyTextColor);
-                draw.TextWriter.DrawString(draw.Font, "Right Mouse Button", new Vector2(155, 375), draw.PropertyTextColor);
+				draw.TextWriter.DrawString(draw.Font, "Right Mouse Button", new Vector2(155, 375), draw.ControlTextColor);
             }
 	    }
 
