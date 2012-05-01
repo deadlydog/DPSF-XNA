@@ -15,22 +15,22 @@ namespace DPSFViewer
 {
 	public partial class DPSFViewerForm : Form
 	{
-		private Viewer _viewer = null;
+		private DPSFViewer _dpsfViewer = null;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DPSFViewerForm"/> class.
 		/// </summary>
 		/// <param name="viewer">The viewer class that created this form.</param>
-		public DPSFViewerForm(Viewer viewer)
+		public DPSFViewerForm(DPSFViewer viewer)
 		{
-			_viewer = viewer;
+			_dpsfViewer = viewer;
 			InitializeComponent();
 			this.FormClosing += new FormClosingEventHandler(DPSFViewerForm_FormClosing);
 
 			// Set initial properties
-			_viewer.ShowText = chkShowText.Checked;
-			_viewer.ShowFloor = chkShowFloor.Checked;
-			_viewer.Paused = chkPaused.Checked;
+			_dpsfViewer.ShowText = chkShowText.Checked;
+			_dpsfViewer.ShowFloor = chkShowFloor.Checked;
+			_dpsfViewer.Paused = chkPaused.Checked;
 		}
 
 		/// <summary>
@@ -141,7 +141,7 @@ namespace DPSFViewer
 			foreach (Type type in assembly.GetTypes().Where(t => t.IsClass))
 			{
 				// If this is a DPSF Particle System class
-				object userClass = assembly.CreateInstance(type.FullName, false, BindingFlags.CreateInstance, null, new object[] { _viewer }, System.Globalization.CultureInfo.CurrentCulture, null);
+				object userClass = assembly.CreateInstance(type.FullName, false, BindingFlags.CreateInstance, null, new object[] { _dpsfViewer }, System.Globalization.CultureInfo.CurrentCulture, null);
 				if (userClass is DPSF.IDPSFParticleSystem)
 				{
 					// Get a handle to the particle system class instance.
@@ -309,7 +309,7 @@ namespace DPSFViewer
 						controlToAddControlTo.Controls.Add(control);
 					}
 
-					_viewer.SetParticleSystem(particleSystem);
+					_dpsfViewer.SetParticleSystem(particleSystem);
 				}
 			}
 
@@ -341,7 +341,7 @@ namespace DPSFViewer
 
 		void DPSFViewerForm_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			_viewer.Exit();
+			_dpsfViewer.Exit();
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -351,27 +351,27 @@ namespace DPSFViewer
 
 		private void Viewport_MouseEnter(object sender, EventArgs e)
 		{
-			_viewer.MouseOverViewport = true;
+			_dpsfViewer.MouseOverViewport = true;
 		}
 
 		private void Viewport_MouseLeave(object sender, EventArgs e)
 		{
-			_viewer.MouseOverViewport = false;
+			_dpsfViewer.MouseOverViewport = false;
 		}
 
 		private void chkShowText_CheckedChanged(object sender, EventArgs e)
 		{
-			_viewer.ShowText = chkShowText.Checked;
+			_dpsfViewer.ShowText = chkShowText.Checked;
 		}
 
 		private void chkShowFloor_CheckedChanged(object sender, EventArgs e)
 		{
-			_viewer.ShowFloor = chkShowFloor.Checked;
+			_dpsfViewer.ShowFloor = chkShowFloor.Checked;
 		}
 
 		private void chkPaused_CheckedChanged(object sender, EventArgs e)
 		{
-			_viewer.Paused = chkPaused.Checked;
+			_dpsfViewer.Paused = chkPaused.Checked;
 		}
 	}
 }

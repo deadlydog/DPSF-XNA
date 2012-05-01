@@ -200,6 +200,10 @@ namespace DPSF_Demo
 
 		bool _showParticleSystemControls = false;          // Tells if the Particle System specific Controls should be shown or not
 
+		/// <summary>
+		/// Called whenever the value of ShowPerformanceText is changed.
+		/// </summary>
+		/// <param name="enabled">The new value of ShowPerformanceText.</param>
 		protected override void ShowPerformanceTextToggled(bool enabled)
 		{
 			// Only enable the Performance Profiling if we are going to be displaying it.
@@ -794,7 +798,7 @@ namespace DPSF_Demo
 			{
 				// Draw the Particle System Animation to a series of Image Files.
 				_particleSystemManager.DrawAllParticleSystemsAnimationToFiles(GraphicsDevice, _drawPSToFilesImageWidth, _drawPSToFilesImageHeight,
-							_drawPSToFilesDirectoryName, _drawPSToFilesTotalTime, _drawPSToFilesTimeStep, _createAnimatedGIF, _createTileSetImage);
+				_drawPSToFilesDirectoryName, _drawPSToFilesTotalTime, _drawPSToFilesTimeStep, _createAnimatedGIF, _createTileSetImage);
 			}
 
 			// If the particle system should be serialized to a file.

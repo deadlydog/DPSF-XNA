@@ -238,15 +238,19 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>if not exist "$(SolutionDir)..\DPSF\LatestDLLBuild" mkdir "$(SolutionDir)LatestDLLBuild"
+    <PostBuildEvent>REM Copy the new files to the LatestDLLBuild folder.
+if not exist "$(SolutionDir)..\DPSF\LatestDLLBuild" mkdir "$(SolutionDir)LatestDLLBuild"
 if exist "$(TargetPath)" copy /y /d "$(TargetPath)" "$(SolutionDir)..\DPSF\LatestDLLBuild\$(TargetFileName)"
 if exist "$(TargetDir)$(TargetName).xml" copy /y /d "$(TargetDir)$(TargetName).xml" "$(SolutionDir)..\DPSF\LatestDLLBuild\$(TargetName).xml"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>REM Build DPSF Default Effect for the different configurations.
 REM Xbox 360 only supports HiDef, and Windows Phone doesn't support custom effects yet.
-"$(SolutionDir)..\DPSF\CompileEffect\bin\$(ConfigurationName)\CompileEffect.exe" Windows HiDef "$(ProjectDir)DPSF Effects\HLSL\DPSFDefaultEffect.fx" "$(ProjectDir)DPSF Effects\Raw Effect Code\DPSFDefaultEffectWindowsHiDef.bin"
-"$(SolutionDir)..\DPSF\CompileEffect\bin\$(ConfigurationName)\CompileEffect.exe" Windows Reach "$(ProjectDir)DPSF Effects\HLSL\DPSFDefaultEffect.fx" "$(ProjectDir)DPSF Effects\Raw Effect Code\DPSFDefaultEffectWindowsReach.bin"
-"$(SolutionDir)..\DPSF\CompileEffect\bin\$(ConfigurationName)\CompileEffect.exe" Xbox360 HiDef "$(ProjectDir)DPSF Effects\HLSL\DPSFDefaultEffect.fx" "$(ProjectDir)DPSF Effects\Raw Effect Code\DPSFDefaultEffectXbox360HiDef.bin"</PreBuildEvent>
+REM We have to build to local folder and copy to the DPSF project folder manually afterwards because Rake dies trying to overwrite files when we don't use the copy /y command.
+"$(ProjectDir)..\CompileEffect\bin\$(ConfigurationName)\CompileEffect.exe" Windows HiDef "$(ProjectDir)DPSF Effects\HLSL\DPSFDefaultEffect.fx" "$(ProjectDir)..\CompileEffect\bin\$(ConfigurationName)\DPSFDefaultEffectWindowsHiDef.bin"
+"$(ProjectDir)..\CompileEffect\bin\$(ConfigurationName)\CompileEffect.exe" Windows Reach "$(ProjectDir)DPSF Effects\HLSL\DPSFDefaultEffect.fx" "$(ProjectDir)..\CompileEffect\bin\$(ConfigurationName)\DPSFDefaultEffectWindowsReach.bin"
+"$(ProjectDir)..\CompileEffect\bin\$(ConfigurationName)\CompileEffect.exe" Xbox360 HiDef "$(ProjectDir)DPSF Effects\HLSL\DPSFDefaultEffect.fx" "$(ProjectDir)..\CompileEffect\bin\$(ConfigurationName)\DPSFDefaultEffectXbox360HiDef.bin"
+copy /y /d  "$(ProjectDir)..\CompileEffect\bin\$(ConfigurationName)\*.bin" "$(ProjectDir)DPSF Effects\Raw Effect Code\"
+del "$(ProjectDir)..\CompileEffect\bin\$(ConfigurationName)\*.bin"</PreBuildEvent>
   </PropertyGroup>
 </Project>

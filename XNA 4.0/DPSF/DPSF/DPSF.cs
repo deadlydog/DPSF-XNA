@@ -1668,7 +1668,7 @@ namespace DPSF
 			/// <param name="iExecutionOrder">The Order, relative to other Events, of when this Event 
 			/// should Execute.
 			/// <para>NOTE: Events with lower Execution Order are executed first.</para>
-			/// NOTE: Events with the same Execution Order are not guaranteed to be executed in 
+			/// <para>NOTE: Events with the same Execution Order are not guaranteed to be executed in 
 			/// the order they are added.</para></param>
 			/// <param name="iGroup">The Group that this Event should belong to</param>
 			public void AddNormalizedTimedEvent(float fNormalizedTimeToFire, UpdateParticleSystemDelegate cFunctionToCall, int iExecutionOrder, int iGroup)
@@ -2728,7 +2728,7 @@ namespace DPSF
 		/// texture should be manually set.</para>
 		/// <para>NOTE: This will attempt to load the Effect and Technique specified by the DeserializationEffectPath and
 		/// DeserializationTechniqueName properties. If either of these are null, the DPSFDefaultEffect will be used, and the default
-		/// Technique for this type of particle system will be loaded.
+		/// Technique for this type of particle system will be loaded.</para>
 		/// <para>NOTE: Particle systems can only be serialized (and thus, deserialized) if not inheriting from DrawableGameComponent
 		/// (i.e. InheritsDrawableGameComponent == false. i.e. using the DPSF.dll, not DPSFAsDrawableGameComponent.dll).</para>
 		/// </summary>

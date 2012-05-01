@@ -139,7 +139,7 @@ namespace BasicVirtualEnvironment
 		/// <summary>
 		/// Called whenever the value of ShowPerformanceText is changed.
 		/// </summary>
-		/// <param name="enabled"></param>
+		/// <param name="enabled">The new value of ShowPerformanceText.</param>
 		protected virtual void ShowPerformanceTextToggled(bool enabled) { }
 
 		/// <summary>
@@ -176,7 +176,7 @@ namespace BasicVirtualEnvironment
 		/// <summary>
 		/// Tells if any Text should be shown or not.
 		/// </summary>
-		protected bool ShowText { get; set; }
+		public bool ShowText { get; set; }
 
 		/// <summary>
 		/// Tells if the Camera Controls should be shown or not.
@@ -192,13 +192,13 @@ namespace BasicVirtualEnvironment
 		/// <summary>
 		/// Tells if the Floor should be shown or not.
 		/// </summary>
-		protected bool ShowFloor { get; set; }
+		public bool ShowFloor { get; set; }
 		private Model _floorModel { get; set; }	// Model of the Floor.
 
 		/// <summary>
 		/// Tells if the game should be paused or not.
 		/// </summary>
-		protected bool Paused { get; set; }
+		public bool Paused { get; set; }
 
 		/// <summary>
 		/// Tells if the screen should be cleared every frame with the Background Color or not.
@@ -282,11 +282,11 @@ namespace BasicVirtualEnvironment
 		{
 			SpriteBatch = new SpriteBatch(GraphicsDevice);
 
-			// Load fonts and models for test application
+			// Load fonts and models for test application.
 			Font = Content.Load<SpriteFont>("Fonts/font");
 			_floorModel = Content.Load<Model>("grid");
 
-			// Setup our render target to draw to when we want draws to persist across multiple frames
+			// Setup our render target to draw to when we want draws to persist across multiple frames.
 			_renderTarget = new RenderTarget2D(GraphicsDeviceManager.GraphicsDevice, GraphicsDeviceManager.PreferredBackBufferWidth, GraphicsDeviceManager.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 
 			// Specify vertices indicating positive axis directions.

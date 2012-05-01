@@ -7,6 +7,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DPSFViewerContent", "DPSFVi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DPSF", "..\DPSF\DPSF\DPSF.csproj", "{B0CF088B-D0AA-4E39-9DD0-0E876ACFE7D7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicVirtualEnvironment", "..\DPSF\BasicVirtualEnvironment\BasicVirtualEnvironment\BasicVirtualEnvironment.csproj", "{AA695311-58DA-4112-944D-DAA3F90C03C6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicVirtualEnvironmentContent", "..\DPSF\BasicVirtualEnvironment\BasicVirtualEnvironmentContent\BasicVirtualEnvironmentContent.contentproj", "{37FD591E-A879-4A80-AFBD-DC33126A2596}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DPSFContent", "..\DPSF\DPSF\Content\DPSFContent.contentproj", "{84F866AA-8F25-4CBE-98B1-FF00FC489C15}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -23,6 +29,14 @@ Global
 		{B0CF088B-D0AA-4E39-9DD0-0E876ACFE7D7}.Debug|x86.Build.0 = Debug|x86
 		{B0CF088B-D0AA-4E39-9DD0-0E876ACFE7D7}.Release|x86.ActiveCfg = Release|x86
 		{B0CF088B-D0AA-4E39-9DD0-0E876ACFE7D7}.Release|x86.Build.0 = Release|x86
+		{AA695311-58DA-4112-944D-DAA3F90C03C6}.Debug|x86.ActiveCfg = Debug|x86
+		{AA695311-58DA-4112-944D-DAA3F90C03C6}.Debug|x86.Build.0 = Debug|x86
+		{AA695311-58DA-4112-944D-DAA3F90C03C6}.Release|x86.ActiveCfg = Release|x86
+		{AA695311-58DA-4112-944D-DAA3F90C03C6}.Release|x86.Build.0 = Release|x86
+		{37FD591E-A879-4A80-AFBD-DC33126A2596}.Debug|x86.ActiveCfg = Debug|x86
+		{37FD591E-A879-4A80-AFBD-DC33126A2596}.Release|x86.ActiveCfg = Release|x86
+		{84F866AA-8F25-4CBE-98B1-FF00FC489C15}.Debug|x86.ActiveCfg = Debug|x86
+		{84F866AA-8F25-4CBE-98B1-FF00FC489C15}.Release|x86.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -225,8 +225,9 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
-  <ItemGroup />
+  <ItemGroup>
+    <Compile Include="Game.ico" />
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="DPSFXbox360">
       <HintPath>..\LatestDLLBuild\DPSFXbox360.dll</HintPath>
