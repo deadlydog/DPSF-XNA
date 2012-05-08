@@ -4,7 +4,12 @@ as well as the larger changes that the users should be aware of (public)
 =====================================================================
 
 TODO - Move Particle Position and Lerping to the Emitter function, so it returns back a list of Position/Orientations that should be applied to the particles (hmmm, or
-move it to the helper functions, since we will want to do this for both new and existing particles being updated). http://dpsf.freeforums.org/handling-multiple-effects-eg-smoke-trails-for-bullets-t125.html
+move it to the helper functions, since we will want to do this for both new and existing particles being updated). http://dpsf.freeforums.org/handling-multiple-effects-eg-smoke-trails-for-bullets-t125.html.
+Actually, I think the ideal solution here is to move the functionality to the AddParticles() function and call that internally in the Update. This way whether we call it internally or
+users call AddParticles() directly, the Lerping will be applied properly.
+
+TODO - Decouple the Emitter from the particle system if possible. Maybe make particle system optional, or have a wrapper class, so that a particle system can use multiple emitters. Or maybe
+have the particle system hold a List of Emitters and roll through all emitter's in the list, but then how does that effect the Particle Initialization Function to set the Particle's position?...
 
 TODO - Investigate using Tasks and running on multiple threads to boost performance.
 
