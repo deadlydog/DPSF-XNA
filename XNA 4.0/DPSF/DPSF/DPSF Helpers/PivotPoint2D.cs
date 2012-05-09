@@ -177,7 +177,7 @@ namespace DPSF
         /// NOTE: The Z-value is ignored, since this is a 2D rotation.</param>
         public void RotatePositionVector3(float fRotation, Vector3 sPivotPoint)
         {
-            // Call the 2D function to perfrom the operations
+            // Call the 2D function to perform the operations
             RotatePosition(fRotation, new Vector2(sPivotPoint.X, sPivotPoint.Y));
         }
 
@@ -190,7 +190,7 @@ namespace DPSF
             // If Pivot Rotational Acceleration is being used
             if (PivotRotationalAcceleration != 0.0f)
             {
-                // Update the Pivot Rotational Velocity accordint to the Pivot Rotational Acceleration
+                // Update the Pivot Rotational Velocity according to the Pivot Rotational Acceleration
                 PivotRotationalVelocity += (PivotRotationalAcceleration * fElapsedTimeInSeconds);
             }
 

@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 namespace DPSF
 {
     /// <summary>
-    /// Class used to hold and update an object's 3D Position, Velocity, and Acceleration
+    /// Class used to hold and update an object's 3D Position, Velocity, and Acceleration.
     /// </summary>
 #if (WINDOWS)
     [Serializable]
@@ -58,7 +58,7 @@ namespace DPSF
         /// Update the Position and Velocity according to the Acceleration
         /// </summary>
         /// <param name="fElapsedTimeInSeconds">The time Elapsed in Seconds since the last Update</param>
-        public void Update(float fElapsedTimeInSeconds)
+        public virtual void Update(float fElapsedTimeInSeconds)
         {
             // Update the Velocity and Position according to how much Time has Elapsed
             Velocity += Acceleration * fElapsedTimeInSeconds;

@@ -66,7 +66,7 @@ namespace DPSF
         /// Update the Orientation and Rotational Velocity according to the Rotational Acceleration
         /// </summary>
         /// <param name="fElapsedTimeInSeconds">The time Elapsed in Seconds since the last Update</param>
-        public void Update(float fElapsedTimeInSeconds)
+        public virtual void Update(float fElapsedTimeInSeconds)
         {
             // Update the Orientation and Rotational Velocity according to how much Time has Elapsed
             RotationalVelocity += RotationalAcceleration * fElapsedTimeInSeconds;
