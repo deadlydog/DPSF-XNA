@@ -9,30 +9,30 @@ namespace DPSF
 #if (WINDOWS)
 	[Serializable]
 #endif
-	public class Orientation2DWithLastOrientation : Orientation2D
+	public class Orientation2DWithPreviousOrientation : Orientation2D
 	{
 		/// <summary>
 		/// The object's last orientation (before Update() was called).
 		/// </summary>
-		public float LastOrientation;
+		public float PreviousOrientation;
 
 		/// <summary>
-		/// Set this to False to not have the Update() function update the LastOrientation value.
-		/// Instead it will be up to an external object to update the LastOrientation property each frame.
+		/// Set this to False to not have the Update() function update the PreviousOrientation value.
+		/// Instead it will be up to an external object to update the PreviousOrientation property each frame.
 		/// <para>Default value is True.</para>
 		/// </summary>
-		public bool UpdateLastOrientationAutomatically { get; set; }
+		public bool UpdatePreviousOrientationAutomatically { get; set; }
 
 		/// <summary>
 		/// Default Constructor.
 		/// </summary>
-		public Orientation2DWithLastOrientation() { UpdateLastOrientationAutomatically = true; }
+		public Orientation2DWithPreviousOrientation() { UpdatePreviousOrientationAutomatically = true; }
 
 		/// <summary>
 		/// Copy Constructor.
 		/// </summary>
-		/// <param name="orienationToCopy">The Orientation2DWithLastOrientation object to copy.</param>
-		public Orientation2DWithLastOrientation(Orientation2DWithLastOrientation orienationToCopy)
+		/// <param name="orienationToCopy">The Orientation2DWithPreviousOrientation object to copy.</param>
+		public Orientation2DWithPreviousOrientation(Orientation2DWithPreviousOrientation orienationToCopy)
 		{
 			CopyFrom(orienationToCopy);
 		}
@@ -41,22 +41,22 @@ namespace DPSF
 		/// Copy Constructor.
 		/// </summary>
 		/// <param name="orienationToCopy">The Orientation2D object to copy.</param>
-		public Orientation2DWithLastOrientation(Orientation2D orienationToCopy)
+		public Orientation2DWithPreviousOrientation(Orientation2D orienationToCopy)
 		{
 			CopyFrom(orienationToCopy);
 		}
 
 		/// <summary>
-		/// Copies the given Orientation2DWithLastOrientation object's data into this object's data.
+		/// Copies the given Orientation2DWithPreviousOrientation object's data into this object's data.
 		/// </summary>
-		/// <param name="orientationToCopy">The Orientation2DWithLastOrientation object to copy from.</param>
-		public void CopyFrom(Orientation2DWithLastOrientation orientationToCopy)
+		/// <param name="orientationToCopy">The Orientation2DWithPreviousOrientation object to copy from.</param>
+		public void CopyFrom(Orientation2DWithPreviousOrientation orientationToCopy)
 		{
 			Orientation = orientationToCopy.Orientation;
 			RotationalVelocity = orientationToCopy.RotationalVelocity;
 			RotationalAcceleration = orientationToCopy.RotationalAcceleration;
-			LastOrientation = orientationToCopy.LastOrientation;
-			UpdateLastOrientationAutomatically = orientationToCopy.UpdateLastOrientationAutomatically;
+			PreviousOrientation = orientationToCopy.PreviousOrientation;
+			UpdatePreviousOrientationAutomatically = orientationToCopy.UpdatePreviousOrientationAutomatically;
 		}
 
 		/// <summary>
@@ -68,8 +68,8 @@ namespace DPSF
 			Orientation = orientationToCopy.Orientation;
 			RotationalVelocity = orientationToCopy.RotationalVelocity;
 			RotationalAcceleration = orientationToCopy.RotationalAcceleration;
-			LastOrientation = Orientation;
-			UpdateLastOrientationAutomatically = true;
+			PreviousOrientation = Orientation;
+			UpdatePreviousOrientationAutomatically = true;
 		}
 
 		/// <summary>
@@ -80,8 +80,8 @@ namespace DPSF
 		public override void Update(float elapsedTimeInSeconds)
 		{
 			// Save the current orientation before updating it.
-			if (UpdateLastOrientationAutomatically)
-				LastOrientation = Orientation;
+			if (UpdatePreviousOrientationAutomatically)
+				PreviousOrientation = Orientation;
 
 			base.Update(elapsedTimeInSeconds);
 		}

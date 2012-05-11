@@ -10,6 +10,8 @@ users call AddParticles() directly, the Lerping will be applied properly.
 
 TODO - Decouple the Emitter from the particle system if possible. Maybe make particle system optional, or have a wrapper class, so that a particle system can use multiple emitters. Or maybe
 have the particle system hold a List of Emitters and roll through all emitter's in the list, but then how does that effect the Particle Initialization Function to set the Particle's position?...
+... I think I should add a List or ParticleEmitters, and have Emitter just point to one of the emitters in the list. Then in the update we would roll through each of the emitters and add their
+particles, first changing the Emitter pointer to point to the one that we are adding from.
 
 TODO - Investigate using Tasks and running on multiple threads to boost performance.
 
@@ -25,6 +27,8 @@ public:
 	particle systems and clean up the GameMain.cs file so it is easier to understand.
 - Refactored the DPSF Demo a lot, breaking the 5000+ line file into several smaller files and creating more reusable components (e.g. input managers, camera, DemoBase.cs).
 	Created stand-alone BasicVirtualEnvironment project that houses all of these reusable components.
+- Moved functionality to Linearly Interpolate (Lerp) the Emitter's position and orientation from the Update() function into new AddParticles() functions, so users can now
+	have their particle's Lerp'd when manually adding particles without the emitter.
 
 Possible Breaking Changes:
 - Removed the mcRandomNumber particle system class variable. Everything should now just use the RandomNumber public property.

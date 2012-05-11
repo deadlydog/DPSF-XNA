@@ -1,37 +1,55 @@
 ﻿using System;
+using Microsoft.Xna.Framework;
 
 namespace DPSF
 {
 	/// <summary>
-	/// Class used to automatically create new Particles in a Particle System
+	/// 
+	/// </summary>
+#if (WINDOWS)
+	[Serializable]
+#endif
+	public class ParticleEmitterLerpInfo
+	{
+		public Vector3 PreviousPosition = Vector3.Zero;
+		public Vector3 CurrentPosition = Vector3.Zero;
+		public Quaternion PreviousOrientation = Quaternion.Identity;
+		public Quaternion CurrentOrientation = Quaternion.Identity;
+		public float ElapsedTimeInSeconds = 0.0f;
+	};
+
+	/// <summary>
+	/// Class used to automatically create new Particles in a Particle System.
 	/// </summary>
 #if (WINDOWS)
 	[Serializable]
 #endif
 	public class ParticleEmitter
 	{
-		// Variables to hold the Position, Orientation, and Pivot Point information
-		private Position3D mcPositionData = null;
-		private Orientation3D mcOrientationData = null;
-		private PivotPoint3D mcPivotPointData = null;
+		// Variables to hold the Position, Orientation, and Pivot Point information.
+		private Position3D _positionData = null;
+		private Orientation3D _orientationData = null;
+		private PivotPoint3D _pivotPointData = null;
 
-		// Variable to tell if the Emitter should be able to Emit Particles or not
-		private bool mbEnabled = true;
-
-		// Variable to tell if the Emitter should Emit Particles Automatically or not
-		private bool mbEmitParticlesAutomatically = true;
-
-		// Variables used to release a Burst of Particles
-		private int miBurstNumberOfParticles = 0;
-		private float mfBurstTimeInSeconds = 0.0f;
-
-		// Private variables used to determine how many Particles should be emitted
-		private float mfParticlesPerSecond = 0.0f;
-		private float mfSecondsPerParticle = 0.0f;
-		private float mfTimeElapsedSinceGeneratingLastParticle = 0.0f;
+		// Private variables used to determine how many Particles should be emitted.
+		private float _particlesPerSecond = 0.0f;
+		private float _secondsPerParticle = 0.0f;
+		private float _timeElapsedSinceGeneratingLastParticle = 0.0f;
 
 		/// <summary>
-		/// Raised when a Burst property reaches (or is set to) zero 
+		/// The position of the Emitter last frame.
+		/// This is internal to prevent users from messing with this value, as this is needed to properly Lerp the Emitter's position between 2 frames during a particle system Update().
+		/// </summary>
+		internal Vector3 PreviousPosition = Vector3.Zero;
+
+		/// <summary>
+		/// The orientation of the Emitter last frame.
+		/// This is internal to prevent users from messing with this value, as this is needed to properly Lerp the Emitter's orientation between 2 frames during a particle system Updater().
+		/// </summary>
+		internal Quaternion PreviousOrientation = Quaternion.Identity;
+
+		/// <summary>
+		/// Raised when a Burst property reaches (or is set to) zero.
 		/// </summary>
 		public event EventHandler BurstComplete = null;
 
@@ -40,10 +58,18 @@ namespace DPSF
 		/// </summary>
 		public ParticleEmitter()
 		{
-			// Initialize the Position, Orientation, and Pivot Point variables
-			mcPositionData = new Position3D();
-			mcOrientationData = new Orientation3D();
-			mcPivotPointData = new PivotPoint3D(mcPositionData, mcOrientationData);
+			// Initialize the Position, Orientation, and Pivot Point variables.
+			_positionData = new Position3DWithPreviousPosition();
+			_orientationData = new Orientation3DWithPreviousOrientation();
+			_pivotPointData = new PivotPoint3D(_positionData, _orientationData);
+
+			// Disable Lerping the Emitter on the first update, since the Previous Position and Orientation won't be set yet.
+			LerpEmittersPositionAndOrientationOnNextUpdate = false;
+			LerpEmittersPositionAndOrientation = true;
+
+			// Default any other properties.
+			Enabled = true;
+			EmitParticlesAutomatically = true;
 		}
 
 		/// <summary>
@@ -61,19 +87,19 @@ namespace DPSF
 		/// <param name="emitterToCopy">The emitter to copy from.</param>
 		public void CopyFrom(ParticleEmitter emitterToCopy)
 		{
-			mcPositionData.CopyFrom(emitterToCopy.mcPositionData);
-			mcOrientationData.CopyFrom(emitterToCopy.mcOrientationData);
-			mcPivotPointData = new PivotPoint3D(mcPositionData, mcOrientationData);
+			_positionData.CopyFrom(emitterToCopy._positionData);
+			_orientationData.CopyFrom(emitterToCopy._orientationData);
+			_pivotPointData = new PivotPoint3D(_positionData, _orientationData);
 
-			mbEnabled = emitterToCopy.mbEnabled;
-			mbEmitParticlesAutomatically = emitterToCopy.mbEmitParticlesAutomatically;
+			Enabled = emitterToCopy.Enabled;
+			EmitParticlesAutomatically = emitterToCopy.EmitParticlesAutomatically;
 
-			miBurstNumberOfParticles = emitterToCopy.miBurstNumberOfParticles;
-			mfBurstTimeInSeconds = emitterToCopy.mfBurstTimeInSeconds;
+			_burstNumberOfParticles = emitterToCopy._burstNumberOfParticles;
+			_burstTimeInSeconds = emitterToCopy._burstTimeInSeconds;
 
-			mfParticlesPerSecond = emitterToCopy.mfParticlesPerSecond;
-			mfSecondsPerParticle = emitterToCopy.mfSecondsPerParticle;
-			mfTimeElapsedSinceGeneratingLastParticle = emitterToCopy.mfTimeElapsedSinceGeneratingLastParticle;
+			_particlesPerSecond = emitterToCopy._particlesPerSecond;
+			_secondsPerParticle = emitterToCopy._secondsPerParticle;
+			_timeElapsedSinceGeneratingLastParticle = emitterToCopy._timeElapsedSinceGeneratingLastParticle;
 
 			BurstComplete = emitterToCopy.BurstComplete;
 		}
@@ -83,18 +109,14 @@ namespace DPSF
 		/// <para>NOTE: If this is false, not even Bursts will Emit Particles.</para>
 		/// <para>NOTE: The Position, Orientation, and Pivot Data will still be updated when this is false.</para>
 		/// </summary>
-		public bool Enabled
-		{
-			get { return mbEnabled; }
-			set { mbEnabled = value; }
-		}
+		public bool Enabled { get; set; }
 
 		/// <summary>
 		/// Get the Position Data (Position, Velocity, and Acceleration)
 		/// </summary>
 		public Position3D PositionData
 		{
-			get { return mcPositionData; }
+			get { return _positionData; }
 		}
 
 		/// <summary>
@@ -102,7 +124,7 @@ namespace DPSF
 		/// </summary>
 		public Orientation3D OrientationData
 		{
-			get { return mcOrientationData; }
+			get { return _orientationData; }
 		}
 
 		/// <summary>
@@ -110,38 +132,58 @@ namespace DPSF
 		/// </summary>
 		public PivotPoint3D PivotPointData
 		{
-			get { return mcPivotPointData; }
+			get { return _pivotPointData; }
 		}
 
 		/// <summary>
 		/// Get / Set if the Emitter should Emit Particles Automatically or not.
 		/// <para>NOTE: Particles will only be emitted if the Emitter is Enabled.</para>
 		/// </summary>
-		public bool EmitParticlesAutomatically
-		{
-			get { return mbEmitParticlesAutomatically; }
-			set { mbEmitParticlesAutomatically = value; }
-		}
+		public bool EmitParticlesAutomatically { get; set; }
+
+		/// <summary>
+		/// This property tells if the we should Lerp (Linearly Interpolate) the Position and Orientation of the Emitter from one update to 
+		/// the next. If the Emitter is moving very fast, this allows the particle system to spawn new particles in between the Emitter's old
+		/// and new position, so that new particles are evenly spaced out between the Emitter's previous and current position, instead of all 
+		/// of the particles being spawned at the Emitter's new position.
+		/// <para>If this property is true, the Emitter's Position and Orientation will be Lerped while emitting particles.</para>
+		/// <para>If this property is false, all of the particles will be emitted as the Emitter's current Position and Orientation.</para>
+		/// <para>If you generally want Lerping enabled, but want to temporarily disable it to "teleport" the emitter from one position
+		/// to another without particles being Lerped between the two positions, you can set this properly to false and then back to true 
+		/// after the particle system's Update() function has been called, or you can simply set the LerpEmittersPositionAndOrientationOnNextUpdate
+		/// to false, which will disable Lerping the position and orientation only for the next particle system Update().</para>
+		/// <para>Default is true.</para>
+		/// </summary>
+		[DPSFViewerParameter(Description = "This property tells if the we should Lerp (Linearly Interpolate) the Position and Orientation of the Emitter from one update to the next.", Group = "DPSF")]
+		public bool LerpEmittersPositionAndOrientation { get; set; }
+
+		/// <summary>
+		/// If this is true the Emitter's Position and Orientation will not be Lerped during the particle system's next Update() function call.
+		/// The Update() function will always set this value back to false after all of the particle's have been emitted for that Update() call.
+		/// <para>Setting this to true allows you to "teleport" the Emitter from one position to another without particles being released at any
+		/// positions in between the Emitter's old and new Position and Orientation.</para>
+		/// </summary>
+		public bool LerpEmittersPositionAndOrientationOnNextUpdate { get; set; }
 
 		/// <summary>
 		/// Get / Set how many Particles should be emitted per Second
 		/// </summary>
 		public float ParticlesPerSecond
 		{
-			get { return mfParticlesPerSecond; }
+			get { return _particlesPerSecond; }
 			set
 			{
 				// Set how many Particles to emit per second
-				mfParticlesPerSecond = value;
+				_particlesPerSecond = value;
 
 				// Set how many seconds one particle takes to be emitted
-				if (mfParticlesPerSecond == 0.0f)
+				if (_particlesPerSecond == 0.0f)
 				{
-					mfSecondsPerParticle = 0.0f;
+					_secondsPerParticle = 0.0f;
 				}
 				else
 				{
-					mfSecondsPerParticle = 1.0f / mfParticlesPerSecond;
+					_secondsPerParticle = 1.0f / _particlesPerSecond;
 				}
 			}
 		}
@@ -157,13 +199,13 @@ namespace DPSF
 		/// </summary>
 		public int BurstParticles
 		{
-			get { return miBurstNumberOfParticles; }
+			get { return _burstNumberOfParticles; }
 			set
 			{
 				// Make sure the specified Number Of Burst Particles is not negative
 				if (value <= 0)
 				{
-					miBurstNumberOfParticles = 0;
+					_burstNumberOfParticles = 0;
 
 					// If there is a function to catch the event
 					if (BurstComplete != null)
@@ -174,10 +216,11 @@ namespace DPSF
 				}
 				else
 				{
-					miBurstNumberOfParticles = value;
+					_burstNumberOfParticles = value;
 				}
 			}
 		}
+		private int _burstNumberOfParticles = 0;
 
 		/// <summary>
 		/// Get / Set how long the Emitter should Burst for (in seconds). The Emitter will emit
@@ -190,13 +233,13 @@ namespace DPSF
 		/// </summary>
 		public float BurstTime
 		{
-			get { return mfBurstTimeInSeconds; }
+			get { return _burstTimeInSeconds; }
 			set
 			{
 				// Make sure the specified Time is not negative
 				if (value <= 0.0f)
 				{
-					mfBurstTimeInSeconds = 0.0f;
+					_burstTimeInSeconds = 0.0f;
 
 					// If there is a function to catch the event
 					if (BurstComplete != null)
@@ -207,10 +250,11 @@ namespace DPSF
 				}
 				else
 				{
-					mfBurstTimeInSeconds = value;
+					_burstTimeInSeconds = value;
 				}
 			}
 		}
+		private float _burstTimeInSeconds = 0.0f;
 
 		/// <summary>
 		/// Updates the Emitter's Position and Orientation according to its 
@@ -231,23 +275,23 @@ namespace DPSF
 
 			// If Particles should be emitted
 			int iNumberOfParticlesToEmit = 0;
-			if (mfParticlesPerSecond > 0.0f && mbEnabled)
+			if (_particlesPerSecond > 0.0f && Enabled)
 			{
 				// If the Emitter is emitting Particles Automatically
-				if (mbEmitParticlesAutomatically)
+				if (EmitParticlesAutomatically)
 				{
 					// Get how many Particles should be emitted
 					iNumberOfParticlesToEmit = CalculateHowManyParticlesToEmit(fElapsedTimeInSeconds);
 				}
 				// Else if Burst Particles should be emitted for a specific amount of Time
-				else if (mfBurstTimeInSeconds > 0.0f)
+				else if (_burstTimeInSeconds > 0.0f)
 				{
 					// Make sure we do not emit Particles for too long
 					float fModifiedElapsedTime = fElapsedTimeInSeconds;
-					if (fModifiedElapsedTime > mfBurstTimeInSeconds)
+					if (fModifiedElapsedTime > _burstTimeInSeconds)
 					{
 						// Only emit Particles for as long as the Burst lasts
-						fModifiedElapsedTime = mfBurstTimeInSeconds;
+						fModifiedElapsedTime = _burstTimeInSeconds;
 					}
 
 					// Get how many Particles should be emitted
@@ -257,15 +301,15 @@ namespace DPSF
 					BurstTime -= fModifiedElapsedTime;
 				}
 				// Else if a specific Number Of Burst Particles should be emitted
-				else if (miBurstNumberOfParticles > 0)
+				else if (_burstNumberOfParticles > 0)
 				{
 					// Get how many Particles should be emitted
 					iNumberOfParticlesToEmit = CalculateHowManyParticlesToEmit(fElapsedTimeInSeconds);
 
 					// If we are emitting too many Particles
-					if (iNumberOfParticlesToEmit > miBurstNumberOfParticles)
+					if (iNumberOfParticlesToEmit > _burstNumberOfParticles)
 					{
-						iNumberOfParticlesToEmit = miBurstNumberOfParticles;
+						iNumberOfParticlesToEmit = _burstNumberOfParticles;
 					}
 
 					// Subtract the Number Of Particles being Emitted from the Number Of Particles that still need to be Emitted
@@ -288,14 +332,14 @@ namespace DPSF
 			int iNumberOfParticlesToEmit = 0;
 
 			// Add the Elapsed Time since the last update to the Elapsed Time since the last Particle was generated
-			mfTimeElapsedSinceGeneratingLastParticle += fElapsedTimeInSeconds;
+			_timeElapsedSinceGeneratingLastParticle += fElapsedTimeInSeconds;
 
 			// Calculate how many Particles should be generated based on the Elapsed Time
-			float fNumberOfParticlesToEmit = mfTimeElapsedSinceGeneratingLastParticle / mfSecondsPerParticle;
+			float fNumberOfParticlesToEmit = _timeElapsedSinceGeneratingLastParticle / _secondsPerParticle;
 			iNumberOfParticlesToEmit = (int)Math.Floor(fNumberOfParticlesToEmit);
 
 			// Calculate how much time should be carried over to the next Update
-			mfTimeElapsedSinceGeneratingLastParticle = (fNumberOfParticlesToEmit - iNumberOfParticlesToEmit) * mfSecondsPerParticle;
+			_timeElapsedSinceGeneratingLastParticle = (fNumberOfParticlesToEmit - iNumberOfParticlesToEmit) * _secondsPerParticle;
 
 			// Return how many Particles should be emitted
 			return iNumberOfParticlesToEmit;

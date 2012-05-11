@@ -2056,10 +2056,7 @@ namespace DPSF
 		private float mfAutoMemoryManagersElapsedTime = 0.0f;                   // The Automatic Memory Manager's Timer
 		private int miAutoMemoryManagerMaxNumberOfParticlesActiveAtOnceOverTheLastXSeconds = 0; // The Max Number of Particles that were Active in a single frame Over The Last X Seconds (X is specified in the Auto Memory Manager Settings)
 
-		private ParticleEmitter mcEmitter = null;   // The Emitter used to automatically generate Particles
-		private bool _lerpEmittersPositionAndOrientation = true;
-		private Vector3 _emittersPreviousPosition = Vector3.Zero;
-		private Quaternion _emittersPreviousOrientation = Quaternion.Identity;
+		private ParticleEmitter _emitter = null;   // The Emitter used to automatically generate Particles
 
 // The Reach profile does not have access to the System.Diagnostics namespace, so it does not know about the Stopwatch class.
 #if (!WINDOWS_PHONE)
@@ -2588,15 +2585,7 @@ namespace DPSF
 			this.PerformanceProfilingIsEnabled = DPSFDefaultSettings.PerformanceProfilingIsEnabled;
 
 			// Initialize the Emitter
-			mcEmitter = new ParticleEmitter();
-
-			// Initialize variables used to Lerp Emitter's Position and Orientation
-			_lerpEmittersPositionAndOrientation = true;
-			_emittersPreviousPosition = Vector3.Zero;
-			_emittersPreviousOrientation = Quaternion.Identity;
-
-			// Disable Lerping the Emitter on the first update, since the Previous Position and Orientation won't be set yet.
-			LerpEmittersPositionAndOrientationOnNextUpdate = false;
+			_emitter = new ParticleEmitter();
 
 			// Copy any properties from the Particle System Manager into this Particle System.
 			// This includes things like the Updates Per Second and Simulation Speed.
@@ -2708,12 +2697,7 @@ namespace DPSF
 
 			mcAutoMemoryManagerSettings = null;
 
-			mcEmitter = null;
-
-			_lerpEmittersPositionAndOrientation = true;
-			_emittersPreviousPosition = Vector3.Zero;
-			_emittersPreviousOrientation = Quaternion.Identity;
-			LerpEmittersPositionAndOrientationOnNextUpdate = false;
+			_emitter = null;
 
 			// Perform any other user operations
 			AfterDestroy();
@@ -3206,8 +3190,8 @@ namespace DPSF
 		{
 			get 
 			{ 
-				if (mcEmitter != null)
-					return mcEmitter; 
+				if (_emitter != null)
+					return _emitter; 
 				else
 					throw new NullReferenceException("The Emitter property is trying to be accessed, but is null. Be sure you have Initialized the particle system.");
 			}
@@ -3215,39 +3199,11 @@ namespace DPSF
 			set 
 			{
 				if (value != null)
-					mcEmitter = value;
+					_emitter = value;
 				else
 					throw new ArgumentNullException("Emitter", "An invalid Emitter was specified. The Emitter cannot be null.");
 			}
 		}
-
-		/// <summary>
-		/// This property tells if the we should Lerp (Linearly Interpolate) the Position and Orientation of the Emitter from one update to 
-		/// the next. If the Emitter is moving very fast, this allows the particle system to spawn new particles in between the Emitter's old
-		/// and new position, so that new particles are evenly spaced out between the Emitter's previous and current position, instead of all 
-		/// of the particles being spawned at the Emitter's new position.
-		/// <para>If this property is true, the Emitter's Position and Orientation will be Lerped while emitting particles.</para>
-		/// <para>If this property is false, all of the particles will be emitted as the Emitter's current Position and Orientation.</para>
-		/// <para>If you generally want Lerping enabled, but want to temporarily disable it to "teleport" the emitter from one position
-		/// to another without particles being Lerped between the two positions, you can set this properly to false and then back to true 
-		/// after the particle system's Update() function has been called, or you can simply set the LerpEmittersPositionAndOrientationOnNextUpdate
-		/// to false, which will disable Lerping the position and orientation only for the next particle system Update().</para>
-		/// <para>Default is true.</para>
-		/// </summary>
-		[DPSFViewerParameter(Description = "This property tells if the we should Lerp (Linearly Interpolate) the Position and Orientation of the Emitter from one update to the next.", Group = "DPSF")]
-		public bool LerpEmittersPositionAndOrientation 
-		{
-			get { return _lerpEmittersPositionAndOrientation; }
-			set { _lerpEmittersPositionAndOrientation = value; } 
-		}
-
-		/// <summary>
-		/// If this is true the Emitter's Position and Orientation will not be Lerped during the particle system's next Update() function call.
-		/// The Update() function will always set this value back to false after all of the particle's have been emitted for that Update() call.
-		/// <para>Setting this to true allows you to "teleport" the Emitter from one position to another without particles being released at any
-		/// positions in between the Emitter's old and new Position and Orientation.</para>
-		/// </summary>
-		public bool LerpEmittersPositionAndOrientationOnNextUpdate { get; set; }
 
 		/// <summary>
 		/// Get a RandomNumbers object used to generate Random Numbers
@@ -4309,39 +4265,143 @@ namespace DPSF
 
 		/// <summary>
 		/// Adds the specified number of new Particles to the particle system. 
-		/// These new Particles are initialized using the particle systems Particle Initialization Function
+		/// <para>These new Particles are initialized using the particle system's Particle Initialization Function.</para>
 		/// </summary>
-		/// <param name="iNumberOfParticlesToAdd">How many Particles to Add to the particle system</param>
-		/// <returns>Returns how many Particles were able to be added to the particle system</returns>
-		public int AddParticles(int iNumberOfParticlesToAdd)
+		/// <param name="numberOfParticlesToAdd">How many Particles to Add to the particle system.</param>
+		/// <returns>Returns how many Particles were able to be added to the particle system.</returns>
+		public int AddParticles(int numberOfParticlesToAdd)
 		{
-			return AddParticles(iNumberOfParticlesToAdd, null);
+			return AddParticles(numberOfParticlesToAdd, (Particle)null);
 		}
 
 		/// <summary>
-		/// Adds the specified number of new Particles to the particle system, copying the 
-		/// properties of the given Particle To Copy
+		/// Adds the specified number of new Particles to the particle system, copying the properties of the given Particle To Copy.
+		/// <para>NOTE: The Particle Initialization Function is not called when copying from an existing particle.</para>
 		/// </summary>
-		/// <param name="iNumberOfParticlesToAdd">How many copyies of the Particle To Copy to Add 
-		/// to the particle system</param>
-		/// <param name="cParticleToCopy">The Particle to copy from when Adding the Particles to the 
-		/// Particle System. If this is null then the new Particles will be initialized using the 
-		/// particle system's Particle Initialization Function</param>
-		/// <returns>Returns how many Particles were able to be added to the particle system</returns>
-		public int AddParticles(int iNumberOfParticlesToAdd, Particle cParticleToCopy)
+		/// <param name="numberOfParticlesToAdd">How many copies of the Particle To Copy to Add to the particle system.</param>
+		/// <param name="particleToCopy">The Particle to copy from when Adding the Particles to the  Particle System. If this is null then the new 
+		/// Particles will be initialized using the particle system's Particle Initialization Function.</param>
+		/// <returns>Returns how many Particles were able to be added to the particle system.</returns>
+		public int AddParticles(int numberOfParticlesToAdd, Particle particleToCopy)
 		{
-			// The number of Particles added to the Particle System
-			int iParticleCount = 0;
+			// The number of Particles added to the Particle System.
+			int numberOfNewParticlesAdded = 0;
 
-			// While we haven't added the specified number of Particles, and the Particle System is not full
-			while (iParticleCount < iNumberOfParticlesToAdd && AddParticle(cParticleToCopy))
+			// While we haven't added the specified number of Particles, and the Particle System is not full.
+			while (numberOfNewParticlesAdded < numberOfParticlesToAdd && AddParticle(particleToCopy))
 			{
-				// Increment the number of Particles we were able to add so far
-				iParticleCount++;
+				// Increment the number of Particles we were able to add so far.
+				numberOfNewParticlesAdded++;
 			}
 
-			// Return how many Particles we were ablet to add to the Particle System
-			return iParticleCount;
+			// Return how many Particles we were able to add to the Particle System.
+			return numberOfNewParticlesAdded;
+		}
+
+		/// <summary>
+		/// Adds the specified number of new Particles to the particle system, linearly interpolating (Lerp) the Emitter's 
+		/// Position/Orientation to be between its Previous Position/Orientation and current Position/Orientation when adding new particles.
+		/// <para>These new Particles are initialized using the particle system's Particle Initialization Function.</para>
+		/// </summary>
+		/// <param name="numberOfParticlesToAdd">How many Particles to Add to the particle system.</param>
+		/// <param name="emitterToLerp">The Emitter to copy the position and orientation data from.</param>
+		/// <param name="elapsedTimeInSeconds">The elapsed time in seconds since the last frame so we know how much to update each Lerp'd particle.</param>
+		/// <returns>Returns how many Particles were able to be added to the particle system.</returns>
+		public int AddParticles(int numberOfParticlesToAdd, ParticleEmitter emitterToLerp, float elapsedTimeInSeconds)
+		{
+			// Build a new Lerp Info from the given Emitter.
+			var lerpInfo = new ParticleEmitterLerpInfo()
+							{
+								PreviousPosition = emitterToLerp.PreviousPosition,
+								CurrentPosition = emitterToLerp.PositionData.Position,
+								PreviousOrientation = emitterToLerp.PreviousOrientation,
+								CurrentOrientation = emitterToLerp.OrientationData.Orientation,
+								ElapsedTimeInSeconds = elapsedTimeInSeconds
+							};
+
+			return AddParticles(numberOfParticlesToAdd, lerpInfo);
+		}
+
+		/// <summary>
+		/// Adds the specified number of new Particles to the particle system, linearly interpolating (Lerp) the Emitter's 
+		/// Position/Orientation to be between its Previous Position/Orientation and current Position/Orientation when adding new particles.
+		/// <para>These new Particles are initialized using the particle system's Particle Initialization Function.</para>
+		/// </summary>
+		/// <param name="numberOfParticlesToAdd">How many Particles to Add to the particle system.</param>
+		/// <param name="lerpInfo">The info to use to Linearly Interpolate the Emitter's Position/Orientation with.</param>
+		/// <returns>Returns how many Particles were able to be added to the particle system.</returns>
+		public int AddParticles(int numberOfParticlesToAdd, ParticleEmitterLerpInfo lerpInfo)
+		{
+			// Make sure they specified a valid number of particles to add.
+			if (numberOfParticlesToAdd <= 0)
+				return 0;
+
+			// Make sure they actually gave us some Lerp Info to use.
+			if (lerpInfo == null)
+				throw new Exception("AddParticles() was called with a null value for the 'lerpInfo' parameter, which is not allowed.");
+		
+			int numberOfNewParticlesAdded = 0;
+
+			// Backup the Emitter's Position and Orientation before we start messing with it.
+			Vector3 emittersPositionBackup = _emitter.PositionData.Position;
+			Quaternion emittersOrientationBackup = _emitter.OrientationData.Orientation;
+		
+			// Calculate the Step Size between releasing Particles.
+			float stepSizeFraction = 1.0f / numberOfParticlesToAdd;
+			
+			// Emit the Particles.
+			int particlesEmitted = 0;
+			bool canStillAddParticles = true;
+			while (particlesEmitted < numberOfParticlesToAdd && canStillAddParticles)
+			{
+				// Update the Number of Particles Emitted (even though we haven't actually added it yet).
+				particlesEmitted++;
+
+				// Update the Interpolated Position of the Emitter for the next Particle Emitted.
+				_emitter.PositionData.Position = Vector3.Lerp(lerpInfo.PreviousPosition, lerpInfo.CurrentPosition, stepSizeFraction * particlesEmitted);
+
+				// Update the Interpolated Orientation of the Emitter for the next Particle Emitted.
+				_emitter.OrientationData.Orientation = Quaternion.Slerp(lerpInfo.PreviousOrientation, lerpInfo.CurrentOrientation, stepSizeFraction * particlesEmitted);
+
+				// Add the new Particle, and record if we can still add more Particles or not.
+				canStillAddParticles = AddParticle();
+
+				// If the Particle was added successfully.
+				if (canStillAddParticles)
+				{
+					// Get a handle to the newly added Particle.
+					Particle particle = ActiveParticles.First.Value;
+
+					// Calculate how much the just added Particle should be updated ("oldest" particles are added first).
+					float fUpdateAmount = MathHelper.Lerp(lerpInfo.ElapsedTimeInSeconds, 0.0f, stepSizeFraction * particlesEmitted);
+
+					// Update the newly added Particle.
+					particle.UpdateElapsedTimeVariables(fUpdateAmount);
+					ParticleEvents.Update(particle, fUpdateAmount);
+
+					// If the Particle is no longer Active already.
+					if (!particle.IsActive())
+					{
+						// Remove the Particle from the Active Particle List.
+						ActiveParticles.RemoveFirst();
+					}
+					// Else the Particle is still Active.
+					else
+					{
+						// Add the Particle to the list of Particles to be drawn.
+						AddParticleToVertexBuffer(particle);
+
+						// Increment the Number Of New Particles Added this frame.
+						numberOfNewParticlesAdded++;
+					}
+				}
+			}
+
+			// Restore the Emitter's Position and Orientation now that we are done messing with it.
+			_emitter.PositionData.Position = emittersPositionBackup;
+			_emitter.OrientationData.Orientation = emittersOrientationBackup;
+
+			return numberOfNewParticlesAdded;
 		}
 
 		/// <summary>
@@ -4462,23 +4522,23 @@ namespace DPSF
 			// Update the cumulative Elapsed Time
 			mfTimeElapsedSinceLastUpdate -= mfTimeToWaitBetweenUpdates;
 
-			// Calculate by how much Time the Particle System should be Updated
+			// Calculate by how much Time the Particle System should be Updated.
 			float fParticleSystemUpdateTime = 0.0f;
 
-			// If the Particle System is supposed to be Updated as often as possible
+			// If the Particle System is supposed to be Updated as often as possible.
 			if (mfTimeToWaitBetweenUpdates <= 0.0f)
 			{
-				// Use the actual Elapsed Time for the Particle System Update Time
+				// Use the actual Elapsed Time for the Particle System Update Time.
 				fParticleSystemUpdateTime = fElapsedTimeInSeconds;
 			}
 			// Else If this function is not being called fast enough to keep up
 			// with how often the Particle Systems are supposed to be Updated
 			// (i.e. There is a very low frame-rate, or the user specified a
-			// very large number of Updates Per Second, such as 1000)
+			// very large number of Updates Per Second, such as 1000).
 			else if (mfTimeElapsedSinceLastUpdate >= mfTimeToWaitBetweenUpdates)
 			{
 				// Use the amount of Time that has passed since the last time this function
-				// was called for the Particle System Update Time, and reset the cumulative Elapsed Time
+				// was called for the Particle System Update Time, and reset the cumulative Elapsed Time.
 				fParticleSystemUpdateTime = (mfTimeElapsedSinceLastUpdate + mfTimeToWaitBetweenUpdates);
 				mfTimeElapsedSinceLastUpdate = 0.0f;
 			}
@@ -4486,7 +4546,7 @@ namespace DPSF
 			// the specified Update rate
 			else
 			{
-				// Use the specified Update rate for the Particle System Update Time
+				// Use the specified Update rate for the Particle System Update Time.
 				fParticleSystemUpdateTime = mfTimeToWaitBetweenUpdates;
 			}
 			
@@ -4494,43 +4554,43 @@ namespace DPSF
 			// Calculate the scaled Elapsed Time
 			float fScaledElapsedTimeInSeconds = fParticleSystemUpdateTime * SimulationSpeed * InternalSimulationSpeed;
 
-			// Perform other functions before this Particle System is updated
+			// Perform other functions before this Particle System is updated.
 			BeforeUpdate(fScaledElapsedTimeInSeconds);
 
-			// Reset the count of how many Particles are still Active and Visible
+			// Reset the count of how many Particles are still Active and Visible.
 			miNumberOfParticlesToDraw = 0;
 
-			// Reset the Index Buffer Index in case we are drawing Quads
+			// Reset the Index Buffer Index in case we are drawing Quads.
 			miIndexBufferIndex = 0;
 
-			// Variable to keep track of how many Particles are added this frame
-			int iNumberOfNewParticlesAdded = 0;
 
-
-			// Update the Particle System according to its Events (before updating the Particles)
+			// Update the Particle System according to its Events (before updating the Particles).
 			ParticleSystemEvents.Update(fScaledElapsedTimeInSeconds);
 
-			// If the Particle System Destroyed itself, just exit
+			// If the Particle System Destroyed itself, just exit.
 			if (!this.IsInitialized)
 				return;
 
-			// Update the Emitter and get how many Particles should be emitted
-			int iNumberOfParticlesToEmit = mcEmitter.UpdateAndGetNumberOfParticlesToEmit(fScaledElapsedTimeInSeconds);
+			// Update the Emitter and get how many Particles should be emitted.
+			int iNumberOfParticlesToEmit = _emitter.UpdateAndGetNumberOfParticlesToEmit(fScaledElapsedTimeInSeconds);
 
 			// If the Particle System Destroyed itself from the Emitter's BurstCompleted event, just exit.
 			if (!this.IsInitialized)
 				return;
 
-			// If the Emitter's Position and Orientation should not be Lerped this time
-			if (!LerpEmittersPositionAndOrientationOnNextUpdate)
+			// If the Emitter's Position and Orientation should not be Lerped this time.
+			if (!_emitter.LerpEmittersPositionAndOrientationOnNextUpdate)
 			{
 				// Reset the Previous Position and Orientation to the current Position and Orientation.
-				_emittersPreviousPosition = mcEmitter.PositionData.Position;
-				_emittersPreviousOrientation = mcEmitter.OrientationData.Orientation;
+				_emitter.PreviousPosition = _emitter.PositionData.Position;
+				_emitter.PreviousOrientation = _emitter.OrientationData.Orientation;
 
 				// Reset variable to allow Lerping on the next Update().
-				LerpEmittersPositionAndOrientationOnNextUpdate = true;
+				_emitter.LerpEmittersPositionAndOrientationOnNextUpdate = true;
 			}
+
+			// Variable to keep track of how many Particles are added this frame.
+			int iNumberOfNewParticlesAdded = 0;
 
 			// If some Particles should be emitted
 			if (iNumberOfParticlesToEmit > 0)
@@ -4544,79 +4604,23 @@ namespace DPSF
 				// The orientation of the emitter is also Spherically Linearly Interpolated (Slerp)
 				// for the similar case that the emitter is rotating very fast.
 
-				// Store the new Position and Orientation of the Emitter after Updating
-				Vector3 sNewEmitterPosition = mcEmitter.PositionData.Position;
-				Quaternion sNewEmitterOrientation = mcEmitter.OrientationData.Orientation;
-
-				// If we should not be Lerping the Emitter's Position and Orientation
-				if (!LerpEmittersPositionAndOrientation)
+				// If we should not be Lerping the Emitter's Position and Orientation.
+				if (!_emitter.LerpEmittersPositionAndOrientation)
 				{
-					// Reset the Previous Position and Orientation to the current Position and Orientation
-					_emittersPreviousPosition = sNewEmitterPosition;
-					_emittersPreviousOrientation = sNewEmitterOrientation;
+					// Reset the Previous Position and Orientation to the current Position and Orientation.
+					_emitter.PreviousPosition = _emitter.PositionData.Position;
+					_emitter.PreviousOrientation = _emitter.OrientationData.Orientation;
 				}
 
-				// Calculate the Step Size between releasing Particles
-				float fStepSizeFraction = 1.0f / iNumberOfParticlesToEmit;
-
-				// Emit the Particles
-				int iParticlesEmitted = 0;
-				bool bCanStillAddParticles = true;
-				while (iParticlesEmitted < iNumberOfParticlesToEmit && bCanStillAddParticles)
-				{
-					// Update the Number of Particles Emitted (even though we haven't actually added it yet)
-					iParticlesEmitted++;
-
-					// Update the Interpolated Position of the Emitter for the next Particle Emitted
-					mcEmitter.PositionData.Position = Vector3.Lerp(_emittersPreviousPosition, sNewEmitterPosition, fStepSizeFraction * iParticlesEmitted);
-
-					// Update the Interpolated Orientation of the Emitter for the next Particle Emitted
-					mcEmitter.OrientationData.Orientation = Quaternion.Slerp(_emittersPreviousOrientation, sNewEmitterOrientation, fStepSizeFraction * iParticlesEmitted);
-
-					// Add the new Particle, and record if we can still add more Particles or not
-					bCanStillAddParticles = AddParticle();
-
-					// If the Particle was added successfully
-					if (bCanStillAddParticles)
-					{
-						// Get a handle to the newly added Particle
-						Particle cParticle = ActiveParticles.First.Value;
-
-						// Calculate how much the just added Particle should be updated ("oldest" particles are added first)
-						float fUpdateAmount = MathHelper.Lerp(fScaledElapsedTimeInSeconds, 0.0f, fStepSizeFraction * iParticlesEmitted);
-
-						// Update the newly added Particle
-						cParticle.UpdateElapsedTimeVariables(fUpdateAmount);
-						ParticleEvents.Update(cParticle, fUpdateAmount);
-
-						// If the Particle is no longer Active already
-						if (!cParticle.IsActive())
-						{
-							// Remove the Particle from the Active Particle List
-							ActiveParticles.RemoveFirst();
-						}
-						// Else the Particle is still Active
-						else
-						{
-							// Add the Particle to the list of Particles to be drawn
-							AddParticleToVertexBuffer(cParticle);
-
-							// Increment the Number Of New Particles Added this frame
-							iNumberOfNewParticlesAdded++;
-						}
-					}
-				}
-
-				// Set the Emitter back to the Position and Orientation it should be at
-				mcEmitter.PositionData.Position = sNewEmitterPosition;
-				mcEmitter.OrientationData.Orientation = sNewEmitterOrientation;
+				// Add the new particles to the particle system.
+				iNumberOfNewParticlesAdded = AddParticles(iNumberOfParticlesToEmit, _emitter, fScaledElapsedTimeInSeconds);
 			}
 
 			// Store the Emitter's Position and Orientation so that we can Lerp from it on the next Update().
 			// We save it here instead of before Updating the Emitter in case the user manually moved or rotated 
 			// the Emitter (before this Update() function was called).
-			_emittersPreviousPosition = mcEmitter.PositionData.Position;
-			_emittersPreviousOrientation = mcEmitter.OrientationData.Orientation;
+			_emitter.PreviousPosition = _emitter.PositionData.Position;
+			_emitter.PreviousOrientation = _emitter.OrientationData.Orientation;
 
 			// Get a handle to the first Active Particle Node
 			LinkedListNode<Particle> cNode = mcActiveParticlesList.First;            

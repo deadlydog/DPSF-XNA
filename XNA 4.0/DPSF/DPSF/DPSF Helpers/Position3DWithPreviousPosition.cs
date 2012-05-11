@@ -9,30 +9,30 @@ namespace DPSF
 #if (WINDOWS)
 	[Serializable]
 #endif
-	public class Position3DWithLastPosition : Position3D
+	public class Position3DWithPreviousPosition : Position3D
 	{
 		/// <summary>
 		/// The object's last position (before Update() was called).
 		/// </summary>
-		public Vector3 LastPosition = Vector3.Zero;
+		public Vector3 PreviousPosition = Vector3.Zero;
 
 		/// <summary>
-		/// Set this to False to not have the Update() function update the LastPosition value.
-		/// Instead it will be up to an external object to update the LastPosition property each frame.
+		/// Set this to False to not have the Update() function update the PreviousPosition value.
+		/// Instead it will be up to an external object to update the PreviousPosition property each frame.
 		/// <para>Default value is True.</para>
 		/// </summary>
-		public bool UpdateLastPositionAutomatically { get; set; }
+		public bool UpdatePreviousPositionAutomatically { get; set; }
 
 		/// <summary>
         /// Default Constructor.
         /// </summary>
-		public Position3DWithLastPosition() { UpdateLastPositionAutomatically = true; }
+		public Position3DWithPreviousPosition() { UpdatePreviousPositionAutomatically = true; }
 
         /// <summary>
         /// Copy Constructor.
         /// </summary>
-		/// <param name="positionToCopy">The Position3DWithLastPosition object to copy.</param>
-		public Position3DWithLastPosition(Position3DWithLastPosition positionToCopy)
+		/// <param name="positionToCopy">The Position3DWithPreviousPosition object to copy.</param>
+		public Position3DWithPreviousPosition(Position3DWithPreviousPosition positionToCopy)
         {
             CopyFrom(positionToCopy);
         }
@@ -41,22 +41,22 @@ namespace DPSF
 		/// Copy Constructor.
 		/// </summary>
 		/// <param name="positionToCopy">The Position3D object to copy.</param>
-		public Position3DWithLastPosition(Position3D positionToCopy)
+		public Position3DWithPreviousPosition(Position3D positionToCopy)
 		{
 			CopyFrom(positionToCopy);
 		}
 
 		/// <summary>
-		/// Copy the given Position3DWithLastPosition object's data into this objects data.
+		/// Copy the given Position3DWithPreviousPosition object's data into this objects data.
 		/// </summary>
-		/// <param name="positionToCopy">The Position3DWithLastPosition to copy from.</param>
-		public void CopyFrom(Position3DWithLastPosition positionToCopy)
+		/// <param name="positionToCopy">The Position3DWithPreviousPosition to copy from.</param>
+		public void CopyFrom(Position3DWithPreviousPosition positionToCopy)
 		{
 			Position = positionToCopy.Position;
 			Velocity = positionToCopy.Velocity;
 			Acceleration = positionToCopy.Acceleration;
-			LastPosition = positionToCopy.LastPosition;
-			UpdateLastPositionAutomatically = positionToCopy.UpdateLastPositionAutomatically;
+			PreviousPosition = positionToCopy.PreviousPosition;
+			UpdatePreviousPositionAutomatically = positionToCopy.UpdatePreviousPositionAutomatically;
 		}
 
         /// <summary>
@@ -68,8 +68,8 @@ namespace DPSF
             Position = positionToCopy.Position;
             Velocity = positionToCopy.Velocity;
             Acceleration = positionToCopy.Acceleration;
-			LastPosition = Position;
-			UpdateLastPositionAutomatically = true;
+			PreviousPosition = Position;
+			UpdatePreviousPositionAutomatically = true;
         }
 
         /// <summary>
@@ -79,8 +79,8 @@ namespace DPSF
         public override void Update(float elapsedTimeInSeconds)
         {
 			// Save the current position before updating it.
-			if (UpdateLastPositionAutomatically)
-				LastPosition = Position;
+			if (UpdatePreviousPositionAutomatically)
+				PreviousPosition = Position;
 
 			base.Update(elapsedTimeInSeconds);
         }

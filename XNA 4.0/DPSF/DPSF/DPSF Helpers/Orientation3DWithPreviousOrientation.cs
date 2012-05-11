@@ -9,30 +9,30 @@ namespace DPSF
 #if (WINDOWS)
 	[Serializable]
 #endif
-	public class Orientation3DWithLastOrientation : Orientation3D
+	public class Orientation3DWithPreviousOrientation : Orientation3D
 	{
 		/// <summary>
 		/// The object's last orientation (before Update() was called).
 		/// </summary>
-		public Quaternion LastOrientation = Quaternion.Identity;
+		public Quaternion PreviousOrientation = Quaternion.Identity;
 
 		/// <summary>
-		/// Set this to False to not have the Update() function update the LastOrientation value.
-		/// Instead it will be up to an external object to update the LastOrientation property each frame.
+		/// Set this to False to not have the Update() function update the PreviousOrientation value.
+		/// Instead it will be up to an external object to update the PreviousOrientation property each frame.
 		/// <para>Default value is True.</para>
 		/// </summary>
-		public bool UpdateLastOrientationAutomatically { get; set; }
+		public bool UpdatePreviousOrientationAutomatically { get; set; }
 
 		/// <summary>
         /// Default Constructor.
         /// </summary>
-		public Orientation3DWithLastOrientation() { UpdateLastOrientationAutomatically = true; }
+		public Orientation3DWithPreviousOrientation() { UpdatePreviousOrientationAutomatically = true; }
 
         /// <summary>
         /// Copy Constructor.
         /// </summary>
-        /// <param name="orienationToCopy">The Orientation3DWithLastOrientation object to copy.</param>
-        public Orientation3DWithLastOrientation(Orientation3DWithLastOrientation orienationToCopy)
+        /// <param name="orienationToCopy">The Orientation3DWithPreviousOrientation object to copy.</param>
+        public Orientation3DWithPreviousOrientation(Orientation3DWithPreviousOrientation orienationToCopy)
         {
             CopyFrom(orienationToCopy);
         }
@@ -41,22 +41,22 @@ namespace DPSF
         /// Copy Constructor.
         /// </summary>
         /// <param name="orienationToCopy">The Orienation3D object to copy.</param>
-		public Orientation3DWithLastOrientation(Orientation3D orienationToCopy)
+		public Orientation3DWithPreviousOrientation(Orientation3D orienationToCopy)
         {
             CopyFrom(orienationToCopy);
         }
 
         /// <summary>
-		/// Copies the given Orientation3DWithLastOrientation object's data into this object's data.
+		/// Copies the given Orientation3DWithPreviousOrientation object's data into this object's data.
         /// </summary>
         /// <param name="orientationToCopy">The Orientation3D object to copy from.</param>
-		public void CopyFrom(Orientation3DWithLastOrientation orientationToCopy)
+		public void CopyFrom(Orientation3DWithPreviousOrientation orientationToCopy)
         {
             Orientation = orientationToCopy.Orientation;
             RotationalVelocity = orientationToCopy.RotationalVelocity;
             RotationalAcceleration = orientationToCopy.RotationalAcceleration;
-			LastOrientation = orientationToCopy.LastOrientation;
-			UpdateLastOrientationAutomatically = orientationToCopy.UpdateLastOrientationAutomatically;
+			PreviousOrientation = orientationToCopy.PreviousOrientation;
+			UpdatePreviousOrientationAutomatically = orientationToCopy.UpdatePreviousOrientationAutomatically;
         }
 
         /// <summary>
@@ -68,8 +68,8 @@ namespace DPSF
             Orientation = orientationToCopy.Orientation;
             RotationalVelocity = orientationToCopy.RotationalVelocity;
             RotationalAcceleration = orientationToCopy.RotationalAcceleration;
-			LastOrientation = Orientation;
-			UpdateLastOrientationAutomatically = true;
+			PreviousOrientation = Orientation;
+			UpdatePreviousOrientationAutomatically = true;
         }
 
 		/// <summary>
@@ -80,8 +80,8 @@ namespace DPSF
         public override void Update(float elapsedTimeInSeconds)
         {
 			// Save the current orientation before updating it.
-			if (UpdateLastOrientationAutomatically)
-				LastOrientation = Orientation;
+			if (UpdatePreviousOrientationAutomatically)
+				PreviousOrientation = Orientation;
 
 			base.Update(elapsedTimeInSeconds);
         }

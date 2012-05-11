@@ -23,6 +23,8 @@ namespace DPSF_Demo.Particle_System_Wrappers_For_DPSF_Demo
 
                 draw.TextWriter.DrawString(draw.Font, "Strength:", new Vector2(draw.TextSafeArea.Left + 410, draw.TextSafeArea.Top + 2), draw.PropertyTextColor);
                 draw.TextWriter.DrawString(draw.Font, this.AttractorStrength.ToString("0.0"), new Vector2(draw.TextSafeArea.Left + 495, draw.TextSafeArea.Top + 2), draw.PropertyTextColor);
+
+				draw.TextWriter.DrawString(draw.Font, "Use the mouse", new Vector2(draw.TextSafeArea.Left + 5, draw.TextSafeArea.Top + 225), draw.ControlTextColor);
             }
 	    }
 

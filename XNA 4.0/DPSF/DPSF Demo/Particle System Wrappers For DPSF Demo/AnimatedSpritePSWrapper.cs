@@ -15,7 +15,9 @@ namespace DPSF_Demo.Particle_System_Wrappers_For_DPSF_Demo
         { }
 
 	    public void DrawStatusText(DrawTextRequirements draw)
-	    { }
+	    {
+			draw.TextWriter.DrawString(draw.Font, "Use the mouse", new Vector2(draw.TextSafeArea.Left + 5, draw.TextSafeArea.Top + 225), draw.ControlTextColor);
+	    }
 
 	    public void DrawInputControlsText(DrawTextRequirements draw)
 	    {
