@@ -17,9 +17,16 @@ namespace DPSF
 		public float LastOrientation;
 
 		/// <summary>
+		/// Set this to False to not have the Update() function update the LastOrientation value.
+		/// Instead it will be up to an external object to update the LastOrientation property each frame.
+		/// <para>Default value is True.</para>
+		/// </summary>
+		public bool UpdateLastOrientationAutomatically { get; set; }
+
+		/// <summary>
 		/// Default Constructor.
 		/// </summary>
-		public Orientation2DWithLastOrientation() { }
+		public Orientation2DWithLastOrientation() { UpdateLastOrientationAutomatically = true; }
 
 		/// <summary>
 		/// Copy Constructor.
@@ -49,6 +56,7 @@ namespace DPSF
 			RotationalVelocity = orientationToCopy.RotationalVelocity;
 			RotationalAcceleration = orientationToCopy.RotationalAcceleration;
 			LastOrientation = orientationToCopy.LastOrientation;
+			UpdateLastOrientationAutomatically = orientationToCopy.UpdateLastOrientationAutomatically;
 		}
 
 		/// <summary>
@@ -61,6 +69,7 @@ namespace DPSF
 			RotationalVelocity = orientationToCopy.RotationalVelocity;
 			RotationalAcceleration = orientationToCopy.RotationalAcceleration;
 			LastOrientation = Orientation;
+			UpdateLastOrientationAutomatically = true;
 		}
 
 		/// <summary>
@@ -70,7 +79,10 @@ namespace DPSF
 		/// <param name="elapsedTimeInSeconds">The time Elapsed in Seconds since the last Update.</param>
 		public override void Update(float elapsedTimeInSeconds)
 		{
-			LastOrientation = Orientation;
+			// Save the current orientation before updating it.
+			if (UpdateLastOrientationAutomatically)
+				LastOrientation = Orientation;
+
 			base.Update(elapsedTimeInSeconds);
 		}
 	}

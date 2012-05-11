@@ -17,9 +17,16 @@ namespace DPSF
 		public Vector3 LastPosition = Vector3.Zero;
 
 		/// <summary>
+		/// Set this to False to not have the Update() function update the LastPosition value.
+		/// Instead it will be up to an external object to update the LastPosition property each frame.
+		/// <para>Default value is True.</para>
+		/// </summary>
+		public bool UpdateLastPositionAutomatically { get; set; }
+
+		/// <summary>
         /// Default Constructor.
         /// </summary>
-        public Position3DWithLastPosition() { }
+		public Position3DWithLastPosition() { UpdateLastPositionAutomatically = true; }
 
         /// <summary>
         /// Copy Constructor.
@@ -49,6 +56,7 @@ namespace DPSF
 			Velocity = positionToCopy.Velocity;
 			Acceleration = positionToCopy.Acceleration;
 			LastPosition = positionToCopy.LastPosition;
+			UpdateLastPositionAutomatically = positionToCopy.UpdateLastPositionAutomatically;
 		}
 
         /// <summary>
@@ -61,6 +69,7 @@ namespace DPSF
             Velocity = positionToCopy.Velocity;
             Acceleration = positionToCopy.Acceleration;
 			LastPosition = Position;
+			UpdateLastPositionAutomatically = true;
         }
 
         /// <summary>
@@ -70,7 +79,9 @@ namespace DPSF
         public override void Update(float elapsedTimeInSeconds)
         {
 			// Save the current position before updating it.
-			LastPosition = Position;
+			if (UpdateLastPositionAutomatically)
+				LastPosition = Position;
+
 			base.Update(elapsedTimeInSeconds);
         }
 	}
