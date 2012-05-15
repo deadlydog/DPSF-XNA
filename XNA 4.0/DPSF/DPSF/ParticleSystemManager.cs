@@ -1,6 +1,7 @@
 ﻿#region Using Statements
 using System;
 using System.Collections.Generic;
+using DPSF.Exceptions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -487,7 +488,7 @@ namespace DPSF
         {
             // If an invalid particle system was given, throw an exception indicating it
             if (cParticleSystemToAdd == null)
-                throw new ArgumentNullException("cParticleSystemToAdd", "A particle system with a value of null cannot be added to the particle system manager.");
+                throw new DPSFArgumentNullException("cParticleSystemToAdd", "A particle system with a value of null cannot be added to the particle system manager.");
 
             // Add the Particle System to both Lists
             mcParticleSystemListSortedByUpdateOrder.Add(cParticleSystemToAdd);
@@ -515,7 +516,7 @@ namespace DPSF
         {
             // If an invalid particle system was given, throw an exception indicating it
             if (cParticleSystemToRemove == null)
-                throw new ArgumentNullException("cParticleSystemToRemove", "A particle system with a value of null cannot be removed from the particle system manager.");
+                throw new DPSFArgumentNullException("cParticleSystemToRemove", "A particle system with a value of null cannot be removed from the particle system manager.");
 
 			// If the particle system being removed is actually removing itself right now from its Update() function which this PS Manager just called.
 			if (cParticleSystemToRemove == _particleSystemBeingUpdated)

@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;       // Used for Conditional Attributes and Stopwatches.
+using DPSF.Exceptions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -2107,7 +2108,7 @@ namespace DPSF
 			if (Game == null)
 			{
 				// Throw an exception
-				throw new ArgumentNullException("cGame", "Game parameter specified in Particle System constructor is null. The constructor's Game parameter cannot be null when DPSF is inheriting from DrawableGameComponent.");
+				throw new DPSFArgumentNullException("cGame", "Game parameter specified in Particle System constructor is null. The constructor's Game parameter cannot be null when DPSF is inheriting from DrawableGameComponent.");
 			}
 	#else
 		/// <summary>
@@ -2151,7 +2152,7 @@ namespace DPSF
 			{
 				// Specify that the Particle System is not yet Initialized and re-throw the exception
 				ParticleType = ParticleTypes.None;
-				throw new Exception("A problem occurred while Initializing the Particle System. Inner Exception: " + e.ToString(), e);
+				throw new DPSFException("A problem occurred while Initializing the Particle System. Inner DPSFException: " + e.ToString(), e);
 			}
 
 			// Perform any user operations now that the Particle System is Initialized
@@ -2228,7 +2229,7 @@ namespace DPSF
 			{
 				// Specify that the Particle System is not yet Initialized and re-throw the exception
 				ParticleType = ParticleTypes.None;
-				throw new Exception("A problem occurred while Initializing the Particle System. Inner Exception: " + e.ToString(), e);
+				throw new DPSFException("A problem occurred while Initializing the Particle System. Inner DPSFException: " + e.ToString(), e);
 			}
 
 			// Perform any user operations now that the Particle System is Initialized
@@ -2305,7 +2306,7 @@ namespace DPSF
 			{
 				// Specify that the Particle System is not yet Initialized and re-throw the exception
 				ParticleType = ParticleTypes.None;
-				throw new Exception("A problem occurred while Initializing the Particle System. Inner Exception: " + e.ToString(), e);
+				throw new DPSFException("A problem occurred while Initializing the Particle System. Inner DPSFException: " + e.ToString(), e);
 			}
 
 			// Perform any user operations now that the Particle System is Initialized
@@ -2349,7 +2350,7 @@ namespace DPSF
 			{
 				// Specify that the Particle System is not yet Initialized and re-throw the exception
 				ParticleType = ParticleTypes.None;
-				throw new Exception("A problem occurred while Initializing the Particle System. Inner Exception: " + e.ToString(), e);
+				throw new DPSFException("A problem occurred while Initializing the Particle System. Inner DPSFException: " + e.ToString(), e);
 			}
 
 			// Perform any user operations now that the Particle System is Initialized
@@ -2394,7 +2395,7 @@ namespace DPSF
 			{
 				// Specify that the Particle System is not yet Initialized and re-throw the exception
 				ParticleType = ParticleTypes.None;
-				throw new Exception("A problem occurred while Initializing the Particle System. Inner Exception: " + e.ToString(), e);
+				throw new DPSFException("A problem occurred while Initializing the Particle System. Inner DPSFException: " + e.ToString(), e);
 			}
 
 			// Perform any user operations now that the Particle System is Initialized
@@ -2439,7 +2440,7 @@ namespace DPSF
 			{
 				// Specify that the Particle System is not yet Initialized and re-throw the exception
 				ParticleType = ParticleTypes.None;
-				throw new Exception("A problem occurred while Initializing the Particle System. Inner Exception: " + e.ToString(), e);
+				throw new DPSFException("A problem occurred while Initializing the Particle System. Inner DPSFException: " + e.ToString(), e);
 			}
 
 			// Perform any user operations now that the Particle System is Initialized
@@ -2478,7 +2479,7 @@ namespace DPSF
 			if (Game == null)
 			{
 				// Throw an exception
-				throw new ArgumentNullException("The Game object given in the constructor is now null in the Initialization function and no longer valid.");
+				throw new DPSFArgumentNullException("The Game object given in the constructor is now null in the Initialization function and no longer valid.");
 			}
 			// Else a valid Game object was given in the constructor
 			else
@@ -2707,8 +2708,8 @@ namespace DPSF
 		/// This function should be called immediately after deserializing a particle system in order to reinitialize the properties 
 		/// that could not be serialized.
 		/// <para>NOTE: If this type of particle system requires a Texture, this function will attempt to load the Texture specified
-		/// by the DeserializationTexturePath property. If it is unable to load a texture, an ArgumentNullException will be thrown, so 
-		/// this function should be wrapped in a try block, and when an ArgumentNullException is caught then the particle system's
+		/// by the DeserializationTexturePath property. If it is unable to load a texture, an DPSFArgumentNullException will be thrown, so 
+		/// this function should be wrapped in a try block, and when an DPSFArgumentNullException is caught then the particle system's
 		/// texture should be manually set.</para>
 		/// <para>NOTE: This will attempt to load the Effect and Technique specified by the DeserializationEffectPath and
 		/// DeserializationTechniqueName properties. If either of these are null, the DPSFDefaultEffect will be used, and the default
@@ -2730,7 +2731,7 @@ namespace DPSF
 			if (Game == null)
 			{
 				// Throw an exception
-				throw new ArgumentNullException("cGame", "The specified Game object is null. A valid Game object is required.");
+				throw new DPSFArgumentNullException("cGame", "The specified Game object is null. A valid Game object is required.");
 			}
 			// Else a valid Game object was given in the constructor
 			else
@@ -2796,7 +2797,7 @@ namespace DPSF
 				// Else we do not have a Texture to use to draw the particles, so throw an exception about it.
 				else
 				{
-					throw new ArgumentNullException("DeserializationTexturePath", "The specified Texture to use is null. A valid Texture must be set to draw the current Type of Particles.");
+					throw new DPSFArgumentNullException("DeserializationTexturePath", "The specified Texture to use is null. A valid Texture must be set to draw the current Type of Particles.");
 				}
 			}
 		}
@@ -2962,7 +2963,7 @@ namespace DPSF
 				// Else an invalid Graphics Device was specified
 				else
 				{
-					throw new ArgumentNullException("GraphicsDevice", "The specified Graphics Device is null. A valid Graphics Device is required.");
+					throw new DPSFArgumentNullException("GraphicsDevice", "The specified Graphics Device is null. A valid Graphics Device is required.");
 				}
 			}
 		}
@@ -3052,7 +3053,7 @@ namespace DPSF
 				if (mcContentManager != null)
 					return mcContentManager;
 				else
-					throw new NullReferenceException("The Content Manager is trying to be accessed, but is null. Be sure you have Initialized the particle system and provided a valid Content Manager.");
+					throw new DPSFNullReferenceException("The Content Manager is trying to be accessed, but is null. Be sure you have Initialized the particle system and provided a valid Content Manager.");
 			}
 
 			set
@@ -3065,7 +3066,7 @@ namespace DPSF
 				// Else an invalid Content Manager was given
 				else
 				{
-					throw new ArgumentNullException("ContentManager", "The specified Content Manager is null. A valid Content Manager is required.");
+					throw new DPSFArgumentNullException("ContentManager", "The specified Content Manager is null. A valid Content Manager is required.");
 				}
 			}
 		}
@@ -3107,7 +3108,7 @@ namespace DPSF
 				if (mcParticleEvents != null)
 					return mcParticleEvents; 
 				else
-					throw new NullReferenceException("The ParticleEvents property is trying to be accessed, but is null. Be sure you have Initialized the particle system.");
+					throw new DPSFNullReferenceException("The ParticleEvents property is trying to be accessed, but is null. Be sure you have Initialized the particle system.");
 			}
 		}
 
@@ -3121,7 +3122,7 @@ namespace DPSF
 				if (mcParticleSystemEvents != null)
 					return mcParticleSystemEvents; 
 				else
-					throw new NullReferenceException("The ParticleSystemEvents property is trying to be accessed, but is null. Be sure you have Initialized the particle system.");
+					throw new DPSFNullReferenceException("The ParticleSystemEvents property is trying to be accessed, but is null. Be sure you have Initialized the particle system.");
 			}
 		}
 
@@ -3164,7 +3165,7 @@ namespace DPSF
 				if (mcSpriteBatchSettings != null)
 					return mcSpriteBatchSettings;
 				else
-					throw new NullReferenceException("The SpriteBatchSettings property is trying to be accessed, but is null. Be sure you have Initialized the particle system. Also, this property is only available when using a Sprite particle system, and not Using and External Sprite Batch To Draw the Particles.");
+					throw new DPSFNullReferenceException("The SpriteBatchSettings property is trying to be accessed, but is null. Be sure you have Initialized the particle system. Also, this property is only available when using a Sprite particle system, and not Using and External Sprite Batch To Draw the Particles.");
 			}
 		}
 
@@ -3178,7 +3179,7 @@ namespace DPSF
 				if (mcAutoMemoryManagerSettings != null)
 					return mcAutoMemoryManagerSettings; 
 				else
-					throw new NullReferenceException("The AutoMemoryManagerSettings property is trying to be accessed, but is null. Be sure you have Initialized the particle system.");
+					throw new DPSFNullReferenceException("The AutoMemoryManagerSettings property is trying to be accessed, but is null. Be sure you have Initialized the particle system.");
 			}
 		}
 
@@ -3193,7 +3194,7 @@ namespace DPSF
 				if (_emitter != null)
 					return _emitter; 
 				else
-					throw new NullReferenceException("The Emitter property is trying to be accessed, but is null. Be sure you have Initialized the particle system.");
+					throw new DPSFNullReferenceException("The Emitter property is trying to be accessed, but is null. Be sure you have Initialized the particle system.");
 			}
 
 			set 
@@ -3201,7 +3202,7 @@ namespace DPSF
 				if (value != null)
 					_emitter = value;
 				else
-					throw new ArgumentNullException("Emitter", "An invalid Emitter was specified. The Emitter cannot be null.");
+					throw new DPSFArgumentNullException("Emitter", "An invalid Emitter was specified. The Emitter cannot be null.");
 			}
 		}
 
@@ -3287,7 +3288,7 @@ namespace DPSF
 				// Else a valid Vertex Element is required
 				else
 				{
-					throw new ArgumentNullException("VertexElement", "The specified Vertex Element is null. A valid Vertex Element is required to draw the current Type of Particles.");
+					throw new DPSFArgumentNullException("VertexElement", "The specified Vertex Element is null. A valid Vertex Element is required to draw the current Type of Particles.");
 				}
 			}				
 		}
@@ -3318,12 +3319,12 @@ namespace DPSF
 					// Else if we do not have a valid Graphics Device to create the Vertex Declaration with
 					else if (GraphicsDevice == null)
 					{
-						throw new ArgumentNullException("GraphicsDevice", "The current Graphics Device is null. A valid Graphics Device is required to create a new Vertex Declaration in order to draw the current type of Particles.");
+						throw new DPSFArgumentNullException("GraphicsDevice", "The current Graphics Device is null. A valid Graphics Device is required to create a new Vertex Declaration in order to draw the current type of Particles.");
 					}
 					// Else a valid Vertex Element is required
 					else
 					{
-						throw new ArgumentNullException("VertexElement", "The specified Vertex Element is null. A valid Vertex Element is required to draw the current Type of Particles.");
+						throw new DPSFArgumentNullException("VertexElement", "The specified Vertex Element is null. A valid Vertex Element is required to draw the current Type of Particles.");
 					}
 				}
 			}
@@ -3349,7 +3350,7 @@ namespace DPSF
 					// Else a valid Vertex Update Function is required
 					else
 					{
-						throw new ArgumentNullException("VertexUpdateFunction", "The specified Vertex Update Function is null. A valid Vertex Update Function is required to draw the current Type of Particles.");
+						throw new DPSFArgumentNullException("VertexUpdateFunction", "The specified Vertex Update Function is null. A valid Vertex Update Function is required to draw the current Type of Particles.");
 					}
 				}
 				// Else a valid Vertex Update Function was given
@@ -3418,7 +3419,7 @@ namespace DPSF
 		{
 			// If the Effect to use is invalid, throw an exception about it
 			if (string.IsNullOrEmpty(sEffect))
-				throw new ArgumentNullException("sEffect", "The Effect string supplied is null or an empty string. The Effect to use cannot be null.");
+				throw new DPSFArgumentNullException("sEffect", "The Effect string supplied is null or an empty string. The Effect to use cannot be null.");
 
 			// Load the Effect
 			Effect cEffect = ContentManager.Load<Effect>(sEffect);
@@ -3465,7 +3466,7 @@ namespace DPSF
 					// Else an Effect must be specified for this Type of Particle
 					else
 					{
-						throw new ArgumentNullException("Effect", "Specified Effect to use is null. A valid Effect must be used to draw the current Type of Particles.");
+						throw new DPSFArgumentNullException("Effect", "Specified Effect to use is null. A valid Effect must be used to draw the current Type of Particles.");
 					}
 				}
 				// Else a valid Effect was specified
@@ -3490,11 +3491,11 @@ namespace DPSF
 		{
 			// If the Effect hasn't been set yet, throw an exception about it.
 			if (mcEffect == null)
-				throw new InvalidOperationException("Effect is null when trying to specify the Technique to use. The Effect must be set before specifying the Technique.");
+				throw new DPSFInvalidOperationException("Effect is null when trying to specify the Technique to use. The Effect must be set before specifying the Technique.");
 
 			// If the specified Technique is invalid, throw an exception about it.
 			if (string.IsNullOrEmpty(sTechnique))
-				throw new ArgumentNullException("sTechnique", "The specified Technique to use is invalid. This parameter cannot be null or an empty string.");
+				throw new DPSFArgumentNullException("sTechnique", "The specified Technique to use is invalid. This parameter cannot be null or an empty string.");
 
 			// Else both the Effect and Technique to use are valid
 			// Store which Technique to use to draw
@@ -3523,11 +3524,11 @@ namespace DPSF
 			{
 				// If the Effect hasn't been set yet, throw an exception about it.
 				if (mcEffect == null)
-					throw new InvalidOperationException("Effect is null when trying to specify the Technique to use. The Effect must be set before specifying the Technique.");
+					throw new DPSFInvalidOperationException("Effect is null when trying to specify the Technique to use. The Effect must be set before specifying the Technique.");
 
 				// If the Technique to use is invalid, throw an exception about it.
 				if (value == null)
-					throw new ArgumentNullException("Technique", "An invalid Technique to use was specified. The Technique to use cannot be null.");
+					throw new DPSFArgumentNullException("Technique", "An invalid Technique to use was specified. The Technique to use cannot be null.");
 
 				// Set the Technique to use
 				mcEffect.CurrentTechnique = value;
@@ -3547,7 +3548,7 @@ namespace DPSF
 				// If a Texture is required for this Type of Particle
 				if (ParticleType == ParticleTypes.Sprite || ParticleType == ParticleTypes.TexturedQuad)
 				{
-					throw new ArgumentNullException("sTexture", "Specified Texture to use is null. A valid Texture must be set to draw the current Type of Particles.");
+					throw new DPSFArgumentNullException("sTexture", "Specified Texture to use is null. A valid Texture must be set to draw the current Type of Particles.");
 				}
 				// Else a Texture is not required
 				else
@@ -3571,7 +3572,7 @@ namespace DPSF
 				}
 				catch (System.Collections.Generic.KeyNotFoundException e)
 				{
-					throw new InvalidOperationException("There was a problem loading the texture \"" + sTexture + "\". Did you Dispose() this resource earlier somewhere else by accident?", e);
+					throw new DPSFInvalidOperationException("There was a problem loading the texture \"" + sTexture + "\". Did you Dispose() this resource earlier somewhere else by accident?", e);
 				}
 			}
 		}
@@ -3590,7 +3591,7 @@ namespace DPSF
 					// If a Texture is required for this Type of Particle
 					if (ParticleType == ParticleTypes.Sprite || ParticleType == ParticleTypes.TexturedQuad)
 					{
-						throw new ArgumentNullException("sTexture", "Specified Texture to use is null. A valid Texture must be set to draw the current Type of Particles.");
+						throw new DPSFArgumentNullException("sTexture", "Specified Texture to use is null. A valid Texture must be set to draw the current Type of Particles.");
 					}
 					// Else a Texture is not required
 					else
@@ -4003,7 +4004,7 @@ namespace DPSF
 				// Else an invalid Max Number of Particles was specified
 				else
 				{
-					throw new ArgumentException("MaxNumberOfParticles", "The specified Max Number Of Particles is less than or equal to zero. The Max Number Of Particles must be greater than zero.");
+					throw new DPSFArgumentException("MaxNumberOfParticles", "The specified Max Number Of Particles is less than or equal to zero. The Max Number Of Particles must be greater than zero.");
 				}
 			}
 		}
@@ -4131,7 +4132,7 @@ namespace DPSF
 				if (mcActiveParticlesList != null)
 					return mcActiveParticlesList;
 				else
-					throw new NullReferenceException("The ActiveParticles property is trying to be accessed, but is null. Be sure you have Initialized the particle system.");
+					throw new DPSFNullReferenceException("The ActiveParticles property is trying to be accessed, but is null. Be sure you have Initialized the particle system.");
 			}
 			protected set { mcActiveParticlesList = value; }
 		}
@@ -4146,7 +4147,7 @@ namespace DPSF
 				if (mcInactiveParticlesList != null)
 					return mcInactiveParticlesList;
 				else
-					throw new NullReferenceException("The InactiveParticles property is trying to be accessed, but is null. Be sure you have Initialized the particle system.");
+					throw new DPSFNullReferenceException("The InactiveParticles property is trying to be accessed, but is null. Be sure you have Initialized the particle system.");
 			}
 		}
 
@@ -4160,7 +4161,7 @@ namespace DPSF
 				if (mcParticles != null)
 					return mcParticles;
 				else
-					throw new NullReferenceException("The Particles property is trying to be accessed, but is null. Be sure you have Initialized the particle system.");
+					throw new DPSFNullReferenceException("The Particles property is trying to be accessed, but is null. Be sure you have Initialized the particle system.");
 			}
 		}
 
@@ -4338,7 +4339,7 @@ namespace DPSF
 
 			// Make sure they actually gave us some Lerp Info to use.
 			if (lerpInfo == null)
-				throw new Exception("AddParticles() was called with a null value for the 'lerpInfo' parameter, which is not allowed.");
+				throw new DPSFException("AddParticles() was called with a null value for the 'lerpInfo' parameter, which is not allowed.");
 		
 			int numberOfNewParticlesAdded = 0;
 
@@ -5000,7 +5001,7 @@ namespace DPSF
 							iSizeOfMemoryToAllocate *= 4;
 						}
 
-						throw new Exception("Not enough video memory to draw the particle system. The XBox 360 can only allocate about " + MAX_MEMORY_IN_BYTES_THAT_XBOX_CAN_DRAW.ToString("###,###,###") + " bytes in video memory when using DrawUserPrimitives(). You are trying to allocate " + iSizeOfMemoryToAllocate.ToString("###,###,###") + " bytes.\n\nInner exception: " + e.ToString(), e);
+						throw new DPSFInvalidOperationException("Not enough video memory to draw the particle system. The XBox 360 can only allocate about " + MAX_MEMORY_IN_BYTES_THAT_XBOX_CAN_DRAW.ToString("###,###,###") + " bytes in video memory when using DrawUserPrimitives(). You are trying to allocate " + iSizeOfMemoryToAllocate.ToString("###,###,###") + " bytes.\n\nInner exception: " + e.ToString(), e);
 					}
 #endif
 				}

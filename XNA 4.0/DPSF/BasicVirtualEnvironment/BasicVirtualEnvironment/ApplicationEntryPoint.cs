@@ -75,7 +75,7 @@ namespace BasicVirtualEnvironment
 					System.Windows.Forms.MessageBox.Show(e.ToString(), "Unhandled Exception");
 				}
 			}
-			// Else we are in debug mode, so allow Visual Studio to show us the error message.
+			// Else we are in debug mode, so allow Visual Studio to show us any error messages.
 			else
 			{
 				game.Run();

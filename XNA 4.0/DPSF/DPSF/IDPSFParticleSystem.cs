@@ -42,8 +42,8 @@ namespace DPSF
 		/// This function should be called immediately after deserializing a particle system in order to reinitialize the properties 
 		/// that could not be serialized.
 		/// <para>NOTE: If this type of particle system requires a Texture, this function will attempt to load the Texture specified
-		/// by the DeserializationTexturePath property. If it is unable to load a texture, an ArgumentNullException will be thrown, so 
-		/// this function should be wrapped in a try block, and when an ArgumentNullException is caught then the particle system's
+		/// by the DeserializationTexturePath property. If it is unable to load a texture, a DPSFArgumentNullException will be thrown, so 
+		/// this function should be wrapped in a try block, and when a DPSFArgumentNullException is caught then the particle system's
 		/// texture should be manually set.</para>
 		/// <para>NOTE: This will attempt to load the Effect and Technique specified by the DeserializationEffectPath and
 		/// DeserializationTechniqueName properties. If either of these are null, the DPSFDefaultEffect will be used, and the default

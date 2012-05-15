@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 namespace DPSF
 {
 	/// <summary>
-	/// 
+	/// Class containing the information necessary to Linearly Interpolate a ParticleEmitter's position and orientation when adding many particles.
 	/// </summary>
 #if (WINDOWS)
 	[Serializable]
@@ -35,6 +35,12 @@ namespace DPSF
 		private float _particlesPerSecond = 0.0f;
 		private float _secondsPerParticle = 0.0f;
 		private float _timeElapsedSinceGeneratingLastParticle = 0.0f;
+
+		/// <summary>
+		/// The total number of emitters created.
+		/// This is also used to assign unique IDs to each ParticleEmitter.
+		/// </summary>
+		private static int _particleEmitterCount = 0;
 
 		/// <summary>
 		/// The position of the Emitter last frame.
@@ -70,6 +76,9 @@ namespace DPSF
 			// Default any other properties.
 			Enabled = true;
 			EmitParticlesAutomatically = true;
+
+			// Assign a unique ID to this emitter.
+			ID = _particleEmitterCount++;
 		}
 
 		/// <summary>
@@ -103,6 +112,11 @@ namespace DPSF
 
 			BurstComplete = emitterToCopy.BurstComplete;
 		}
+
+		/// <summary>
+		/// Get the unique ID of this Emitter.
+		/// </summary>
+		public int ID { get; private set; }
 
 		/// <summary>
 		/// Get / Set if the Emitter is able to Emit Particles or not.

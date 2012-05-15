@@ -29,6 +29,7 @@ public:
 	Created stand-alone BasicVirtualEnvironment project that houses all of these reusable components.
 - Moved functionality to Linearly Interpolate (Lerp) the Emitter's position and orientation from the Update() function into new AddParticles() functions, so users can now
 	have their particle's Lerp'd when manually adding particles without the emitter.
+- Changed DPSF to throw custom DPSF Exceptions to make them easy to distinguish from other exceptions thrown by a users application.
 
 Possible Breaking Changes:
 - Removed the mcRandomNumber particle system class variable. Everything should now just use the RandomNumber public property.

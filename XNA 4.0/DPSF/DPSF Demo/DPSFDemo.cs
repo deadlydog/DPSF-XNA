@@ -836,7 +836,7 @@ namespace DPSF_Demo
 							_currentDPSFDemoParticleSystemWrapper.InitializeNonSerializableProperties(this, this.GraphicsDevice, this.Content);
 						}
 						// Catch the case where the Particle System requires a texture, but one wasn't loaded.
-						catch (ArgumentNullException)
+						catch (DPSF.Exceptions.DPSFArgumentNullException)
 						{
 							// Assign the particle system a texture to use.
 							_currentDPSFDemoParticleSystemWrapper.SetTexture("Textures/Bubble");

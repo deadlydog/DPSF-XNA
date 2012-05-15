@@ -153,9 +153,17 @@
       <DependentUpon>DPSFResources.resx</DependentUpon>
     </Compile>
     <Compile Include="DPSFDefaultSettings.cs" />
+    <Compile Include="Exceptions\DPSFArgumentException.cs" />
+    <Compile Include="Exceptions\DPSFArgumentNullException.cs" />
+    <Compile Include="Exceptions\DPSFException.cs" />
+    <Compile Include="Exceptions\DPSFInvalidOperationException.cs" />
+    <Compile Include="Exceptions\DPSFKeyNotFoundException.cs" />
+    <Compile Include="Exceptions\DPSFNullReferenceException.cs" />
+    <Compile Include="Exceptions\IDPSFException.cs" />
     <Compile Include="Extension Methods\GenericCollectionsExtensions.cs" />
     <Compile Include="IDPSFParticleSystem.cs" />
     <Compile Include="ParticleEmitter.cs" />
+    <Compile Include="ParticleEmitterCollection.cs" />
     <Compile Include="ParticleSystemManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
