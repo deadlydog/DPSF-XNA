@@ -9,8 +9,18 @@ namespace DPSF
     public class DPSFViewerParameterAttribute : System.Attribute
     {
 		/// <summary>
+		/// A user-friendly name to display in the DPSF Viewer instead of the field/method/property name.
+		/// If this is left empty the field/method/property name will be used.
+		/// </summary>
+		public string Name
+		{
+			get { return _name; }
+			set { _name = value; }
+		}
+		private string _name = string.Empty;
+
+		/// <summary>
 		/// A user-friendly description of what the field/method/property does.
-		/// This will be displayed to the user of the DPSF Viewer.
 		/// </summary>
         public string Description
         {
@@ -20,7 +30,7 @@ namespace DPSF
         private string _description = string.Empty;
 
 		/// <summary>
-		/// The group of controls that this one should be grouped with in the DPSF Viewer.
+		/// The group of controls that this one should be grouped with in the DPSF Viewer GUI.
 		/// </summary>
 		public string Group
 		{

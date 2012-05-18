@@ -25,8 +25,7 @@ namespace DPSF_Demo.ParticleSystems
 	// TODO: Rename/Refactor the Particle System class
 	//-----------------------------------------------------------
 	/// <summary>
-	/// Create a new Particle System class that inherits from a
-	/// Default DPSF Particle System
+	/// Create a new Particle System class that inherits from a Default DPSF Particle System.
 	/// </summary>
 #if (WINDOWS)
 	[Serializable]

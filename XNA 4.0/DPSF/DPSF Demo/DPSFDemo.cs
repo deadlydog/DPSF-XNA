@@ -10,6 +10,7 @@
 
 #region Using Statements
 using System;
+using System.Diagnostics;
 using BasicVirtualEnvironment;
 using BasicVirtualEnvironment.Input;
 using DPSF;
@@ -112,6 +113,7 @@ namespace DPSF_Demo
 			ExplosionShockwave,
 			Explosion,
 			Trail,
+			MultipleEmitters,
 			SpriteParticleSystemTemplate,
 			Sprite3DBillboardParticleSystemTemplate,
 			QuadParticleSystemTemplate,
@@ -120,7 +122,7 @@ namespace DPSF_Demo
 			DefaultSprite3DBillboardParticleSystemTemplate,
 			DefaultQuadParticleSystemTemplate,
 			DefaultTexturedQuadParticleSystemTemplate,
-			LastInList = 43     // This value should be the number of Effects in the enumeration minus one (since we start at index 0) (excluding the Splash Screen)
+			LastInList = 44     // This value should be the number of Effects in the enumeration minus one (since we start at index 0) (excluding the Splash Screen)
 		}
 
 		// List of all the textures
@@ -261,6 +263,7 @@ namespace DPSF_Demo
 		ExplosionShockwaveDPSFDemoParticleSystemWrapper _mcExplosionShockwaveDPSFDemoParticleSystemWrapper = null;
 		ExplosionDPSFDemoParticleSystemWrapper _mcExplosionDPSFDemoParticleSystemWrapper = null;
 		TrailDPSFDemoParticleSystemWrapper _mcTrailDPSFDemoParticleSystemWrapper = null;
+		MultipleEmittersParticleSystemWrapper _mcMultipleEmittersParticleSystemWrapper = null;
 		SpriteDPSFDemoParticleSystemTemplateWrapper _mcSpriteDPSFDemoParticleSystemTemplateWrapper = null;
 		Sprite3DBillboardDPSFDemoParticleSystemTemplateWrapper _mcSprite3DBillboardDPSFDemoParticleSystemTemplateWrapper = null;
 		QuadDPSFDemoParticleSystemTemplateWrapper _mcQuadDPSFDemoParticleSystemTemplateWrapper = null;
@@ -329,6 +332,7 @@ namespace DPSF_Demo
 			_mcExplosionShockwaveDPSFDemoParticleSystemWrapper = new ExplosionShockwaveDPSFDemoParticleSystemWrapper(this);
 			_mcExplosionDPSFDemoParticleSystemWrapper = new ExplosionDPSFDemoParticleSystemWrapper(this);
 			_mcTrailDPSFDemoParticleSystemWrapper = new TrailDPSFDemoParticleSystemWrapper(this);
+			_mcMultipleEmittersParticleSystemWrapper = new MultipleEmittersParticleSystemWrapper(this);
 			_mcSpriteDPSFDemoParticleSystemTemplateWrapper = new SpriteDPSFDemoParticleSystemTemplateWrapper(this);
 			_mcSprite3DBillboardDPSFDemoParticleSystemTemplateWrapper = new Sprite3DBillboardDPSFDemoParticleSystemTemplateWrapper(this);
 			_mcQuadDPSFDemoParticleSystemTemplateWrapper = new QuadDPSFDemoParticleSystemTemplateWrapper(this);
@@ -377,6 +381,7 @@ namespace DPSF_Demo
 			_particleSystemManager.AddParticleSystem(_mcExplosionShockwaveDPSFDemoParticleSystemWrapper);
 			_particleSystemManager.AddParticleSystem(_mcExplosionDPSFDemoParticleSystemWrapper);
 			_particleSystemManager.AddParticleSystem(_mcTrailDPSFDemoParticleSystemWrapper);
+			_particleSystemManager.AddParticleSystem(_mcMultipleEmittersParticleSystemWrapper);
 			_particleSystemManager.AddParticleSystem(_mcSpriteDPSFDemoParticleSystemTemplateWrapper);
 			_particleSystemManager.AddParticleSystem(_mcSprite3DBillboardDPSFDemoParticleSystemTemplateWrapper);
 			_particleSystemManager.AddParticleSystem(_mcQuadDPSFDemoParticleSystemTemplateWrapper);
@@ -397,6 +402,10 @@ namespace DPSF_Demo
 			_mcDPSFSplashScreenDPSFDemoParticleSystemWrapper.AutoInitialize(this.GraphicsDevice, this.Content, null);
 			_mcDPSFSplashScreenDPSFDemoParticleSystemWrapper.SplashScreenComplete += new EventHandler(mcDPSFSplashScreenParticleSystem_SplashScreenComplete);
 			_currentDPSFDemoParticleSystemWrapper = _mcDPSFSplashScreenDPSFDemoParticleSystemWrapper;
+
+			// If we are debugging let's skip the splash screen.
+			if (Debugger.IsAttached)
+				mcDPSFSplashScreenParticleSystem_SplashScreenComplete(null, null);
 		}
 
 		/// <summary>
@@ -477,6 +486,7 @@ namespace DPSF_Demo
 				case ParticleSystemEffects.ExplosionShockwave: _currentDPSFDemoParticleSystemWrapper = _mcExplosionShockwaveDPSFDemoParticleSystemWrapper; break;
 				case ParticleSystemEffects.Explosion: _currentDPSFDemoParticleSystemWrapper = _mcExplosionDPSFDemoParticleSystemWrapper; break;
 				case ParticleSystemEffects.Trail: _currentDPSFDemoParticleSystemWrapper = _mcTrailDPSFDemoParticleSystemWrapper; break;
+				case ParticleSystemEffects.MultipleEmitters: _currentDPSFDemoParticleSystemWrapper = _mcMultipleEmittersParticleSystemWrapper; break;
 				case ParticleSystemEffects.SpriteParticleSystemTemplate: _currentDPSFDemoParticleSystemWrapper = _mcSpriteDPSFDemoParticleSystemTemplateWrapper; break;
 				case ParticleSystemEffects.Sprite3DBillboardParticleSystemTemplate: _currentDPSFDemoParticleSystemWrapper = _mcSprite3DBillboardDPSFDemoParticleSystemTemplateWrapper; break;
 				case ParticleSystemEffects.QuadParticleSystemTemplate: _currentDPSFDemoParticleSystemWrapper = _mcQuadDPSFDemoParticleSystemTemplateWrapper; break;

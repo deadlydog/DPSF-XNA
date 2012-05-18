@@ -1,37 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using DPSF.Exceptions;
 
 namespace DPSF
 {
+	/// <summary>
+	/// Holds a collection of ParticleEmitters.
+	/// </summary>
 	public class ParticleEmitterCollection
 	{
 		/// <summary>
-		/// The dictionary used to hold all of a particle system's emitters.
+		/// The dictionary used to hold the collection of emitters.
 		/// </summary>
 		private readonly Dictionary<int, ParticleEmitter> _emitters = new Dictionary<int, ParticleEmitter>(); 
 
 		/// <summary>
-		/// Adds a new ParticleEmitter to the list of emitters and returns the unique ID that can be used to retrieve it from the collection.
+		/// Fires anytime a ParticleEmitter is removed from the collection and the collection is left empty.
 		/// </summary>
-		/// <returns>Returns the unique ID that can be used to reference the ParticleEmitter in the collection.</returns>
+		public event EventHandler AllEmittersRemoved = null;
+
+		/// <summary>
+		/// Adds a new ParticleEmitter to the list of emitters and returns the ParticleEmitter's unique ID that can be used to retrieve it from the collection.
+		/// </summary>
+		/// <returns>Returns the ParticleEmitter's unique ID that can be used to reference the ParticleEmitter in the collection.</returns>
 		public int Add()
 		{
 			return Add(null);
 		}
 
 		/// <summary>
-		/// Adds a copy of the given ParticleEmitter to the list of emitters and returns the unique ID that can be used to retrieve it from the collection.
+		/// Adds the given ParticleEmitter to the list of emitters and returns its unique ID that can be used to retrieve it from the collection.
 		/// </summary>
-		/// <param name="emitterToCopy">The ParticleEmitter to add to the collection.</param>
-		/// <returns>Returns the unique ID that can be used to reference the ParticleEmitter in the collection.</returns>
-		public int Add(ParticleEmitter emitterToCopy)
+		/// <param name="emitter">The ParticleEmitter to add to the collection.</param>
+		/// <returns>Returns the ParticleEmitter's unique ID that can be used to reference the ParticleEmitter in the collection.</returns>
+		public int Add(ParticleEmitter emitter)
 		{
 			ParticleEmitter newEmitter;
-			if (emitterToCopy == null)
+			if (emitter == null)
 				newEmitter = new ParticleEmitter();
 			else
-				newEmitter = new ParticleEmitter(emitterToCopy);
+				newEmitter = emitter;
 
 			_emitters.Add(newEmitter.ID, newEmitter);
 			return newEmitter.ID;
@@ -92,13 +101,28 @@ namespace DPSF
 		}
 
 		/// <summary>
+		/// Gets how many ParticleEmitters are in this collection.
+		/// </summary>
+		public int Count { get { return _emitters.Count; } }
+
+		/// <summary>
 		/// Returns all of the ParticleEmitters in this collection.
 		/// </summary>
 		/// <returns>Returns all of the ParticleEmitters in this collection.</returns>
-		public IEnumerable<ParticleEmitter> Emitters()
+		public IList<ParticleEmitter> Emitters
 		{
-			foreach (ParticleEmitter emitter in _emitters.Values)
-				yield return emitter;
+			get
+			{
+				return _emitters.Values.ToList();
+			}
+		}
+
+		/// <summary>
+		/// Returns a list of IDs for the ParticleEmitters that this collection contains.
+		/// </summary>
+		public IList<int> IDs
+		{
+			get { return _emitters.Keys.ToList(); }
 		}
 
 		/// <summary>

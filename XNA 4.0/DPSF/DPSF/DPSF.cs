@@ -17,6 +17,7 @@
 #region Using Statements
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Diagnostics;       // Used for Conditional Attributes and Stopwatches.
 using DPSF.Exceptions;
 using Microsoft.Xna.Framework;
@@ -1502,10 +1503,9 @@ namespace DPSF
 
 			/// <summary>
 			/// Adds a new Timed Event with a default Execution Order and Group of zero. 
-			/// Timed Events fire when the Particle's Elapsed Time reaches the specified Time To Fire.
+			/// Timed Events fire when the Particle System's Elapsed Time reaches the specified Time To Fire.
 			/// </summary>
-			/// <param name="fTimeToFire">The Time when the Event should fire
-			/// (i.e. when the Function should be called)</param>
+			/// <param name="fTimeToFire">The Time when the Event should fire (i.e. when the Function should be called)</param>
 			/// <param name="cFunctionToCall">The Function To Call when the Event fires</param>
 			public void AddTimedEvent(float fTimeToFire, UpdateParticleSystemDelegate cFunctionToCall)
 			{
@@ -1515,16 +1515,13 @@ namespace DPSF
 
 			/// <summary>
 			/// Adds a new Timed Event with a default Group of zero. 
-			/// Timed Events fire when the Particle's Elapsed Time reaches the specified Time To Fire.
+			/// Timed Events fire when the Particle System's Elapsed Time reaches the specified Time To Fire.
 			/// </summary>
-			/// <param name="fTimeToFire">The Time when the Event should fire
-			/// (i.e. when the Function should be called)</param>
+			/// <param name="fTimeToFire">The Time when the Event should fire (i.e. when the Function should be called)</param>
 			/// <param name="cFunctionToCall">The Function To Call when the Event fires</param>
-			/// <param name="iExecutionOrder">The Order, relative to other Events, of when this Event 
-			/// should Execute.
+			/// <param name="iExecutionOrder">The Order, relative to other Events, of when this Event should Execute.
 			/// <para>NOTE: Events with lower Execution Order are executed first.</para>
-			/// <para>NOTE: Events with the same Execution Order are not guaranteed to be executed in 
-			/// the order they are added.</para></param>
+			/// <para>NOTE: Events with the same Execution Order are not guaranteed to be executed in the order they are added.</para></param>
 			public void AddTimedEvent(float fTimeToFire, UpdateParticleSystemDelegate cFunctionToCall, int iExecutionOrder)
 			{
 				// Add the Timed Event with default Execution Order
@@ -1533,16 +1530,13 @@ namespace DPSF
 
 			/// <summary>
 			/// Adds a new Timed Event. 
-			/// Timed Events fire when the Particle's Elapsed Time reaches the specified Time To Fire.
+			/// Timed Events fire when the Particle System's Elapsed Time reaches the specified Time To Fire.
 			/// </summary>
-			/// <param name="fTimeToFire">The Time when the Event should fire
-			/// (i.e. when the Function should be called)</param>
+			/// <param name="fTimeToFire">The Time when the Event should fire (i.e. when the Function should be called)</param>
 			/// <param name="cFunctionToCall">The Function To Call when the Event fires</param>
-			/// <param name="iExecutionOrder">The Order, relative to other Events, of when this Event 
-			/// should Execute.
+			/// <param name="iExecutionOrder">The Order, relative to other Events, of when this Event should Execute.
 			/// <para>NOTE: Events with lower Execution Order are executed first.</para>
-			/// <para>NOTE: Events with the same Execution Order are not guaranteed to be executed in 
-			/// the order they are added.</para></param>
+			/// <para>NOTE: Events with the same Execution Order are not guaranteed to be executed in the order they are added.</para></param>
 			/// <param name="iGroup">The Group that this Event should belong to</param>
 			public void AddTimedEvent(float fTimeToFire, UpdateParticleSystemDelegate cFunctionToCall, int iExecutionOrder, int iGroup)
 			{
@@ -1617,7 +1611,7 @@ namespace DPSF
 			}
 
 			/// <summary>
-			/// Returns if there is a Timed Event with the specifed Timed To Fire, Function, Execution Order, and Group or not.
+			/// Returns if there is a Timed Event with the specified Timed To Fire, Function, Execution Order, and Group or not.
 			/// </summary>
 			/// <param name="fTimeToFire">The Time the Event is scheduled to fire at</param>
 			/// <param name="cFunction">The Function of the Timed Event to look for</param>
@@ -1632,7 +1626,7 @@ namespace DPSF
 
 			/// <summary>
 			/// Adds a new Normalized Timed Event with a default Execution Order and Group of zero. 
-			/// Normalized Timed Events fire when the Particle's Normalized Elapsed Time reaches the specified Time To Fire.
+			/// Normalized Timed Events fire when the Particle System's Normalized Elapsed Time reaches the specified Time To Fire.
 			/// </summary>
 			/// <param name="fNormalizedTimeToFire">The Normalized Time (0.0 - 1.0) when the Event should fire. 
 			/// <para>NOTE: This is clamped to the range of 0.0 - 1.0.</para></param>
@@ -1645,7 +1639,7 @@ namespace DPSF
 
 			/// <summary>
 			/// Adds a new Normalized Timed Event with a default Group of zero. 
-			/// Normalized Timed Events fire when the Particle's Normalized Elapsed Time reaches the specified Time To Fire.
+			/// Normalized Timed Events fire when the Particle System's Normalized Elapsed Time reaches the specified Time To Fire.
 			/// </summary>
 			/// <param name="fNormalizedTimeToFire">The Normalized Time (0.0 - 1.0) when the Event should fire. 
 			/// <para>NOTE: This is clamped to the range of 0.0 - 1.0.</para></param>
@@ -1661,16 +1655,15 @@ namespace DPSF
 
 			/// <summary>
 			/// Adds a new Normalized Timed Event. 
-			/// Normalized Timed Events fire when the Particle's Normalized Elapsed Time reaches the specified Time To Fire.
+			/// Normalized Timed Events fire when the Particle System's Normalized Elapsed Time reaches the specified Time To Fire.
 			/// </summary>
 			/// <param name="fNormalizedTimeToFire">The Normalized Time (0.0 - 1.0) when the Event should fire
-			/// (compared against the Particle's Normalized Elapsed Time). NOTE: This is clamped to the range of 0.0 - 1.0</param>
+			/// (compared against the Particle System's Normalized Elapsed Time). NOTE: This is clamped to the range of 0.0 - 1.0</param>
 			/// <param name="cFunctionToCall">The Function To Call when the Event fires</param>
 			/// <param name="iExecutionOrder">The Order, relative to other Events, of when this Event 
 			/// should Execute.
 			/// <para>NOTE: Events with lower Execution Order are executed first.</para>
-			/// <para>NOTE: Events with the same Execution Order are not guaranteed to be executed in 
-			/// the order they are added.</para></param>
+			/// <para>NOTE: Events with the same Execution Order are not guaranteed to be executed in the order they are added.</para></param>
 			/// <param name="iGroup">The Group that this Event should belong to</param>
 			public void AddNormalizedTimedEvent(float fNormalizedTimeToFire, UpdateParticleSystemDelegate cFunctionToCall, int iExecutionOrder, int iGroup)
 			{
@@ -2057,7 +2050,8 @@ namespace DPSF
 		private float mfAutoMemoryManagersElapsedTime = 0.0f;                   // The Automatic Memory Manager's Timer
 		private int miAutoMemoryManagerMaxNumberOfParticlesActiveAtOnceOverTheLastXSeconds = 0; // The Max Number of Particles that were Active in a single frame Over The Last X Seconds (X is specified in the Auto Memory Manager Settings)
 
-		private ParticleEmitter _emitter = null;   // The Emitter used to automatically generate Particles
+		private ParticleEmitter _emitter = null;			// The Emitter used to automatically generate Particles
+		private ParticleEmitterCollection _emitters = null;	// The collection of emitters that this particle system uses.
 
 // The Reach profile does not have access to the System.Diagnostics namespace, so it does not know about the Stopwatch class.
 #if (!WINDOWS_PHONE)
@@ -2585,8 +2579,10 @@ namespace DPSF
 			// Set if the Diagnostics should run or not
 			this.PerformanceProfilingIsEnabled = DPSFDefaultSettings.PerformanceProfilingIsEnabled;
 
-			// Initialize the Emitter
-			_emitter = new ParticleEmitter();
+			// Initialize the Emitters
+			_emitters = new ParticleEmitterCollection();
+			Emitter = new ParticleEmitter();	// Make sure to set the property and not the backing variable so that the necessary logic is performed.
+			_emitters.AllEmittersRemoved += new EventHandler(_emitters_AllEmittersRemoved);
 
 			// Copy any properties from the Particle System Manager into this Particle System.
 			// This includes things like the Updates Per Second and Simulation Speed.
@@ -2699,6 +2695,12 @@ namespace DPSF
 			mcAutoMemoryManagerSettings = null;
 
 			_emitter = null;
+			if (_emitters != null)
+			{
+				_emitters.AllEmittersRemoved -= new EventHandler(_emitters_AllEmittersRemoved);
+				_emitters.RemoveAll();
+			}
+			_emitters = null;
 
 			// Perform any other user operations
 			AfterDestroy();
@@ -3184,26 +3186,65 @@ namespace DPSF
 		}
 
 		/// <summary>
-		/// The Emitter is used to automatically generate new Particles
+		/// The Emitter is used to automatically generate new Particles.
+		/// <para>NOTE: This is just a pointer to one of the ParticleEmitters in the Emitters ParticleEmitterCollection.</para>
+		/// <para>NOTE: If you set this to a ParticleEmitter that is not in the Emitters collection, it will be added to it.</para>
+		/// <para>During the particle system Update() this Emitter property is updated to point to the ParticleEmitter in the Emitters collection that is being updated.</para>
 		/// </summary>
 		[DPSFViewerParameter(Description = "The Emitter used by the particle system.", Group = "DPSF")]
 		public ParticleEmitter Emitter
 		{
 			get 
-			{ 
+			{
 				if (_emitter != null)
-					return _emitter; 
-				else
-					throw new DPSFNullReferenceException("The Emitter property is trying to be accessed, but is null. Be sure you have Initialized the particle system.");
+					return _emitter;
+
+				if (_emitters.Count <= 0)
+					_emitters.Add();
+
+				_emitter = _emitters.Emitters.First();
+				return _emitter;
+//					throw new DPSFNullReferenceException("The Emitter property is trying to be accessed, but is null. Be sure you have Initialized the particle system.");
 			}
 
 			set 
 			{
-				if (value != null)
-					_emitter = value;
-				else
-					throw new DPSFArgumentNullException("Emitter", "An invalid Emitter was specified. The Emitter cannot be null.");
+				if (value == null)
+				    throw new DPSFArgumentNullException("Emitter", "An invalid Emitter was specified. The Emitter cannot be null.");
+
+				_emitter = value;
+
+				// Add the given emitter to our collection of Emitters if it isn't already in there.
+				if (!_emitters.Contains(_emitter))
+					_emitters.Add(_emitter);
 			}
+		}
+
+		/// <summary>
+		/// The Emitters used to automatically generate new Particles for this Particle System.
+		/// <para>Each particle system Update() will loop through all Emitters in this collection and add their new particles to this particle system.</para>
+		/// <para>During the particle system Update() the Emitter property is updated to point to the ParticleEmitter in this collection that is being updated.</para>
+		/// </summary>
+		public ParticleEmitterCollection Emitters
+		{
+			get
+			{
+				if (_emitters == null)
+					throw new DPSFNullReferenceException("The Emitters property is trying to be accessed, but is null. Be sure you have Initialized the particle system.");
+
+				return _emitters;
+			}
+		}
+
+		/// <summary>
+		/// Handles the AllEmittersRemoved event of the _emitters control to make sure we set the Emitter to null whenever the Emitters collection is cleared.
+		/// </summary>
+		/// <param name="sender">The source of the event.</param>
+		/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+		private void _emitters_AllEmittersRemoved(object sender, EventArgs e)
+		{
+			// The Emitter is just a pointer to a ParticleEmitter in the Emitters collection, and since the collection is now empty, the Emitter should not be pointing to anything.
+			_emitter = null;
 		}
 
 		/// <summary>
@@ -4564,6 +4605,9 @@ namespace DPSF
 			// Reset the Index Buffer Index in case we are drawing Quads.
 			miIndexBufferIndex = 0;
 
+			// Variable to keep track of how many Particles are added this frame.
+			int iNumberOfNewParticlesAdded = 0;
+
 
 			// Update the Particle System according to its Events (before updating the Particles).
 			ParticleSystemEvents.Update(fScaledElapsedTimeInSeconds);
@@ -4572,56 +4616,73 @@ namespace DPSF
 			if (!this.IsInitialized)
 				return;
 
-			// Update the Emitter and get how many Particles should be emitted.
-			int iNumberOfParticlesToEmit = _emitter.UpdateAndGetNumberOfParticlesToEmit(fScaledElapsedTimeInSeconds);
+			// Get the IDs of the Emitters to run through and add particles from.
+			var emitterIDs = _emitters.IDs;
 
-			// If the Particle System Destroyed itself from the Emitter's BurstCompleted event, just exit.
-			if (!this.IsInitialized)
-				return;
+			// Backup the emitter that Emitter is currently pointing to.
+			var previousEmitter = _emitter;
 
-			// If the Emitter's Position and Orientation should not be Lerped this time.
-			if (!_emitter.LerpEmittersPositionAndOrientationOnNextUpdate)
+			// Loop through each Emitter and add their particles to the particle system.
+			foreach (int emitterID in emitterIDs)
 			{
-				// Reset the Previous Position and Orientation to the current Position and Orientation.
-				_emitter.PreviousPosition = _emitter.PositionData.Position;
-				_emitter.PreviousOrientation = _emitter.OrientationData.Orientation;
+				// Make sure this emitter still exists in the list, as it may have been removed by a previous emitter's BustCompleted event.
+				if (!_emitters.Contains(emitterID))
+					continue;
 
-				// Reset variable to allow Lerping on the next Update().
-				_emitter.LerpEmittersPositionAndOrientationOnNextUpdate = true;
-			}
+				// Update the Emitter to point to his emitter.
+				_emitter = _emitters[emitterID];
 
-			// Variable to keep track of how many Particles are added this frame.
-			int iNumberOfNewParticlesAdded = 0;
+				// Update the Emitter and get how many Particles should be emitted.
+				int iNumberOfParticlesToEmit = _emitter.UpdateAndGetNumberOfParticlesToEmit(fScaledElapsedTimeInSeconds);
 
-			// If some Particles should be emitted
-			if (iNumberOfParticlesToEmit > 0)
-			{
-				// If the emitter is moving very fast, or the frame rate drops for
-				// some reason, then many particles may be released in one location
-				// (i.e. the emitter's new location) when they really should be spread
-				// out between the emitter's old location and the new one. To spread the
-				// particles out, the location that particles are released is 
-				// Linearly Interpolated (Lerp) between the emitter's old and new location.
-				// The orientation of the emitter is also Spherically Linearly Interpolated (Slerp)
-				// for the similar case that the emitter is rotating very fast.
+				// If the Particle System Destroyed itself from the Emitter's BurstCompleted event, just exit.
+				if (!this.IsInitialized)
+					return;
 
-				// If we should not be Lerping the Emitter's Position and Orientation.
-				if (!_emitter.LerpEmittersPositionAndOrientation)
+				// If the Emitter's Position and Orientation should not be Lerped this time.
+				if (!_emitter.LerpEmittersPositionAndOrientationOnNextUpdate)
 				{
 					// Reset the Previous Position and Orientation to the current Position and Orientation.
 					_emitter.PreviousPosition = _emitter.PositionData.Position;
 					_emitter.PreviousOrientation = _emitter.OrientationData.Orientation;
+
+					// Reset variable to allow Lerping on the next Update().
+					_emitter.LerpEmittersPositionAndOrientationOnNextUpdate = true;
 				}
 
-				// Add the new particles to the particle system.
-				iNumberOfNewParticlesAdded = AddParticles(iNumberOfParticlesToEmit, _emitter, fScaledElapsedTimeInSeconds);
+				// If some Particles should be emitted
+				if (iNumberOfParticlesToEmit > 0)
+				{
+					// If the emitter is moving very fast, or the frame rate drops for
+					// some reason, then many particles may be released in one location
+					// (i.e. the emitter's new location) when they really should be spread
+					// out between the emitter's old location and the new one. To spread the
+					// particles out, the location that particles are released is 
+					// Linearly Interpolated (Lerp) between the emitter's old and new location.
+					// The orientation of the emitter is also Spherically Linearly Interpolated (Slerp)
+					// for the similar case that the emitter is rotating very fast.
+
+					// If we should not be Lerping the Emitter's Position and Orientation.
+					if (!_emitter.LerpEmittersPositionAndOrientation)
+					{
+						// Reset the Previous Position and Orientation to the current Position and Orientation.
+						_emitter.PreviousPosition = _emitter.PositionData.Position;
+						_emitter.PreviousOrientation = _emitter.OrientationData.Orientation;
+					}
+
+					// Add the new particles to the particle system.
+					iNumberOfNewParticlesAdded += AddParticles(iNumberOfParticlesToEmit, _emitter, fScaledElapsedTimeInSeconds);
+				}
+
+				// Store the Emitter's Position and Orientation so that we can Lerp from it on the next Update().
+				// We save it here instead of before Updating the Emitter in case the user manually moved or rotated 
+				// the Emitter (before this Update() function was called).
+				_emitter.PreviousPosition = _emitter.PositionData.Position;
+				_emitter.PreviousOrientation = _emitter.OrientationData.Orientation;
 			}
 
-			// Store the Emitter's Position and Orientation so that we can Lerp from it on the next Update().
-			// We save it here instead of before Updating the Emitter in case the user manually moved or rotated 
-			// the Emitter (before this Update() function was called).
-			_emitter.PreviousPosition = _emitter.PositionData.Position;
-			_emitter.PreviousOrientation = _emitter.OrientationData.Orientation;
+			// Restore the Emitter variable to point back to the same emitter it was pointing to before the Update().
+			_emitter = previousEmitter;
 
 			// Get a handle to the first Active Particle Node
 			LinkedListNode<Particle> cNode = mcActiveParticlesList.First;            

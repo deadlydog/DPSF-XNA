@@ -31,7 +31,7 @@ namespace DPSF_Demo.ParticleSystems
 	// TODO: Rename/Refactor the Particle class
 	//-----------------------------------------------------------
 	/// <summary>
-	/// Create a new Particle class that inherits from DPSFParticle
+	/// Create a new Particle class that inherits from DPSFParticle.
 	/// </summary>
 #if (WINDOWS)
 	[Serializable]
@@ -93,7 +93,7 @@ namespace DPSF_Demo.ParticleSystems
 	//-----------------------------------------------------------
 	/// <summary>
 	/// Create a new Particle System class that inherits from DPSF using 
-	/// our created Particle class and Particle Vertex structure
+	/// our created Particle class and Particle Vertex structure.
 	/// </summary>
 #if (WINDOWS)
 	[Serializable]

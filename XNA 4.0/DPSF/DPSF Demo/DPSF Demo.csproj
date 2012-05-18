@@ -138,6 +138,7 @@
     <Compile Include="Particle System Wrappers For DPSF Demo\GridQuadPSWrapper.cs" />
     <Compile Include="Particle System Wrappers For DPSF Demo\ImagePSWrapper.cs" />
     <Compile Include="Particle System Wrappers For DPSF Demo\MagnetsPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\MultipleEmittersPSWrapper.cs" />
     <Compile Include="Particle System Wrappers For DPSF Demo\MultipleParticleImagesPSWrapper.cs" />
     <Compile Include="Particle System Wrappers For DPSF Demo\MultipleParticleImagesSpritePSWrapper.cs" />
     <Compile Include="Particle System Wrappers For DPSF Demo\QuadDPSFDemoParticleSystemTemplateWrapper.cs" />
@@ -181,6 +182,7 @@
     <Compile Include="Particle Systems\GridQuadPS.cs" />
     <Compile Include="Particle Systems\ImagePS.cs" />
     <Compile Include="Particle Systems\MagnetsPS.cs" />
+    <Compile Include="Particle Systems\MultipleEmittersPS.cs" />
     <Compile Include="Particle Systems\MultipleParticleImagesPS.cs" />
     <Compile Include="Particle Systems\MultipleParticleImagesSpritePS.cs" />
     <Compile Include="Particle Systems\QuadSprayPS.cs" />

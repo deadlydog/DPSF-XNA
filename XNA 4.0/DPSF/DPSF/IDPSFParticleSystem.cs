@@ -186,8 +186,18 @@ namespace DPSF
 
 		/// <summary>
 		/// The Emitter is used to automatically generate new Particles.
+		/// <para>NOTE: This is just a pointer to one of the ParticleEmitters in the Emitters ParticleEmitterCollection.</para>
+		/// <para>NOTE: If you set this to a ParticleEmitter that is not in the Emitters collection, it will be added to it.</para>
+		/// <para>During the particle system Update() this Emitter property is updated to point to the ParticleEmitter in the Emitters collection that is being updated.</para>
 		/// </summary>
 		ParticleEmitter Emitter { get; set; }
+
+		/// <summary>
+		/// The Emitters used to automatically generate new Particles for this Particle System.
+		/// <para>Each particle system Update() will loop through all Emitters in this collection and add their new particles to this particle system.</para>
+		/// <para>During the particle system Update() the Emitter property is updated to point to the ParticleEmitter in this collection that is being updated.</para>
+		/// </summary>
+		ParticleEmitterCollection Emitters { get; }
 
 		/// <summary>
 		/// Get a Random object used to generate Random Numbers.
