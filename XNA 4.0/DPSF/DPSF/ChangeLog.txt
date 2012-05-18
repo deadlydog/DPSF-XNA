@@ -22,6 +22,7 @@ public:
 - Changed DPSF to throw custom DPSF Exceptions to make them easy to distinguish from other exceptions thrown by a users application.
 - Added an Emitters collection to the particle systems, and the Emitter variable now always simply points to one of the emitters in the collection. This allows for
 	particle systems to easily use multiple emitters.
+- Added new MultipleEmittersParticleSystem class that shows how to use multiple emitters in a particle system class.
 
 Possible Breaking Changes:
 - Removed the mcRandomNumber particle system class variable. Everything should now just use the RandomNumber public property.
