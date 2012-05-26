@@ -23,10 +23,13 @@ public:
 - Added an Emitters collection to the particle systems, and the Emitter variable now always simply points to one of the emitters in the collection. This allows for
 	particle systems to easily use multiple emitters.
 - Added new MultipleEmittersParticleSystem class that shows how to use multiple emitters in a particle system class.
+- Added a NumberOfParticlesEmitted property to the Emitter class that keeps track of how many particles an individual emitter has added to a particle system.
 
 Possible Breaking Changes:
 - Removed the mcRandomNumber particle system class variable. Everything should now just use the RandomNumber public property.
 - Changed namespace of particle systems in the DPSF Demo from DPSF.ParticleSystems to DPSF_Demo.ParticleSystems.
+- Moved the LerpEmittersPositionAndOrientation and LerpEmittersPositionAndOrientationOnNextUpdate properties from the particle system into the ParticleEmitter class, so
+	that this can be configured for each emitter individually.
 
 Private:
 - Added a Name property to the DPSFViewerParameterAttributes.

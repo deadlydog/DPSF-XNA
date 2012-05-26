@@ -2581,7 +2581,6 @@ namespace DPSF
 
 			// Initialize the Emitters
 			_emitters = new ParticleEmitterCollection();
-			Emitter = new ParticleEmitter();	// Make sure to set the property and not the backing variable so that the necessary logic is performed.
 			_emitters.AllEmittersRemoved += new EventHandler(_emitters_AllEmittersRemoved);
 
 			// Copy any properties from the Particle System Manager into this Particle System.
@@ -3204,7 +3203,6 @@ namespace DPSF
 
 				_emitter = _emitters.Emitters.First();
 				return _emitter;
-//					throw new DPSFNullReferenceException("The Emitter property is trying to be accessed, but is null. Be sure you have Initialized the particle system.");
 			}
 
 			set 
@@ -4606,7 +4604,7 @@ namespace DPSF
 			miIndexBufferIndex = 0;
 
 			// Variable to keep track of how many Particles are added this frame.
-			int iNumberOfNewParticlesAdded = 0;
+			int numberOfNewParticlesAdded = 0;
 
 
 			// Update the Particle System according to its Events (before updating the Particles).
@@ -4671,7 +4669,10 @@ namespace DPSF
 					}
 
 					// Add the new particles to the particle system.
-					iNumberOfNewParticlesAdded += AddParticles(iNumberOfParticlesToEmit, _emitter, fScaledElapsedTimeInSeconds);
+					numberOfNewParticlesAdded += AddParticles(iNumberOfParticlesToEmit, _emitter, fScaledElapsedTimeInSeconds);
+
+					// Add the number of particles added to the particle system to the emitter's total number of particles emitted.
+					_emitter.NumberOfParticlesEmitted += numberOfNewParticlesAdded;
 				}
 
 				// Store the Emitter's Position and Orientation so that we can Lerp from it on the next Update().
@@ -4688,7 +4689,7 @@ namespace DPSF
 			LinkedListNode<Particle> cNode = mcActiveParticlesList.First;            
 
 			// Skip any Particles that were just added to the Particle System, since they've already been updated
-			for (int iIndex = 0; iIndex < iNumberOfNewParticlesAdded; iIndex++)
+			for (int iIndex = 0; iIndex < numberOfNewParticlesAdded; iIndex++)
 			{
 				// Move to the Next Particle in the list
 				cNode = cNode.Next;

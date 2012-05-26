@@ -107,7 +107,6 @@ namespace DPSF_Demo.ParticleSystems
 			Emitter.OrientationData.Rotate(Matrix.CreateRotationZ(MathHelper.ToRadians(45)));
 			bottomRightEmitterID = Emitter.ID;
 
-
 			// Have the particle system events repeat every 2 seconds.
 			ParticleSystemEvents.LifetimeData.Lifetime = 2f;
 			ParticleSystemEvents.LifetimeData.EndOfLifeOption = CParticleSystemEvents.EParticleSystemEndOfLifeOptions.Repeat;

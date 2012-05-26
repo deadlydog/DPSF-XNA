@@ -271,6 +271,18 @@ namespace DPSF
 		private float _burstTimeInSeconds = 0.0f;
 
 		/// <summary>
+		/// How many particles this emitter has added to the particle system.
+		/// <para>NOTE: This value is not automatically updated by the emitter itself; it needs to be increased manually. This is because even though
+		/// the emitter may say that it wants to emit 100 particles, the particle system may only have room for 50 particles, so we would only want this
+		/// value increased by 50, not 100.</para>
+		/// <para>NOTE: DPSF Particle System handle updating this value automatically for you, but if you are using an emitter outside of the particle system's
+		/// Emitters collection and are just manually calling the AddParticles() function yourself, then you will need to manually increase this value
+		/// with whatever number is returned by the AddParticles() function.</para>
+		/// <para>NOTE: The max value of an int is 2,147,483,647 so if this reaches that value it will wrap around to -2,147,483,648.</para>
+		/// </summary>
+		public int NumberOfParticlesEmitted { get; set; }
+
+		/// <summary>
 		/// Updates the Emitter's Position and Orientation according to its 
 		/// Velocities and Accelerations, and returns how many Particles should 
 		/// be emitted this frame.
