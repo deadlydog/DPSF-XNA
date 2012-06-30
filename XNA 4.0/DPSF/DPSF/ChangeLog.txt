@@ -3,6 +3,10 @@ This document should show all of the technical changes to DPSF (private),
 as well as the larger changes that the users should be aware of (public)
 =====================================================================
 
+TODO - Add a Mass property to the default particles; just one little float.  Then can use that to do very simple physics; make a simple particle system that uses it. And make
+	generic built in particle system even functions (like we do for velocity and acceleration).
+TODO - Do more multiple emitter examples. Have one extend the Emitter class to store it's custom Type.  In another have a custom template particle object for each emitter; store different
+	text coordinates maybe to have the same particle system display different textures.  Show all 3 solutions in a tutorial.
 TODO - Investigate using Tasks and running on multiple threads to boost performance.
 
 
