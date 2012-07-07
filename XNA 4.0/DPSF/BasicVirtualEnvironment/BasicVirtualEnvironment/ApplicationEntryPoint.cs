@@ -62,8 +62,8 @@ namespace BasicVirtualEnvironment
 				}
 			}
 
-			// If we are in Release Mode.
-			if (DemoBase.RELEASE_MODE)
+			// If we are not debugging.
+			if (!System.Diagnostics.Debugger.IsAttached)
 			{
 				try
 				{

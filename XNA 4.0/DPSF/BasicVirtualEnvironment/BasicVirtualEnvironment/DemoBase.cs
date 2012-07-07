@@ -33,15 +33,6 @@ namespace BasicVirtualEnvironment
 		//===========================================================
 
 		/// <summary>
-		/// If this is set to true, a MessageBox will display any unhandled exceptions that occur. This
-		/// is useful when not debugging (i.e. when running directly from the executable) as it will still 
-		/// tell you what type of exception occurred and what line of code produced it.
-		/// Leave this set to false while debugging to have Visual Studio automatically take you to the 
-		/// line that threw the exception.
-		/// </summary>
-		public const bool RELEASE_MODE = false;
-
-		/// <summary>
 		/// To allow the game to run as fast as possible, set this to false, otherwise the game will only run 
 		/// as fast as the VSync allows (typically 60 fps).
 		/// </summary>
