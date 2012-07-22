@@ -34,6 +34,7 @@ Possible Breaking Changes:
 - Changed namespace of particle systems in the DPSF Demo from DPSF.ParticleSystems to DPSF_Demo.ParticleSystems.
 - Moved the LerpEmittersPositionAndOrientation and LerpEmittersPositionAndOrientationOnNextUpdate properties from the particle system into the ParticleEmitter class, so
 	that this can be configured for each emitter individually.
+- Changed the MagnetList property from a LinkedList<DefaultParticleSystemMagnet> to a List<DefaultParticleSystemMagnet>.
 
 Private:
 - Added a Name property to the DPSFViewerParameterAttributes.

@@ -154,13 +154,11 @@ namespace DPSF.ParticleSystems
 			ParticleSystemEvents.RemoveAllEvents();
 
 			// Setup the Emitter
-			Emitter.ParticlesPerSecond = 100;
+			Emitter.ParticlesPerSecond = 75;
 			Emitter.PositionData.Position = new Vector3(-100, 50, 0);
 
 			// Allow the Particle's Velocity, Rotational Velocity, Color, and Transparency to be updated each frame
 			ParticleEvents.AddEveryTimeEvent(UpdateParticlePositionUsingVelocity);
-			ParticleEvents.AddEveryTimeEvent(UpdateParticleRotationUsingRotationalVelocity);
-			ParticleEvents.AddEveryTimeEvent(UpdateParticleColorUsingLerp);
 
 			// This function must be executed after the Color Lerp function as the Color Lerp will overwrite the Color's
 			// Transparency value, so we give this function an Execution Order of 100 to make sure it is executed last.
@@ -206,9 +204,8 @@ namespace DPSF.ParticleSystems
 				cParticle.Velocity = Vector3.Transform(cParticle.Velocity, Emitter.OrientationData.Orientation);
 			}
 
-			cParticle.RotationalVelocity.Z = RandomNumber.Between(-MathHelper.Pi, MathHelper.Pi);
 			cParticle.Size = 10;
-			cParticle.StartColor = cParticle.EndColor = cParticle.Color = DPSFHelper.RandomColor();
+			cParticle.Color = DPSFHelper.RandomColor();
         }
 
         //===========================================================
@@ -298,22 +295,22 @@ namespace DPSF.ParticleSystems
 			{
 				default:
 				case DefaultParticleSystemMagnet.MagnetTypes.PointMagnet:
-					MagnetList.AddFirst(new MagnetPoint(new Vector3(0, 50, 0),
+					MagnetList.Add(new MagnetPoint(new Vector3(0, 50, 0),
 											MagnetsMode, MagnetsDistanceFunction,
                                             mfMinDistance, mfMaxDistance, MagnetsForce, 0));
 				break;
 				case DefaultParticleSystemMagnet.MagnetTypes.LineMagnet:
-					MagnetList.AddFirst(new MagnetLine(new Vector3(0, 50, 0), Vector3.Up,
+					MagnetList.Add(new MagnetLine(new Vector3(0, 50, 0), Vector3.Up,
                                             MagnetsMode, MagnetsDistanceFunction,
                                             mfMinDistance, mfMaxDistance, MagnetsForce, 0));
 				break;
 				case DefaultParticleSystemMagnet.MagnetTypes.LineSegmentMagnet:
-					MagnetList.AddFirst(new MagnetLineSegment(new Vector3(0, 25, 0), new Vector3(0, 75, 0),
+					MagnetList.Add(new MagnetLineSegment(new Vector3(0, 25, 0), new Vector3(0, 75, 0),
                                             MagnetsMode, MagnetsDistanceFunction,
                                             mfMinDistance, mfMaxDistance, MagnetsForce, 0));
 				break;
 				case DefaultParticleSystemMagnet.MagnetTypes.PlaneMagnet:
-					MagnetList.AddFirst(new MagnetPlane(new Vector3(0, 50, 0), Vector3.Right,
+					MagnetList.Add(new MagnetPlane(new Vector3(0, 50, 0), Vector3.Right,
                                             MagnetsMode, MagnetsDistanceFunction,
                                             mfMinDistance, mfMaxDistance, MagnetsForce, 0));
 				break;

@@ -69,7 +69,7 @@ namespace Tutorial_1
 
             // Declare a new Particle System instance and Initialize it
 			mcParticleSystem = new DefaultTexturedQuadParticleSystemTemplate(this);
-            mcParticleSystem.AutoInitialize(this.GraphicsDevice, this.Content, null);
+			mcParticleSystem.AutoInitialize(this.GraphicsDevice, this.Content, null);
         }
 
         /// <summary>
@@ -99,8 +99,18 @@ namespace Tutorial_1
             // TODO: Add your update logic here
 
 
+			// Setup the Camera's View matrix
+			Matrix sViewMatrix = Matrix.CreateLookAt(cameraPosition, new Vector3(0, 50, 0), Vector3.Up);
+
+            // Setup the Camera's Projection matrix by specifying the field of view (1/4 pi), aspect ratio, and the near and far clipping planes
+            Matrix sProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, (float)GraphicsDevice.Viewport.Width / (float)GraphicsDevice.Viewport.Height, 1, 10000);
+
+
+			// Set the Particle System's World, View, and Projection matrices so that it knows how to draw the particles properly.
+			mcParticleSystem.SetWorldViewProjectionMatrices(Matrix.Identity, sViewMatrix, sProjectionMatrix);
+
             // Update the Particle System
-			mcParticleSystem.CameraPosition = cameraPosition;
+			mcParticleSystem.SetCameraPosition(cameraPosition);
             mcParticleSystem.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
 
 
@@ -116,16 +126,9 @@ namespace Tutorial_1
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-
-            // Set up the Camera's View matrix
-			Matrix sViewMatrix = Matrix.CreateLookAt(cameraPosition, new Vector3(0, 50, 0), Vector3.Up);
-
-            // Setup the Camera's Projection matrix by specifying the field of view (1/4 pi), aspect ratio, and the near and far clipping planes
-            Matrix sProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, (float)GraphicsDevice.Viewport.Width / (float)GraphicsDevice.Viewport.Height, 1, 10000);
-
+            
 
             // Draw the Particle System
-            mcParticleSystem.SetWorldViewProjectionMatrices(Matrix.Identity, sViewMatrix, sProjectionMatrix);
             mcParticleSystem.Draw();
 
 

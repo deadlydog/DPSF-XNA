@@ -170,36 +170,6 @@ namespace DPSF_Demo.ParticleSystems
 			particle.EndSize = ShockwaveSize;
 
 			particle.SetTextureCoordinates(_shockwaveTextureCoordinates, Texture.Width, Texture.Height);
-		}
-
-		//===========================================================
-		// Particle Update Functions
-		//===========================================================
-		protected void UpdateParticleTransparencyToBeMoreTransparent(DefaultTextureQuadTextureCoordinatesParticle particle, float elapsedTimeInSeconds)
-		{
-			particle.Color.A = (byte)(particle.Color.A * this.ShockwaveTransparency);
-		}
-
-		//===========================================================
-		// Particle System Update Functions
-		//===========================================================
-		protected void UpdateParticleSystemToExplode(float elapsedTimeInSeconds)
-		{
-			Explode();
-		}
-
-		//===========================================================
-		// Other Particle System Functions
-		//===========================================================
-
-		/// <summary>
-		/// Start the explosion.
-		/// </summary>
-		public void Explode()
-		{
-			// Create the particle that we will model other particles added to the particle system after (i.e. a Shockwave particle)
-			DefaultTextureQuadTextureCoordinatesParticle particle = new DefaultTextureQuadTextureCoordinatesParticle();
-			this.InitializeParticleShockwave(particle);
 
 			// If a shockwave should be created, set the model-particle to the proper orientation and add a copy of the model-particle to the particle system.
 			if (ShockwaveXAxisEnabled)
@@ -255,6 +225,34 @@ namespace DPSF_Demo.ParticleSystems
 				particle.Normal = new Vector3(0, 1, -1);
 				this.AddParticle(particle);
 			}
+		}
+
+		//===========================================================
+		// Particle Update Functions
+		//===========================================================
+		protected void UpdateParticleTransparencyToBeMoreTransparent(DefaultTextureQuadTextureCoordinatesParticle particle, float elapsedTimeInSeconds)
+		{
+			particle.Color.A = (byte)(particle.Color.A * this.ShockwaveTransparency);
+		}
+
+		//===========================================================
+		// Particle System Update Functions
+		//===========================================================
+		protected void UpdateParticleSystemToExplode(float elapsedTimeInSeconds)
+		{
+			Explode();
+		}
+
+		//===========================================================
+		// Other Particle System Functions
+		//===========================================================
+
+		/// <summary>
+		/// Start the explosion.
+		/// </summary>
+		public void Explode()
+		{
+			Emitter.BurstParticles = 1;
 		}
 
 		/// <summary>

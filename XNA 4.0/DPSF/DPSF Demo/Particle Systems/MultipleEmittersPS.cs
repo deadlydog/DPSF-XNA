@@ -85,7 +85,7 @@ namespace DPSF_Demo.ParticleSystems
 
 			// Setup the top-right emitter.
 			// When we set the Emitter to a new ParticleEmitter it automatically gets added to the Emitters collection.
-			Emitter = new ParticleEmitter();
+			Emitter = new ParticleEmitter();	// This will automatically get added to the Emitters collection.
 			Emitter.ParticlesPerSecond = 5;
 			Emitter.PositionData.Position = new Vector3(100, 150, 0);
 			Emitter.OrientationData.Rotate(Matrix.CreateRotationZ(MathHelper.ToRadians(135)));
@@ -97,7 +97,7 @@ namespace DPSF_Demo.ParticleSystems
 			emitter.ParticlesPerSecond = 5;
 			emitter.PositionData.Position = new Vector3(-100, 10, 0);
 			emitter.OrientationData.Rotate(Matrix.CreateRotationZ(MathHelper.ToRadians(-45)));
-			Emitters.Add(emitter);
+			Emitters.Add(emitter);	// Manually add the new emitter to the Emitters collection.
 			bottomLeftEmitterID = emitter.ID;
 
 			// Setup the bottom-right emitter.
@@ -106,6 +106,7 @@ namespace DPSF_Demo.ParticleSystems
 			Emitter.PositionData.Position = new Vector3(100, 10, 0);
 			Emitter.OrientationData.Rotate(Matrix.CreateRotationZ(MathHelper.ToRadians(45)));
 			bottomRightEmitterID = Emitter.ID;
+
 
 			// Have the particle system events repeat every 2 seconds.
 			ParticleSystemEvents.LifetimeData.Lifetime = 2f;

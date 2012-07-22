@@ -465,7 +465,7 @@ namespace Tutorial
 			mcSpriteBatch.DrawString(mcFont, "N", new Vector2(135, iYPosition + 100), sControlColor);
 
 			mcSpriteBatch.DrawString(mcFont, "Magnet Type: ", new Vector2(320, iYPosition + 100), sPropertyColor);
-			mcSpriteBatch.DrawString(mcFont, mcMyParticleSystem.MagnetList.First.Value.MagnetType.ToString(), new Vector2(450, iYPosition + 100), sValueColor);
+			mcSpriteBatch.DrawString(mcFont, mcMyParticleSystem.MagnetList[0].MagnetType.ToString(), new Vector2(450, iYPosition + 100), sValueColor);
 
 			mcSpriteBatch.DrawString(mcFont, "Toggle Distance Function: ", new Vector2(5, iYPosition + 125), sPropertyColor);
 			mcSpriteBatch.DrawString(mcFont, "M", new Vector2(240, iYPosition + 125), sControlColor);
