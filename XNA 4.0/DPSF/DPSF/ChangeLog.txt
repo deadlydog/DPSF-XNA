@@ -28,6 +28,7 @@ public:
 	particle systems to easily use multiple emitters.
 - Added new MultipleEmittersParticleSystem class that shows how to use multiple emitters in a particle system class.
 - Added a NumberOfParticlesEmitted property to the Emitter class that keeps track of how many particles an individual emitter has added to a particle system.
+- Updated documentation on some of the old tutorials and Optimizations section a bit.
 
 Possible Breaking Changes:
 - Removed the mcRandomNumber particle system class variable. Everything should now just use the RandomNumber public property.
