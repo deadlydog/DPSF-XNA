@@ -1,8 +1,12 @@
+using System;
 using DPSF_Demo.ParticleSystems;
 using Microsoft.Xna.Framework;
 
 namespace DPSF_Demo.Particle_System_Wrappers_For_DPSF_Demo
 {
+#if (WINDOWS)
+	[Serializable]
+#endif
 	class DotDPSFDemoParticleSystemWrapper : DotParticleSystem, IWrapDPSFDemoParticleSystems
 	{
         public DotDPSFDemoParticleSystemWrapper(Game cGame)

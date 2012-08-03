@@ -7,11 +7,42 @@ namespace BasicVirtualEnvironment.View
 	/// </summary>
 	public class Camera
 	{
-		public Vector3 sVRP, cVPN, cVUP, cVLeft;	// Free Camera Variables (View Reference Point, View Plane Normal, View Up, and View Left).
+		/// <summary>
+		/// View Reference Point - The camera's position in the 3D environment.
+		/// <para>This is a Free Camera variable.</para>
+		/// </summary>
+		public Vector3 sVRP;
+
+		/// <summary>
+		/// View Plane Normal - The direction the camera is facing.
+		/// <para>This is a Free Camera variable.</para>
+		/// </summary>
+		public Vector3 cVPN;
+
+		/// <summary>
+		/// View Up - The Up direction of the camera.
+		/// <para>This is a Free Camera variable.</para>
+		/// </summary>
+		public Vector3 cVUP;
+
+		/// <summary>
+		/// View Left - The Left direction of the camera.
+		/// <para>This is a Free Camera variable.</para>
+		/// </summary>
+		public Vector3 cVLeft;
 
 		public float fCameraArc, fCameraRotation, fCameraDistance;	// Fixed Camera Variables.
-		public Vector3 sFixedCameraLookAtPosition;					// The Position that the Fixed Camera should rotate around.
-		public bool bUsingFixedCamera;								// Variable indicating which type of Camera to use.
+
+		/// <summary>
+		/// The Position that the Fixed Camera should rotate around.
+		/// <para>This is a Fixed Camera variable.</para>
+		/// </summary>
+		public Vector3 sFixedCameraLookAtPosition;
+
+		/// <summary>
+		/// Indicates whether to use a Fixed Camera or a Free Camera.
+		/// </summary>
+		public bool bUsingFixedCamera;
 
 		/// <summary>
 		/// Explicit constructor
@@ -54,7 +85,7 @@ namespace BasicVirtualEnvironment.View
 					// Pull and return the Camera Coordinates from the inverted View Matrix
 					return cViewMatrix.Translation;
 				}
-					// Else we are using the Free Camera
+				// Else we are using the Free Camera
 				else
 				{
 					return sVRP;

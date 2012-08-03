@@ -1,4 +1,5 @@
-﻿using BasicVirtualEnvironment.Input;
+﻿using System;
+using BasicVirtualEnvironment.Input;
 using DPSF;
 using DPSF_Demo.ParticleSystems;
 using Microsoft.Xna.Framework;
@@ -6,6 +7,9 @@ using Microsoft.Xna.Framework.Input;
 
 namespace DPSF_Demo.Particle_System_Wrappers_For_DPSF_Demo
 {
+#if (WINDOWS)
+	[Serializable]
+#endif
 	class RandomDPSFDemoParticleSystemWrapper : RandomParticleSystem, IWrapDPSFDemoParticleSystems
 	{
         public RandomDPSFDemoParticleSystemWrapper(Game cGame)

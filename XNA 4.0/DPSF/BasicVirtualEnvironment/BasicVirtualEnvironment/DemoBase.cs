@@ -514,29 +514,29 @@ namespace BasicVirtualEnvironment
 			// If the Common Controls should be shown, display them.
 			if (ShowCommonControls)
 			{
-				SpriteBatch.DrawString(Font, "Toggle Floor:", new Vector2(485, 25), PROPERTY_TEXT_COlOR);
-				SpriteBatch.DrawString(Font, "F", new Vector2(610, 25), CONTROL_TEXT_COLOR);
+				SpriteBatch.DrawString(Font, "Toggle Floor:", new Vector2(textSafeArea.Left + 485, textSafeArea.Top + 25), PROPERTY_TEXT_COlOR);
+				SpriteBatch.DrawString(Font, "F", new Vector2(textSafeArea.Left + 610, textSafeArea.Top + 25), CONTROL_TEXT_COLOR);
 
-				SpriteBatch.DrawString(Font, "Toggle Axis:", new Vector2(650, 25), PROPERTY_TEXT_COlOR);
-				SpriteBatch.DrawString(Font, "F7", new Vector2(770, 25), CONTROL_TEXT_COLOR);
+				SpriteBatch.DrawString(Font, "Toggle Axis:", new Vector2(textSafeArea.Left + 650, textSafeArea.Top + 25), PROPERTY_TEXT_COlOR);
+				SpriteBatch.DrawString(Font, "F6", new Vector2(textSafeArea.Left + 770, textSafeArea.Top + 25), CONTROL_TEXT_COLOR);
 
-				SpriteBatch.DrawString(Font, "Toggle Full Screen:", new Vector2(485, 50), PROPERTY_TEXT_COlOR);
-				SpriteBatch.DrawString(Font, "End", new Vector2(665, 50), CONTROL_TEXT_COLOR);
+				SpriteBatch.DrawString(Font, "Toggle Full Screen:", new Vector2(textSafeArea.Left + 485, textSafeArea.Top + 50), PROPERTY_TEXT_COlOR);
+				SpriteBatch.DrawString(Font, "End", new Vector2(textSafeArea.Left + 665, textSafeArea.Top + 50), CONTROL_TEXT_COLOR);
 
-				SpriteBatch.DrawString(Font, "Toggle Camera Mode:", new Vector2(485, 75), PROPERTY_TEXT_COlOR);
-				SpriteBatch.DrawString(Font, "PgDown", new Vector2(690, 75), CONTROL_TEXT_COLOR);
+				SpriteBatch.DrawString(Font, "Toggle Camera Mode:", new Vector2(textSafeArea.Left + 485, textSafeArea.Top + 75), PROPERTY_TEXT_COlOR);
+				SpriteBatch.DrawString(Font, "PgDown", new Vector2(textSafeArea.Left + 690, textSafeArea.Top + 75), CONTROL_TEXT_COLOR);
 
-				SpriteBatch.DrawString(Font, "Reset Camera Position:", new Vector2(485, 100), PROPERTY_TEXT_COlOR);
-				SpriteBatch.DrawString(Font, "R", new Vector2(705, 100), CONTROL_TEXT_COLOR);
+				SpriteBatch.DrawString(Font, "Reset Camera Position:", new Vector2(textSafeArea.Left + 485, textSafeArea.Top + 100), PROPERTY_TEXT_COlOR);
+				SpriteBatch.DrawString(Font, "R", new Vector2(textSafeArea.Left + 705, textSafeArea.Top + 100), CONTROL_TEXT_COLOR);
 
-				SpriteBatch.DrawString(Font, "Pause Simulation:", new Vector2(485, 150), PROPERTY_TEXT_COlOR);
-				SpriteBatch.DrawString(Font, "Spacebar", new Vector2(645, 150), CONTROL_TEXT_COLOR);
+				SpriteBatch.DrawString(Font, "Pause Simulation:", new Vector2(textSafeArea.Left + 485, textSafeArea.Top + 125), PROPERTY_TEXT_COlOR);
+				SpriteBatch.DrawString(Font, "Spacebar", new Vector2(textSafeArea.Left + 645, textSafeArea.Top + 125), CONTROL_TEXT_COLOR);
 
-				SpriteBatch.DrawString(Font, "Clear Screen Each Frame:", new Vector2(485, 225), PROPERTY_TEXT_COlOR);
-				SpriteBatch.DrawString(Font, "F5", new Vector2(730, 225), CONTROL_TEXT_COLOR);
+				SpriteBatch.DrawString(Font, "Clear Screen Each Frame:", new Vector2(textSafeArea.Left + 485, textSafeArea.Top + 150), PROPERTY_TEXT_COlOR);
+				SpriteBatch.DrawString(Font, "F5", new Vector2(textSafeArea.Left + 730, textSafeArea.Top + 150), CONTROL_TEXT_COLOR);
 
-				SpriteBatch.DrawString(Font, "Draw Performance Info:", new Vector2(485, 300), PROPERTY_TEXT_COlOR);
-				SpriteBatch.DrawString(Font, "F10", new Vector2(705, 300), CONTROL_TEXT_COLOR);
+				SpriteBatch.DrawString(Font, "Draw Performance Info:", new Vector2(textSafeArea.Left + 485, textSafeArea.Top + 175), PROPERTY_TEXT_COlOR);
+				SpriteBatch.DrawString(Font, "F10", new Vector2(textSafeArea.Left + 705, textSafeArea.Top + 175), CONTROL_TEXT_COLOR);
 			}
 
 			// If the Camera Controls should be shown.
@@ -545,25 +545,25 @@ namespace BasicVirtualEnvironment
 				// If we are using a Fixed Camera.
 				if (Camera.bUsingFixedCamera)
 				{
-					SpriteBatch.DrawString(Font, "Fixed Camera Controls:", new Vector2(5, GraphicsDeviceManager.PreferredBackBufferHeight - 125), PROPERTY_TEXT_COlOR);
-					SpriteBatch.DrawString(Font, "Keys: Left/Right Arrows, Up/Down Arrows, Num0/Num1", new Vector2(15, GraphicsDeviceManager.PreferredBackBufferHeight - 100), CONTROL_TEXT_COLOR);
-					SpriteBatch.DrawString(Font, "Mouse: Left Button + X/Y Movement, Right Button + Y Movement", new Vector2(15, GraphicsDeviceManager.PreferredBackBufferHeight - 75), CONTROL_TEXT_COLOR);
+					SpriteBatch.DrawString(Font, "Fixed Camera Controls:", new Vector2(5, textSafeArea.Bottom - 125), PROPERTY_TEXT_COlOR);
+					SpriteBatch.DrawString(Font, "Keys: Left/Right Arrows, Up/Down Arrows, Num0/Num1", new Vector2(15, textSafeArea.Bottom - 100), CONTROL_TEXT_COLOR);
+					SpriteBatch.DrawString(Font, "Mouse: Left Button + X/Y Movement, Right Button + Y Movement", new Vector2(15, textSafeArea.Bottom - 75), CONTROL_TEXT_COLOR);
 				}
 				// Else we are using a Free Camera.
 				else
 				{
-					SpriteBatch.DrawString(Font, "Free Camera Controls", new Vector2(5, GraphicsDeviceManager.PreferredBackBufferHeight - 125), PROPERTY_TEXT_COlOR);
-					SpriteBatch.DrawString(Font, "Keys: Left/Right Arrows, Up/Down Arrows, Num0/Num1, Num4/Num6, Num8/Num2", new Vector2(15, GraphicsDeviceManager.PreferredBackBufferHeight - 100), CONTROL_TEXT_COLOR);
-					SpriteBatch.DrawString(Font, "Mouse: Left Button + X/Y Movement, Right Button + X/Y Movement, Scroll Wheel", new Vector2(15, GraphicsDeviceManager.PreferredBackBufferHeight - 75), CONTROL_TEXT_COLOR);
+					SpriteBatch.DrawString(Font, "Free Camera Controls", new Vector2(5, textSafeArea.Bottom - 125), PROPERTY_TEXT_COlOR);
+					SpriteBatch.DrawString(Font, "Keys: Left/Right Arrows, Up/Down Arrows, Num0/Num1, Num4/Num6, Num8/Num2", new Vector2(15, textSafeArea.Bottom - 100), CONTROL_TEXT_COLOR);
+					SpriteBatch.DrawString(Font, "Mouse: Left Button + X/Y Movement, Right Button + X/Y Movement, Scroll Wheel", new Vector2(15, textSafeArea.Bottom - 75), CONTROL_TEXT_COLOR);
 				}
 			}
 
 			// If performance related text should be drawn, draw the number of bytes allocated in memory.
 			if (ShowPerformanceText)
 			{
-				SpriteBatch.DrawString(Font, "Garbage Allocated (KB): " + _garbageCurrentAmountInKB.ToString("0.0"), new Vector2(480, GraphicsDeviceManager.PreferredBackBufferHeight - 200), PROPERTY_TEXT_COlOR);
-				SpriteBatch.DrawString(Font, "Avg Garbage Per Update (KB): " + _garbageAverageCreatedPerUpdateInKB.ToString("0.000"), new Vector2(440, GraphicsDeviceManager.PreferredBackBufferHeight - 175), PROPERTY_TEXT_COlOR);
-				SpriteBatch.DrawString(Font, "Avg Garbage Per Frame (KB): " + _garbageAverageCreatedPerFrameInKB.ToString("0.000"), new Vector2(445, GraphicsDeviceManager.PreferredBackBufferHeight - 150), PROPERTY_TEXT_COlOR);
+				SpriteBatch.DrawString(Font, "Garbage Allocated (KB): " + _garbageCurrentAmountInKB.ToString("0.0"), new Vector2(480, textSafeArea.Bottom - 200), PROPERTY_TEXT_COlOR);
+				SpriteBatch.DrawString(Font, "Avg Garbage Per Update (KB): " + _garbageAverageCreatedPerUpdateInKB.ToString("0.000"), new Vector2(440, textSafeArea.Bottom - 175), PROPERTY_TEXT_COlOR);
+				SpriteBatch.DrawString(Font, "Avg Garbage Per Frame (KB): " + _garbageAverageCreatedPerFrameInKB.ToString("0.000"), new Vector2(445, textSafeArea.Bottom - 150), PROPERTY_TEXT_COlOR);
 			}
 
 			// Draw any text from inheriting classes.
@@ -721,7 +721,7 @@ namespace BasicVirtualEnvironment
 			}
 
 			// If the Axis should be toggled on/off.
-			if (KeyboardManager.KeyWasJustPressed(Keys.F7))
+			if (KeyboardManager.KeyWasJustPressed(Keys.F6))
 			{
 				ShowPositiveDirectionAxis = !ShowPositiveDirectionAxis;
 			}

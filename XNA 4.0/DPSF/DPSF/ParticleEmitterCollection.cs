@@ -8,6 +8,9 @@ namespace DPSF
 	/// <summary>
 	/// Holds a collection of ParticleEmitters.
 	/// </summary>
+#if (WINDOWS)
+	[Serializable]
+#endif
 	public class ParticleEmitterCollection
 	{
 		/// <summary>

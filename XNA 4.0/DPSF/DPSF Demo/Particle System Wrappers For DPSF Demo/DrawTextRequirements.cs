@@ -1,8 +1,12 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace DPSF_Demo.Particle_System_Wrappers_For_DPSF_Demo
 {
+#if (WINDOWS)
+	[Serializable]
+#endif
     public class DrawTextRequirements
     {
         /// <summary>

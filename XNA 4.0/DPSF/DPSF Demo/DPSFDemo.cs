@@ -35,7 +35,7 @@ namespace DPSF_Demo
 		//===========================================================
 
 		// How often the Particle Systems should be updated (zero = update as often as possible)
-		const int PARTICLE_SYSTEM_UPDATES_PER_SECOND = 0;
+		const int PARTICLE_SYSTEM_UPDATES_PER_SECOND = 60;
 
 		// Static Particle Settings
 		float _staticParticleTimeStep = 1.0f / 30.0f;	// The Time Step between the drawing of each frame of the Static Particles (1 / # of fps, example, 1 / 30 = 30fps).
@@ -200,7 +200,7 @@ namespace DPSF_Demo
 
 		protected override string LastToggleTextFunctionKey { get { return "F4"; } }
 
-		bool _showParticleSystemControls = false;          // Tells if the Particle System specific Controls should be shown or not
+		bool _showParticleSystemControls = true;          // Tells if the Particle System specific Controls should be shown or not (on by default).
 
 		/// <summary>
 		/// Called whenever the value of ShowPerformanceText is changed.
@@ -734,20 +734,20 @@ namespace DPSF_Demo
 				SpriteBatch.DrawString(Font, "Reset Emitter's Position and Orientation:", new Vector2(5, 200), PROPERTY_TEXT_COlOR);
 				SpriteBatch.DrawString(Font, "Z", new Vector2(375, 200), CONTROL_TEXT_COLOR);
 
-				SpriteBatch.DrawString(Font, "Change Texture:", new Vector2(485, 125), PROPERTY_TEXT_COlOR);
-				SpriteBatch.DrawString(Font, "T / Shift + T", new Vector2(640, 125), CONTROL_TEXT_COLOR);
+				SpriteBatch.DrawString(Font, "Change Texture:", new Vector2(485, 200), PROPERTY_TEXT_COlOR);
+				SpriteBatch.DrawString(Font, "T / Shift + T", new Vector2(640, 200), CONTROL_TEXT_COLOR);
+// Rearrange these to put them into an order that makes better sense
+				SpriteBatch.DrawString(Font, "Speed Up/Down PS:", new Vector2(485, 225), PROPERTY_TEXT_COlOR);
+				SpriteBatch.DrawString(Font, "* / /", new Vector2(680, 225), CONTROL_TEXT_COLOR);
 
-				SpriteBatch.DrawString(Font, "Speed Up/Down PS:", new Vector2(485, 175), PROPERTY_TEXT_COlOR);
-				SpriteBatch.DrawString(Font, "* / /", new Vector2(680, 175), CONTROL_TEXT_COLOR);
+				SpriteBatch.DrawString(Font, "Draw Static Particles:", new Vector2(485, 250), PROPERTY_TEXT_COlOR);
+				SpriteBatch.DrawString(Font, "F7", new Vector2(690, 250), CONTROL_TEXT_COLOR);
 
-				SpriteBatch.DrawString(Font, "Draw Static Particles:", new Vector2(485, 200), PROPERTY_TEXT_COlOR);
-				SpriteBatch.DrawString(Font, "F6", new Vector2(690, 200), CONTROL_TEXT_COLOR);
+				SpriteBatch.DrawString(Font, "Create Animation Images:", new Vector2(485, 275), PROPERTY_TEXT_COlOR);
+				SpriteBatch.DrawString(Font, "F8", new Vector2(725, 275), CONTROL_TEXT_COLOR);
 
-				SpriteBatch.DrawString(Font, "Create Animation Images:", new Vector2(485, 250), PROPERTY_TEXT_COlOR);
-				SpriteBatch.DrawString(Font, "F8", new Vector2(725, 250), CONTROL_TEXT_COLOR);
-
-				SpriteBatch.DrawString(Font, "Serialize Particle System:", new Vector2(485, 275), PROPERTY_TEXT_COlOR);
-				SpriteBatch.DrawString(Font, "F9", new Vector2(725, 275), CONTROL_TEXT_COLOR);
+				SpriteBatch.DrawString(Font, "Serialize Particle System:", new Vector2(485, 300), PROPERTY_TEXT_COlOR);
+				SpriteBatch.DrawString(Font, "F9", new Vector2(725, 300), CONTROL_TEXT_COLOR);
 			}
 
 			// If performance related text should be drawn, display how long updates and draws of the current particle system take.
@@ -796,7 +796,7 @@ namespace DPSF_Demo
 			}
 
 			// If the particle lifetimes should be drawn in one frame.
-			if (KeyboardManager.KeyWasJustPressed(Keys.F6))
+			if (KeyboardManager.KeyWasJustPressed(Keys.F7))
 			{
 				_drawStaticParticles = !_drawStaticParticles;
 				_staticParticlesDrawn = false;
