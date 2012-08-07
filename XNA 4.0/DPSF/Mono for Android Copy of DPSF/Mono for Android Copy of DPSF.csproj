@@ -1,0 +1,241 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1930FFE8-7F1D-42BA-A713-A0BAB7995BCF}</ProjectGuid>
+    <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Mono_for_Android_Copy_of_DPSF</RootNamespace>
+    <AssemblyName>DPSFMonoForAndoid</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;ANDROID</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\DPSFMonoForAndoid.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;ANDROID</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\DPSFMonoForAndoid.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MonoGame.Framework.Android, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="mscorlib" />
+    <Reference Include="OpenTK, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Tao.Sdl, Version=1.2.13.0, Culture=neutral, PublicKeyToken=9c7a200e36c0094e, processorArchitecture=MSIL" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\DPSF\AutoMemoryManagerSettings.cs">
+      <Link>AutoMemoryManagerSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Attributes\DPSFViewerParameterAttribute.cs">
+      <Link>DPSF Attributes\DPSFViewerParameterAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\DefaultBase.cs">
+      <Link>DPSF Defaults\DefaultBase.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\DefaultNoDisplay.cs">
+      <Link>DPSF Defaults\DefaultNoDisplay.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\DefaultQuad.cs">
+      <Link>DPSF Defaults\DefaultQuad.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\DefaultSprite.cs">
+      <Link>DPSF Defaults\DefaultSprite.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\DefaultSprite3DBillboard.cs">
+      <Link>DPSF Defaults\DefaultSprite3DBillboard.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\DefaultSprite3DBillboardAnimated.cs">
+      <Link>DPSF Defaults\DefaultSprite3DBillboardAnimated.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\DefaultSprite3DBillboardTextureCoordinates.cs">
+      <Link>DPSF Defaults\DefaultSprite3DBillboardTextureCoordinates.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\DefaultSpriteAnimated.cs">
+      <Link>DPSF Defaults\DefaultSpriteAnimated.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\DefaultSpriteTextureCoordinates.cs">
+      <Link>DPSF Defaults\DefaultSpriteTextureCoordinates.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\DefaultTexturedQuad.cs">
+      <Link>DPSF Defaults\DefaultTexturedQuad.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\DefaultTexturedQuadAnimated.cs">
+      <Link>DPSF Defaults\DefaultTexturedQuadAnimated.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\DefaultTexturedQuadTextureCoordinates.cs">
+      <Link>DPSF Defaults\DefaultTexturedQuadTextureCoordinates.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\Magnets\DefaultParticleSystemMagnet.cs">
+      <Link>DPSF Defaults\Magnets\DefaultParticleSystemMagnet.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\Magnets\MagnetLine.cs">
+      <Link>DPSF Defaults\Magnets\MagnetLine.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\Magnets\MagnetLineSegment.cs">
+      <Link>DPSF Defaults\Magnets\MagnetLineSegment.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\Magnets\MagnetPlane.cs">
+      <Link>DPSF Defaults\Magnets\MagnetPlane.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\Magnets\MagnetPoint.cs">
+      <Link>DPSF Defaults\Magnets\MagnetPoint.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Effects\C#\DPSFDefaultEffect.cs">
+      <Link>DPSF Effects\C#\DPSFDefaultEffect.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Helpers\Animations.cs">
+      <Link>DPSF Helpers\Animations.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Helpers\DPSFHelper.cs">
+      <Link>DPSF Helpers\DPSFHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Helpers\Orientation2D.cs">
+      <Link>DPSF Helpers\Orientation2D.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Helpers\Orientation2DWithPreviousOrientation.cs">
+      <Link>DPSF Helpers\Orientation2DWithPreviousOrientation.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Helpers\Orientation3D.cs">
+      <Link>DPSF Helpers\Orientation3D.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Helpers\Orientation3DWithPreviousOrientation.cs">
+      <Link>DPSF Helpers\Orientation3DWithPreviousOrientation.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Helpers\PivotPoint2D.cs">
+      <Link>DPSF Helpers\PivotPoint2D.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Helpers\PivotPoint3D.cs">
+      <Link>DPSF Helpers\PivotPoint3D.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Helpers\Position2D.cs">
+      <Link>DPSF Helpers\Position2D.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Helpers\Position2DWithPreviousPosition.cs">
+      <Link>DPSF Helpers\Position2DWithPreviousPosition.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Helpers\Position3D.cs">
+      <Link>DPSF Helpers\Position3D.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Helpers\Position3DWithPreviousPosition.cs">
+      <Link>DPSF Helpers\Position3DWithPreviousPosition.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Helpers\RandomNumbers.cs">
+      <Link>DPSF Helpers\RandomNumbers.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF.cs">
+      <Link>DPSF.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSFDefaultSettings.cs">
+      <Link>DPSFDefaultSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSFParticle.cs">
+      <Link>DPSFParticle.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSFResources.Designer.cs">
+      <Link>DPSFResources.Designer.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\Exceptions\DPSFArgumentException.cs">
+      <Link>Exceptions\DPSFArgumentException.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\Exceptions\DPSFArgumentNullException.cs">
+      <Link>Exceptions\DPSFArgumentNullException.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\Exceptions\DPSFException.cs">
+      <Link>Exceptions\DPSFException.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\Exceptions\DPSFInvalidOperationException.cs">
+      <Link>Exceptions\DPSFInvalidOperationException.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\Exceptions\DPSFKeyNotFoundException.cs">
+      <Link>Exceptions\DPSFKeyNotFoundException.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\Exceptions\DPSFNullReferenceException.cs">
+      <Link>Exceptions\DPSFNullReferenceException.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\Exceptions\IDPSFException.cs">
+      <Link>Exceptions\IDPSFException.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\Extension Methods\GenericCollectionsExtensions.cs">
+      <Link>Extension Methods\GenericCollectionsExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\IDPSFParticleSystem.cs">
+      <Link>IDPSFParticleSystem.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\ParticleEmitter.cs">
+      <Link>ParticleEmitter.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\ParticleEmitterCollection.cs">
+      <Link>ParticleEmitterCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\ParticleSystemManager.cs">
+      <Link>ParticleSystemManager.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="..\DPSF\ChangeLog.txt">
+      <Link>ChangeLog.txt</Link>
+    </Content>
+    <Content Include="..\DPSF\DPSF Effects\HLSL\DPSFDefaultEffect.fx">
+      <Link>DPSF Effects\HLSL\DPSFDefaultEffect.fx</Link>
+    </Content>
+    <Content Include="Mono Dependencies\MonoGame.Framework.Android.dll" />
+    <Content Include="Mono Dependencies\OpenTK.dll" />
+    <Content Include="Mono Dependencies\Tao.Sdl.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\DPSF\DPSF Effects\Raw Effect Code\DPSFDefaultEffectWindowsHiDef.bin">
+      <Link>DPSF Effects\Raw Effect Code\DPSFDefaultEffectWindowsHiDef.bin</Link>
+    </None>
+    <None Include="..\DPSF\DPSF Effects\Raw Effect Code\DPSFDefaultEffectWindowsReach.bin">
+      <Link>DPSF Effects\Raw Effect Code\DPSFDefaultEffectWindowsReach.bin</Link>
+    </None>
+    <None Include="..\DPSF\DPSF Effects\Raw Effect Code\DPSFDefaultEffectXbox360HiDef.bin">
+      <Link>DPSF Effects\Raw Effect Code\DPSFDefaultEffectXbox360HiDef.bin</Link>
+    </None>
+    <None Include="..\DPSF\DPSFKey.snk">
+      <Link>DPSFKey.snk</Link>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\DPSF\DPSFResources.resx">
+      <Link>DPSFResources.resx</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>REM Copy the new files to the LatestDLLBuild folder.
+if not exist "$(SolutionDir)..\DPSF\LatestDLLBuild" mkdir "$(SolutionDir)LatestDLLBuild"
+if exist "$(TargetPath)" copy /y /d "$(TargetPath)" "$(SolutionDir)..\DPSF\LatestDLLBuild\$(TargetFileName)"
+if exist "$(TargetDir)$(TargetName).xml" copy /y /d "$(TargetDir)$(TargetName).xml" "$(SolutionDir)..\DPSF\LatestDLLBuild\$(TargetName).xml"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

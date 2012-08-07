@@ -149,40 +149,25 @@ namespace DPSF_Demo.ParticleSystems
 		public Color Color;                 // The Color of the Particle
 
 		// Describe the vertex structure used to display a Particle
-		private static readonly VertexElement[] msVertexElements =
-		{
+		private static readonly VertexDeclaration vertexDeclaration = new VertexDeclaration
+		(
 			new VertexElement(0, VertexElementFormat.Vector3, 
 								VertexElementUsage.Position, 0),
 
 			new VertexElement(12, VertexElementFormat.Color,
-								VertexElementUsage.Color, 0),
+								VertexElementUsage.Color, 0)
 
 			//-----------------------------------------------------------
 			// TODO: Add the VertexElements describing the Vertex variables you added here
 			//-----------------------------------------------------------
-		};
-
-		//-----------------------------------------------------------
-		// TODO: Change miSizeInBytes to reflect the total size of the msVertexElements
-		// array if any new Vertex Elements were added to it
-		//-----------------------------------------------------------
-		// The size of the vertex structure in bytes
-		private const int miSizeInBytes = 12 + 4;
+		);
 
 		/// <summary>
 		/// An array describing the attributes of each Vertex
 		/// </summary>
-		public VertexElement[] VertexElements
+		public VertexDeclaration VertexDeclaration
 		{
-			get { return QuadParticleSystemTemplateParticleVertex.msVertexElements; }
-		}
-
-		/// <summary>
-		/// The Size of one Vertex Element in Bytes
-		/// </summary>
-		public int SizeInBytes
-		{
-			get { return QuadParticleSystemTemplateParticleVertex.miSizeInBytes; }
+			get { return QuadParticleSystemTemplateParticleVertex.vertexDeclaration; }
 		}
 	}
 

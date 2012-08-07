@@ -29,6 +29,7 @@ public:
 - Added new MultipleEmittersParticleSystem class that shows how to use multiple emitters in a particle system class.
 - Added a NumberOfParticlesEmitted property to the Emitter class that keeps track of how many particles an individual emitter has added to a particle system.
 - Updated documentation on some of the old tutorials and Optimizations section a bit.
+- Added support for "Mono for Android" with a new DLL file.
 
 Possible Breaking Changes:
 - Removed the mcRandomNumber particle system class variable. Everything should now just use the RandomNumber public property.
@@ -36,6 +37,7 @@ Possible Breaking Changes:
 - Moved the LerpEmittersPositionAndOrientation and LerpEmittersPositionAndOrientationOnNextUpdate properties from the particle system into the ParticleEmitter class, so
 	that this can be configured for each emitter individually.
 - Changed the MagnetList property from a LinkedList<DefaultParticleSystemMagnet> to a List<DefaultParticleSystemMagnet>.
+- Changed IDPSFParticleVertex to implement Microsoft.XNA.Framework.Graphics.IVertexType and removed the old IDPSFParticleVertex enforcements.
 
 Private:
 - Added a Name property to the DPSFViewerParameterAttributes.

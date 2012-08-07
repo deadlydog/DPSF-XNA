@@ -2523,11 +2523,9 @@ namespace DPSF
 			// Set the default Effect and Technique to use
 			SetDefaultEffect();
 
-			// Specify the VertexElement to use for each Vertex of a Particle.
-			// This must be specified before setting the NumberOfParticlesAllocatedInMemory.
-			Vertex cVertex = new Vertex();
-			SetVertexDeclaration(cVertex.SizeInBytes, cVertex.VertexElements);
-			miVertexSizeInBytes = cVertex.SizeInBytes;
+			// Specify the Vertex Declaration.
+			Vertex vertex = new Vertex();
+			mcVertexDeclaration = vertex.VertexDeclaration;
 
 			// If this is a Sprite Particle System
 			if (ParticleType == ParticleTypes.Sprite)
@@ -2760,8 +2758,8 @@ namespace DPSF
 			ContentManager = cContentManager;
 
 			// Specify the Vertex Element
-			Vertex cVertex = new Vertex();
-			VertexElement = cVertex.VertexElements;
+			Vertex vertex = new Vertex();
+			mcVertexDeclaration = vertex.VertexDeclaration;
 
 			// Assume the Sprite Batch isn't needed
 			mcSpriteBatch = null;
@@ -3300,73 +3298,6 @@ namespace DPSF
 			World = cWorld;
 			View = cView;
 			Projection = cProjection;
-		}
-
-		/// <summary>
-		/// Sets the vertex elements to use for each vertex of a particle.
-		/// </summary>
-		/// <param name="numberOfBytesPerVertex">The number of bytes per vertex.</param>
-		/// <param name="elements">The vertex elements that make up the vertex.</param>
-		private void SetVertexDeclaration(int numberOfBytesPerVertex, VertexElement[] elements)
-		{
-			// If a valid Vertex Element was given
-			if (numberOfBytesPerVertex > 0 && elements != null)
-			{
-				// Initialize the Vertex Declaration used to draw Particles.
-				mcVertexDeclaration = new VertexDeclaration(numberOfBytesPerVertex, elements);
-			}
-			// Else an invalid Vertex Element was given
-			else
-			{
-				// If this Type of Particle does not require a Vertex Element
-				if (ParticleType == ParticleTypes.None || ParticleType == ParticleTypes.NoDisplay || ParticleType == ParticleTypes.Sprite)
-				{
-					// Set the Vertex Declaration to null
-					mcVertexDeclaration = null;
-				}
-				// Else a valid Vertex Element is required
-				else
-				{
-					throw new DPSFArgumentNullException("VertexElement", "The specified Vertex Element is null. A valid Vertex Element is required to draw the current Type of Particles.");
-				}
-			}				
-		}
-
-		/// <summary>
-		/// Set the VertexElement (i.e. Vertex Format) to use for each vertex of a Particle.
-		/// <para>NOTE: VertexElement will not be changed if null value is given.</para>
-		/// </summary>
-		private VertexElement[] VertexElement
-		{
-			set
-			{
-				// If a valid Vertex Element was given, and we have a valid Graphics Device to use
-				if (value != null && GraphicsDevice != null)
-				{
-					// Initialize the Vertex Declaration used to draw Particles
-					mcVertexDeclaration = new VertexDeclaration(value);
-				}
-				// Else an invalid Vertex Element was given
-				else
-				{
-					// If this Type of Particle does not require a Vertex Element
-					if (ParticleType == ParticleTypes.None || ParticleType == ParticleTypes.NoDisplay || ParticleType == ParticleTypes.Sprite)
-					{
-						// Set the Vertex Declaration to null
-						mcVertexDeclaration = null;
-					}
-					// Else if we do not have a valid Graphics Device to create the Vertex Declaration with
-					else if (GraphicsDevice == null)
-					{
-						throw new DPSFArgumentNullException("GraphicsDevice", "The current Graphics Device is null. A valid Graphics Device is required to create a new Vertex Declaration in order to draw the current type of Particles.");
-					}
-					// Else a valid Vertex Element is required
-					else
-					{
-						throw new DPSFArgumentNullException("VertexElement", "The specified Vertex Element is null. A valid Vertex Element is required to draw the current Type of Particles.");
-					}
-				}
-			}
 		}
 
 		/// <summary>
@@ -5098,7 +5029,8 @@ namespace DPSF
 			// Reset all of the Sampler States
 			for (int index = 0; index < 16; index++)
 				GraphicsDevice.SamplerStates[index] = SamplerState.PointClamp;
-
+// Apparently MonoGame's Android doesn't know about the VertexSamplerStates property, so we can't update it on Android.
+#if (!ANDROID)
 			// The Reach profile does not have VertexSamplerStates, but clear them out if we're using a HiDef profile.
 			if (this.GraphicsDevice.GraphicsProfile == GraphicsProfile.HiDef)
 			{
@@ -5106,6 +5038,7 @@ namespace DPSF
 				for (int index = 0; index < 2; index++)
 					GraphicsDevice.VertexSamplerStates[index] = SamplerState.PointWrap;
 			}
+#endif
 		}
 
 		/// <summary>
