@@ -194,7 +194,7 @@ namespace DPSF_Demo.ParticleSystems
             // create another function to do it after setting the graphics device and content manager.
             SetGraphicsDevice(graphicsDevice);
             this.ContentManager = contentManager;
-            AutoInitializeOtherParticleSystems();
+            AutoInitializeOtherParticleSystems(spriteBatch);
 
             Name = "Explosion";
             LoadLargeExplosion();
@@ -203,7 +203,7 @@ namespace DPSF_Demo.ParticleSystems
         /// <summary>
         /// Initialize all of the particle systems used by this particle system class.
         /// </summary>
-        private void AutoInitializeOtherParticleSystems()
+        private void AutoInitializeOtherParticleSystems(SpriteBatch spriteBatch)
         {
             _particleSystemManager = new ParticleSystemManager();
 
@@ -235,7 +235,16 @@ namespace DPSF_Demo.ParticleSystems
             _particleSystemManager.AddParticleSystem(_smokeTrailsParticleSystem);
 
             // Initialize all of the particle systems
-            _particleSystemManager.AutoInitializeAllParticleSystems(this.GraphicsDevice, this.ContentManager, null);
+			_particleSystemManager.AutoInitializeAllParticleSystems(this.GraphicsDevice, this.ContentManager, spriteBatch);
+
+			// Turn off Lerping on the particle system emitters so that they don't trail from one explosion location to the next.
+			_debrisParticleSystem.Emitter.LerpEmittersPositionAndOrientation = false;
+			_fireSmokeParticleSystem.Emitter.LerpEmittersPositionAndOrientation = false;
+			_flashParticleSystem.Emitter.LerpEmittersPositionAndOrientation = false;
+			_flyingSparksParticleSystem.Emitter.LerpEmittersPositionAndOrientation = false;
+			_roundSparksParticleSystem.Emitter.LerpEmittersPositionAndOrientation = false;
+			_shockwaveParticleSystem.Emitter.LerpEmittersPositionAndOrientation = false;
+			_smokeTrailsParticleSystem.Emitter.LerpEmittersPositionAndOrientation = false;
         }
 
         public void LoadLargeExplosion()

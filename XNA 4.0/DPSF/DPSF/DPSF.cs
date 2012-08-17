@@ -150,7 +150,9 @@ namespace DPSF
 		{
 			// Clone the states instead of just setting to them directly so that they are not read-only and we can change their properties.
 			this.BlendState = DPSFHelper.CloneBlendState(BlendState.AlphaBlend);
+#if (!ANDROID)
 			this.DepthStencilState = DPSFHelper.CloneDepthStencilState(DepthStencilState.DepthRead);
+#endif
 			this.RasterizerState = DPSFHelper.CloneRasterizerState(RasterizerState.CullCounterClockwise);
 			this.SamplerState = DPSFHelper.CloneSamplerState(SamplerState.LinearClamp);
 		}
