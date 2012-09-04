@@ -189,7 +189,7 @@ namespace DPSF_Demo
 		}
 
 		// Initialize which Particle System to show first.
-		ParticleSystemEffects _currentParticleSystem = ParticleSystemEffects.Random;
+		ParticleSystemEffects _currentParticleSystem = ParticleSystemEffects.QuadParticleSystemTemplate;
 
 		// Initialize the Texture to use.
 		Textures _currentTexture = Textures.Bubble;
@@ -285,6 +285,7 @@ namespace DPSF_Demo
 		/// </summary>
 		public DPSFDemo()
 		{
+			DPSFDefaultSettings.UseSharedEffectForAllParticleSystems = true;
 		}
 
 		protected override void LoadContent()

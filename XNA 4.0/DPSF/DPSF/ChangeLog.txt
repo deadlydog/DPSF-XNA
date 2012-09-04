@@ -9,6 +9,8 @@ TODO - Do more multiple emitter examples. Have one extend the Emitter class to s
 	text coordinates maybe to have the same particle system display different textures.  Show all 3 solutions in a tutorial.
 TODO - Investigate using Tasks and running on multiple threads to boost performance.
 
+TODO - Look into using one static BasicEffect and AlphaTestEffect instance for all particle systems, rather than one per particle system.
+
 
 Changes made after Version 2.2.2:
 public:

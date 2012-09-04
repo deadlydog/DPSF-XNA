@@ -3367,7 +3367,7 @@ namespace DPSF
 		/// </list>
 		/// </summary>
 		public void SetDefaultEffect()
-		{           
+		{
 			// Assign the default Effect to use based on the type of particle system this is
 			switch (meParticleType)
 			{
@@ -3375,8 +3375,13 @@ namespace DPSF
 				default: break;
 
 				// AlphaTestEffect requires a texture, so use the BasicEffect for Quad particle systems.
-				case ParticleTypes.Quad: this.Effect = new BasicEffect(this.GraphicsDevice); break;
-				case ParticleTypes.TexturedQuad: this.Effect = new AlphaTestEffect(this.GraphicsDevice); break;
+				case ParticleTypes.Quad:
+					this.Effect = DPSFDefaultSettings.UseSharedEffectForAllParticleSystems ? DPSFDefaultSettings.GetSharedBasicEffect(this.GraphicsDevice) : new BasicEffect(this.GraphicsDevice);
+					break;
+
+				case ParticleTypes.TexturedQuad:
+					this.Effect = DPSFDefaultSettings.UseSharedEffectForAllParticleSystems ? DPSFDefaultSettings.GetSharedAlphaTestEffect(this.GraphicsDevice) : new AlphaTestEffect(this.GraphicsDevice); 
+					break;
 			}
 		}
 

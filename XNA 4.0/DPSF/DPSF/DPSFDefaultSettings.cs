@@ -1,4 +1,6 @@
 ﻿
+using Microsoft.Xna.Framework.Graphics;
+
 namespace DPSF
 {
     /// <summary>
@@ -24,6 +26,7 @@ namespace DPSF
             AutoMemoryManagementSettings = new AutoMemoryManagerSettings();
             UpdatesPerSecond = 0;
             PerformanceProfilingIsEnabled = false;
+			UseSharedEffectForAllParticleSystems = false;
         }
 
         /// <summary>
@@ -42,5 +45,50 @@ namespace DPSF
         /// Performance profiling is not available on the Reach profile.
         /// </summary>
         public static bool PerformanceProfilingIsEnabled { get; set; }
+
+		/// <summary>
+		/// Gets / Sets if a common BasicEffect and AlphaTestEffect should be used for all particle systems, rather than each particle system creating their own.
+		/// <para>NOTE: Using a shared effect will decrease the time it takes to Initialize() each particle system.</para>
+		/// <para>NOTE: If using a shared Effect for all particle systems, if one particle system sets an Effect parameter, all other particle systems should also set that same
+		/// parameter in their overridden SetEffectParameters() function so that each particle system guarantees that the Effect is using the parameters it expects it to be using.
+		/// For example, if particle system 1 sets the Effect's Texture, that same Texture will be used for particle system 2 unless particle system 2 specifies the new Texture to use.</para>
+		/// <para>NOTE: The Graphics Device of the first particle system to be initialized will be used when creating the shared Effect. If you later require a different Graphics Device
+		/// to be used, you must call the SetGraphicsDeviceForSharedEffectsForAllParticleSystems() function.</para>
+		/// </summary>
+		public static bool UseSharedEffectForAllParticleSystems { get; set; }
+
+		/// <summary>
+		/// Reinitializes the shared BasicEffect and AlphaTestEffect using the GraphicsDevice provided.
+		/// <para>NOTE: If you are using a Shared Effect For All Particle Systems and you change GraphicsDevices, you will need to call this function with the new Graphics Device.</para>
+		/// </summary>
+		public static void SetGraphicsDeviceForSharedEffectsForAllParticleSystems(GraphicsDevice graphicsDevice)
+		{
+			_basicEffect = new BasicEffect(graphicsDevice);
+			_alphaTestEffect = new AlphaTestEffect(graphicsDevice);
+		}
+
+		/// <summary>
+		/// Gets the BasicEffect shared by all particle systems.
+		/// </summary>
+		/// <param name="graphicsDevice">The Graphics Device used to initialize the BasicEffect.
+		/// <para>NOTE: This is only used the first time that this function is called.</para></param>
+		internal static BasicEffect GetSharedBasicEffect(GraphicsDevice graphicsDevice)
+		{
+			return _basicEffect ?? (_basicEffect = new BasicEffect(graphicsDevice));
+		}
+
+    	private static BasicEffect _basicEffect = null;
+
+		/// <summary>
+		/// Gets the AlphaTestEffect shared by all particle systems.
+		/// </summary>
+		/// <param name="graphicsDevice">The Graphics Device used to initialize the AlphaTestEffect.
+		/// <para>NOTE: This is only used the first time that this function is called.</param>
+		internal static AlphaTestEffect GetSharedAlphaTestEffect(GraphicsDevice graphicsDevice)
+		{
+			return _alphaTestEffect ?? (_alphaTestEffect = new AlphaTestEffect(graphicsDevice));
+		}
+
+    	private static AlphaTestEffect _alphaTestEffect = null;
     }
 }

@@ -199,7 +199,6 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Content Include="..\DPSF\ChangeLog.txt">
       <Link>ChangeLog.txt</Link>
