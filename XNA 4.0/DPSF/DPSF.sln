@@ -217,7 +217,6 @@ Global
 		{5E466EAE-9DCE-4DEE-9710-EC548B0EC97D}.Debug|Any CPU.ActiveCfg = Debug|Xbox 360
 		{5E466EAE-9DCE-4DEE-9710-EC548B0EC97D}.Debug|Mixed Platforms.ActiveCfg = Debug|Xbox 360
 		{5E466EAE-9DCE-4DEE-9710-EC548B0EC97D}.Debug|Mixed Platforms.Build.0 = Debug|Xbox 360
-		{5E466EAE-9DCE-4DEE-9710-EC548B0EC97D}.Debug|Mixed Platforms.Deploy.0 = Debug|Xbox 360
 		{5E466EAE-9DCE-4DEE-9710-EC548B0EC97D}.Debug|Windows Phone.ActiveCfg = Debug|Xbox 360
 		{5E466EAE-9DCE-4DEE-9710-EC548B0EC97D}.Debug|x86.ActiveCfg = Debug|Xbox 360
 		{5E466EAE-9DCE-4DEE-9710-EC548B0EC97D}.Debug|Xbox 360.ActiveCfg = Debug|Xbox 360
