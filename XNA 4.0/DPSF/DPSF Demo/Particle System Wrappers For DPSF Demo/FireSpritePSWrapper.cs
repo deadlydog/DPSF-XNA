@@ -2,9 +2,13 @@
 using DPSF_Demo.ParticleSystems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace DPSF_Demo.Particle_System_Wrappers_For_DPSF_Demo
 {
+#if (WINDOWS)
+    [Serializable]
+#endif
 	class FireSpriteDPSFDemoParticleSystemWrapper : FireSpriteParticleSystem, IWrapDPSFDemoParticleSystems
 	{
         public FireSpriteDPSFDemoParticleSystemWrapper(Game cGame)

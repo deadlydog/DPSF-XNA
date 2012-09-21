@@ -400,13 +400,9 @@ namespace DPSF_Demo
 			ShowFloor = false;
 
 			// Setup the Splash Screen to display before anything else
-			_mcDPSFSplashScreenDPSFDemoParticleSystemWrapper.AutoInitialize(this.GraphicsDevice, this.Content, null);
-			_mcDPSFSplashScreenDPSFDemoParticleSystemWrapper.SplashScreenComplete += new EventHandler(mcDPSFSplashScreenParticleSystem_SplashScreenComplete);
+            _mcDPSFSplashScreenDPSFDemoParticleSystemWrapper.AutoInitialize(this.GraphicsDevice, this.Content, null);
+            _mcDPSFSplashScreenDPSFDemoParticleSystemWrapper.SplashScreenComplete += new EventHandler(mcDPSFSplashScreenParticleSystem_SplashScreenComplete);
 			_currentDPSFDemoParticleSystemWrapper = _mcDPSFSplashScreenDPSFDemoParticleSystemWrapper;
-
-			// If we are debugging let's skip the splash screen.
-			if (Debugger.IsAttached)
-				mcDPSFSplashScreenParticleSystem_SplashScreenComplete(null, null);
 		}
 
 		/// <summary>

@@ -2057,6 +2057,9 @@ namespace DPSF
 
 // The Reach profile does not have access to the System.Diagnostics namespace, so it does not know about the Stopwatch class.
 #if (!WINDOWS_PHONE)
+    #if (WINDOWS)
+            [NonSerialized]
+    #endif
 		private Stopwatch _performanceProfilingStopwatch = null; // Stopwatch used for diagnostic timers.
 #endif
 		private bool _performanceProfilingIsEnabled = false;
@@ -2801,6 +2804,10 @@ namespace DPSF
 					throw new DPSFArgumentNullException("DeserializationTexturePath", "The specified Texture to use is null. A valid Texture must be set to draw the current Type of Particles.");
 				}
 			}
+
+            // Re-initialize the Render Properties.
+            mcRenderProperties = new RenderProperties();
+            InitializeRenderProperties();
 		}
 
 		/// <summary>

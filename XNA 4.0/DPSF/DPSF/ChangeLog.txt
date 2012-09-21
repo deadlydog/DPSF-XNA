@@ -32,6 +32,8 @@ public:
 - Added a NumberOfParticlesEmitted property to the Emitter class that keeps track of how many particles an individual emitter has added to a particle system.
 - Updated documentation on some of the old tutorials and Optimizations section a bit.
 - Added support for "Mono for Android" with a new DLL file.
+- Fixed bugs to make particle system properly serialize and deserialize.
+- Added feature to skip the splash screen (by default) when debugging.
 
 Possible Breaking Changes:
 - Removed the mcRandomNumber particle system class variable. Everything should now just use the RandomNumber public property.

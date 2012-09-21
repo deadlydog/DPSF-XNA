@@ -146,9 +146,6 @@ namespace DPSF_Demo.ParticleSystems
 
 		public void LoadDPSFSplashScreen()
 		{
-			// Do the setup required by all Splash Screens
-			DoCommonSplashScreenInitialization();
-
 			// Randomly choose which Splash Screen to display
 			int rand = RandomNumber.Next(2);
 			switch (rand)
@@ -172,6 +169,9 @@ namespace DPSF_Demo.ParticleSystems
 
 			// Add the event that triggers when the Splash Screen is complete
 			ParticleSystemEvents.AddTimedEvent(_totalTimeInSecondsToDisplaySplashScreen, MarkSplashScreenAsDonePlaying);
+
+            // Add the event that checks if the splash screen should exit right away or not.
+            ParticleSystemEvents.AddOneTimeEvent(ExitSplashScreenIfDebugging);
 		}
 
 		private void DoCommonParticleInitialization(DPSFSplashScreenParticle particle)
@@ -235,6 +235,7 @@ namespace DPSF_Demo.ParticleSystems
 		#region Vortex Splash Screen
 		public void LoadVortexSplashScreen()
 		{
+            // Do the setup required by all Splash Screens
 			DoCommonSplashScreenInitialization();
 
 			ParticleInitializationFunction = InitializeParticleVortexScreen;
@@ -274,6 +275,7 @@ namespace DPSF_Demo.ParticleSystems
 		#region Falling Blocks Splash Screen
 		public void LoadFallingBlocksSplashScreen()
 		{
+            // Do the setup required by all Splash Screens
 			DoCommonSplashScreenInitialization();
 
 			ParticleInitializationFunction = InitializeParticleFallingBlocksScreen;
@@ -318,8 +320,8 @@ namespace DPSF_Demo.ParticleSystems
 		/// <summary>
 		/// Rotates the particle around the world coordinates origin.
 		/// </summary>
-		/// <param name="particle">The c particle.</param>
-		/// <param name="elapsedTimeInSeconds">The f elapsed time in seconds.</param>
+		/// <param name="particle">The particle.</param>
+		/// <param name="elapsedTimeInSeconds">The elapsed time in seconds.</param>
 		public void RotateAroundOrigin(DPSFSplashScreenParticle particle, float elapsedTimeInSeconds)
 		{
 			// Calculate the Rotation Matrix to Rotate the Particle by
@@ -333,8 +335,8 @@ namespace DPSF_Demo.ParticleSystems
 		/// <summary>
 		/// Lerps the particle to its composite Image position and orientation.
 		/// </summary>
-		/// <param name="particle">The c particle.</param>
-		/// <param name="elapsedTimeInSeconds">The f elapsed time in seconds.</param>
+		/// <param name="particle">The particle.</param>
+		/// <param name="elapsedTimeInSeconds">The elapsed time in seconds.</param>
 		public void MoveToCompositeImagePosition(DPSFSplashScreenParticle particle, float elapsedTimeInSeconds)
 		{
 			// If it is not time for the Particle to go to its final destination yet, or it has already reached it, then just exit.
@@ -404,6 +406,17 @@ namespace DPSF_Demo.ParticleSystems
 			IsSplashScreenComplete = true;
 		}
 
+        /// <summary>
+        /// Exit the splash screen right away if debugging.
+        /// </summary>
+        /// <param name="elapsedTimeInSeconds">The elapsed time in seconds.</param>
+        public void ExitSplashScreenIfDebugging(float elapsedTimeInSeconds)
+        {
+            // If we are debugging and want to skip the splash screen when debugging.
+            if (SkipSplashScreenWhenDebugging && System.Diagnostics.Debugger.IsAttached)
+                IsSplashScreenComplete = true;
+        }
+
 		//===========================================================
 		// Other Particle System Functions
 		//===========================================================
@@ -437,5 +450,12 @@ namespace DPSF_Demo.ParticleSystems
 		{
 			get { return _backgroundColor; }
 		}
+
+        /// <summary>
+        /// Get / Set if the splash screen should be skipped when the application is being debugged.
+        /// <para>Having this set to true makes it so that you (the developer) don't have to go through the splash screen every time you debug your application.</para>
+        /// <para>Default value is true.</para>
+        /// </summary>
+        public bool SkipSplashScreenWhenDebugging = true;
 	}
 }
