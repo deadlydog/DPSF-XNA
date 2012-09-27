@@ -76,7 +76,6 @@ namespace DPSF
 		{
 			return _basicEffect ?? (_basicEffect = new BasicEffect(graphicsDevice));
 		}
-
     	private static BasicEffect _basicEffect = null;
 
 		/// <summary>
@@ -88,7 +87,6 @@ namespace DPSF
 		{
 			return _alphaTestEffect ?? (_alphaTestEffect = new AlphaTestEffect(graphicsDevice));
 		}
-
     	private static AlphaTestEffect _alphaTestEffect = null;
     }
 }
