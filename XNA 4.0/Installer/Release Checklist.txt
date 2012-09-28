@@ -24,7 +24,7 @@ When releasing a new version of DPSF, be sure to follow these steps:
 
 9b - Also do the same for the "DPSF\DPSF Demo (Phone)" project.
 
-10 - Copy the files in "Installer Files\DPSF Demo\DPSF Demo\DPSF7 Demo\Templates" to the "Installer Files\Templates\DPSF Defaults" folder.
+10 - Copy the files in "Installer Files\DPSF Demo\DPSF Demo\DPSF Demo\Templates" to the "Installer Files\Templates\DPSF Defaults" folder.
 
 11 - Copy the files in "DPSF\DPSF\DPSF Defaults" to the "Installer Files\Templates\DPSF Defaults" folder.
 
