@@ -16,7 +16,6 @@
     <XnaProfile>Reach</XnaProfile>
     <XnaCrossPlatformGroupID>895c4e98-d392-43db-952d-e9adbd3153d9</XnaCrossPlatformGroupID>
     <XnaOutputType>Game</XnaOutputType>
-    <XnaRefreshLevel>1</XnaRefreshLevel>
     <WPTombstoneEnabled>false</WPTombstoneEnabled>
     <XapFilename>$(AssemblyName).xap</XapFilename>
     <SilverlightManifestTemplate>Properties\AppManifest.xml</SilverlightManifestTemplate>
@@ -52,9 +51,6 @@
     <XnaCompressContent>false</XnaCompressContent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DPSFPhone">
-      <HintPath>C:\DPSF\DPSFPhone.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Xna.Framework" />
     <Reference Include="Microsoft.Xna.Framework.Game" />
     <Reference Include="Microsoft.Xna.Framework.Graphics" />
@@ -94,6 +90,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\DPSF\DPSF\Windows Phone Copy of DPSF.csproj">
+      <Project>{97299298-E3D0-4F11-B5CF-F7F5F2E4D81B}</Project>
+      <Name>Windows Phone Copy of DPSF</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DPSF Demo for Windows PhoneContent\DPSF Demo for Windows PhoneContent.contentproj">
       <Name>DPSF_Demo_for_Windows_PhoneContent</Name>
       <XnaReferenceType>Content</XnaReferenceType>
