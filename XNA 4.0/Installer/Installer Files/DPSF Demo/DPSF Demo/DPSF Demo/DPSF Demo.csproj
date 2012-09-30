@@ -61,10 +61,6 @@
     <XnaCompressContent>true</XnaCompressContent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DPSF, Version=2.3.0.0, Culture=neutral, PublicKeyToken=32c832bfa7326ee2, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\DPSF\DPSF.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.Game, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
@@ -183,6 +179,10 @@
     <Content Include="Game.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\DPSF\DPSF\DPSF.csproj">
+      <Project>{B0CF088B-D0AA-4E39-9DD0-0E876ACFE7D7}</Project>
+      <Name>DPSF</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\BasicVirtualEnvironment\BasicVirtualEnvironment\BasicVirtualEnvironment.csproj">
       <Project>{E00BCEC2-64EF-4172-AC40-BEE8A806781C}</Project>
       <Name>BasicVirtualEnvironment</Name>

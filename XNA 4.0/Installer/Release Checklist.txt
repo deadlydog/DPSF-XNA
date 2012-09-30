@@ -52,4 +52,4 @@ Then re-run the "DPSF\DPSF.sln" in x86 Release mode to generate the executable a
 
 21 - Check files into Git, adding the current dll version (e.g. v1.0.1.1) and Change Log to the SVN commit comments.
 
-22 - Upload the new version to the web, along with the new HTML help files, and update the RSS feed to show a new version.
+22 - Upload the new version to the web, along with the new HTML help files, and update the RSS feed to show a new version. The web has it's own "Release Process.txt" file to follow.

@@ -170,6 +170,10 @@
     <Content Include="Game.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\DPSF\DPSF\Xbox 360 Copy of DPSF.csproj">
+      <Project>{32E4536F-C7D3-4AE8-84A6-FA9E6ABED1BA}</Project>
+      <Name>Xbox 360 Copy of DPSF</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\BasicVirtualEnvironment\BasicVirtualEnvironment\Xbox 360 Copy of BasicVirtualEnvironment.csproj">
       <Project>{cc35be29-33ba-4a22-8ab6-4488805f5f9e}</Project>
       <Name>Xbox 360 Copy of BasicVirtualEnvironment</Name>
@@ -208,9 +212,6 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Reference Include="DPSFXbox360">
-      <HintPath>C:\DPSF\DPSFXbox360.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Xna.Framework" />
     <Reference Include="Microsoft.Xna.Framework.Game" />
     <Reference Include="Microsoft.Xna.Framework.GamerServices" />
