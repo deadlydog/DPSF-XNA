@@ -1,0 +1,14 @@
+Checklist of things to do when releasing a new version of DPSF:
+
+The following should be done on the dev DPSF website (dev.xnaparticles.com):
+1 - Zip up the new version of DPSF so that it's called "DPSF Installer.zip" and overwrite the existing one.
+2 - Update the "DPSFHelp" folder with the latest DPSF help files.
+3 - Copy the previous installer executable into the ArchivedDPSFVerions folder so it can be downloaded from ChangeLog.php.
+4 - Update "RSS.xml" to announce the new version of DPSF.
+5 - Update the "ChangeLog.php" file with the new version's changes.
+6 - Update the "Download.php" file with the new version info.
+7 - Sync all of the changes over to dev.xnaparticles.com.
+8 - Update the product info on upload.cnet.com so that it downloads the new version of DPSF (from dev.xnaparticles.com) so that it can host the download.
+
+9 - It takes a few days for upload.com to approve the new version and host it for download, so don't update the live DPSF website site until you receive confirmation that they are hosting the new version. After receiving confirmation that upload.com is hosting the new version of DPSF, update the live DPSF website (www.xnaparticles.com) using the updated dev website (dev.xnaparticles.com).
+10 - Announcement of the new version on Twitter, Facebook, and the DPSF Forums (http://forums.xnaparticles.com).

@@ -1,0 +1,283 @@
+/* CSS for DansKingom.com */
+
+body
+{
+	background:#808080 url(../Images/Theme/Background.gif) repeat-x;
+	color:#333333;
+	font-family::sans-serif;
+	font-size:12pt;
+	margin:auto;
+	padding:0.25em;
+	width:980px;
+}
+
+/* How links should look */
+a, a:link
+{
+	color:#3044D1;
+	font-weight:bold;
+	text-decoration:none;
+}
+
+/* How visited links should look */
+a:visited
+{
+	color:#CC0000;
+	font-weight:normal;
+}
+
+/* How links should look when hovered over */
+a:hover
+{	
+	text-decoration:underline;
+}
+
+/* Used for "fake" links */
+.Clickable
+{
+	cursor:pointer;
+	color:#3044D1;
+	font-weight:bold;
+	text-decoration:none;
+}
+
+/* When hovering over fake links */
+.Clickable:hover
+{
+	text-decoration:underline;
+}
+
+/* Page Title */
+h1
+{
+/*
+	color:#444444;
+	display:block;
+	font-size:24pt;
+	font-weight:600;
+	padding-top:0em;
+	padding-bottom:0.2em;
+	margin:0em;
+*/
+	border-bottom:1px dotted #000000;
+	color:#BB0000;
+	display:block;
+	font-size:16pt;
+	font-weight:800;
+	padding:0em;
+	margin:0em;
+}
+
+/* Section */
+h2
+{
+	color:#666666;
+	display:block;
+	font-size:18pt;
+	font-weight:600;
+	padding-top:0.3em;
+	padding-bottom:0em;
+	text-decoration:underline;
+	margin:0em;
+}
+
+/* Sub Section */
+h3
+{
+	color:#666666;
+	display:block;
+	font-size:16pt;
+	font-weight:600;
+	padding-top:0.75em;
+	padding-bottom:0em;
+	margin:0em;
+}
+
+.NoBorder
+{
+	border-style:none;
+}
+
+.Centered
+{
+	text-align:center;
+}
+
+ul.FAQ
+{
+	list-style-type:circle;
+}
+
+p.Answer
+{
+	margin-bottom:0.5em;
+	margin-top:0.1em;
+}
+
+#ContentWrapper
+{
+	/*float:left;*/
+	margin:0em;
+	padding:0em;
+	/*width:980px;*/
+}
+
+#Title
+{	
+	color:#0000CC;
+	font-family:Geneva, Arial, Helvetica, sans-serif;
+	font-weight:bold;
+	margin:0.25em;
+	text-decoration:none;
+}
+
+#Title img
+{
+	border:none;
+	display:inline;
+}
+
+#Title img.Logo
+{
+	vertical-align:middle;
+}
+
+#Title span.Icons
+{
+	float:right;
+	margin-right:1em;
+	margin-top:0.7em;
+}
+
+#Title img.Stacked
+{
+	display:block;
+	margin-bottom:0.3em;
+	margin-top:0.3em;
+}
+
+#MenuAndContent
+{
+
+}
+
+#Menu
+{
+	margin:0em;
+	padding:0em;
+}
+
+#Menu ul
+{
+	margin:0em;
+	padding:0.25em;
+}
+
+#Menu li
+{
+	display:inline;
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;			/* Don't show bullets */
+	margin:0em;
+	padding:0em;
+}
+
+#Menu a
+{
+	background-color:#999999;
+	border:1px solid #333333;
+	margin-left:0.25em;
+	padding:0.25em;
+	text-decoration:none;
+	color:#FFFFFF;
+	font-size:1.1em;
+	font-weight:normal;
+}
+
+#Menu a:hover
+{
+	background-color:#666666;
+}
+
+#Menu a.SelectedTab
+{
+	background-color:#FFFFFF;
+	color:#333333;
+	border-bottom:1px solid #FFFFFF;
+}
+
+#Content
+{
+	background-color:#FFFFFF;
+	border:1px solid #333333;
+	margin:0em;
+	padding:0.5em;	
+}
+/*
+#SideColumn
+{
+	float:right;
+	margin:0em;
+	padding:0em;
+	width:120px;
+}
+
+#SideColumn img
+{
+	background-color: #FFFFFF;
+    background-image: url(../Images/LoadingIndicator.gif);
+    background-repeat: no-repeat;
+    background-position: center center;
+	border:#333333 1px solid;
+	display:block;
+	margin-bottom:0.3em;
+}
+*/
+#GoogleAdLarge
+{
+	margin: 0.5em auto;
+	text-align:center;
+}
+
+#Footer
+{
+	font-size:0.8em;
+	margin:0.5em;
+	text-align:center;
+}
+
+.Clear
+{
+	clear:both;
+}
+
+#UserQuotes 
+{  
+	float:right;
+	font-family:Verdana,Arial,Sans-Serif;  
+	font-size:0.75em;
+	margin:0.4em 0em;
+	width:250px;
+}
+
+.jcarousel-container ul li{ list-style:none; display:block; padding-bottom:1px; margin-bottom:5px; height:8em;}   
+
+.Quote 
+{  
+	font-style:italic;
+}  
+
+.QuoteAuthor
+{
+	font-style:normal;
+	font-weight:bold;
+	padding-left:1em;
+}
+
+/* Styles to apply to YouTube videos */
+iframe
+{
+	margin-left:0.5em;
+	margin-right:0.5em;
+}

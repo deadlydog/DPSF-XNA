@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+  <channel>
+    <title>DPSF</title>
+    <link>http://www.xnaparticles.com</link>
+    <description>Dynamic Particle System Framework - Create custom particle systems in XNA quickly and easily</description>
+    <image>
+        <url></url>
+        <link>http://www.xnaparticles.com</link>
+    </image>
+    
+<!-- New items get posted at the top of the list here -->	
+
+	<item>
+       <title>DPSF 2.3.0 (XNA 4) Released</title>
+       <link>http://www.xnaparticles.com/Download.php</link> 
+       <description>September 30, 2012 - DPSF version 2.3.0 has been released. Lots of improvements and bug fixes. Particle systems now support multiple emitters! Initial support for Mono for Android.</description>
+    </item>
+
+	<item>
+       <title>DPSF 2.2.2 (XNA 4) Released</title>
+       <link>http://www.xnaparticles.com/Download.php</link> 
+       <description>December 10, 2011 - DPSF version 2.2.2 has been released. This release changes the EULA so that you can use DPSF as long as you mention DPSF somewhere in your app (splash screen is no longer required).</description>
+    </item>
+
+	<item>
+       <title>DPSF 2.2.1 (XNA 4) Released</title>
+       <link>http://www.xnaparticles.com/Download.php</link> 
+       <description>September 1, 2011 - DPSF version 2.2.1 has been released. This release includes some minor bug fixes and fixes some features that were broken when moving to XNA 4.</description>
+    </item>
+
+	<item>
+       <title>DPSF 2.2.0 (XNA 4) Released</title>
+       <link>http://www.xnaparticles.com/Download.php</link> 
+       <description>July 1, 2011 - DPSF version 2.2.0 has been released. This release includes a fairly substantial performance enhancement and now enables all of the default particle systems (not just Sprite particle systems) to run on the Reach profile for Windows Phone 7!</description>
+    </item>
+
+	<item>
+       <title>DPSF 2.1.0 (XNA 4) and 1.6.0 (XNA 3.1) Released</title>
+       <link>http://www.xnaparticles.com/Download.php</link> 
+       <description>April 11, 2011 - Versions 2.1.0 and 1.6.0 of DPSF have been released. This release includes new features, bug fixes, and performance enhancements. Now allows for 3D particles on the Windows Phone 7!</description>
+    </item>	
+
+	<item>
+       <title>DPSF 2.0.1 (XNA 4) and 1.5.5 (XNA 3.1) Released</title>
+       <link>http://www.xnaparticles.com/Download.php</link> 
+       <description>February 14, 2011 - Versions 2.0.1 and 1.5.5 of DPSF have been released. This release includes bug fixes and performance enhancements, especially for running on the Xbox 360.</description>
+    </item>	
+
+	<item>
+       <title>DPSF 2.0.0.0 Released (XNA 4 Compatible)</title>
+       <link>http://www.xnaparticles.com/Download.php</link> 
+       <description>January 11, 2011 - Version 2.0.0.0 of DPSF has been released. This release includes many changes in order to make DPSF compatible with XNA 4, and allows DPSF to run on the Windows Phone.</description>
+    </item>	
+
+	<item>
+       <title>DPSF has a new home</title>
+       <link>http://www.xnaparticles.com</link> 
+       <description>DDPSF has been moved and can now be found at http://www.XNAParticles.com.</description>
+    </item>	
+
+	<item>
+       <title>DPSF (XNA 3.1) 1.5.4.0 Released</title>
+       <link>http://dpsf.danskingdom.com/Download.php</link> 
+       <description>December 8, 2010 - Version 1.5.4.0 of DPSF has been released. This release fixes a minor memory leak and adds support for using a custom SpriteBatch to draw Sprite particle systems.</description>
+    </item>	
+
+	<item>
+       <title>DPSF XNA 4 Beta 1 Released</title>
+       <link>http://dpsf.danskingdom.com/Download.php</link> 
+       <description>November 14, 2010 - The beta version of the XNA 4.0 compatible DPSF is now available.</description>
+    </item>	
+
+	<item>
+       <title>DPSF 1.5.3.0 Released</title>
+       <link>http://dpsf.danskingdom.com/Download.php</link> 
+       <description>November 10, 2010 - Version 1.5.3.0 of DPSF has been released. This release fixes a bug in the textured quad particle systems where textured would be inverted.</description>
+    </item>	
+
+	<item>
+       <title>DPSF 1.5.2.0 Released</title>
+       <link>http://dpsf.danskingdom.com/Download.php</link> 
+       <description>October 1, 2010 - Version 1.5.2.0 of DPSF has been released. This release fixes a major memory leak with with the Sprite type particle systems.</description>
+    </item>	
+
+	<item>
+       <title>DPSF 1.5.1.0 Released</title>
+       <link>http://dpsf.danskingdom.com/Download.php</link> 
+       <description>August 27, 2010 - Version 1.5.1.0 of DPSF has been released. This release fixes bugs, adds minor features, and reduces the memory footprint of the Draw() function.</description>
+    </item>	
+
+	<item>
+       <title>DPSF 1.5.0.0 Released</title>
+       <link>http://dpsf.danskingdom.com/Download.php
+	   <!-- http://dpsf.freeforums.org/download-dpsf-f4.html --></link> 
+       <description>April 25, 2010 - Version 1.5.0.0 of DPSF has been released. This release fixes bugs, adds minor features, and includes new explosion particle systems in the DPSF Demo.</description>
+    </item>	
+
+	<item>
+       <title>DPSF 1.4.0.0 Released</title>
+       <link>http://dpsf.danskingdom.com/Download.php
+	   <!-- http://dpsf.freeforums.org/download-dpsf-f4.html --></link> 
+       <description>December 4, 2009 - Version 1.4.0.0 of DPSF has been released. This release adds support for animated point sprites, and new magnet classes.</description>
+    </item>	
+	
+	<item>
+       <title>DPSF 1.3.1.0 Released</title>
+       <link>http://dpsf.danskingdom.com/Download.php
+	   <!-- http://dpsf.freeforums.org/download-dpsf-f4.html --></link> 
+       <description>June 15, 2009 - Version 1.3.1.0 of DPSF has been released. This is a minor release that includes support for XNA Game Studio 3.1.</description>
+    </item>
+	
+	<item>
+       <title>DPSF is now 100% free to use</title>
+       <link>http://dpsf.danskingdom.com/index.php</link> 
+       <description>June 2, 2009 - DPSF is now 100% free to use in any application, whether it is free or commercial for profit. 
+	   Instead of charging for a license, DPSF now simply accepts donations instead.</description>
+    </item>
+	
+	<item>
+       <title>DPSF was granted Softpedia's 100% Spyware/Virus/Malware Free Award</title>
+       <link>http://dpsf.danskingdom.com/index.php</link> 
+       <description>May 12, 2009 - DPSF was granted Softpedia's 100% Spyware/Virus/Malware Free Award, which is now visible on the website.</description>
+    </item>
+	
+	<item>
+       <title>DPSF 1.3.0.0 Released</title>
+       <link>http://dpsf.danskingdom.com/Download.php
+	   <!-- http://dpsf.freeforums.org/download-dpsf-f4.html --></link> 
+       <description>May 1, 2009 - Version 1.3.0.0 of DPSF has been released. Highlights include setting particle Bursts in the Emitter, and 5 
+	   tutorials in the Help manual.</description>
+    </item>
+	
+	<item>
+       <title>2 New Demo Videos</title>
+       <link>http://dpsf.danskingdom.com/Videos.php</link> 
+       <description>April 16, 2009 - Two new videos showing the Sphere and Grid particle systems released in DPSF v1.2's DPSF Demo have been 
+	   posted on YouTube.</description>
+    </item>
+	
+  </channel>
+</rss> 
