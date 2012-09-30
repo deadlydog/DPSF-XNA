@@ -1,12 +1,12 @@
 ﻿#region Using Statements
 using System;
-using System.Collections.Generic;
+using DPSF;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 #endregion
 
-namespace DPSF.ParticleSystems
+namespace DPSF_Demo.ParticleSystems
 {
     /// <summary>
     /// Create a new Particle System class that inherits from a Default DPSF Particle System
@@ -63,8 +63,13 @@ namespace DPSF.ParticleSystems
         {
             mcSmokeParticleSystem = new SmokeRingSpriteParticleSystem(this.Game);
 
+            // Determine which Sprite Batch object to pass into the Smoke Particle System.
+            // If a custom one was provided to the Fire Particle System, we want to use it, otherwise we want
+            // the Smoke Particle System to use its own Sprite Batch, so we just pass in null.
+            SpriteBatch spriteBatch = this.UsingExternalSpriteBatchToDrawParticles ? this.SpriteBatch : null;
+
             // Initialize the Smoke Particle System
-            mcSmokeParticleSystem.AutoInitialize(this.GraphicsDevice, this.ContentManager, null);
+            mcSmokeParticleSystem.AutoInitialize(this.GraphicsDevice, this.ContentManager, spriteBatch);
             mcSmokeParticleSystem.DrawOrder = 100;
         }
 
@@ -101,12 +106,16 @@ namespace DPSF.ParticleSystems
             }
         }
 
+        public override int TotalNumberOfActiveParticles { get { return base.TotalNumberOfActiveParticles + mcSmokeParticleSystem.TotalNumberOfActiveParticles; } }
+        public override int TotalNumberOfParticlesAllocatedInMemory { get { return base.TotalNumberOfParticlesAllocatedInMemory + mcSmokeParticleSystem.TotalNumberOfParticlesAllocatedInMemory; } }
+        public override int TotalNumberOfParticlesBeingDrawn { get { return base.TotalNumberOfParticlesBeingDrawn + mcSmokeParticleSystem.TotalNumberOfParticlesBeingDrawn; } }
+
         //===========================================================
         // Initialization Functions
         //===========================================================
         public override void AutoInitialize(GraphicsDevice cGraphicsDevice, ContentManager cContentManager, SpriteBatch cSpriteBatch)
         {
-            InitializeSpriteParticleSystem(cGraphicsDevice, cContentManager, 1000, 50000, "Textures/Fire");
+            InitializeSpriteParticleSystem(cGraphicsDevice, cContentManager, 1000, 50000, "Textures/Fire", cSpriteBatch);
             Name = "Fire and Smoke (Sprites)";
             LoadFireRingEvents();
             Emitter.ParticlesPerSecond = 500;
@@ -281,7 +290,7 @@ namespace DPSF.ParticleSystems
 
             public override void AutoInitialize(GraphicsDevice cGraphicsDevice, ContentManager cContentManager, SpriteBatch cSpriteBatch)
             {
-                InitializeSpriteParticleSystem(cGraphicsDevice, cContentManager, 1000, 50000, "Textures/Smoke");
+                InitializeSpriteParticleSystem(cGraphicsDevice, cContentManager, 1000, 50000, "Textures/Smoke", cSpriteBatch);
                 LoadEvents();
             }
 

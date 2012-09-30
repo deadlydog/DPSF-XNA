@@ -1,6 +1,5 @@
 ﻿#region Using Statements
 using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 #endregion
@@ -64,17 +63,9 @@ namespace DPSF
 		/// <summary>
 		/// An array describing the attributes of each Vertex
 		/// </summary>
-		public VertexElement[] VertexElements
+		public VertexDeclaration VertexDeclaration
 		{
 			get { return null; }
-		}
-
-		/// <summary>
-		/// The Size of one Vertex in Bytes
-		/// </summary>
-		public int SizeInBytes
-		{
-			get { return 0; }
 		}
 	}
 }

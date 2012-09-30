@@ -88,7 +88,8 @@ namespace DPSF
 
         /// <summary>
         /// Get / Set the Position of the Camera.
-        /// <para>NOTE: This should be Set (updated) every frame if Billboarding will be used (i.e. Always have the Particles face the Camera).</para>
+        /// <para>NOTE: 3D Billboard Sprite particles always face the camera by using the View Matrix, so this only needs to be Set (updated) every frame if you plan on 
+        /// sorting these particles relative to one another by their distance from the camera, in order to give proper depth perception of the particles.</para>
         /// </summary>
         public Vector3 CameraPosition { get; set; }
 
@@ -156,7 +157,10 @@ namespace DPSF
         }
 
         /// <summary>
-        /// Sets the camera position, so that the particles know how to make themselves face the camera if needed.
+        /// Sets the camera position, so that the particles know how far they are from the camera and can be properly sorted.
+		/// <para>NOTE: 3D Billboard Sprite particles always face the camera, so this only needs to be Set (updated) every frame if you plan on 
+		/// sorting these particles relative to one another by their distance from the camera, in order to give proper depth perception of the particles
+		/// (i.e. by adding the Particle EveryTimeEvent UpdateParticleDistanceFromCameraSquared and the Particle System EveryTimeEvent UpdateParticleSystemToSortParticlesByDistanceFromCamera).</para>
         /// </summary>
         /// <param name="cameraPosition">The camera position.</param>
         public override void SetCameraPosition(Vector3 cameraPosition)

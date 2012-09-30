@@ -1,16 +1,15 @@
 #region Using Statements
 using System;
-using System.Collections.Generic;
+using DPSF;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 #endregion
 
-namespace DPSF.ParticleSystems
+namespace DPSF_Demo.ParticleSystems
 {
     /// <summary>
-    /// Create a new Particle System class that inherits from a
-    /// Default DPSF Particle System
+    /// Create a new Particle System class that inherits from a Default DPSF Particle System.
     /// </summary>
 #if (WINDOWS)
     [Serializable]
@@ -81,6 +80,11 @@ namespace DPSF.ParticleSystems
                 mcSmokeParticleSystem.Draw();
             }
         }
+
+        public override int TotalNumberOfActiveParticles { get { return base.TotalNumberOfActiveParticles + mcSmokeParticleSystem.TotalNumberOfActiveParticles; } }
+        public override int TotalNumberOfParticlesAllocatedInMemory { get { return base.TotalNumberOfParticlesAllocatedInMemory + mcSmokeParticleSystem.TotalNumberOfParticlesAllocatedInMemory; } }
+        public override int TotalNumberOfParticlesBeingDrawn { get { return base.TotalNumberOfParticlesBeingDrawn + mcSmokeParticleSystem.TotalNumberOfParticlesBeingDrawn; } }
+
 
         //===========================================================
         // Initialization Functions

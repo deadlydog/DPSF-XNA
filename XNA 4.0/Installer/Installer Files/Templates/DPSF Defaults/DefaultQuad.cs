@@ -435,6 +435,7 @@ namespace DPSF
 
 		/// <summary>
 		/// Sets the camera position, so that the particles know how to make themselves face the camera if needed.
+		/// (i.e. you add the Particle EveryTimeEvent UpdateParticleToFaceTheCamera).
 		/// </summary>
 		/// <param name="cameraPosition">The camera position.</param>
 		public override void SetCameraPosition(Vector3 cameraPosition)
@@ -739,32 +740,21 @@ namespace DPSF
 		public Color Color;
 
 		// Describe the vertex structure used to display a Particle
-		private static readonly VertexElement[] msVertexElements =
-		{
+		private static readonly VertexDeclaration vertexDeclaration = new VertexDeclaration
+		(
 			new VertexElement(0, VertexElementFormat.Vector3,
 									VertexElementUsage.Position, 0),
 
 			new VertexElement(12, VertexElementFormat.Color,
-									 VertexElementUsage.Color, 0),
-		};
-
-		// The size of the vertex structure in bytes
-		private const int miSizeInBytes = 16;
+									 VertexElementUsage.Color, 0)
+		);
 
 		/// <summary>
 		/// An array describing the attributes of each Vertex
 		/// </summary>
-		public VertexElement[] VertexElements
+		public VertexDeclaration VertexDeclaration
 		{
-			get { return DefaultQuadParticleVertex.msVertexElements; }
-		}
-
-		/// <summary>
-		/// The Size of one Vertex in Bytes
-		/// </summary>
-		public int SizeInBytes
-		{
-			get { return DefaultQuadParticleVertex.miSizeInBytes; }
+			get { return DefaultQuadParticleVertex.vertexDeclaration; }
 		}
 	}
 }

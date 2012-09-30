@@ -9,8 +9,6 @@ TODO - Do more multiple emitter examples. Have one extend the Emitter class to s
 	text coordinates maybe to have the same particle system display different textures.  Show all 3 solutions in a tutorial.
 TODO - Investigate using Tasks and running on multiple threads to boost performance.
 
-TODO - Look into using one static BasicEffect and AlphaTestEffect instance for all particle systems, rather than one per particle system.
-
 
 Changes made after Version 2.2.2:
 public:
@@ -31,7 +29,7 @@ public:
 - Added new MultipleEmittersParticleSystem class that shows how to use multiple emitters in a particle system class.
 - Added a NumberOfParticlesEmitted property to the Emitter class that keeps track of how many particles an individual emitter has added to a particle system.
 - Updated documentation on some of the old tutorials and Optimizations section a bit.
-- Added support for "Mono for Android" with a new DLL file.
+- Added initial support for "Mono for Android" with a new DLL file (still working some bugs out though).
 - Fixed bugs to make particle system properly serialize and deserialize.
 - Added feature to skip the splash screen (by default) when debugging.
 
@@ -42,6 +40,7 @@ Possible Breaking Changes:
 	that this can be configured for each emitter individually.
 - Changed the MagnetList property from a LinkedList<DefaultParticleSystemMagnet> to a List<DefaultParticleSystemMagnet>.
 - Changed IDPSFParticleVertex to implement Microsoft.XNA.Framework.Graphics.IVertexType and removed the old IDPSFParticleVertex enforcements.
+- Changed the DPSF Splash Screen particle system class to be in the DPSF.SplashScreen namespace.
 
 Private:
 - Added a Name property to the DPSFViewerParameterAttributes.

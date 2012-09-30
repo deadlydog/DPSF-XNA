@@ -1,0 +1,4 @@
+The program used to create the DPSF installer is called "Install Creator" and can be downloaded from:
+http://www.clickteam.com/website/world/install-creator
+
+It's freeware :)

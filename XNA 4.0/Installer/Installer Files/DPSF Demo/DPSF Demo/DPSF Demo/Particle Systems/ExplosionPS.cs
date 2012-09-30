@@ -1,15 +1,15 @@
 ﻿#region Using Statements
 using System;
-using System.Collections.Generic;
+using DPSF;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 #endregion
 
-namespace DPSF.ParticleSystems
+namespace DPSF_Demo.ParticleSystems
 {
     /// <summary>
-    /// Create a new Particle System class that inherits from a Default DPSF Particle System
+    /// Create a new Particle System class that inherits from a Default DPSF Particle System.
     /// </summary>
 #if (WINDOWS)
 	[Serializable]
@@ -54,34 +54,6 @@ namespace DPSF.ParticleSystems
         /// The Intensity of the explosion.
         /// </summary>
         public int ExplosionIntensity { get; set; }
-
-        /// <summary>
-        /// Get the Total Number Of Active Particles currently used in the explosion.
-        /// </summary>
-        public int TotalNumberOfActiveParticles
-        {
-            get
-            {
-                if (_particleSystemManager != null)
-                    return _particleSystemManager.TotalNumberOfActiveParticles;
-                else
-                    return 0;
-            }
-        }
-
-        /// <summary>
-        /// Get the Total Number Of Particles Allocated In Memory for the explosion.
-        /// </summary>
-        public int TotalNumberOfParticlesAllocatedInMemory
-        {
-            get
-            {
-                if (_particleSystemManager != null)
-                    return _particleSystemManager.TotalNumberOfParticlesAllocatedInMemory;
-                else
-                    return 0;
-            }
-        }
 
         ParticleSystemManager _particleSystemManager = null;
         ExplosionDebrisParticleSystem _debrisParticleSystem = null;
@@ -206,10 +178,32 @@ namespace DPSF.ParticleSystems
             _particleSystemManager.DrawAllParticleSystems();
         }
 
+        public override int TotalNumberOfActiveParticles { get { return base.TotalNumberOfActiveParticles + _particleSystemManager.TotalNumberOfActiveParticles; } }
+        public override int TotalNumberOfParticlesAllocatedInMemory { get { return base.TotalNumberOfParticlesAllocatedInMemory + _particleSystemManager.TotalNumberOfParticlesAllocatedInMemory; } }
+        public override int TotalNumberOfParticlesBeingDrawn { get { return base.TotalNumberOfParticlesBeingDrawn + _particleSystemManager.TotalNumberOfParticlesBeingDrawn; } }
+
+        //===========================================================
+        // Initialization Functions
+        //===========================================================
+        public override void AutoInitialize(GraphicsDevice graphicsDevice, ContentManager contentManager, SpriteBatch spriteBatch)
+        {
+            InitializeNoDisplayParticleSystem(10, 100);
+
+            // A No Display particle system doesn't take a graphics device or content manager, so we can't
+            // override the AfterInitialize() function to initialize our other particle systems. So we just
+            // create another function to do it after setting the graphics device and content manager.
+            SetGraphicsDevice(graphicsDevice);
+            this.ContentManager = contentManager;
+            AutoInitializeOtherParticleSystems(spriteBatch);
+
+            Name = "Explosion";
+            LoadLargeExplosion();
+        }
+
         /// <summary>
         /// Initialize all of the particle systems used by this particle system class.
         /// </summary>
-        private void AutoInitializeOtherParticleSystems()
+        private void AutoInitializeOtherParticleSystems(SpriteBatch spriteBatch)
         {
             _particleSystemManager = new ParticleSystemManager();
 
@@ -230,7 +224,7 @@ namespace DPSF.ParticleSystems
             _roundSparksParticleSystem.DrawOrder = 200;
             _shockwaveParticleSystem.DrawOrder = 200;
             _smokeTrailsParticleSystem.DrawOrder = 200;
-            
+
             // Add all of the particle systems to the manager
             _particleSystemManager.AddParticleSystem(_debrisParticleSystem);
             _particleSystemManager.AddParticleSystem(_fireSmokeParticleSystem);
@@ -241,25 +235,16 @@ namespace DPSF.ParticleSystems
             _particleSystemManager.AddParticleSystem(_smokeTrailsParticleSystem);
 
             // Initialize all of the particle systems
-			_particleSystemManager.AutoInitializeAllParticleSystems(this.GraphicsDevice, this.ContentManager, null);
-        }
+			_particleSystemManager.AutoInitializeAllParticleSystems(this.GraphicsDevice, this.ContentManager, spriteBatch);
 
-        //===========================================================
-        // Initialization Functions
-        //===========================================================
-        public override void AutoInitialize(GraphicsDevice graphicsDevice, ContentManager contentManager, SpriteBatch spriteBatch)
-        {
-            InitializeNoDisplayParticleSystem(10, 100);
-
-            // A No Display particle system doesn't take a graphics device or content manager, so we can't
-            // override the AfterInitialize() function to initialize our other particle systems. So we just
-            // create another function to do it after setting the graphics device and content manager.
-            SetGraphicsDevice(graphicsDevice);
-            this.ContentManager = contentManager;
-            AutoInitializeOtherParticleSystems();
-
-            Name = "Explosion";
-            LoadLargeExplosion();
+			// Turn off Lerping on the particle system emitters so that they don't trail from one explosion location to the next.
+			_debrisParticleSystem.Emitter.LerpEmittersPositionAndOrientation = false;
+			_fireSmokeParticleSystem.Emitter.LerpEmittersPositionAndOrientation = false;
+			_flashParticleSystem.Emitter.LerpEmittersPositionAndOrientation = false;
+			_flyingSparksParticleSystem.Emitter.LerpEmittersPositionAndOrientation = false;
+			_roundSparksParticleSystem.Emitter.LerpEmittersPositionAndOrientation = false;
+			_shockwaveParticleSystem.Emitter.LerpEmittersPositionAndOrientation = false;
+			_smokeTrailsParticleSystem.Emitter.LerpEmittersPositionAndOrientation = false;
         }
 
         public void LoadLargeExplosion()

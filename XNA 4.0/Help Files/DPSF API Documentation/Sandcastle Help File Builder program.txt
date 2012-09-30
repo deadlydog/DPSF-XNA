@@ -1,0 +1,1 @@
+The program used to generate the DPSF API Documention.chm is called "Sandcastle Help File Builder" and can be downloaded from http://shfb.codeplex.com.

@@ -1,12 +1,12 @@
 ﻿#region Using Statements
 using System;
-using System.Collections.Generic;
+using DPSF;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 #endregion
 
-namespace DPSF.ParticleSystems
+namespace DPSF_Demo.ParticleSystems
 {
     /// <summary>
     /// Create a new Particle System class that inherits from DPSF using 
@@ -44,7 +44,7 @@ namespace DPSF.ParticleSystems
         public override void AutoInitialize(GraphicsDevice cGraphicsDevice, ContentManager cContentManager, SpriteBatch cSpriteBatch)
         {
             // Initialize the Particle System before doing anything else
-            InitializeSpriteParticleSystem(cGraphicsDevice, cContentManager, 1000, 50000, "Textures/Star2");
+            InitializeSpriteParticleSystem(cGraphicsDevice, cContentManager, 1000, 50000, "Textures/Star2", cSpriteBatch);
 
             Name = "Magnet";
 
@@ -74,12 +74,12 @@ namespace DPSF.ParticleSystems
             // Clear all of the Magnets so they can be re-added
             MagnetList.Clear();
 
-            // Setup the Maget attached to the Emitter and add it to the Magnet List
+            // Setup the Magnet attached to the Emitter and add it to the Magnet List
             mcEmitterPointMagnet = new MagnetPoint(Emitter.PositionData.Position,
                                                     DefaultParticleSystemMagnet.MagnetModes.Attract,
                                                     DefaultParticleSystemMagnet.DistanceFunctions.Cubed,
                                                     0, 100, 15, 0);
-            MagnetList.AddFirst(mcEmitterPointMagnet);
+            MagnetList.Add(mcEmitterPointMagnet);
 
             // Allow the Particle's Velocity, Rotational Velocity, Color, and Transparency to be updated each frame
             ParticleEvents.AddEveryTimeEvent(UpdateParticlePositionUsingVelocity);
@@ -108,11 +108,11 @@ namespace DPSF.ParticleSystems
             MagnetList.Clear();
 
             // Add two Point Magnets
-            MagnetList.AddFirst(new MagnetPoint(new Vector3(100, 50, 0),
+            MagnetList.Add(new MagnetPoint(new Vector3(100, 50, 0),
                                     DefaultParticleSystemMagnet.MagnetModes.Attract,
                                     DefaultParticleSystemMagnet.DistanceFunctions.SquaredInverse,
                                     0, 100, 20, 0));
-            MagnetList.AddFirst(new MagnetPoint(new Vector3(-100, 50, 0),
+            MagnetList.Add(new MagnetPoint(new Vector3(-100, 50, 0),
                                     DefaultParticleSystemMagnet.MagnetModes.Repel,
                                     DefaultParticleSystemMagnet.DistanceFunctions.SquaredInverse,
                                     0, 100, 20, 0));

@@ -15,30 +15,30 @@
 // NOTE: The particle system looks for the DPSFLogo.png image file in
 //  a folder called "Textures" in the Content directory.  If you do 
 //  not have the image stored there, you will need to change the
-//  msTextureAssetName variable to use the correct path.
+//  _textureAssetName variable to use the correct path.
 //===================================================================
 
 #region Using Statements
 using System;
-using System.Collections.Generic;
+using DPSF;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 #endregion
 
-namespace DPSF.ParticleSystems
+namespace DPSF.SplashScreen
 {
 	// Create a new type of Particle for this Particle System
 	class DPSFSplashScreenParticle : DefaultAnimatedTexturedQuadParticle
 	{
 		// We need another variable to hold the Particle's untransformed Position (it's Emitter Independent Position)
-		public Vector3 sImagePosition;
-		public Quaternion cImageOrientation;
-		public Vector3 sRotation;
-		public bool bGoingToImagePosition;
-		public bool bReachedImagePosition;
-		public bool bReachedImageOrientation;
-		public Quaternion cOrientationBeforeAutomaticMovement;
+		public Vector3 ImagePosition;
+		public Quaternion ImageOrientation;
+		public Vector3 Rotation;
+		public bool IsGoingToImagePosition;
+		public bool IsImagePositionReached;
+		public bool IsImageOrientationReached;
+		public Quaternion OrientationBeforeAutomaticMovement;
 
 		public DPSFSplashScreenParticle()
 		{
@@ -48,11 +48,11 @@ namespace DPSF.ParticleSystems
 		public override void Reset()
 		{
 			base.Reset();
-			sImagePosition = Vector3.Zero;
-			cImageOrientation = Quaternion.Identity;
-			sRotation = Vector3.Zero;
-			bGoingToImagePosition = bReachedImagePosition = bReachedImageOrientation = false;
-			cOrientationBeforeAutomaticMovement = Quaternion.Identity;
+			ImagePosition = Vector3.Zero;
+			ImageOrientation = Quaternion.Identity;
+			Rotation = Vector3.Zero;
+			IsGoingToImagePosition = IsImagePositionReached = IsImageOrientationReached = false;
+			OrientationBeforeAutomaticMovement = Quaternion.Identity;
 		}
 
 		public override void CopyFrom(DPSFParticle ParticleToCopy)
@@ -61,13 +61,13 @@ namespace DPSF.ParticleSystems
 			DPSFSplashScreenParticle cParticleToCopy = (DPSFSplashScreenParticle)ParticleToCopy;
 
 			base.CopyFrom(cParticleToCopy);
-			sImagePosition = cParticleToCopy.sImagePosition;
-			cImageOrientation = cParticleToCopy.cImageOrientation;
-			sRotation = cParticleToCopy.sRotation;
-			bGoingToImagePosition = cParticleToCopy.bGoingToImagePosition;
-			bReachedImagePosition = cParticleToCopy.bReachedImagePosition;
-			bReachedImageOrientation = cParticleToCopy.bReachedImageOrientation;
-			cOrientationBeforeAutomaticMovement = cParticleToCopy.cOrientationBeforeAutomaticMovement;
+			ImagePosition = cParticleToCopy.ImagePosition;
+			ImageOrientation = cParticleToCopy.ImageOrientation;
+			Rotation = cParticleToCopy.Rotation;
+			IsGoingToImagePosition = cParticleToCopy.IsGoingToImagePosition;
+			IsImagePositionReached = cParticleToCopy.IsImagePositionReached;
+			IsImageOrientationReached = cParticleToCopy.IsImageOrientationReached;
+			OrientationBeforeAutomaticMovement = cParticleToCopy.OrientationBeforeAutomaticMovement;
 		}
 	}
 
@@ -86,27 +86,32 @@ namespace DPSF.ParticleSystems
 		// Structures and Variables
 		//===========================================================
 
-		// The location of the DPSFLogo.png image file
-		private const string msTextureAssetName = "Textures/DPSFLogo";
+		// The location of the DPSFLogo.png image file (change this to point to where you are storing the DPSF Logo)
+		private const string _textureAssetName = "Textures/DPSFLogo";
 
-		// Effect Settings (do not change these)
-		private const int miNumberOfRows = 64;
-		private const int miNumberOfColumns = 64;
-		private const int miWidthOfCompositeImage = 256;
-		private const int miHeightOfCompositeImage = 128;
-		private const float mfTimeBeforeMovingToImagePosition = 1.0f;
-		private const float mfTotalTimeForIntro = 4.0f;
-		private const int miNumberOfParticlesToEmitPerSecond = 10000;
-		
+		// Constant Effect Settings
+		private int _maxNumberOfRows = 32;		// Don't use more than 1024 (i.e. 32*32) particles to ensure smooth animation on Xbox 360.
+		private int _maxNumberOfColumns = 32;
+		private const int _widthOfCompositeImage = 256;
+		private const int _heightOfCompositeImage = 128;
+		private const float _totalTimeInSecondsToDisplaySplashScreen = 5.0f;
+
+		// Effect Setting Variables
+		private float _timeInSecondsBeforeMovingToImagePosition = 1.25f;
+		private float _timeInSecondsToReachImagePosition = 1.0f;
+		private float _timeInSecondsToReachImageOrientation = 1.5f;
+
 		// Class variables
-		private const int miNumberOfParticlesRequired = miNumberOfRows * miNumberOfColumns;
-		private CullMode meDefaultCullMode;
-		private bool mbIntroIsDonePlaying = false;
+		private int _maxNumberOfParticlesRequired = 0;
+		private DateTime _splashScreenStartTime;
 
-		// Camera Settings
-		private Matrix msViewMatrix = Matrix.CreateLookAt(new Vector3(0, 50, 300), new Vector3(0, 50, 0), Vector3.Up);
-		private Matrix msProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, 1.33333f, 1, 10000);
-		private Color msBackgroundColor = Color.Black;
+		// Have the particle die half a second before the splash screen ends so we see it fade out nicely
+		private const float _maxParticleLifetime = _totalTimeInSecondsToDisplaySplashScreen - 0.5f;
+
+		// Camera Settings to use while displaying the Splash Screen
+		private Matrix _viewMatrix = Matrix.CreateLookAt(new Vector3(0, 50, 300), new Vector3(0, 50, 0), Vector3.Up);
+		private Matrix _projectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, 1.33333f, 1, 10000);
+		private Color _backgroundColor = Color.Black;
 
 		//===========================================================
 		// Overridden Particle System Functions
@@ -114,16 +119,8 @@ namespace DPSF.ParticleSystems
 		protected override void InitializeRenderProperties()
 		{
 			base.InitializeRenderProperties();
-			RenderProperties.RasterizerState.CullMode = CullMode.None;
-			RenderProperties.DepthStencilState.DepthBufferWriteEnable = true;
-		}
-
-		protected override void SetEffectParameters()
-		{
-			base.SetEffectParameters();
-
-			// Show only the Textures Color (do not blend with Particle Color)
-			Effect.Parameters["xColorBlendAmount"].SetValue(0.0f);
+			RenderProperties.RasterizerState.CullMode = CullMode.None;			// Using 3D quads, so make sure we can see the texture on the front and back.
+			RenderProperties.DepthStencilState.DepthBufferWriteEnable = true;	// Enable the depth buffer so particles are sorted properly from front to back.
 		}
 
 		//===========================================================
@@ -131,162 +128,93 @@ namespace DPSF.ParticleSystems
 		//===========================================================
 		public override void AutoInitialize(GraphicsDevice cGraphicsDevice, ContentManager cContentManager, SpriteBatch cSpriteBatch)
 		{
-			InitializeTexturedQuadParticleSystem(cGraphicsDevice, cContentManager, miNumberOfParticlesRequired, 
-					miNumberOfParticlesRequired, UpdateVertexProperties, msTextureAssetName);
-			LoadDPSFIntro();
+			// If we are using the Reach profile (instead of HiDef) use fewer particles so it's less expensive and animates smoothly.
+			if (cGraphicsDevice.GraphicsProfile == GraphicsProfile.Reach)
+			{
+				_maxNumberOfRows = 24;
+				_maxNumberOfColumns = 24;
+			}
+			_maxNumberOfParticlesRequired = _maxNumberOfRows * _maxNumberOfColumns;
+
+			// Initialize the particle system with the texture to use
+			InitializeTexturedQuadParticleSystem(cGraphicsDevice, cContentManager, _maxNumberOfParticlesRequired, 
+					_maxNumberOfParticlesRequired, UpdateVertexProperties, _textureAssetName);
+
+			// Load one of the DPSF Splash Screens
+			LoadDPSFSplashScreen();
 		}
 
-		public void LoadDPSFIntro()
+		public void LoadDPSFSplashScreen()
 		{
-			// Setup the Camera and specify the number of Particles to Emit Per Second
-			SetWorldViewProjectionMatrices(Matrix.Identity, msViewMatrix, msProjectionMatrix);
-			Emitter.ParticlesPerSecond = miNumberOfParticlesToEmitPerSecond;
-
-			RemoveAllParticles();
-
-			ParticleInitializationFunction = InitializeParticleDPSFIntro;
-			ParticleEvents.RemoveAllEvents();
-			ParticleEvents.AddEveryTimeEvent(UpdateParticlePositionAndVelocityUsingAcceleration);
-			ParticleEvents.AddEveryTimeEvent(UpdateParticleRotationAndRotationalVelocityUsingRotationalAcceleration);
-			ParticleEvents.AddEveryTimeEvent(RotateAroundOrigin, 100);
-			ParticleEvents.AddEveryTimeEvent(MoveToFinalPosition, 200);
-
-			ParticleSystemEvents.AddTimedEvent(mfTotalTimeForIntro, MarkSplashScreenAsDonePlaying);
+			// Randomly choose which Splash Screen to display
+			int rand = RandomNumber.Next(2);
+			switch (rand)
+			{
+				case 0: LoadVortexSplashScreen(); break;
+				case 1: LoadFallingBlocksSplashScreen(); break;
+			}
 		}
 
-		public void InitializeParticleDPSFIntro(DPSFSplashScreenParticle cParticle)
+		#region Common Splash Screen Initialization
+		private void DoCommonSplashScreenInitialization()
+		{
+			// Setup the Camera and specify the default number of Particles to Emit Per Second
+			SetWorldViewProjectionMatrices(Matrix.Identity, _viewMatrix, _projectionMatrix);
+			Emitter.ParticlesPerSecond = 10000;
+
+			// Make sure this is a fresh setup
+			RemoveAllParticles();
+			ParticleEvents.RemoveAllEvents();
+			ParticleSystemEvents.RemoveAllEvents();
+
+			// Add the event that triggers when the Splash Screen is complete
+			ParticleSystemEvents.AddTimedEvent(_totalTimeInSecondsToDisplaySplashScreen, MarkSplashScreenAsDonePlaying);
+
+            // Add the event that checks if the splash screen should exit right away or not.
+            ParticleSystemEvents.AddOneTimeEvent(ExitSplashScreenIfDebugging);
+		}
+
+		private void DoCommonParticleInitialization(DPSFSplashScreenParticle particle)
 		{
 			// Fill in this Particles information about where it should be to form the composite image
-			SetParticlePositionWidthHeightAndTextureCoordinatesToFormImage(cParticle);
+			SetParticlePositionWidthHeightAndTextureCoordinatesToFormCompositeImage(particle);
 
-			cParticle.Lifetime = 0;
-			cParticle.RotationalVelocity = new Vector3(RandomNumber.Between(0, MathHelper.TwoPi), RandomNumber.Between(0, MathHelper.TwoPi), RandomNumber.Between(0, MathHelper.TwoPi));
-			cParticle.sRotation = new Vector3(0, MathHelper.TwoPi, 0);
-			cParticle.Velocity = new Vector3(0, RandomNumber.Next(1, 100), 0);
-
-			// Have some particles start at the bottom of the screen, and others start at the top
-			if (NumberOfActiveParticles % 2 == 0)
+			// If the Splash Screen just started, record what time it started at
+			if (this.NumberOfActiveParticles == 0)
 			{
-				cParticle.Position = new Vector3(RandomNumber.Next(-100, 100), 0, RandomNumber.Next(-100, 100));
+				// Record what time the splash screen started
+				_splashScreenStartTime = DateTime.Now;
 			}
-			else
+			// If this is the last particle to create, turn the emitter off so the animation doesn't restart when the particles die
+			if (this.NumberOfActiveParticles == (_maxNumberOfParticlesRequired - 1))
 			{
-				cParticle.Position = new Vector3(RandomNumber.Next(-100, 100), 100, RandomNumber.Next(-100, 100));
-				cParticle.Velocity *= -1;
+				this.Emitter.Enabled = false;
 			}
 		}
 
-		//===========================================================
-		// Particle Update Functions
-		//===========================================================
-		public void RotateAroundOrigin(DPSFSplashScreenParticle cParticle, float fElapsedTimeInSeconds)
-		{
-			// Calculate the Rotation Matrix to Rotate the Particle by
-			Vector3 sAmountToRotate = cParticle.sRotation * fElapsedTimeInSeconds;
-			Matrix sRotation = Matrix.CreateFromYawPitchRoll(sAmountToRotate.Y, sAmountToRotate.X, sAmountToRotate.Z);
-			
-			// Rotate the Particle around the origin
-			cParticle.Position = PivotPoint3D.RotatePosition(sRotation, new Vector3(0, cParticle.Position.Y, 0), cParticle.Position);
-		}
-
-		public void MoveToFinalPosition(DPSFSplashScreenParticle cParticle, float fElapsedTimeInSeconds)
-		{
-			// If it is not time for the Particle to go to its final destination yet
-			if (cParticle.ElapsedTime < mfTimeBeforeMovingToImagePosition ||
-				(cParticle.bReachedImagePosition && cParticle.bReachedImageOrientation))
-			{
-				// Exit without doing anything
-				return;
-			}
-
-			// If the Particle isn't going to its Final Position yet, but it should be
-			if (!cParticle.bGoingToImagePosition)
-			{
-				// Make sure the Particle doesn't move on its own anymore (this function now controls it)
-				cParticle.Acceleration = Vector3.Zero;
-				cParticle.RotationalVelocity = Vector3.Zero;
-				cParticle.RotationalAcceleration = Vector3.Zero;
-				cParticle.sRotation = Vector3.Zero;
-
-				// Make the Particle move towards its final destination
-				cParticle.Velocity = cParticle.sImagePosition - cParticle.Position;
-
-				Quaternion cRotationRequired = Orientation3D.GetRotationTo(Orientation3D.GetNormalDirection(cParticle.Orientation), Orientation3D.GetNormalDirection(cParticle.cImageOrientation));
-				cRotationRequired *= Orientation3D.GetRotationTo(Orientation3D.GetUpDirection(cParticle.Orientation), Orientation3D.GetUpDirection(cParticle.cImageOrientation));
-				cParticle.cOrientationBeforeAutomaticMovement = cRotationRequired;
-
-				cParticle.bGoingToImagePosition = true;
-			}
-
-			// If the Particle hasn't made it to its Image Position yet
-			if (!cParticle.bReachedImagePosition)
-			{
-				// Calculate the Vector from the current position to the Image Position
-				Vector3 sVectorToFinalPosition = cParticle.sImagePosition - cParticle.Position;
-				float fLength = sVectorToFinalPosition.LengthSquared();
-
-				// If the Particle is pretty much in its final Position
-				if (fLength < 1)
-				{
-					cParticle.Velocity = Vector3.Zero;
-					cParticle.Position = cParticle.sImagePosition;
-					cParticle.bReachedImagePosition = true;
-				}
-				// Else if the Particle is still fairly far from its final Position
-				else if (fLength > 500)
-				{
-					cParticle.Velocity = sVectorToFinalPosition * 6;
-				}
-			}
-
-			// If the Particle hasn't made it to its Image Orientation yet
-			if (!cParticle.bReachedImageOrientation)
-			{
-				float fLerpAmount = (cParticle.ElapsedTime - mfTimeBeforeMovingToImagePosition) / 1.0f;
-				if (fLerpAmount > 1.0f)
-				{
-					cParticle.Orientation = cParticle.cImageOrientation;
-					cParticle.bReachedImageOrientation = true;
-				}
-				else
-				{
-					cParticle.Orientation = Quaternion.Slerp(cParticle.cOrientationBeforeAutomaticMovement, cParticle.cImageOrientation, fLerpAmount);
-				}
-			}
-		}
-
-		//===========================================================
-		// Particle System Update Functions
-		//===========================================================
-		public void MarkSplashScreenAsDonePlaying(float fElapsedTimeInSeconds)
-		{
-			mbIntroIsDonePlaying = true;
-		}
-
-		//===========================================================
-		// Other Particle System Functions
-		//===========================================================
-
-		// This function sets the Particle Properties so that when all Particles are viewed together,
-		// they form the complete image of the texture
-		private void SetParticlePositionWidthHeightAndTextureCoordinatesToFormImage(DPSFSplashScreenParticle cParticle)
+		/// <summary>
+		/// This function sets the Particle Properties so that when all Particles are viewed together, 
+		/// they form the complete composite image of the texture.
+		/// </summary>
+		/// <param name="particle"></param>
+		private void SetParticlePositionWidthHeightAndTextureCoordinatesToFormCompositeImage(DPSFSplashScreenParticle particle)
 		{
 			// Calculate how big the Particles should be to achieve the desired size
-			int iRequiredParticleWidth = miWidthOfCompositeImage / miNumberOfColumns;
-			int iRequiredParticleHeight = miHeightOfCompositeImage / miNumberOfRows;
+			int iRequiredParticleWidth = _widthOfCompositeImage / _maxNumberOfColumns;
+			int iRequiredParticleHeight = _heightOfCompositeImage / _maxNumberOfRows;
 
 			// Calculate how big one Row and Column from the texture should be
-			int iTextureRowSize = Texture.Height / miNumberOfRows;
-			int iTextureColumnSize = Texture.Width / miNumberOfColumns;
+			int iTextureRowSize = Texture.Height / _maxNumberOfRows;
+			int iTextureColumnSize = Texture.Width / _maxNumberOfColumns;
 
 			// Calculate which Row and Column this Particle should be at
-			int iRow = NumberOfActiveParticles / miNumberOfColumns;
-			int iColumn = NumberOfActiveParticles % miNumberOfColumns;
+			int iRow = NumberOfActiveParticles / _maxNumberOfColumns;
+			int iColumn = NumberOfActiveParticles % _maxNumberOfColumns;
 
 			// Calculate this Particle's Position to create the full Image
-			int iY = (miNumberOfRows * iRequiredParticleHeight) - ((iRow * iRequiredParticleHeight) + (iRequiredParticleHeight / 2));
+			int iY = (_maxNumberOfRows * iRequiredParticleHeight) - ((iRow * iRequiredParticleHeight) + (iRequiredParticleHeight / 2));
 			int iX = (iColumn * iRequiredParticleWidth) + (iRequiredParticleWidth / 2);
-			iX -= (miNumberOfColumns * iRequiredParticleWidth) / 2;    // Center the image
+			iX -= (_maxNumberOfColumns * iRequiredParticleWidth) / 2;    // Center the image
 
 			// Calculate this Particle's Texture Coordinates to use
 			float fTextureTop = (iRow * iTextureRowSize) / (float)Texture.Height;
@@ -295,29 +223,237 @@ namespace DPSF.ParticleSystems
 			float fTextureRight = ((iColumn * iTextureColumnSize) + iTextureColumnSize) / (float)Texture.Width;
 
 			// Set the Particle's Properties to Form the complete Image
-			cParticle.Width = iRequiredParticleWidth;
-			cParticle.Height = iRequiredParticleHeight;
-			cParticle.sImagePosition = new Vector3(iX, iY, 0);
-			cParticle.cImageOrientation = Orientation3D.GetQuaternionWithOrientation(Vector3.Forward, Vector3.Up);
-			cParticle.NormalizedTextureCoordinateLeftTop = new Vector2(fTextureLeft, fTextureTop);
-			cParticle.NormalizedTextureCoordinateRightBottom = new Vector2(fTextureRight, fTextureBottom);
+			particle.Width = iRequiredParticleWidth;
+			particle.Height = iRequiredParticleHeight;
+			particle.ImagePosition = new Vector3(iX, iY, 0);
+			particle.ImageOrientation = Orientation3D.GetQuaternionWithOrientation(Vector3.Forward, Vector3.Up);
+			particle.NormalizedTextureCoordinateLeftTop = new Vector2(fTextureLeft, fTextureTop);
+			particle.NormalizedTextureCoordinateRightBottom = new Vector2(fTextureRight, fTextureBottom);
 		}
+		#endregion
+
+		#region Vortex Splash Screen
+		public void LoadVortexSplashScreen()
+		{
+            // Do the setup required by all Splash Screens
+			DoCommonSplashScreenInitialization();
+
+			ParticleInitializationFunction = InitializeParticleVortexScreen;
+
+			ParticleEvents.AddEveryTimeEvent(UpdateParticlePositionUsingVelocity);
+			ParticleEvents.AddEveryTimeEvent(UpdateParticleRotationUsingRotationalVelocity);
+			ParticleEvents.AddEveryTimeEvent(UpdateParticleTransparencyWithQuickFadeInAndQuickFadeOut);
+			ParticleEvents.AddEveryTimeEvent(RotateAroundOrigin, 100);
+			ParticleEvents.AddEveryTimeEvent(MoveToCompositeImagePosition, 200);
+		}
+
+		public void InitializeParticleVortexScreen(DPSFSplashScreenParticle particle)
+		{
+			DoCommonParticleInitialization(particle);
+
+			// Have the particle die before the splash screen ends so we see it fade out nicely
+			particle.Lifetime = _maxParticleLifetime;
+
+			// Set particle's velocity to straight up or down (the RotateAroundOrigin Particle Update Function will rotate it around the Y-axis)
+			particle.Velocity = new Vector3(0, RandomNumber.Next(1, 100), 0);
+			particle.Rotation = new Vector3(0, MathHelper.TwoPi, 0);
+			particle.RotationalVelocity = new Vector3(RandomNumber.Between(0, MathHelper.TwoPi), RandomNumber.Between(0, MathHelper.TwoPi), RandomNumber.Between(0, MathHelper.TwoPi));
+
+			// Have some particles start at the bottom of the screen, and others start at the top
+			if (NumberOfActiveParticles % 2 == 0)
+			{
+				particle.Position = new Vector3(RandomNumber.Next(-100, 100), 0, RandomNumber.Next(-100, 100));
+			}
+			else
+			{
+				particle.Position = new Vector3(RandomNumber.Next(-100, 100), 100, RandomNumber.Next(-100, 100));
+				particle.Velocity *= -1;
+			}
+		}
+		#endregion
+
+		#region Falling Blocks Splash Screen
+		public void LoadFallingBlocksSplashScreen()
+		{
+            // Do the setup required by all Splash Screens
+			DoCommonSplashScreenInitialization();
+
+			ParticleInitializationFunction = InitializeParticleFallingBlocksScreen;
+
+			ParticleEvents.AddEveryTimeEvent(UpdateParticlePositionUsingVelocity);
+			ParticleEvents.AddEveryTimeEvent(UpdateParticleRotationUsingRotationalVelocity);
+			ParticleEvents.AddEveryTimeEvent(UpdateParticleTransparencyWithQuickFadeInAndQuickFadeOut);
+			ParticleEvents.AddEveryTimeEvent(MoveToCompositeImagePosition, 200);
+
+			this.Emitter.ParticlesPerSecond = 700;
+			_timeInSecondsToReachImagePosition = 0.8f;
+		}
+
+		public void InitializeParticleFallingBlocksScreen(DPSFSplashScreenParticle particle)
+		{
+			DoCommonParticleInitialization(particle);
+
+			// Have the particle die before the splash screen ends so we see it fade out nicely
+			TimeSpan elapsedTime = DateTime.Now - _splashScreenStartTime;
+			particle.Lifetime = _maxParticleLifetime - (float)elapsedTime.TotalSeconds;
+
+			// Set particle's velocity to straight up or down (the RotateAroundOrigin Particle Update Function will rotate it around the Y-axis)
+			particle.Velocity = new Vector3(0, -200, 0);
+
+			particle.Position = particle.ImagePosition;
+			particle.Position.Y = 200;
+
+			// If this is the last particle to create, turn the emitter off so the animation doesn't restart when the particles die
+			if (this.NumberOfActiveParticles == (_maxNumberOfParticlesRequired - 1))
+			{
+				this.Emitter.Enabled = false;
+			}
+		}
+		#endregion
+
+		//===========================================================
+		// Particle Update Functions
+		//===========================================================
+
+		/// <summary>
+		/// Rotates the particle around the world coordinates origin.
+		/// </summary>
+		/// <param name="particle">The particle.</param>
+		/// <param name="elapsedTimeInSeconds">The elapsed time in seconds.</param>
+		public void RotateAroundOrigin(DPSFSplashScreenParticle particle, float elapsedTimeInSeconds)
+		{
+			// Calculate the Rotation Matrix to Rotate the Particle by
+			Vector3 sAmountToRotate = particle.Rotation * elapsedTimeInSeconds;
+			Matrix sRotation = Matrix.CreateFromYawPitchRoll(sAmountToRotate.Y, sAmountToRotate.X, sAmountToRotate.Z);
+			
+			// Rotate the Particle around the origin
+			particle.Position = PivotPoint3D.RotatePosition(sRotation, new Vector3(0, particle.Position.Y, 0), particle.Position);
+		}
+
+		/// <summary>
+		/// Lerps the particle to its composite Image position and orientation.
+		/// </summary>
+		/// <param name="particle">The particle.</param>
+		/// <param name="elapsedTimeInSeconds">The elapsed time in seconds.</param>
+		public void MoveToCompositeImagePosition(DPSFSplashScreenParticle particle, float elapsedTimeInSeconds)
+		{
+			// If it is not time for the Particle to go to its final destination yet, or it has already reached it, then just exit.
+			if (particle.ElapsedTime < _timeInSecondsBeforeMovingToImagePosition ||
+				(particle.IsImagePositionReached && particle.IsImageOrientationReached))
+			{
+				// Exit without doing anything
+				return;
+			}
+
+			// If the Particle isn't going to its Final Position yet, but it should be
+			if (!particle.IsGoingToImagePosition)
+			{
+				// Make sure the Particle doesn't move on its own anymore (this function now controls it)
+				particle.Acceleration = Vector3.Zero;
+				particle.RotationalVelocity = Vector3.Zero;
+				particle.RotationalAcceleration = Vector3.Zero;
+				particle.Rotation = Vector3.Zero;
+
+				// Make the Particle move towards its final destination
+				particle.Velocity = (particle.ImagePosition - particle.Position) / _timeInSecondsToReachImagePosition;
+
+				Quaternion cRotationRequired = Orientation3D.GetRotationTo(Orientation3D.GetNormalDirection(particle.Orientation), Orientation3D.GetNormalDirection(particle.ImageOrientation));
+				cRotationRequired *= Orientation3D.GetRotationTo(Orientation3D.GetUpDirection(particle.Orientation), Orientation3D.GetUpDirection(particle.ImageOrientation));
+				particle.OrientationBeforeAutomaticMovement = cRotationRequired;
+
+				particle.IsGoingToImagePosition = true;
+			}
+
+			// If the Particle hasn't made it to its Image Position yet
+			if (!particle.IsImagePositionReached)
+			{
+				// Calculate the Vector the particle must travel in to reach the Image Position
+				Vector3 sVectorToImagePosition = particle.ImagePosition - particle.Position;
+
+				// If the Particle is not travelling the same direction as it originally was to get to the
+				// Image position, then it just past the Image position, so move it to the Image position.
+				if (!DPSFHelper.VectorsAreTheSamePolarity(sVectorToImagePosition, particle.Velocity))
+				{
+					particle.Velocity = Vector3.Zero;
+					particle.Position = particle.ImagePosition;
+					particle.IsImagePositionReached = true;
+				}
+			}
+
+			// If the Particle hasn't made it to its Image Orientation yet, then Lerp the Particle to its Image Orientation
+			if (!particle.IsImageOrientationReached)
+			{
+				float fLerpAmount = (particle.ElapsedTime - _timeInSecondsBeforeMovingToImagePosition) / _timeInSecondsToReachImageOrientation;
+				if (fLerpAmount > 1.0f)
+				{
+					particle.Orientation = particle.ImageOrientation;
+					particle.IsImageOrientationReached = true;
+				}
+				else
+				{
+					particle.Orientation = Quaternion.Slerp(particle.OrientationBeforeAutomaticMovement, particle.ImageOrientation, fLerpAmount);
+				}
+			}
+		}
+
+		//===========================================================
+		// Particle System Update Functions
+		//===========================================================
+		public void MarkSplashScreenAsDonePlaying(float elapsedTimeInSeconds)
+		{
+			IsSplashScreenComplete = true;
+		}
+
+        /// <summary>
+        /// Exit the splash screen right away if debugging.
+        /// </summary>
+        /// <param name="elapsedTimeInSeconds">The elapsed time in seconds.</param>
+        public void ExitSplashScreenIfDebugging(float elapsedTimeInSeconds)
+        {
+            // If we are debugging and want to skip the splash screen when debugging.
+            if (SkipSplashScreenWhenDebugging && System.Diagnostics.Debugger.IsAttached)
+                IsSplashScreenComplete = true;
+        }
+
+		//===========================================================
+		// Other Particle System Functions
+		//===========================================================
 
 		/// <summary>
 		/// Get / Set if the Splash Screen is done playing
 		/// </summary>
-		public bool SplashScreenIsDonePlaying
+		public bool IsSplashScreenComplete
 		{
-			get { return mbIntroIsDonePlaying; }
-			set { mbIntroIsDonePlaying = value; }
+			get { return _isSplashScreenComplete; }
+			set 
+			{ 
+				_isSplashScreenComplete = value;
+
+				// Let any listeners know that the Splash Screen is done playing
+				if (_isSplashScreenComplete)
+					SplashScreenComplete(this, EventArgs.Empty);
+			}
 		}
+		private bool _isSplashScreenComplete = false;
+
+		/// <summary>
+		/// Occurs when the Splash Screen finishes playing
+		/// </summary>
+		public event EventHandler SplashScreenComplete = delegate(object sender, EventArgs e) { };
 
 		/// <summary>
 		/// Get the Background Color that should be used for the Splash Screen
 		/// </summary>
 		public Color BackgroundColor
 		{
-			get { return msBackgroundColor; }
+			get { return _backgroundColor; }
 		}
+
+        /// <summary>
+        /// Get / Set if the splash screen should be skipped when the application is being debugged.
+        /// <para>Having this set to true makes it so that you (the developer) don't have to go through the splash screen every time you debug your application.</para>
+        /// <para>Default value is true.</para>
+        /// </summary>
+        public bool SkipSplashScreenWhenDebugging = true;
 	}
 }

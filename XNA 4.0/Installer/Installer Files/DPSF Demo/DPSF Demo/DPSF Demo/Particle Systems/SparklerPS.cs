@@ -13,13 +13,13 @@
 
 #region Using Statements
 using System;
-using System.Collections.Generic;
+using DPSF;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 #endregion
 
-namespace DPSF.ParticleSystems
+namespace DPSF_Demo.ParticleSystems
 {
     /// <summary>
     /// Create a new Particle System class that inherits from a Default DPSF Particle System
@@ -58,7 +58,7 @@ namespace DPSF.ParticleSystems
         public override void AutoInitialize(GraphicsDevice cGraphicsDevice, ContentManager cContentManager, SpriteBatch cSpriteBatch)
         {
             // Initialize the Particle System before doing anything else
-            InitializeSpriteParticleSystem(cGraphicsDevice, cContentManager, 1000, 50000, "Textures/Star9");
+            InitializeSpriteParticleSystem(cGraphicsDevice, cContentManager, 1000, 50000, "Textures/Star9", cSpriteBatch);
 
             // Set the Name of the Particle System
             Name = "Sparkler";
@@ -174,7 +174,7 @@ namespace DPSF.ParticleSystems
         /// <param name="fElapsedTimeInSeconds">How long it has been since the last update</param>
         protected void UpdateParticleVelocityRandomly(DefaultSprite3DBillboardParticle cParticle, float fElapsedTimeInSeconds)
         {
-            cParticle.Velocity = DPSFHelper.RandomNormalizedVector() * mfParticleSpeed;
+			cParticle.Velocity = DPSFHelper.RandomNormalizedVector() * mfParticleSpeed;
         }
 
         protected void UpdateParticleToChange(DefaultSprite3DBillboardParticle cParticle, float fElapsedTimeInSeconds)

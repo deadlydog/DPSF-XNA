@@ -13,7 +13,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+
 #endregion
 
 namespace DPSF
@@ -267,7 +267,7 @@ namespace DPSF
 		/// <para>NOTE: You must add a UpdateParticleXAccordingToMagnets function to the Particle
 		/// Events in order for these Magnets to affect the Particles.</para>
 		/// </summary>
-		public LinkedList<DefaultParticleSystemMagnet> MagnetList = new LinkedList<DefaultParticleSystemMagnet>();
+		public List<DefaultParticleSystemMagnet> MagnetList = new List<DefaultParticleSystemMagnet>();
 
 		//===========================================================
 		// Initialization Functions
@@ -547,25 +547,15 @@ namespace DPSF
 		/// <param name="fElapsedTimeInSeconds">How long it has been since the last update</param>
 		protected void UpdateParticlePositionAccordingToMagnets(DPSFDefaultBaseParticle cParticle, float fElapsedTimeInSeconds)
 		{
-			// Temp handle to a Magnet
-			DefaultParticleSystemMagnet cMagnet = null;
-
 			// Loop through each of the Particle System's Magnets
-			LinkedListNode<DefaultParticleSystemMagnet> cNode = MagnetList.First;
-			while (cNode != null)
+			foreach (DefaultParticleSystemMagnet magnet in MagnetList)
 			{
-				// Get a handle to this Magnet
-				cMagnet = (DefaultParticleSystemMagnet)cNode.Value;
-
 				// If this is not a custom user Magnet (i.e. it is Attracting or Repelling)
-				if (cMagnet.Mode != DefaultParticleSystemMagnet.MagnetModes.Other)
+				if (magnet.Mode != DefaultParticleSystemMagnet.MagnetModes.Other)
 				{
 					// Apply the Force to the Particle's Position
-					cParticle.Position += (CalculateForceMagnetShouldExertOnParticle(cMagnet, cParticle) * fElapsedTimeInSeconds);
+					cParticle.Position += (CalculateForceMagnetShouldExertOnParticle(magnet, cParticle) * fElapsedTimeInSeconds);
 				}
-
-				// Move to the next Magnet in the list
-				cNode = cNode.Next;
 			}
 		}
 
@@ -577,25 +567,15 @@ namespace DPSF
 		/// <param name="fElapsedTimeInSeconds">How long it has been since the last update</param>
 		protected void UpdateParticleVelocityAccordingToMagnets(DPSFDefaultBaseParticle cParticle, float fElapsedTimeInSeconds)
 		{
-			// Temp handle to a Magnet
-			DefaultParticleSystemMagnet cMagnet = null;
-
 			// Loop through each of the Particle System's Magnets
-			LinkedListNode<DefaultParticleSystemMagnet> cNode = MagnetList.First;
-			while (cNode != null)
+			foreach (DefaultParticleSystemMagnet magnet in MagnetList)
 			{
-				// Get a handle to this Magnet
-				cMagnet = (DefaultParticleSystemMagnet)cNode.Value;
-
 				// If this is not a custom user Magnet (i.e. it is Attracting or Repelling)
-				if (cMagnet.Mode != DefaultParticleSystemMagnet.MagnetModes.Other)
+				if (magnet.Mode != DefaultParticleSystemMagnet.MagnetModes.Other)
 				{
 					// Apply the Force to the Particle's Position
-					cParticle.Velocity += (CalculateForceMagnetShouldExertOnParticle(cMagnet, cParticle) * fElapsedTimeInSeconds);
+					cParticle.Velocity += (CalculateForceMagnetShouldExertOnParticle(magnet, cParticle) * fElapsedTimeInSeconds);
 				}
-
-				// Move to the next Magnet in the list
-				cNode = cNode.Next;
 			}
 		}
 

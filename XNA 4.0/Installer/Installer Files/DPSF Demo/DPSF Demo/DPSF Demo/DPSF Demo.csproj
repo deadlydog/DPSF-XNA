@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{C81159D7-7B35-414E-96BE-047B0F24CECE}</ProjectGuid>
+    <ProjectGuid>{4FDD6876-4AC9-42B3-8DDA-D79D605569B7}</ProjectGuid>
     <ProjectTypeGuids>{6D335F3A-9D43-41b4-9D22-F6F17C4BE596};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -13,11 +13,12 @@
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
     <XnaPlatform>Windows</XnaPlatform>
-    <XnaProfile>HiDef</XnaProfile>
-    <XnaCrossPlatformGroupID>20a63f74-9262-4069-ba65-b66a1070a8fa</XnaCrossPlatformGroupID>
+    <XnaProfile>Reach</XnaProfile>
+    <XnaCrossPlatformGroupID>3034b970-7d68-4788-9bd1-665354c8cce8</XnaCrossPlatformGroupID>
     <XnaOutputType>Game</XnaOutputType>
     <ApplicationIcon>Game.ico</ApplicationIcon>
-    <Thumbnail>GameThumbnail.png</Thumbnail>
+    <Thumbnail>
+    </Thumbnail>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -60,187 +61,132 @@
     <XnaCompressContent>true</XnaCompressContent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DPSF">
+    <Reference Include="DPSF, Version=2.3.0.0, Culture=neutral, PublicKeyToken=32c832bfa7326ee2, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\DPSF\DPSF.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Game, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.GamerServices, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Xact, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Video, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Avatar, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Net, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Storage, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="mscorlib">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Core">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Xml.Linq">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Net">
-      <Private>False</Private>
-    </Reference>
+    <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
+    <Reference Include="Microsoft.Xna.Framework.Game, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
+    <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
+    <Reference Include="Microsoft.Xna.Framework.GamerServices, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FPS.cs" />
-    <Compile Include="GameMain.cs" />
-    <Compile Include="Particle Systems\AnimatedQuadPS.cs">
-      <SubType>Code</SubType>
+    <Compile Include="..\..\..\Logos\DPSFSplashScreenPS.cs">
+      <Link>Particle Systems\DPSFSplashScreenPS.cs</Link>
     </Compile>
-    <Compile Include="Particle Systems\AnimatedSpritePS.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Particle Systems\BallPS.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Particle Systems\BoxPS.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Particle Systems\DotPS.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Particle Systems\DPSFSplashScreenPS.cs" />
-    <Compile Include="Particle Systems\ExplosionDebrisPS.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Particle Systems\ExplosionFireSmokePS.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Particle Systems\ExplosionFlash.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Particle Systems\ExplosionFlyingSparksPS.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Particle Systems\ExplosionPS.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Particle Systems\ExplosionRoundSparksPS.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Particle Systems\ExplosionShockwavePS.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Particle Systems\ExplosionSmokeTrailsPS.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Particle Systems\Figure8PS.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Particle Systems\FirePS.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="ApplicationEntryPoint.cs" />
+    <Compile Include="DPSFDemo.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\AnimatedQuadPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\AnimatedSpritePSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\BallPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\BoxPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\DefaultQuadDPSFDemoParticleSystemTemplateWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\DefaultSprite3DBillboardDPSFDemoParticleSystemTemplateWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\DefaultSpriteDPSFDemoParticleSystemTemplateWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\DefaultTexturedQuadDPSFDemoParticleSystemTemplateWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\DotPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\DPSFSplashScreenPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\DrawTextRequirements.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\ExplosionDebrisPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\ExplosionDebrisSpritePSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\ExplosionFireSmokePSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\ExplosionFlashWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\ExplosionFlyingSparksPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\ExplosionPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\ExplosionRoundSparksPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\ExplosionShockwavePSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\ExplosionSmokeTrailsPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\Figure8PSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\FirePSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\FireSpritePSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\FireworksPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\FountainPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\GasFallPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\GridQuadPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\ImagePSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\IWrapDPSFDemoParticleSystems.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\MagnetsPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\MultipleEmittersPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\MultipleParticleImagesPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\MultipleParticleImagesSpritePSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\QuadDPSFDemoParticleSystemTemplateWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\QuadSprayPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\Random2DPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\RandomPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\RotatingQuadsPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\SmokePSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\SnowPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\SparklerPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\SpherePSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\Sprite3DBillboardDPSFDemoParticleSystemTemplateWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\SpriteDPSFDemoParticleSystemTemplateWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\SpritePSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\SquarePatternPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\StarPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\TexturedQuadDPSFDemoParticleSystemTemplateWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\TrailPSWrapper.cs" />
+    <Compile Include="Particle Systems\AnimatedQuadPS.cs" />
+    <Compile Include="Particle Systems\AnimatedSpritePS.cs" />
+    <Compile Include="Particle Systems\BallPS.cs" />
+    <Compile Include="Particle Systems\BoxPS.cs" />
+    <Compile Include="Particle Systems\DotPS.cs" />
+    <Compile Include="Particle Systems\ExplosionDebrisPS.cs" />
+    <Compile Include="Particle Systems\ExplosionDebrisSpritePS.cs" />
+    <Compile Include="Particle Systems\ExplosionFireSmokePS.cs" />
+    <Compile Include="Particle Systems\ExplosionFlash.cs" />
+    <Compile Include="Particle Systems\ExplosionFlyingSparksPS.cs" />
+    <Compile Include="Particle Systems\ExplosionPS.cs" />
+    <Compile Include="Particle Systems\ExplosionRoundSparksPS.cs" />
+    <Compile Include="Particle Systems\ExplosionShockwavePS.cs" />
+    <Compile Include="Particle Systems\ExplosionSmokeTrailsPS.cs" />
+    <Compile Include="Particle Systems\Figure8PS.cs" />
+    <Compile Include="Particle Systems\FirePS.cs" />
     <Compile Include="Particle Systems\FireSpritePS.cs" />
-    <Compile Include="Particle Systems\FireworksPS.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Particle Systems\FountainPS.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Particle Systems\GasFallPS.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Particle Systems\GridQuadPS.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Particle Systems\ImagePS.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Particle Systems\MagnetsPS.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Particle Systems\MultipleParticleImagesPS.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Particle Systems\FireworksPS.cs" />
+    <Compile Include="Particle Systems\FountainPS.cs" />
+    <Compile Include="Particle Systems\GasFallPS.cs" />
+    <Compile Include="Particle Systems\GridQuadPS.cs" />
+    <Compile Include="Particle Systems\ImagePS.cs" />
+    <Compile Include="Particle Systems\MagnetsPS.cs" />
+    <Compile Include="Particle Systems\MultipleEmittersPS.cs" />
+    <Compile Include="Particle Systems\MultipleParticleImagesPS.cs" />
     <Compile Include="Particle Systems\MultipleParticleImagesSpritePS.cs" />
-    <Compile Include="Particle Systems\QuadSprayPS.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Particle Systems\Random2DPS.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Particle Systems\RandomPS.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Particle Systems\RotatingQuadsPS.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Particle Systems\SmokePS.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Particle Systems\SnowPS.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Particle Systems\SparklerPS.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Particle Systems\SpherePS.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Particle Systems\SpritePS.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Particle Systems\SquarePatternPS.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Particle Systems\StarPS.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Particle Systems\QuadSprayPS.cs" />
+    <Compile Include="Particle Systems\Random2DPS.cs" />
+    <Compile Include="Particle Systems\RandomPS.cs" />
+    <Compile Include="Particle Systems\RotatingQuadsPS.cs" />
+    <Compile Include="Particle Systems\SmokePS.cs" />
+    <Compile Include="Particle Systems\SnowPS.cs" />
+    <Compile Include="Particle Systems\SparklerPS.cs" />
+    <Compile Include="Particle Systems\SpherePS.cs" />
+    <Compile Include="Particle Systems\SpritePS.cs" />
+    <Compile Include="Particle Systems\SquarePatternPS.cs" />
+    <Compile Include="Particle Systems\StarPS.cs" />
     <Compile Include="Particle Systems\TrailPS.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Templates\DefaultQuadParticleSystemTemplate.cs" />
     <Compile Include="Templates\DefaultSprite3DBillboardParticleSystemTemplate.cs" />
-    <Compile Include="Templates\DefaultSpriteParticleSystemTemplate.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Templates\DefaultTexturedQuadParticleSystemTemplate.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Templates\QuadParticleSystemTemplate.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Templates\DefaultSpriteParticleSystemTemplate.cs" />
+    <Compile Include="Templates\DefaultTexturedQuadParticleSystemTemplate.cs" />
+    <Compile Include="Templates\QuadParticleSystemTemplate.cs" />
     <Compile Include="Templates\Sprite3DBillboardParticleSystemTemplate.cs" />
-    <Compile Include="Templates\SpriteParticleSystemTemplate.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Templates\TexturedQuadParticleSystemTemplate.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Templates\SpriteParticleSystemTemplate.cs" />
+    <Compile Include="Templates\TexturedQuadParticleSystemTemplate.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
-    <Content Include="GameThumbnail.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\BasicVirtualEnvironment\BasicVirtualEnvironment\BasicVirtualEnvironment.csproj">
+      <Project>{E00BCEC2-64EF-4172-AC40-BEE8A806781C}</Project>
+      <Name>BasicVirtualEnvironment</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DPSF DemoContent\DPSF DemoContent.contentproj">
       <Name>DPSF_DemoContent</Name>
       <XnaReferenceType>Content</XnaReferenceType>
@@ -273,6 +219,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
   <!--

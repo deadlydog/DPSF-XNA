@@ -1,6 +1,5 @@
 ﻿#region Using Statements
 using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 #endregion
@@ -184,8 +183,8 @@ namespace DPSF
 		public Color Color;
 
 		// Describe the vertex structure used to display a Particle
-		private static readonly VertexElement[] msVertexElements =
-		{
+		private static readonly VertexDeclaration vertexDeclaration = new VertexDeclaration
+		(
 			new VertexElement(0, VertexElementFormat.Vector3,
 									VertexElementUsage.Position, 0),
 
@@ -194,25 +193,14 @@ namespace DPSF
 
 			new VertexElement(20, VertexElementFormat.Color,
 									 VertexElementUsage.Color, 0)
-		};
-
-		// The size of the vertex structure in bytes
-		private const int miSizeInBytes = 24;
+		);
 
 		/// <summary>
 		/// An array describing the attributes of each Vertex
 		/// </summary>
-		public VertexElement[] VertexElements
+		public VertexDeclaration VertexDeclaration
 		{
-			get { return DefaultTexturedQuadParticleVertex.msVertexElements; }
-		}
-
-		/// <summary>
-		/// The Size of one Vertex in Bytes
-		/// </summary>
-		public int SizeInBytes
-		{
-			get { return DefaultTexturedQuadParticleVertex.miSizeInBytes; }
+			get { return DefaultTexturedQuadParticleVertex.vertexDeclaration; }
 		}
 	}
 }

@@ -19,19 +19,19 @@
 
 #region Using Statements
 using System;
-using System.Collections.Generic;
+using DPSF;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 #endregion
 
-namespace DPSF.ParticleSystems
+namespace DPSF_Demo.ParticleSystems
 {
 	//-----------------------------------------------------------
 	// TODO: Rename/Refactor the Particle class
 	//-----------------------------------------------------------
 	/// <summary>
-	/// Create a new Particle class that inherits from DPSFParticle
+	/// Create a new Particle class that inherits from DPSFParticle.
 	/// </summary>
 #if (WINDOWS)
 	[Serializable]
@@ -93,7 +93,7 @@ namespace DPSF.ParticleSystems
 	//-----------------------------------------------------------
 	/// <summary>
 	/// Create a new Particle System class that inherits from DPSF using 
-	/// our created Particle class and Particle Vertex structure
+	/// our created Particle class and Particle Vertex structure.
 	/// </summary>
 #if (WINDOWS)
 	[Serializable]
@@ -188,7 +188,7 @@ namespace DPSF.ParticleSystems
 			// TODO: Change any Initialization parameters desired
 			//-----------------------------------------------------------
 			// Initialize the Particle System before doing anything else
-			InitializeSpriteParticleSystem(cGraphicsDevice, cContentManager, 1000, 50000, "Textures/Bubble");
+			InitializeSpriteParticleSystem(cGraphicsDevice, cContentManager, 1000, 50000, "Textures/Bubble", cSpriteBatch);
 
 			// Finish loading the Particle System in a separate function call, so if
 			// we want to reset the Particle System later we don't need to completely 

@@ -1,16 +1,15 @@
 #region Using Statements
 using System;
-using System.Collections.Generic;
+using DPSF;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 #endregion
 
-namespace DPSF.ParticleSystems
+namespace DPSF_Demo.ParticleSystems
 {
     /// <summary>
-    /// Create a new Particle System class that inherits from a
-    /// Default DPSF Particle System
+    /// Create a new Particle System class that inherits from a Default DPSF Particle System.
     /// </summary>
 #if (WINDOWS)
     [Serializable]
@@ -47,7 +46,7 @@ namespace DPSF.ParticleSystems
         //===========================================================
         public override void AutoInitialize(GraphicsDevice cGraphicsDevice, ContentManager cContentManager, SpriteBatch cSpriteBatch)
         {
-            InitializeSpriteParticleSystem(cGraphicsDevice, cContentManager, 1000, 50000, "Textures/Bubble");
+            InitializeSpriteParticleSystem(cGraphicsDevice, cContentManager, 1000, 50000, "Textures/Bubble", cSpriteBatch);
             LoadFountainEvents();
             Emitter.ParticlesPerSecond = 100;
             Name = "Fountain";

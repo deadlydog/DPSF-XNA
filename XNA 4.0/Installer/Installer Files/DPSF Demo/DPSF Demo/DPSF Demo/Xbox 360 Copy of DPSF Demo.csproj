@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{DA6F50E3-F361-408B-87E6-6858614AA470}</ProjectGuid>
+    <ProjectGuid>{428BC283-B89B-4F47-9B4C-918F7E45BAB9}</ProjectGuid>
     <ProjectTypeGuids>{6D335F3A-9D43-41b4-9D22-F6F17C4BE596};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">Xbox 360</Platform>
@@ -14,10 +14,11 @@
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
     <XnaPlatform>Xbox 360</XnaPlatform>
     <XnaProfile>HiDef</XnaProfile>
-    <XnaCrossPlatformGroupID>20a63f74-9262-4069-ba65-b66a1070a8fa</XnaCrossPlatformGroupID>
+    <XnaCrossPlatformGroupID>3034b970-7d68-4788-9bd1-665354c8cce8</XnaCrossPlatformGroupID>
     <XnaOutputType>Game</XnaOutputType>
     <ApplicationIcon>Game.ico</ApplicationIcon>
-    <Thumbnail>GameThumbnail.png</Thumbnail>
+    <Thumbnail>
+    </Thumbnail>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -34,6 +35,17 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Xbox 360' ">
+    <OutputPath>bin\Xbox 360\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE;XBOX;XBOX360</DefineConstants>
+    <XnaCompressContent>true</XnaCompressContent>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Xbox 360' ">
     <OutputPath>bin\Xbox 360\Debug</OutputPath>
     <ErrorReport>prompt</ErrorReport>
@@ -46,33 +58,73 @@
     <DefineConstants>DEBUG;TRACE;XBOX;XBOX360</DefineConstants>
     <XnaCompressContent>true</XnaCompressContent>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Xbox 360' ">
-    <OutputPath>bin\Xbox 360\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <NoStdLib>true</NoStdLib>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE;XBOX;XBOX360</DefineConstants>
-    <XnaCompressContent>true</XnaCompressContent>
-  </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DPSF DemoContent\DPSF DemoContent.contentproj">
-      <Name>DPSF_DemoContent</Name>
-      <XnaReferenceType>Content</XnaReferenceType>
-    </ProjectReference>
+    <None Include="GameThumbnail.png">
+      <XnaPlatformSpecific>true</XnaPlatformSpecific>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FPS.cs" />
-    <Compile Include="GameMain.cs" />
+    <Compile Include="..\..\..\Logos\DPSFSplashScreenPS.cs">
+      <Link>Particle Systems\DPSFSplashScreenPS.cs</Link>
+    </Compile>
+    <Compile Include="ApplicationEntryPoint.cs" />
+    <Compile Include="DPSFDemo.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\AnimatedQuadPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\AnimatedSpritePSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\BallPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\BoxPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\DefaultQuadDPSFDemoParticleSystemTemplateWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\DefaultSprite3DBillboardDPSFDemoParticleSystemTemplateWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\DefaultSpriteDPSFDemoParticleSystemTemplateWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\DefaultTexturedQuadDPSFDemoParticleSystemTemplateWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\DotPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\DPSFSplashScreenPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\DrawTextRequirements.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\ExplosionDebrisPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\ExplosionDebrisSpritePSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\ExplosionFireSmokePSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\ExplosionFlashWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\ExplosionFlyingSparksPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\ExplosionPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\ExplosionRoundSparksPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\ExplosionShockwavePSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\ExplosionSmokeTrailsPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\Figure8PSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\FirePSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\FireSpritePSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\FireworksPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\FountainPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\GasFallPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\GridQuadPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\ImagePSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\IWrapDPSFDemoParticleSystems.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\MagnetsPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\MultipleEmittersPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\MultipleParticleImagesPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\MultipleParticleImagesSpritePSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\QuadDPSFDemoParticleSystemTemplateWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\QuadSprayPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\Random2DPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\RandomPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\RotatingQuadsPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\SmokePSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\SnowPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\SparklerPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\SpherePSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\Sprite3DBillboardDPSFDemoParticleSystemTemplateWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\SpriteDPSFDemoParticleSystemTemplateWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\SpritePSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\SquarePatternPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\StarPSWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\TexturedQuadDPSFDemoParticleSystemTemplateWrapper.cs" />
+    <Compile Include="Particle System Wrappers For DPSF Demo\TrailPSWrapper.cs" />
     <Compile Include="Particle Systems\AnimatedQuadPS.cs" />
     <Compile Include="Particle Systems\AnimatedSpritePS.cs" />
     <Compile Include="Particle Systems\BallPS.cs" />
     <Compile Include="Particle Systems\BoxPS.cs" />
     <Compile Include="Particle Systems\DotPS.cs" />
-    <Compile Include="Particle Systems\DPSFSplashScreenPS.cs" />
     <Compile Include="Particle Systems\ExplosionDebrisPS.cs" />
+    <Compile Include="Particle Systems\ExplosionDebrisSpritePS.cs" />
     <Compile Include="Particle Systems\ExplosionFireSmokePS.cs" />
     <Compile Include="Particle Systems\ExplosionFlash.cs" />
     <Compile Include="Particle Systems\ExplosionFlyingSparksPS.cs" />
@@ -89,6 +141,7 @@
     <Compile Include="Particle Systems\GridQuadPS.cs" />
     <Compile Include="Particle Systems\ImagePS.cs" />
     <Compile Include="Particle Systems\MagnetsPS.cs" />
+    <Compile Include="Particle Systems\MultipleEmittersPS.cs" />
     <Compile Include="Particle Systems\MultipleParticleImagesPS.cs" />
     <Compile Include="Particle Systems\MultipleParticleImagesSpritePS.cs" />
     <Compile Include="Particle Systems\QuadSprayPS.cs" />
@@ -115,9 +168,17 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
-    <Content Include="GameThumbnail.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\BasicVirtualEnvironment\BasicVirtualEnvironment\Xbox 360 Copy of BasicVirtualEnvironment.csproj">
+      <Project>{cc35be29-33ba-4a22-8ab6-4488805f5f9e}</Project>
+      <Name>Xbox 360 Copy of BasicVirtualEnvironment</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DPSF DemoContent\DPSF DemoContent.contentproj">
+      <Name>DPSF_DemoContent</Name>
+      <XnaReferenceType>Content</XnaReferenceType>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
       <Visible>False</Visible>
@@ -145,54 +206,21 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Reference Include="DPSFXbox360">
       <HintPath>C:\DPSF\DPSFXbox360.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Xna.Framework">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Avatar">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Game">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.GamerServices">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Graphics">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Net">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Storage">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Video">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Xact">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="mscorlib">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Core">
-      <Private>False</Private>
-    </Reference>
+    <Reference Include="Microsoft.Xna.Framework" />
+    <Reference Include="Microsoft.Xna.Framework.Game" />
+    <Reference Include="Microsoft.Xna.Framework.GamerServices" />
+    <Reference Include="Microsoft.Xna.Framework.Graphics" />
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
     <Reference Include="System.Net" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Xml.Linq">
-      <Private>False</Private>
-    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

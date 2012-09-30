@@ -1,15 +1,15 @@
 ﻿#region Using Statements
 using System;
-using System.Collections.Generic;
+using DPSF;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 #endregion
 
-namespace DPSF.ParticleSystems
+namespace DPSF_Demo.ParticleSystems
 {
     /// <summary>
-    /// Create a new Particle System class that inherits from a Default DPSF Particle System
+    /// Create a new Particle System class that inherits from a Default DPSF Particle System.
     /// </summary>
 #if (WINDOWS)
     [Serializable]
@@ -73,7 +73,7 @@ namespace DPSF.ParticleSystems
         //===========================================================
         public override void AutoInitialize(GraphicsDevice graphicsDevice, ContentManager contentManager, SpriteBatch spriteBatch)
         {
-            InitializeSpriteParticleSystem(graphicsDevice, contentManager, 1000, 50000, "Textures/ExplosionParticles");
+            InitializeSpriteParticleSystem(graphicsDevice, contentManager, 1000, 50000, "Textures/ExplosionParticles", spriteBatch);
 
             Name = "Explosion - Debris";
             LoadEvents();
@@ -84,7 +84,7 @@ namespace DPSF.ParticleSystems
             // Specify the particle initialization function
             ParticleInitializationFunction = InitializeParticleExplosion;
 
-            // Setup the behaviours that the particles should have
+            // Setup the behaviors that the particles should have
             ParticleEvents.RemoveAllEvents();
             ParticleEvents.AddEveryTimeEvent(UpdateParticleVelocityUsingExternalForce);
             ParticleEvents.AddEveryTimeEvent(UpdateParticlePositionAndVelocityUsingAcceleration);

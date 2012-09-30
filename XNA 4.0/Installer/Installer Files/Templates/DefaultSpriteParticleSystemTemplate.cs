@@ -13,20 +13,19 @@
 
 #region Using Statements
 using System;
-using System.Collections.Generic;
+using DPSF;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 #endregion
 
-namespace DPSF.ParticleSystems
+namespace DPSF_Demo.ParticleSystems
 {
 	//-----------------------------------------------------------
 	// TODO: Rename/Refactor the Particle System class
 	//-----------------------------------------------------------
 	/// <summary>
-	/// Create a new Particle System class that inherits from a
-	/// Default DPSF Particle System
+	/// Create a new Particle System class that inherits from a Default DPSF Particle System.
 	/// </summary>
 #if (WINDOWS)
 	[Serializable]
@@ -78,7 +77,7 @@ namespace DPSF.ParticleSystems
 			// TODO: Change any Initialization parameters desired and the Name
 			//-----------------------------------------------------------
 			// Initialize the Particle System before doing anything else
-			InitializeSpriteParticleSystem(cGraphicsDevice, cContentManager, 1000, 50000, "Textures/Star9");
+			InitializeSpriteParticleSystem(cGraphicsDevice, cContentManager, 1000, 50000, "Textures/Star9", cSpriteBatch);
 			
 			// Set the Name of the Particle System
 			Name = "Default Sprite Particle System Template";
