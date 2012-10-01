@@ -48,7 +48,7 @@ Then re-run the "DPSF\DPSF.sln" in x86 Release mode to generate the executable a
 
 19 - Create a copy of the installer and move it into the "Archived Installers" section, renaming it with it's version number, and then zip it up to be uploaded to the web.
 
-20 - In the DPSF.sln, change the DPSF Demo projects back to referencing the DPSF project, rather than the DLL files in the C:\DPSF folder.
+20 - In the DPSF.sln, change the DPSF Demo projects back to referencing the DPSF project, rather than the DLL files in the C:\DPSF folder, and change back to using the Debug Mixed configuration.
 
 21 - Check files into Git, adding the current dll version (e.g. v1.0.1.1) and Change Log to the SVN commit comments.
 
