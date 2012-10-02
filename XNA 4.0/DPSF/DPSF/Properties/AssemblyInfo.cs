@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("DPSF")]
 [assembly: AssemblyProduct("DPSF")]
 [assembly: AssemblyDescription("Dynamic Particle System Framework")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Daniel Schroeder")]
 
 [assembly: AssemblyCopyright("Copyright © Daniel Schroeder 2008")]
 [assembly: AssemblyTrademark("")]
