@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoForAndroidApp", "MonoForAndroidApp\MonoForAndroidApp.csproj", "{AB5B125C-7761-487D-A2D0-BCE9F76014FA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AB5B125C-7761-487D-A2D0-BCE9F76014FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB5B125C-7761-487D-A2D0-BCE9F76014FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB5B125C-7761-487D-A2D0-BCE9F76014FA}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{AB5B125C-7761-487D-A2D0-BCE9F76014FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB5B125C-7761-487D-A2D0-BCE9F76014FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB5B125C-7761-487D-A2D0-BCE9F76014FA}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
