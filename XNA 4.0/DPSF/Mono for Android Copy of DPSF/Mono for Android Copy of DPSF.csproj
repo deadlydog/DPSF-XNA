@@ -232,9 +232,9 @@
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>REM Copy the new files to the LatestDLLBuild folder.
-if not exist "$(SolutionDir)..\DPSF\LatestDLLBuild" mkdir "$(SolutionDir)LatestDLLBuild"
-if exist "$(TargetPath)" copy /y /d "$(TargetPath)" "$(SolutionDir)..\DPSF\LatestDLLBuild\$(TargetFileName)"
-if exist "$(TargetDir)$(TargetName).xml" copy /y /d "$(TargetDir)$(TargetName).xml" "$(SolutionDir)..\DPSF\LatestDLLBuild\$(TargetName).xml"</PostBuildEvent>
+if not exist "$(ProjectDir)..\LatestDLLBuild" mkdir "$(ProjectDir)..\LatestDLLBuild"
+if exist "$(TargetPath)" copy /y /d "$(TargetPath)" "$(ProjectDir)..\LatestDLLBuild\$(TargetFileName)"
+if exist "$(TargetDir)$(TargetName).xml" copy /y /d "$(TargetDir)$(TargetName).xml" "$(ProjectDir)..\LatestDLLBuild\$(TargetName).xml"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

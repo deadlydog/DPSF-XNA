@@ -188,7 +188,7 @@ namespace DPSF_Demo.ParticleSystems
 		{
 			// Have the emitter that called this event remove itself from the list of emitters.
 			ParticleEmitter emitter = sender as ParticleEmitter;
-			Emitters.Remove(emitter.ID);
+			Emitters.Remove(emitter);
 		}
 
         //===========================================================

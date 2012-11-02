@@ -244,8 +244,9 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>if not exist "$(SolutionDir)LatestDLLBuild" mkdir "$(SolutionDir)LatestDLLBuild"
-if exist "$(TargetPath)" copy /y /d "$(TargetPath)" "$(SolutionDir)LatestDLLBuild\$(TargetFileName)"
-if exist "$(TargetDir)$(TargetName).xml" copy /y /d "$(TargetDir)$(TargetName).xml" "$(SolutionDir)LatestDLLBuild\$(TargetName).xml"</PostBuildEvent>
+    <PostBuildEvent>REM Copy the new files to the LatestDLLBuild folder.
+if not exist "$(ProjectDir)..\LatestDLLBuild" mkdir "$(ProjectDir)..\LatestDLLBuild"
+if exist "$(TargetPath)" copy /y /d "$(TargetPath)" "$(ProjectDir)..\LatestDLLBuild\$(TargetFileName)"
+if exist "$(TargetDir)$(TargetName).xml" copy /y /d "$(TargetDir)$(TargetName).xml" "$(ProjectDir)..\LatestDLLBuild\$(TargetName).xml"</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -193,6 +193,10 @@ function DPSF()
 		Authors[30] = '- chazzwazzle'
 		Quotes[31] = '"Your particle system is amazing, thank you for developing it! :)"'
 		Authors[31] = '- OneBeeKay'
+		Quotes[32] = '"Thanks for this wonderful project"'
+		Authors[32] = '- Fayez R. El-Far, Eng. M.Sc. CSI, Chief Engineer / Director'
+		Quotes[33] = '"integrated @DPSFXNA in my windows phone game in an afternoon. Piece of cake! #xna #gamedev"'
+		Authors[33] '- @CaranElmoth, via Twitter'
 
 		
 		// Get a handle to the UserQuotesList

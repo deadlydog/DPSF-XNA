@@ -27,7 +27,7 @@ namespace DPSF
 		/// Adds a new ParticleEmitter to the list of emitters and returns the ParticleEmitter's unique ID that can be used to retrieve it from the collection.
 		/// </summary>
 		/// <returns>Returns the ParticleEmitter's unique ID that can be used to reference the ParticleEmitter in the collection.</returns>
-		public int Add()
+		public ParticleEmitter Add()
 		{
 			return Add(null);
 		}
@@ -37,7 +37,7 @@ namespace DPSF
 		/// </summary>
 		/// <param name="emitter">The ParticleEmitter to add to the collection.</param>
 		/// <returns>Returns the ParticleEmitter's unique ID that can be used to reference the ParticleEmitter in the collection.</returns>
-		public int Add(ParticleEmitter emitter)
+		public ParticleEmitter Add(ParticleEmitter emitter)
 		{
 			ParticleEmitter newEmitter;
 			if (emitter == null)
@@ -46,7 +46,7 @@ namespace DPSF
 				newEmitter = emitter;
 
 			_emitters.Add(newEmitter.ID, newEmitter);
-			return newEmitter.ID;
+			return newEmitter;
 		}
 
 		/// <summary>
