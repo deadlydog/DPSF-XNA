@@ -1,18 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
-    <ProjectGuid>{64846AAF-B349-4FEB-8228-412A1FA5DA4B}</ProjectGuid>
+    <ProjectGuid>{EBD1DE0F-C384-43FA-A146-069A3B068D0F}</ProjectGuid>
     <ProjectTypeGuids>{6D335F3A-9D43-41b4-9D22-F6F17C4BE596};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TestDPSFDLL</RootNamespace>
-    <AssemblyName>TestDPSFDLL</AssemblyName>
+    <RootNamespace>TestDPSFInheritsDLL</RootNamespace>
+    <AssemblyName>TestDPSFInheritsDLL</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
     <XnaPlatform>Windows</XnaPlatform>
-    <XnaCrossPlatformGroupID>6a342fe6-2d33-4524-a098-e1d373203586</XnaCrossPlatformGroupID>
+    <XnaCrossPlatformGroupID>f596be29-c7f8-4602-92b0-82d74a76c4d7</XnaCrossPlatformGroupID>
     <ApplicationIcon>Game.ico</ApplicationIcon>
     <Thumbnail>GameThumbnail.png</Thumbnail>
     <IsWebBootstrapper>false</IsWebBootstrapper>
@@ -68,8 +68,9 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DPSF">
-      <HintPath>..\..\..\Installer\Installer Files\DPSF.dll</HintPath>
+    <Reference Include="DPSFAsDrawableGameComponent, Version=2.3.0.0, Culture=neutral, PublicKeyToken=32c832bfa7326ee2, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Installer Files\DPSFAsDrawableGameComponent.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553">
       <Private>False</Private>
@@ -130,7 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <NestedContentProject Include="Content\Content.contentproj">
-      <Project>7b32452d-7540-46c3-a9ca-cd5b6cad3992</Project>
+      <Project>d9f0bd20-273c-451e-b9ed-9131f9c789bd</Project>
       <Visible>False</Visible>
     </NestedContentProject>
   </ItemGroup>
@@ -177,9 +178,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Content\TestDPSFDLLContent.contentproj">
-      <Project>{7B32452D-7540-46C3-A9CA-CD5B6CAD3992}</Project>
-      <Name>TestDPSFDLLContent %28Content%29</Name>
+    <ProjectReference Include="Content\TestDPSFInheritsDLLContent.contentproj">
+      <Project>{D9F0BD20-273C-451E-B9ED-9131F9C789BD}</Project>
+      <Name>TestDPSFInheritsDLLContent %28Content%29</Name>
       <XnaReferenceType>Content</XnaReferenceType>
     </ProjectReference>
   </ItemGroup>
