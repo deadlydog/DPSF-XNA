@@ -1,0 +1,342 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0BF3802A-C5F1-4C19-AD21-141F5C147ED2}</ProjectGuid>
+    <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DPSF_Demo_for_Mono_for_Android</RootNamespace>
+    <AssemblyName>DPSF Demo for Mono for Android</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <AndroidApplication>true</AndroidApplication>
+    <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;ANDROID</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AndroidUseSharedRuntime>True</AndroidUseSharedRuntime>
+    <AndroidLinkMode>None</AndroidLinkMode>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AndroidUseSharedRuntime>False</AndroidUseSharedRuntime>
+    <AndroidLinkMode>SdkOnly</AndroidLinkMode>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Lidgren.Network.Android, Version=2011.3.12.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Mono.Android" />
+    <Reference Include="MonoGame.Framework.Android, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="mscorlib" />
+    <Reference Include="OpenTK" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Tao.Sdl, Version=1.2.13.0, Culture=neutral, PublicKeyToken=9c7a200e36c0094e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Logos\DPSFSplashScreenPS.cs">
+      <Link>Particle Systems\DPSFSplashScreenPS.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\Game1.cs">
+      <Link>Game1.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF Demo\DPSF Demo\Particle Systems\SpritePS.cs">
+      <Link>Particle Systems\SpritePS.cs</Link>
+    </Compile>
+    <Compile Include="Activity1.cs" />
+    <Compile Include="Resources\Resource.Designer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Fonts\font.xnb">
+      <Link>Assets\Content\Fonts\font.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\AnimatedButterfly.xnb">
+      <Link>Assets\Content\Textures\AnimatedButterfly.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\AnimatedExplosion.xnb">
+      <Link>Assets\Content\Textures\AnimatedExplosion.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Arrow.xnb">
+      <Link>Assets\Content\Textures\Arrow.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Arrow2.xnb">
+      <Link>Assets\Content\Textures\Arrow2.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Arrow3.xnb">
+      <Link>Assets\Content\Textures\Arrow3.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Arrow4.xnb">
+      <Link>Assets\Content\Textures\Arrow4.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Arrow5.xnb">
+      <Link>Assets\Content\Textures\Arrow5.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Ball.xnb">
+      <Link>Assets\Content\Textures\Ball.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Bubble.xnb">
+      <Link>Assets\Content\Textures\Bubble.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Cloud.xnb">
+      <Link>Assets\Content\Textures\Cloud.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\CloudLight.xnb">
+      <Link>Assets\Content\Textures\CloudLight.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\CrossArrow.xnb">
+      <Link>Assets\Content\Textures\CrossArrow.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Dog.xnb">
+      <Link>Assets\Content\Textures\Dog.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Donut.xnb">
+      <Link>Assets\Content\Textures\Donut.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\DPSFLogo.xnb">
+      <Link>Assets\Content\Textures\DPSFLogo.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\DPSFText.xnb">
+      <Link>Assets\Content\Textures\DPSFText.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\ExplosionParticles.xnb">
+      <Link>Assets\Content\Textures\ExplosionParticles.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Fire.xnb">
+      <Link>Assets\Content\Textures\Fire.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Flower.xnb">
+      <Link>Assets\Content\Textures\Flower.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Flower2.xnb">
+      <Link>Assets\Content\Textures\Flower2.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Flower3.xnb">
+      <Link>Assets\Content\Textures\Flower3.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Flower4.xnb">
+      <Link>Assets\Content\Textures\Flower4.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Flower5.xnb">
+      <Link>Assets\Content\Textures\Flower5.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Gear.xnb">
+      <Link>Assets\Content\Textures\Gear.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Gear2.xnb">
+      <Link>Assets\Content\Textures\Gear2.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Gear3.xnb">
+      <Link>Assets\Content\Textures\Gear3.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Gear4.xnb">
+      <Link>Assets\Content\Textures\Gear4.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Gear5.xnb">
+      <Link>Assets\Content\Textures\Gear5.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\MoveArrow.xnb">
+      <Link>Assets\Content\Textures\MoveArrow.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Paper.xnb">
+      <Link>Assets\Content\Textures\Paper.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Particle.xnb">
+      <Link>Assets\Content\Textures\Particle.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\RedCircle.xnb">
+      <Link>Assets\Content\Textures\RedCircle.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Shape1.xnb">
+      <Link>Assets\Content\Textures\Shape1.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Shape2.xnb">
+      <Link>Assets\Content\Textures\Shape2.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Smoke.xnb">
+      <Link>Assets\Content\Textures\Smoke.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Spark.xnb">
+      <Link>Assets\Content\Textures\Spark.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Splat.xnb">
+      <Link>Assets\Content\Textures\Splat.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Star.xnb">
+      <Link>Assets\Content\Textures\Star.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Star2.xnb">
+      <Link>Assets\Content\Textures\Star2.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Star3.xnb">
+      <Link>Assets\Content\Textures\Star3.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Star4.xnb">
+      <Link>Assets\Content\Textures\Star4.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Star5.xnb">
+      <Link>Assets\Content\Textures\Star5.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Star6.xnb">
+      <Link>Assets\Content\Textures\Star6.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Star7.xnb">
+      <Link>Assets\Content\Textures\Star7.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Star8.xnb">
+      <Link>Assets\Content\Textures\Star8.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Star9.xnb">
+      <Link>Assets\Content\Textures\Star9.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\StarFish.xnb">
+      <Link>Assets\Content\Textures\StarFish.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Sun.xnb">
+      <Link>Assets\Content\Textures\Sun.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Sun2.xnb">
+      <Link>Assets\Content\Textures\Sun2.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Sun3.xnb">
+      <Link>Assets\Content\Textures\Sun3.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\ThrowingStar.xnb">
+      <Link>Assets\Content\Textures\ThrowingStar.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\Wheel.xnb">
+      <Link>Assets\Content\Textures\Wheel.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\WhiteSquare.xnb">
+      <Link>Assets\Content\Textures\WhiteSquare.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\WhiteSquare1.xnb">
+      <Link>Assets\Content\Textures\WhiteSquare1.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\WhiteSquare10.xnb">
+      <Link>Assets\Content\Textures\WhiteSquare10.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\WhiteSquare2.xnb">
+      <Link>Assets\Content\Textures\WhiteSquare2.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\WordBubble.xnb">
+      <Link>Assets\Content\Textures\WordBubble.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="..\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\bin\Windows Phone\Release\Content\Textures\X.xnb">
+      <Link>Assets\Content\Textures\X.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <None Include="Resources\AboutResources.txt" />
+    <None Include="Assets\AboutAssets.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\Layout\Main.axml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\Values\Strings.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\Drawable\Icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\DPSF\Mono for Android Copy of DPSF\Mono for Android Copy of DPSF.csproj">
+      <Project>{1930FFE8-7F1D-42BA-A713-A0BAB7995BCF}</Project>
+      <Name>Mono for Android Copy of DPSF</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Mono Dependencies\Lidgren.Network.Android.dll" />
+    <Content Include="Mono Dependencies\MonoGame.Framework.Android.dll" />
+    <Content Include="Mono Dependencies\OpenTK.dll" />
+    <Content Include="Mono Dependencies\Tao.Sdl.dll" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+     Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

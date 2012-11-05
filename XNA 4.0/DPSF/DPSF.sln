@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DPSF Demo for Windows Phone
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DPSF Demo for Windows PhoneContent", "..\Installer\Installer Files\DPSF Demo\DPSF Demo for Windows Phone\DPSF Demo for Windows PhoneContent\DPSF Demo for Windows PhoneContent.contentproj", "{1C7CE49B-AAF9-486C-8EFF-D5A329CD841C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DPSF Demo for Mono for Android", "..\Installer\Installer Files\DPSF Demo\DPSF Demo for Mono for Android\DPSF Demo for Mono for Android.csproj", "{0BF3802A-C5F1-4C19-AD21-141F5C147ED2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -241,6 +243,21 @@ Global
 		{1C7CE49B-AAF9-486C-8EFF-D5A329CD841C}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
 		{1C7CE49B-AAF9-486C-8EFF-D5A329CD841C}.Release|x86.ActiveCfg = Release|Windows Phone
 		{1C7CE49B-AAF9-486C-8EFF-D5A329CD841C}.Release|Xbox 360.ActiveCfg = Release|Windows Phone
+		{0BF3802A-C5F1-4C19-AD21-141F5C147ED2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BF3802A-C5F1-4C19-AD21-141F5C147ED2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BF3802A-C5F1-4C19-AD21-141F5C147ED2}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{0BF3802A-C5F1-4C19-AD21-141F5C147ED2}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{0BF3802A-C5F1-4C19-AD21-141F5C147ED2}.Debug|Mixed Platforms.Deploy.0 = Debug|Any CPU
+		{0BF3802A-C5F1-4C19-AD21-141F5C147ED2}.Debug|Windows Phone.ActiveCfg = Debug|Any CPU
+		{0BF3802A-C5F1-4C19-AD21-141F5C147ED2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0BF3802A-C5F1-4C19-AD21-141F5C147ED2}.Debug|Xbox 360.ActiveCfg = Debug|Any CPU
+		{0BF3802A-C5F1-4C19-AD21-141F5C147ED2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BF3802A-C5F1-4C19-AD21-141F5C147ED2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BF3802A-C5F1-4C19-AD21-141F5C147ED2}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{0BF3802A-C5F1-4C19-AD21-141F5C147ED2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{0BF3802A-C5F1-4C19-AD21-141F5C147ED2}.Release|Windows Phone.ActiveCfg = Release|Any CPU
+		{0BF3802A-C5F1-4C19-AD21-141F5C147ED2}.Release|x86.ActiveCfg = Release|Any CPU
+		{0BF3802A-C5F1-4C19-AD21-141F5C147ED2}.Release|Xbox 360.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -35,19 +35,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework.Android, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\Installer\Installer Files\DPSF Demo\DPSF Demo for Mono for Android\Mono Dependencies\MonoGame.Framework.Android.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="mscorlib" />
-    <Reference Include="OpenTK, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tao.Sdl, Version=1.2.13.0, Culture=neutral, PublicKeyToken=9c7a200e36c0094e, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\DPSF\AutoMemoryManagerSettings.cs">
@@ -206,9 +201,6 @@
     <Content Include="..\DPSF\DPSF Effects\HLSL\DPSFDefaultEffect.fx">
       <Link>DPSF Effects\HLSL\DPSFDefaultEffect.fx</Link>
     </Content>
-    <Content Include="Mono Dependencies\MonoGame.Framework.Android.dll" />
-    <Content Include="Mono Dependencies\OpenTK.dll" />
-    <Content Include="Mono Dependencies\Tao.Sdl.dll" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\DPSF\DPSF Effects\Raw Effect Code\DPSFDefaultEffectWindowsHiDef.bin">
