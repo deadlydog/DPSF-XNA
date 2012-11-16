@@ -109,7 +109,7 @@
     <Compile Include="DPSF Defaults\Magnets\MagnetLineSegment.cs" />
     <Compile Include="DPSF Defaults\Magnets\MagnetPlane.cs" />
     <Compile Include="DPSF Defaults\Magnets\MagnetPoint.cs" />
-    <Compile Include="DPSF Effects\C#\DPSFDefaultEffect.cs" />
+    <Compile Include="DPSF Effects\CSharp\DPSFDefaultEffect.cs" />
     <Compile Include="DPSF Helpers\Animations.cs" />
     <Compile Include="DPSF Helpers\DPSFHelper.cs" />
     <Compile Include="DPSF Helpers\Orientation2D.cs" />

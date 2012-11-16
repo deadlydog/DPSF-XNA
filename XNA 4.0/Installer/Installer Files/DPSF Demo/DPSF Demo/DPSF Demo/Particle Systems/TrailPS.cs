@@ -28,16 +28,21 @@ namespace DPSF_Demo.ParticleSystems
         public Color TrailStartColor = Color.Red;
         public Color TrailEndColor = Color.Yellow;
 
-        public int TrailStartSize = 5;
-        public int TrailEndSize = 40;
+        public int TrailStartSize;
+        public int TrailEndSize;
 
-        /// <summary>
-        /// Adjust the scale to produce more or less particles.
-        /// 1.0 = second particle will be touching (no overlapping) next particle.
-        /// 0.5 = second particle will overlap half of first particle.
-        /// 0.25 = second particle will overlap 3/4 of first particle.
-        /// </summary>
-        public float NumberOfParticlesToEmitScale = 0.05f;
+    	/// <summary>
+    	/// Adjust the scale to produce more or less particles.
+    	/// 1.0 = second particle will be touching (no overlapping) next particle.
+    	/// 0.5 = second particle will overlap half of first particle.
+    	/// 0.25 = second particle will overlap 3/4 of first particle.
+    	/// </summary>
+    	public float NumberOfParticlesToEmitScale
+    	{
+			get { return _numberOfParticlesToEmitScale; }
+			set { _numberOfParticlesToEmitScale = DPSFHelper.ValueInRange(value, 0.05f, 2.0f); }
+    	}
+    	private float _numberOfParticlesToEmitScale = 0;
 
         //===========================================================
         // Overridden Particle System Functions
@@ -53,7 +58,7 @@ namespace DPSF_Demo.ParticleSystems
             // Use additive blending
             RenderProperties.BlendState = BlendState.Additive;
 
-                        //RenderProperties.RasterizerState.CullMode = CullMode.None;
+			//RenderProperties.RasterizerState.CullMode = CullMode.None;
         }
 
         //===========================================================
@@ -65,7 +70,6 @@ namespace DPSF_Demo.ParticleSystems
                                                     UpdateVertexProperties, "Textures/Particle");
 
             LoadParticleSystem();
-            //LoadSpinningTrailParticleSystem();
             Name = "Trail";
         }
 
@@ -95,9 +99,10 @@ namespace DPSF_Demo.ParticleSystems
             ParticleEvents.AddEveryTimeEvent(UpdateParticleWidthAndHeightUsingLerp);
             ParticleEvents.AddEveryTimeEvent(UpdateParticleToFaceTheCamera, 100);
 
+        	ParticleSystemEvents.RemoveAllEvents();
             ParticleSystemEvents.AddEveryTimeEvent(UpdateParticleSystemDynamicallyUpdateParticlesEmittedBasedOnSpeed);
 
-            Emitter.PositionData.Position = new Vector3(0, 50, 0);
+            Emitter.PositionData.Position = _emittersLastPosition = new Vector3(0, 50, 0);
             Emitter.OrientationData.RotationalVelocity = new Vector3(0, 0, (float)Math.PI);
             Emitter.ParticlesPerSecond = 100;
 
@@ -121,9 +126,10 @@ namespace DPSF_Demo.ParticleSystems
             ParticleEvents.AddEveryTimeEvent(UpdateParticleRotationUsingRotationalVelocity);
             ParticleEvents.AddEveryTimeEvent(UpdateParticleToFaceTheCamera, 100);
 
+			ParticleSystemEvents.RemoveAllEvents();
             ParticleSystemEvents.AddEveryTimeEvent(UpdateParticleSystemDynamicallyUpdateParticlesEmittedBasedOnSpeed);
 
-            Emitter.PositionData.Position = new Vector3(0, 50, 0);
+            Emitter.PositionData.Position = _emittersLastPosition = new Vector3(0, 50, 0);
             Emitter.OrientationData.RotationalVelocity = new Vector3(0, 0, (float)Math.PI);
             Emitter.ParticlesPerSecond = 100;
 
@@ -131,9 +137,8 @@ namespace DPSF_Demo.ParticleSystems
             TrailEndColor = Color.Yellow;
             TrailStartSize = 30;
             TrailEndSize = 5;
-            //            SetTexture("Textures/Cloud");
             SetTexture("Textures/MoveArrow");
-            NumberOfParticlesToEmitScale = 0.08f;
+            NumberOfParticlesToEmitScale = 0.05f;
         }
 
         //===========================================================

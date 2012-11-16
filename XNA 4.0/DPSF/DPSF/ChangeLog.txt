@@ -11,9 +11,16 @@ TODO - Investigate using Tasks and running on multiple threads to boost performa
 
 
 Changes made after Version 2.3.0:
+public:
+- Got DPSF working properly on Android and added DPSF Demo for Mono for Android project to show DPSF working on Android.
+- Got DPSF working properly on WinRT and added DPSF Demo for Mono for WinRT project to show DPSF working on WinRT.
+- Updated the Trail particle system included in the DPSF Demo a bit.
 
 Possible Breaking Changes:
 	- Changed the ParticleEmitterCollection's Add() function to return back the new ParticleEmitter, rather than the new ParticleEmitter's ID.
+
+private:
+- Renamed C# folder to CSharp to be VS 2012 compatible.
 
 
 Changes made after Version 2.2.2:

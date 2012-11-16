@@ -5042,7 +5042,7 @@ namespace DPSF
 			for (int index = 0; index < 16; index++)
 				GraphicsDevice.SamplerStates[index] = SamplerState.PointClamp;
 // Apparently MonoGame's Android doesn't know about the VertexSamplerStates property, so we can't update it on Android.
-#if (!ANDROID)
+#if (!ANDROID && !WIN_RT)
 			// The Reach profile does not have VertexSamplerStates, but clear them out if we're using a HiDef profile.
 			if (this.GraphicsDevice.GraphicsProfile == GraphicsProfile.HiDef)
 			{

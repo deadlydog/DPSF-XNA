@@ -10,6 +10,8 @@
 
 namespace DPSF {
     using System;
+	using System.Reflection;
+	using Windows.ApplicationModel.Resources;
     
     
     /// <summary>
@@ -39,7 +41,7 @@ namespace DPSF {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DPSF.DPSFResources", typeof(DPSFResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DPSF.DPSFResources", typeof(DPSFResources).GetTypeInfo().Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -65,8 +67,9 @@ namespace DPSF {
         /// </summary>
         internal static byte[] DPSFDefaultEffectWindowsHiDef {
             get {
-                object obj = ResourceManager.GetObject("DPSFDefaultEffectWindowsHiDef", resourceCulture);
-                return ((byte[])(obj));
+				//object obj = ResourceManager.GetObject("DPSFDefaultEffectWindowsHiDef", resourceCulture);
+				//return ((byte[])(obj));
+				throw new NotImplementedException("Haven't figured out how to have non-string resources in WinRT yet, so can't use the DPSFDefualtEffect in WinRT.");
             }
         }
         
@@ -75,8 +78,9 @@ namespace DPSF {
         /// </summary>
         internal static byte[] DPSFDefaultEffectWindowsReach {
             get {
-                object obj = ResourceManager.GetObject("DPSFDefaultEffectWindowsReach", resourceCulture);
-                return ((byte[])(obj));
+				//object obj = ResourceManager.GetObject("DPSFDefaultEffectWindowsReach", resourceCulture);
+				//return ((byte[])(obj));
+				throw new NotImplementedException("Haven't figured out how to have non-string resources in WinRT yet, so can't use the DPSFDefualtEffect in WinRT.");
             }
         }
         
@@ -85,8 +89,9 @@ namespace DPSF {
         /// </summary>
         internal static byte[] DPSFDefaultEffectXbox360HiDef {
             get {
-                object obj = ResourceManager.GetObject("DPSFDefaultEffectXbox360HiDef", resourceCulture);
-                return ((byte[])(obj));
+				//object obj = ResourceManager.GetObject("DPSFDefaultEffectXbox360HiDef", resourceCulture);
+				//return ((byte[])(obj));
+				throw new NotImplementedException("Haven't figured out how to have non-string resources in WinRT yet, so can't use the DPSFDefualtEffect in WinRT.");
             }
         }
     }

@@ -11,6 +11,7 @@
 
 #region Using Statements
 using System;
+using System.Reflection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 #endregion
@@ -44,7 +45,15 @@ namespace DPSF
 		/// </summary>
 		public static string Version
 		{
-			get { return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
+			get 
+			{ 
+#if (WIN_RT)
+				return typeof(DPSF<DPSFParticle, DefaultNoDisplayParticleVertex>).GetTypeInfo().Assembly.GetName().Version.ToString();
+#else
+				return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(); 
+#endif
+
+			}
 		}
 
 		/// <summary>
@@ -81,6 +90,24 @@ namespace DPSF
 		public static float RandomNumberBetween(float fValue1, float fValue2)
 		{
 			return RandomNumber.Between(fValue1, fValue2);
+		}
+
+		/// <summary>
+		/// Returns the given value, enforcing it to be within the given range.
+		/// </summary>
+		/// <param name="value">The value to return if it is within the given Min and Max range.</param>
+		/// <param name="min">The Minimum acceptable value. If Value is less than this then this Min will be returned instead of the value.</param>
+		/// <param name="max">The Maximum acceptable value. If Value is greater than this then this Max will be returned instead of the value.</param>
+		public static float ValueInRange(float value, float min, float max)
+		{
+			if (min > max)
+				throw new DPSF.Exceptions.DPSFArgumentException("Min value is greater than Max value provided to the ValueInRange() function.");
+
+			if (value < min)
+				value = min;
+			else if (value > max)
+				value = max;
+			return value;
 		}
 
 		/// <summary>

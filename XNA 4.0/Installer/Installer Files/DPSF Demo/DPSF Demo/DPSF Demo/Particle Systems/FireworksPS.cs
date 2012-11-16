@@ -166,6 +166,7 @@ namespace DPSF_Demo.ParticleSystems
 			ParticleEvents.AddEveryTimeEvent(UpdateParticlePositionAndVelocityUsingAcceleration, 100);
 			ParticleEvents.AddEveryTimeEvent(UpdateParticleToFaceTheCamera, 200);
 
+			// When this single particle that was fired into the air dies, have it trigger an explosion.
 			ParticleEvents.AddNormalizedTimedEvent(1.0f, CreateExplosionParticles);
 
 			InitialProperties.LifetimeMin = 2.0f;
