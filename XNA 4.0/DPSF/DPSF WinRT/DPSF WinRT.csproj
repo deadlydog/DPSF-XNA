@@ -254,8 +254,10 @@
     <Compile Include="..\DPSF\ParticleSystemManager.cs">
       <Link>ParticleSystemManager.cs</Link>
     </Compile>
+    <Compile Include="..\DPSF\Properties\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="DPSFResources.Designer.winrt.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\DPSF\DPSF Effects\Raw Effect Code\DPSFDefaultEffectWindowsHiDef.bin">
