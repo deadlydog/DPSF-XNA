@@ -106,7 +106,7 @@ namespace DPSF_Demo.ParticleSystems
 			particle.Color = ExplosionColor;
 			particle.Position = Emitter.PositionData.Position;
 			particle.Velocity = DPSFHelper.RandomNormalizedVector() * RandomNumber.Next(175, 225);
-			particle.Right = -particle.Velocity;
+			particle.Right = -particle.Velocity;	// Orient the particle according to it's velocity.
 			particle.Width = ExplosionParticleSize;
 			particle.Height = ExplosionParticleSize * _textureAspectRatio;
 
