@@ -101,8 +101,9 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-    <Reference Include="MonoGame.Framework.Windows8">
-      <HintPath>$(MSBuildExtensionsPath)\..\MonoGame\v3.0\Assemblies\Windows8\MonoGame.Framework.Windows8.dll</HintPath>
+    <Reference Include="MonoGame.Framework.Windows8, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Mono Dependencies\MonoGame.Framework.Windows8.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
       <HintPath>$(MSBuildExtensionsPath)\..\MonoGame\v3.0\Assemblies\Windows8\SharpDX.dll</HintPath>
@@ -130,8 +131,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\DPSF Demo\DPSF Demo\Templates\DefaultTexturedQuadParticleSystemTemplate.cs">
+      <Link>DefaultTexturedQuadParticleSystemTemplate.cs</Link>
+    </Compile>
+    <Compile Include="Game1.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
-    <Compile Include="Game1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -145,7 +151,16 @@
     <Content Include="Assets\SmallLogo.png" />
     <Content Include="Assets\SplashScreen.png" />
     <Content Include="Assets\StoreLogo.png" />
+    <Content Include="Content\Textures\Star9.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Mono Dependencies\MonoGame.Framework.Windows8.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\DPSF\DPSF WinRT\DPSF WinRT.csproj">
+      <Project>{6f2a8594-445f-4561-b8e3-c56397797d74}</Project>
+      <Name>DPSF WinRT</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using DPSF_Demo.ParticleSystems;
 
 namespace DPSF_Demo_for_WinRT
 {
@@ -10,6 +11,8 @@ namespace DPSF_Demo_for_WinRT
     {
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
+
+		DefaultTexturedQuadParticleSystemTemplate particleSystem = null;
 
         public Game1()
         {
@@ -26,6 +29,9 @@ namespace DPSF_Demo_for_WinRT
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+
+			particleSystem = new DefaultTexturedQuadParticleSystemTemplate(null);
+			particleSystem.AutoInitialize(this.GraphicsDevice, this.Content, null);
 
             base.Initialize();
         }
@@ -60,6 +66,28 @@ namespace DPSF_Demo_for_WinRT
         {
             // TODO: Add your update logic here
 
+			// Setup the Camera
+			Vector3 sCameraPosition = new Vector3(0, 50, 300);
+			Vector3 sCameraTarget = new Vector3(0, 50, 0);
+
+			// Compute the Aspect Ratio of the window
+			float fAspectRatio = (float)GraphicsDevice.Viewport.Width / (float)GraphicsDevice.Viewport.Height;
+
+			// Set up our View matrix specifying the Camera position, a point to look-at, and a direction for which way is up
+			Matrix cViewMatrix = Matrix.CreateLookAt(sCameraPosition, sCameraTarget, Vector3.Up);
+
+			// Setup the Projection matrix by specifying the field of view (1/4 pi), aspect ratio, and the near and far clipping planes
+			Matrix cProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, fAspectRatio, 1, 10000);
+
+			// If there is a particle system to update
+			if (particleSystem != null)
+			{
+				// TODO: Add your update logic here
+				particleSystem.CameraPosition = sCameraPosition;
+				particleSystem.SetWorldViewProjectionMatrices(Matrix.Identity, cViewMatrix, cProjectionMatrix);
+				particleSystem.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+			}
+
             base.Update(gameTime);
         }
 
@@ -71,7 +99,12 @@ namespace DPSF_Demo_for_WinRT
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+			// If there is a particle system to draw
+			if (particleSystem != null)
+			{
+				// TODO: Add your drawing code here
+				particleSystem.Draw();
+			}
 
             base.Draw(gameTime);
         }
