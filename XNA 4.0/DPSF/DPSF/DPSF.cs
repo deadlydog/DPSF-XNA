@@ -44,10 +44,12 @@ namespace DPSF
 		None = 0,
 
 		/// <summary>
-		/// Use this when you do not want to draw your particles to the screen, as no vertex buffer will be
-		/// created, saving memory. Also, the Draw() function will do nothing when this Particle Type is used.
-		/// This Particle Type is useful when you just want to collect and analyze particle information without
-		/// visualizing the particles.
+		/// Use this when you do not want to draw your particles to the screen (e.g. when you just want to collect 
+		/// and analyze particle information without visualizing the particles), or when you want to draw particles
+		/// to the screen using your own code (e.g. to draw models instead of textures).
+		/// <para>No vertex or index buffer will be created, saving memory.</para>
+		/// <para>The BeforeDraw() and AfterDraw() functions are still called when this Particle Type is used.
+		/// Place your custom drawing code in one of these functions if necessary.</para>
 		/// </summary>
 		NoDisplay = 1,
 
@@ -4830,7 +4832,7 @@ namespace DPSF
 			if (!this.IsInitialized || !Visible ||
 				(InheritsDrawableGameComponent && !bCalledByDrawableGameComponent))
 			{
-				// Exit the function without drawing anything
+				// Exit the function without drawing anything.
 				return;
 			}
 
@@ -4844,19 +4846,20 @@ namespace DPSF
 #endif
 			}
 
-			// Reset all of the render states
-			ClearRenderStates();
+			// Reset all of the render states.
+			if (ParticleType != ParticleTypes.NoDisplay)
+				ClearRenderStates();
 
-			// Perform other functions before this Particle System is drawn
+			// Perform other functions before this Particle System is drawn.
 			BeforeDraw();
 
-			// If there are no Particles to draw
+			// If there are no Particles to draw.
 			if (miNumberOfParticlesToDraw <= 0 || ParticleType == ParticleTypes.NoDisplay)
 			{
-				// Perform the AfterDraw() operations before exiting
+				// Perform the AfterDraw() operations before exiting.
 				AfterDraw();
 
-				// If performance profiling is enabled, log how long it took to do the Draw
+				// If performance profiling is enabled, log how long it took to do the Draw.
 				if (_performanceProfilingIsEnabled)
 				{
 // The Reach profile does not have access to the System.Diagnostics namespace, so it does not know about the Stopwatch class.
@@ -4866,73 +4869,73 @@ namespace DPSF
 #endif
 				}
 
-				// Exit without drawing anything
+				// Exit without drawing anything.
 				return;
 			}
 
-			// If an Effect is not being used (can only be done with the SpriteBatch)
+			// If an Effect is not being used (can only be done with the SpriteBatch).
 			if (meParticleType == ParticleTypes.Sprite && (Effect == null || Technique == null))
 			{
 				// If we are using our own SpriteBatch to draw the particles, set it up.
 				if (!UsingExternalSpriteBatchToDrawParticles)
 				{
-					// Start the SpriteBatch for drawing
+					// Start the SpriteBatch for drawing.
 					mcSpriteBatch.Begin(SpriteBatchSettings.SortMode, RenderProperties.BlendState, RenderProperties.SamplerState, RenderProperties.DepthStencilState, RenderProperties.RasterizerState, this.Effect, SpriteBatchSettings.TransformationMatrix);
 				}
 
-				// Loop through all of the Sprites to Draw
+				// Loop through all of the Sprites to Draw.
 				for (int index = 0; index < miNumberOfParticlesToDraw; index++)
 				{
-					// Draw this Sprite using the overloaded Draw Sprite function
+					// Draw this Sprite using the overloaded Draw Sprite function.
 					DrawSprite(mcParticleSpritesToDraw[index], mcSpriteBatch);
 				}
 
 				// If we are using our own SpriteBatch to draw the particles, shut it down.
 				if (!UsingExternalSpriteBatchToDrawParticles)
 				{
-					// End the SpriteBatch since we are done drawing
+					// End the SpriteBatch since we are done drawing.
 					mcSpriteBatch.End();
 				}
 			}
-			// Else an Effect is being used
+			// Else an Effect is being used.
 			else
 			{
-				// Set the Render State for drawing
+				// Set the Render State for drawing.
 				ApplyRenderState();
 
-				// Set the Effect Parameters
+				// Set the Effect Parameters.
 				SetEffectParameters();
 
-				// Loop through each Pass of the Current Technique (using a for loop instead of foreach for less memory consumption)
+				// Loop through each Pass of the Current Technique (using a for loop instead of foreach for less memory consumption).
 				int numberOfPasses = mcEffect.CurrentTechnique.Passes.Count;
 				for (int passIndex = 0; passIndex < numberOfPasses; passIndex++)
 				{
-					// Get a handle to the pass
+					// Get a handle to the pass.
 					EffectPass cPass = mcEffect.CurrentTechnique.Passes[passIndex];
 
 					// If we are using our own SpriteBatch to draw the particles, set it up.
 					if (meParticleType == ParticleTypes.Sprite && !UsingExternalSpriteBatchToDrawParticles)
 					{
-						// Start the SpriteBatch for drawing before we start the Pass
+						// Start the SpriteBatch for drawing before we start the Pass.
 						mcSpriteBatch.Begin(SpriteBatchSettings.SortMode, RenderProperties.BlendState, RenderProperties.SamplerState, RenderProperties.DepthStencilState, RenderProperties.RasterizerState, this.Effect, SpriteBatchSettings.TransformationMatrix);
 					}
 
 					// Apply the Pass
 					cPass.Apply();
 
-// If this is running on the XBox
+// If this is running on the XBox.
 #if (XBOX)
 					try
 					{
 #endif
-					// Draw the Particles based on what Type of Particles they are
+					// Draw the Particles based on what Type of Particles they are.
 					switch (meParticleType)
 					{
 						default: break;
 
 						case ParticleTypes.Quad:
 						case ParticleTypes.TexturedQuad:
-// If we are running on the XBox 360, catch the case of overloading the graphics buffer
+// If we are running on the XBox 360, catch the case of overloading the graphics buffer.
 #if (XBOX)
 							// Setup our variables before drawing
 							int numberOfParticlesRemainingToDraw = miNumberOfParticlesToDraw;
@@ -4961,12 +4964,12 @@ namespace DPSF
 							}
 // Else we are running on Windows, so just draw the Quads
 #else
-							// Draw the Particles as Quads, where the Index Buffer we use depends on which Graphics Profile we are running in
+							// Draw the Particles as Quads, where the Index Buffer we use depends on which Graphics Profile we are running in.
 							if (GraphicsDevice.GraphicsProfile == GraphicsProfile.HiDef)
 							{
 								GraphicsDevice.DrawUserIndexedPrimitives<Vertex>(PrimitiveType.TriangleList, mcParticleVerticesToDraw, 0, miNumberOfParticlesToDraw * 4, miaIndexBufferArray, 0, miNumberOfParticlesToDraw * 2, mcVertexDeclaration);
 							}
-							// Else we are using the Reach profile, so use the Reach Index Buffer
+							// Else we are using the Reach profile, so use the Reach Index Buffer.
 							else
 							{
 								GraphicsDevice.DrawUserIndexedPrimitives<Vertex>(PrimitiveType.TriangleList, mcParticleVerticesToDraw, 0, miNumberOfParticlesToDraw * 4, msaIndexBufferReachArray, 0, miNumberOfParticlesToDraw * 2, mcVertexDeclaration);
@@ -4975,23 +4978,23 @@ namespace DPSF
 						break;
 
 						case ParticleTypes.Sprite:
-							// Loop through all of the Sprites to Draw
+							// Loop through all of the Sprites to Draw.
 							for (int index = 0; index < miNumberOfParticlesToDraw; index++)
 							{
-								// Draw this Sprite using the overloaded Draw Sprite function
+								// Draw this Sprite using the overloaded Draw Sprite function.
 								DrawSprite(mcParticleSpritesToDraw[index], mcSpriteBatch);
 							}
 
 							// If we are using our own SpriteBatch to draw the particles, shut it down.
 							if (!UsingExternalSpriteBatchToDrawParticles)
 							{
-								// End the SpriteBatch since we are done drawing for this pass
+								// End the SpriteBatch since we are done drawing for this pass.
 								mcSpriteBatch.End();
 							}
 						break;
 					}
 
-// If we are running on the XBox 360, catch the case of overloading the graphics buffer
+// If we are running on the XBox 360, catch the case of overloading the graphics buffer.
 #if (XBOX)
 					}
 					catch (InvalidOperationException e)
@@ -5012,10 +5015,10 @@ namespace DPSF
 				}
 			}
 
-			// Perform any other functions now that this Particle System has been Drawn
+			// Perform any other functions now that this Particle System has been Drawn.
 			AfterDraw();
 
-			// If performance profiling is enabled, log how long it took to do the Draw
+			// If performance profiling is enabled, log how long it took to do the Draw.
 			if (_performanceProfilingIsEnabled)
 			{
 // The Reach profile does not have access to the System.Diagnostics namespace, so it does not know about the Stopwatch class.
