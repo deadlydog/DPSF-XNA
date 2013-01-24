@@ -34,9 +34,8 @@
     <DocumentationFile>bin\Release\DPSFMonoForAndoid.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MonoGame.Framework.Android, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\Installer\Installer Files\DPSF Demo\DPSF Demo for Mono for Android\Mono Dependencies\MonoGame.Framework.Android.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="MonoGame.Framework">
+      <HintPath>..\..\Installer\Installer Files\DPSF Demo\DPSF Demo for Mono for Android\Mono Dependencies\MonoGame.Framework.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System" />

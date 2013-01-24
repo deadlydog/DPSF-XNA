@@ -275,9 +275,8 @@
     <PRIResource Include="DPSFResources.resw" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="MonoGame.Framework.Windows8, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Installer\Installer Files\DPSF Demo\DPSF Demo for WinRT\Mono Dependencies\MonoGame.Framework.Windows8.dll</HintPath>
+    <Reference Include="MonoGame.Framework">
+      <HintPath>..\..\Installer\Installer Files\DPSF Demo\DPSF Demo for WinRT\Mono Dependencies\MonoGame.Framework.dll</HintPath>
     </Reference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">

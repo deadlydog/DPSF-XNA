@@ -38,11 +38,11 @@
     <AndroidLinkMode>SdkOnly</AndroidLinkMode>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Lidgren.Network.Android, Version=2011.3.12.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Lidgren.Network, Version=2011.3.12.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Mono.Android" />
-    <Reference Include="MonoGame.Framework.Android, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="MonoGame.Framework, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="mscorlib" />
@@ -325,8 +325,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Mono Dependencies\Lidgren.Network.Android.dll" />
-    <Content Include="Mono Dependencies\MonoGame.Framework.Android.dll" />
+    <Content Include="Mono Dependencies\Lidgren.Network.dll" />
+    <Content Include="Mono Dependencies\MonoGame.Framework.dll" />
     <Content Include="Mono Dependencies\OpenTK.dll" />
     <Content Include="Mono Dependencies\Tao.Sdl.dll" />
   </ItemGroup>

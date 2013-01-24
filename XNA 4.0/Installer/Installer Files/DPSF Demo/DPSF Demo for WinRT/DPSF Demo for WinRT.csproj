@@ -101,9 +101,9 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-    <Reference Include="MonoGame.Framework.Windows8, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="MonoGame.Framework, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Mono Dependencies\MonoGame.Framework.Windows8.dll</HintPath>
+      <HintPath>Mono Dependencies\MonoGame.Framework.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
       <HintPath>$(MSBuildExtensionsPath)\..\MonoGame\v3.0\Assemblies\Windows8\SharpDX.dll</HintPath>
@@ -154,7 +154,7 @@
     <Content Include="Content\Textures\Star9.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Mono Dependencies\MonoGame.Framework.Windows8.dll" />
+    <Content Include="Mono Dependencies\MonoGame.Framework.dll" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\DPSF\DPSF WinRT\DPSF WinRT.csproj">
