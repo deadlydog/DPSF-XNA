@@ -29,8 +29,8 @@ try it out for yourself.</p>
 <h2>Features</h2>
 <p>Here is a list of some of the features DPSF provides:</p>
 <ul>
-    <li>A single API for multiple platforms: supports 2D and 3D particles for Windows, Xbox 360, Windows Phone 7, and Zune.</li>
-    <li>Easily integrates with graphics engines, including <a href="http://www.synapsegaming.com">Synapse Gaming's SunBurn engine</a>.</li>
+    <li>A single API for multiple platforms: supports 2D and 3D particles for Windows, Xbox 360, Windows Phone, and Zune.  Also supports Android  via <a href="http://monogame.codeplex.com" target="_blank">MonoGame</a> (currently waiting on a <a href="https://github.com/mono/MonoGame/issues/1039" target="_blank">MonoGame fix for WinRT support</a> (i.e. Windows Store)).</li>
+    <li>Easily integrates with graphics engines, including <a href="http://www.synapsegaming.com" target="_blank">Synapse Gaming's SunBurn engine</a>.</li>
     <li>Full API documentation is provided in the help file, as well as in the <a href="DPSFHelp/index.html">online help documentation</a>.</li>
     <li>Tutorials and their source code are provided in the installer. The tutorials (without source code) are also available in the <a href="DPSFHelp/index.html">online help documentation</a>.</li>
     <li>Allows particle systems to be created in minutes by using the Default Particle Systems provided; Just set values for the built-in parameters, such as position, veleocity, acceleration, rotation, external force, start/end color, etc.</li>
