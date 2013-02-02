@@ -1,0 +1,66 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<!-- saved from url=(0029)http://www.helpandmanual.com/ -->
+<head>
+   <title>DPSF 1.5.3 to 1.5.4</title>
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+   <meta http-equiv="Content-Style-Type" content="text/css" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+<script type="text/javascript" src="helpman_topicinit.js"></script>
+<!-- Redirect browser to frame page if page is not in the content frame. -->
+<script type="text/javascript">
+<!--
+if (location.search.lastIndexOf("toc=0")<=0) {
+  if (parent.frames.length==0) { parent.location.href="index.html?dpsf_1_5_3_0_to_1_5_4_0.htm"; }
+  else { parent.quicksync('a11.4'); }
+}
+//-->
+</script>
+<script type="text/javascript" src="highlight.js"></script></head>
+<body style="margin: 0px 0px 0px 0px; background: #FFFFFF;" onload="highlight();">
+<div id="hmpopupDiv" style="visibility:hidden; position:absolute; z-index:1000; "></div>
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="5" bgcolor="#D0D0D0">
+  <tr valign="middle">
+    <td align="left">
+      <p class="p_Heading1"><span class="f_Heading1">DPSF 1.5.3 to 1.5.4</span></p>
+
+    </td>
+    <td align="right">
+     <span style="font-size: 9pt">
+     <a href="introduction.htm">Top</a>&nbsp;
+     <a href="dpsf_1_5_4_0_to_2_0_0_0.htm">Previous</a>&nbsp;
+     <a href="tutorials.htm">Next</a>
+     </span>
+    </td>
+  </tr>
+</table>
+
+
+<!-- Placeholder for topic body. -->
+<table width="100%" border="0" cellspacing="0" cellpadding="5"><tr valign="top"><td align="left">
+<p><span style="font-size: 12pt; font-weight: bold;">1 - DPSF DLL files are now found in "C:\DPSF (XNA 3.1)"</span></p>
+<p>&nbsp;</p>
+<p>The default installation directory for DPSF has been changed from "C:\DPSF" to "C:\DPSF (XNA 3.1)", so you will need to remove the DPSF references from your projects, and re-add it from the new location. &nbsp;For instructions on how to add the reference to your project, <a href="integrating_dpsf_into_your_xna_project.htm">see here</a>. &nbsp;This change was made to allow the new XNA 4.0 compatible version of DPSF (v2.0.0.0 and higher) to be installed along-side the XNA 3.1 compatible versions of DPSF.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-size: 12pt; font-weight: bold;">2 - The AutoInitialize() function now requires 3 parameters</span></p>
+<p>&nbsp;</p>
+<p>The virtual AutoInitialize() function has been update to require a 3rd parameter, so you will need to update the overridden AutoInitialize() function in all of your particle systems from:</p>
+<p>&nbsp;</p>
+<p><span style="font-family: 'Consolas'; color: #0000ff;">public</span><span style="font-family: 'Consolas'; color: #000000;"> </span><span style="font-family: 'Consolas'; color: #0000ff;">override</span><span style="font-family: 'Consolas'; color: #000000;"> </span><span style="font-family: 'Consolas'; color: #0000ff;">void</span><span style="font-family: 'Consolas'; color: #000000;"> AutoInitialize(</span><span style="font-family: 'Consolas'; color: #2b91af;">GraphicsDevice</span><span style="font-family: 'Consolas'; color: #000000;"> cGraphicsDevice, </span><span style="font-family: 'Consolas'; color: #2b91af;">ContentManager</span><span style="font-family: 'Consolas'; color: #000000;"> cContentManager)</span></p>
+<p>&nbsp;</p>
+<p>to:</p>
+<p>&nbsp;</p>
+<p><span style="font-family: 'Consolas'; color: #0000ff;">public</span><span style="font-family: 'Consolas'; color: #000000;"> </span><span style="font-family: 'Consolas'; color: #0000ff;">override</span><span style="font-family: 'Consolas'; color: #000000;"> </span><span style="font-family: 'Consolas'; color: #0000ff;">void</span><span style="font-family: 'Consolas'; color: #000000;"> AutoInitialize(</span><span style="font-family: 'Consolas'; color: #2b91af;">GraphicsDevice</span><span style="font-family: 'Consolas'; color: #000000;"> cGraphicsDevice, </span><span style="font-family: 'Consolas'; color: #2b91af;">ContentManager</span><span style="font-family: 'Consolas'; color: #000000;"> cContentManager, </span><span style="font-family: 'Consolas'; color: #2b91af;">SpriteBatch</span><span style="font-family: 'Consolas'; color: #000000;"> cSpriteBatch)</span></p>
+<p>&nbsp;</p>
+<p>The new SpriteBatch parameter allows you to pass in a custom SpriteBatch object to use to draw Sprite particle systems, rather than each Sprite particle system using their own SpriteBatch objects. &nbsp;By using a single SpriteBatch object to draw all of the Sprites in your game, proper Sprite depth sorting can be achieved much easier.</p>
+<p>&nbsp;</p>
+
+</td></tr></table>
+
+</body>
+</html>

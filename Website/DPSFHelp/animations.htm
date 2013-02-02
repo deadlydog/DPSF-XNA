@@ -1,0 +1,59 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<!-- saved from url=(0029)http://www.helpandmanual.com/ -->
+<head>
+   <title>Animations</title>
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+   <meta http-equiv="Content-Style-Type" content="text/css" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+<script type="text/javascript" src="helpman_topicinit.js"></script>
+<!-- Redirect browser to frame page if page is not in the content frame. -->
+<script type="text/javascript">
+<!--
+if (location.search.lastIndexOf("toc=0")<=0) {
+  if (parent.frames.length==0) { parent.location.href="index.html?animations.htm"; }
+  else { parent.quicksync('a10.5'); }
+}
+//-->
+</script>
+<script type="text/javascript" src="highlight.js"></script></head>
+<body style="margin: 0px 0px 0px 0px; background: #FFFFFF;" onload="highlight();">
+<div id="hmpopupDiv" style="visibility:hidden; position:absolute; z-index:1000; "></div>
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="5" bgcolor="#D0D0D0">
+  <tr valign="middle">
+    <td align="left">
+      <p class="p_Heading1"><span class="f_Heading1">Animations</span></p>
+
+    </td>
+    <td align="right">
+     <span style="font-size: 9pt">
+     <a href="introduction.htm">Top</a>&nbsp;
+     <a href="pivotpoint2d_and_pivotpoint3d.htm">Previous</a>&nbsp;
+     <a href="tutorials.htm">Next</a>
+     </span>
+    </td>
+  </tr>
+</table>
+
+
+<!-- Placeholder for topic body. -->
+<table width="100%" border="0" cellspacing="0" cellpadding="5"><tr valign="top"><td align="left">
+<p>DPSF provides an <span style="font-weight: bold;">Animations</span> class that may be used to easily store the texture coordinates of separate images stored within a single texture. &nbsp;NOTE: Because the particle systems only store a single texture, all of the frames of an animation must stored in a single texture (image file). &nbsp;This method is used over storing each frame in a separate texture because texture swapping is very expensive.</p>
+<p>&nbsp;</p>
+<p>The Animations class uses two central concepts: a <span style="font-weight: bold;">Picture</span> and an <span style="font-weight: bold;">Animation</span>. &nbsp;A <span style="font-weight: bold;">Picture</span> can be thought of as a frame of the animation, except that it can be used in multiple spots throughout the Animation. &nbsp;An <span style="font-weight: bold;">Animation</span> is simply a sequence of Pictures used to make up the animation.  </p>
+<p>&nbsp;</p>
+<p>Pictures can be created using the CreatePicture() function, where you supply the texture coordinates of the texture that should be used for the picture's image. &nbsp;If the images are arranged in a nice grid fashion in the texture, you can use the CreatePicturesFromTileSet() function to easily create all of the pictures to use in the animation. &nbsp; So each Picture that you create will have a unique ID, and will hold the texture coordinates that should be used to display that picture.</p>
+<p>&nbsp;</p>
+<p>Animations can be created using the CreateAnimation() function, where you supply the sequence of Picture IDs that should make up the animation. &nbsp;You must also supply how long of a pause there should be (in seconds) between switching pictures, so the shorter the pause between switching pictures the faster the animation will be played. &nbsp;The same delay is used for switching between all pictures; if you want one picture to be shown longer than the others, then put it in the picture sequence twice in a row. &nbsp;The last parameter that you must supply is how many times the animation should play before stopping. &nbsp;If this is set to one the animation will play only once, two will make it loop and play twice, etc. &nbsp;Setting this to zero will cause the animation to loop forever and never stop playing. &nbsp;Each Animation created is assigned a unique ID, and you may specify which animation should play by setting the <span style="font-weight: bold;">CurrentAnimationID</span>.</p>
+<p>&nbsp;</p>
+<p>For specific information on the class functions and properties see the <a href="dpsf_api_documentation.htm">DPSF API Documentation</a>.</p>
+<p>&nbsp;</p>
+
+</td></tr></table>
+
+</body>
+</html>

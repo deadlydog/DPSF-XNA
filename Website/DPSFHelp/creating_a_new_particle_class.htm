@@ -1,0 +1,63 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<!-- saved from url=(0029)http://www.helpandmanual.com/ -->
+<head>
+   <title>Creating a New Particle Class</title>
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+   <meta http-equiv="Content-Style-Type" content="text/css" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+<script type="text/javascript" src="helpman_topicinit.js"></script>
+<!-- Redirect browser to frame page if page is not in the content frame. -->
+<script type="text/javascript">
+<!--
+if (location.search.lastIndexOf("toc=0")<=0) {
+  if (parent.frames.length==0) { parent.location.href="index.html?creating_a_new_particle_class.htm"; }
+  else { parent.quicksync('a6.1'); }
+}
+//-->
+</script>
+<script type="text/javascript" src="highlight.js"></script></head>
+<body style="margin: 0px 0px 0px 0px; background: #FFFFFF;" onload="highlight();">
+<div id="hmpopupDiv" style="visibility:hidden; position:absolute; z-index:1000; "></div>
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="5" bgcolor="#D0D0D0">
+  <tr valign="middle">
+    <td align="left">
+      <p class="p_Heading1"><span class="f_Heading1">Creating a New Particle Class</span></p>
+
+    </td>
+    <td align="right">
+     <span style="font-size: 9pt">
+     <a href="introduction.htm">Top</a>&nbsp;
+     <a href="creating_new_particle_systems_from_scratch.htm">Previous</a>&nbsp;
+     <a href="creating_a_new_particle_vertex_structure.htm">Next</a>
+     </span>
+    </td>
+  </tr>
+</table>
+
+
+<!-- Placeholder for topic body. -->
+<table width="100%" border="0" cellspacing="0" cellpadding="5"><tr valign="top"><td align="left">
+<p>Every particle class created must inherit from the DPSFParticle class, so they will <a href="dpsf_particle_class.htm">already have some particle properties defined</a>. &nbsp;You will likely want to add more particle properties as well, which is what is shown how to do here:</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold;">Step 0</span> - You should have already <a href="creating_a_new_particle_system_from_a_template.htm">created a new particle system file from a template and imported it into your project</a>, making sure to have imported one of the template files whose name does not start with Default.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold;">Step 1</span> - Locate the particle class that inherits from DPSFParticle. &nbsp;You should have already renamed / refactored this classes name in step 0 above, but if you did not then do it now.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold;">Step 2</span> - Define any properties that you want your particles to have, making sure they are public so that they can be accessed by the particle system. &nbsp;The templates include some particle properties by default (such as Position and Velocity), but you may erase any that you do not want your particles to have.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold;">Step 3</span> - Modify the <span style="font-weight: bold;">Reset()</span> function to initialize all of the particle properties to their default values. &nbsp;Be sure that base.Reset() is called as well.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold;">Step 4</span> - Modify the <span style="font-weight: bold;">CopyFrom()</span> function to copy all of the particle properties from the particle given in the function parameters to that particle. &nbsp;Note that if any of the particle properties are reference-types (i.e. classes), you should be doing a deep copy on those properties to ensure that each particle has its own data. &nbsp;This is not necessary &nbsp;to do for built-in types (i.e. int, float, etc) and structs, since they are value-types, not reference-types.</p>
+<p>&nbsp;</p>
+<p>The particle class should now be completely set up. &nbsp;Continue on to <a href="creating_a_new_particle_vertex_structure.htm">creating a new particle vertex structure</a>.</p>
+<p>&nbsp;</p>
+
+</td></tr></table>
+
+</body>
+</html>

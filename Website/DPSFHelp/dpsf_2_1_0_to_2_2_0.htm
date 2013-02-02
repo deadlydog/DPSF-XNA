@@ -1,0 +1,112 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<!-- saved from url=(0029)http://www.helpandmanual.com/ -->
+<head>
+   <title>DPSF 2.1.0 to 2.2.0</title>
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+   <meta http-equiv="Content-Style-Type" content="text/css" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+<script type="text/javascript" src="helpman_topicinit.js"></script>
+<!-- Redirect browser to frame page if page is not in the content frame. -->
+<script type="text/javascript">
+<!--
+if (location.search.lastIndexOf("toc=0")<=0) {
+  if (parent.frames.length==0) { parent.location.href="index.html?dpsf_2_1_0_to_2_2_0.htm"; }
+  else { parent.quicksync('a11.1'); }
+}
+//-->
+</script>
+<script type="text/javascript" src="highlight.js"></script></head>
+<body style="margin: 0px 0px 0px 0px; background: #FFFFFF;" onload="highlight();">
+<div id="hmpopupDiv" style="visibility:hidden; position:absolute; z-index:1000; "></div>
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="5" bgcolor="#D0D0D0">
+  <tr valign="middle">
+    <td align="left">
+      <p class="p_Heading1"><span class="f_Heading1">DPSF 2.1.0 to 2.2.0</span></p>
+
+    </td>
+    <td align="right">
+     <span style="font-size: 9pt">
+     <a href="introduction.htm">Top</a>&nbsp;
+     <a href="updating_your_existing_particle_systems_to_newer_versions_of_dpsf.htm">Previous</a>&nbsp;
+     <a href="dpsf_2_0_1_to_2_1_0.htm">Next</a>
+     </span>
+    </td>
+  </tr>
+</table>
+
+
+<!-- Placeholder for topic body. -->
+<table width="100%" border="0" cellspacing="0" cellpadding="5"><tr valign="top"><td align="left">
+<p><span style="font-size: 12pt; font-weight: bold;">1 - Built-in XNA 4 Effects are used by default.</span></p>
+<p>&nbsp;</p>
+<p>Previous to DPSF 2.2.0 the DPSFDefaultEffect was used by default for all Quad particle systems. &nbsp;Now the built-in XNA 4 Effects are used by default. &nbsp;Specifically, the Quad particle system uses the BasicEffect by default, and TexturedQuads use the AlphaTestEffect by default. &nbsp;So if you were previously manually setting the particle system's Effect to be of these types, you no longer have to do this. &nbsp;So if you had something like:</p>
+<p>&nbsp;</p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #0000ff;">protected</span><span style="font-family: 'Consolas'; color: #000000;"> </span><span style="font-family: 'Consolas'; color: #0000ff;">override</span><span style="font-family: 'Consolas'; color: #000000;"> </span><span style="font-family: 'Consolas'; color: #0000ff;">void</span><span style="font-family: 'Consolas'; color: #000000;"> InitializeRenderProperties()</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #000000;">{</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #0000ff;">base</span><span style="font-family: 'Consolas'; color: #000000;">.InitializeRenderProperties();</span></p>
+<p>&nbsp;</p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #008000;">// Want to see the front and back of textures, since they don't always face the camera</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #000000;">RenderProperties.RasterizerState.CullMode = </span><span style="font-family: 'Consolas'; color: #2b91af;">CullMode</span><span style="font-family: 'Consolas'; color: #000000;">.None;</span></p>
+<p>&nbsp;</p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #008000;">// Have to use the AlphaTest Effect in order to use alpha blending with depth sorting</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #0000ff;">this</span><span style="font-family: 'Consolas'; color: #000000;">.Effect = </span><span style="font-family: 'Consolas'; color: #0000ff;">new</span><span style="font-family: 'Consolas'; color: #000000;"> </span><span style="font-family: 'Consolas'; color: #2b91af;">AlphaTestEffect</span><span style="font-family: 'Consolas'; color: #000000;">(</span><span style="font-family: 'Consolas'; color: #0000ff;">this</span><span style="font-family: 'Consolas'; color: #000000;">.GraphicsDevice);</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #000000;">RenderProperties.DepthStencilState.DepthBufferWriteEnable = </span><span style="font-family: 'Consolas'; color: #0000ff;">true</span><span style="font-family: 'Consolas'; color: #000000;">;</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #000000;">}</span></p>
+<p>&nbsp;</p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #0000ff;">protected</span><span style="font-family: 'Consolas'; color: #000000;"> </span><span style="font-family: 'Consolas'; color: #0000ff;">override</span><span style="font-family: 'Consolas'; color: #000000;"> </span><span style="font-family: 'Consolas'; color: #0000ff;">void</span><span style="font-family: 'Consolas'; color: #000000;"> SetEffectParameters()</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #000000;">{</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #008000;">// Set the AlphaTest Effect's parameters</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #2b91af;">AlphaTestEffect</span><span style="font-family: 'Consolas'; color: #000000;"> effect = </span><span style="font-family: 'Consolas'; color: #0000ff;">this</span><span style="font-family: 'Consolas'; color: #000000;">.Effect </span><span style="font-family: 'Consolas'; color: #0000ff;">as</span><span style="font-family: 'Consolas'; color: #000000;"> </span><span style="font-family: 'Consolas'; color: #2b91af;">AlphaTestEffect</span><span style="font-family: 'Consolas'; color: #000000;">;</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #000000;">effect.World = World;</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #000000;">effect.View = View;</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #000000;">effect.Projection = Projection;</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #000000;">effect.FogEnabled = </span><span style="font-family: 'Consolas'; color: #0000ff;">false</span><span style="font-family: 'Consolas'; color: #000000;">;</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #000000;">effect.Texture = Texture;</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #000000;">effect.VertexColorEnabled = </span><span style="font-family: 'Consolas'; color: #0000ff;">false</span><span style="font-family: 'Consolas'; color: #000000;">; &nbsp; &nbsp; &nbsp; &nbsp;</span><span style="font-family: 'Consolas'; color: #008000;">// Do not use the particle's specified color (i.e. use texture's color)</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #000000;">}</span></p>
+<p>&nbsp;</p>
+<p>you can just delete the line "this.Effect = new AlphaTestEffect(this.GraphicsDevice);" and remove the SetEffectParameters() function all together.</p>
+<p>&nbsp;</p>
+<p>Also, because the DPSFDefaultEffect is no longer used by default, you may run into run-time errors in the SetEffectParameters() function where you were setting parameters specific to the DPSFDefaultEffect. &nbsp;Here you have 2 options: </p>
+<p>&nbsp;</p>
+<p>1 - Remove the code specific to the DPSF Default Effect and just use the new default effects. &nbsp;So if you had something like the following code you could just delete the SetEffectParameters() function all together.</p>
+<p>&nbsp;</p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #0000ff;">protected</span><span style="font-family: 'Consolas'; color: #000000;"> </span><span style="font-family: 'Consolas'; color: #0000ff;">override</span><span style="font-family: 'Consolas'; color: #000000;"> </span><span style="font-family: 'Consolas'; color: #0000ff;">void</span><span style="font-family: 'Consolas'; color: #000000;"> SetEffectParameters()</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #000000;">{</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #0000ff;">base</span><span style="font-family: 'Consolas'; color: #000000;">.SetEffectParameters();</span></p>
+<p>&nbsp;</p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #008000;">// Specify to not use the Color component when drawing (Texture color is not tinted)</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #000000;">Effect.Parameters[</span><span style="font-family: 'Consolas'; color: #a31515;">"xColorBlendAmount"</span><span style="font-family: 'Consolas'; color: #000000;">].SetValue(0.0f);</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #000000;">}</span></p>
+<p>&nbsp;</p>
+<p>2 - you can keep using the DPSF Default Effect by explicitly setting the particle system's Effect, by doing something like this:</p>
+<p>&nbsp;</p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #0000ff;">protected</span><span style="font-family: 'Consolas'; color: #000000;"> </span><span style="font-family: 'Consolas'; color: #0000ff;">override</span><span style="font-family: 'Consolas'; color: #000000;"> </span><span style="font-family: 'Consolas'; color: #0000ff;">void</span><span style="font-family: 'Consolas'; color: #000000;"> InitializeRenderProperties()</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #000000;">{</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #0000ff;">base</span><span style="font-family: 'Consolas'; color: #000000;">.InitializeRenderProperties();</span></p>
+<p>&nbsp;</p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #008000;">// Use the DPSFDefaultEffect instead of the AlphaTestEffect</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #0000ff;">this</span><span style="font-family: 'Consolas'; color: #000000;">.SetEffectAndTechnique(</span><span style="font-family: 'Consolas'; color: #0000ff;">this</span><span style="font-family: 'Consolas'; color: #000000;">.DPSFDefaultEffect, </span><span style="font-family: 'Consolas'; color: #2b91af;">DPSFDefaultEffectTechniques</span><span style="font-family: 'Consolas'; color: #000000;">.TexturedQuads.ToString());</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #000000;">}</span></p>
+<p>&nbsp;</p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #0000ff;">protected</span><span style="font-family: 'Consolas'; color: #000000;"> </span><span style="font-family: 'Consolas'; color: #0000ff;">override</span><span style="font-family: 'Consolas'; color: #000000;"> </span><span style="font-family: 'Consolas'; color: #0000ff;">void</span><span style="font-family: 'Consolas'; color: #000000;"> SetEffectParameters()</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #000000;">{</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #2b91af;">DPSFDefaultEffect</span><span style="font-family: 'Consolas'; color: #000000;"> effect = </span><span style="font-family: 'Consolas'; color: #0000ff;">this</span><span style="font-family: 'Consolas'; color: #000000;">.Effect </span><span style="font-family: 'Consolas'; color: #0000ff;">as</span><span style="font-family: 'Consolas'; color: #000000;"> </span><span style="font-family: 'Consolas'; color: #2b91af;">DPSFDefaultEffect</span><span style="font-family: 'Consolas'; color: #000000;">;</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #000000;">effect.World = </span><span style="font-family: 'Consolas'; color: #0000ff;">this</span><span style="font-family: 'Consolas'; color: #000000;">.World;</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #000000;">effect.View = </span><span style="font-family: 'Consolas'; color: #0000ff;">this</span><span style="font-family: 'Consolas'; color: #000000;">.View;</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #000000;">effect.Projection = </span><span style="font-family: 'Consolas'; color: #0000ff;">this</span><span style="font-family: 'Consolas'; color: #000000;">.Projection;</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #000000;">effect.Texture = </span><span style="font-family: 'Consolas'; color: #0000ff;">this</span><span style="font-family: 'Consolas'; color: #000000;">.Texture;</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #000000;">effect.ColorBlendAmount = 0.5f;</span></p>
+<p> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: 'Consolas'; color: #000000;">}</span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+</td></tr></table>
+
+</body>
+</html>

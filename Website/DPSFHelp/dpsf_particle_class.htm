@@ -1,0 +1,59 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<!-- saved from url=(0029)http://www.helpandmanual.com/ -->
+<head>
+   <title>DPSF Particle Class</title>
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+   <meta http-equiv="Content-Style-Type" content="text/css" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+<script type="text/javascript" src="helpman_topicinit.js"></script>
+<!-- Redirect browser to frame page if page is not in the content frame. -->
+<script type="text/javascript">
+<!--
+if (location.search.lastIndexOf("toc=0")<=0) {
+  if (parent.frames.length==0) { parent.location.href="index.html?dpsf_particle_class.htm"; }
+  else { parent.quicksync('a2.1'); }
+}
+//-->
+</script>
+<script type="text/javascript" src="highlight.js"></script></head>
+<body style="margin: 0px 0px 0px 0px; background: #FFFFFF;" onload="highlight();">
+<div id="hmpopupDiv" style="visibility:hidden; position:absolute; z-index:1000; "></div>
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="5" bgcolor="#D0D0D0">
+  <tr valign="middle">
+    <td align="left">
+      <p class="p_Heading1"><span class="f_Heading1">DPSF Particle Class</span></p>
+
+    </td>
+    <td align="right">
+     <span style="font-size: 9pt">
+     <a href="introduction.htm">Top</a>&nbsp;
+     <a href="dpsf_base_classes.htm">Previous</a>&nbsp;
+     <a href="dpsf_particle_vertex_interface.htm">Next</a>
+     </span>
+    </td>
+  </tr>
+</table>
+
+
+<!-- Placeholder for topic body. -->
+<table width="100%" border="0" cellspacing="0" cellpadding="5"><tr valign="top"><td align="left">
+<p>All particle classes created must inherit, either directly or indirectly from the <span style="font-weight: bold;">DPSFParticle</span> class. &nbsp;The DPSFParticle class specifies a few properties that will be common to all particles. &nbsp;Specifically these are:</p>
+<p>&nbsp;</p>
+<p>- a <span style="font-weight: bold;">Visible</span> boolean indicating if the particle should be drawn or not</p>
+<p>- a <span style="font-weight: bold;">Lifetime</span> float indicating how long the particle should exist for before being removed from the particle system</p>
+<p>- an <span style="font-weight: bold;">ElapsedTime</span> float indicating how long the particle has existed for so far.  </p>
+<p>- a <span style="font-weight: bold;">NormalizedElapsedTime</span> float which specifies how far the particle is through its lifespan on a scale from 0.0 (birth) to 1.0 (death)</p>
+<p>- <span style="font-weight: bold;">LastElapsedTime</span> and <span style="font-weight: bold;">LastNormalizedElapsedTime</span> floats indicating what the particle's ElapsedTime and NormalizedElapsedTime values were at the last update.  </p>
+<p>&nbsp;</p>
+<p>If you want a particle to live forever and not die, set its Lifetime to 0.0. &nbsp;In this case, the Normalized elapsed time variables will report the same values as the non-normalized variables.</p>
+<p>&nbsp;</p>
+
+</td></tr></table>
+
+</body>
+</html>

@@ -1,0 +1,178 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<!-- saved from url=(0029)http://www.helpandmanual.com/ -->
+<head>
+   <title>DPSF 2.2.2 to 2.3.0</title>
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+   <meta http-equiv="Content-Style-Type" content="text/css" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+<script type="text/javascript" src="helpman_topicinit.js"></script>
+<!-- Redirect browser to frame page if page is not in the content frame. -->
+<script type="text/javascript">
+<!--
+if (location.search.lastIndexOf("toc=0")<=0) {
+  if (parent.frames.length==0) { parent.location.href="index.html?dpsf_2_2_2_to_2_3_0.htm"; }
+  else { parent.quicksync('a11.1'); }
+}
+//-->
+</script>
+<script type="text/javascript" src="highlight.js"></script></head>
+<body style="margin: 0px 0px 0px 0px; background: #FFFFFF;" onload="highlight();">
+<div id="hmpopupDiv" style="visibility:hidden; position:absolute; z-index:1000; "></div>
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="5" bgcolor="#D0D0D0">
+  <tr valign="middle">
+    <td align="left">
+      <p class="p_Heading1"><span class="f_Heading1">DPSF 2.2.2 to 2.3.0</span></p>
+
+    </td>
+    <td align="right">
+     <span style="font-size: 9pt">
+     <a href="introduction.htm">Top</a>&nbsp;
+     <a href="updating_your_existing_particle_systems_to_newer_versions_of_dpsf.htm">Previous</a>&nbsp;
+     <a href="dpsf_2_1_0_to_2_2_0.htm">Next</a>
+     </span>
+    </td>
+  </tr>
+</table>
+
+
+<!-- Placeholder for topic body. -->
+<table width="100%" border="0" cellspacing="0" cellpadding="5"><tr valign="top"><td align="left">
+<p><span style="font-size: 12pt; font-weight: bold;">1 - Removed the mcRandomNumber particle system class variable</span></p>
+<p>&nbsp;</p>
+<p>Instead you should now just use the RandomNumber public property instead, so just change "mcRandomNumber" to "RandomNumber".</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-size: 12pt; font-weight: bold;">2 - Changed the namespace of the DPSF Demo particle systems from DPSF.ParticleSystems to DPSF_Demo.ParticleSystems</span></p>
+<p>&nbsp;</p>
+<p>All of the particle systems included in the DPSF Demo used to be in the namespace DPSF.ParticleSystems, but have been changed to be in DPSF_Demo.ParticleSystems. &nbsp;So if you were using one of the particle systems included in the demo and overwrite it with the new version, you may need to add a "using DPSF_Demo.ParticleSystems" statement to your code, or you change the particle system file back to using DPSF.ParticleSystems for the namespace.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-size: 12pt; font-weight: bold;">3 - Moved the LerpEmittersPositionAndOrientation and LerpEmittersPositionAndOrientationOnNextUpdate properties from the particle system class to the Emitter class</span></p>
+<p>&nbsp;</p>
+<p>Now that DPSF supports multiple emitters per particle system, these 2 properties have been moved from the particle system class into the Emitter class so that they can be configured individually for each emitter in the particle system. &nbsp;To make it work like it did before just change:</p>
+<p><span style="width:48px">&nbsp;</span>particleSystem.LerpEmittersPositionAndOrienation = newValue;</p>
+<p>to:</p>
+<p><span style="width:48px">&nbsp;</span>particleSystem.Emitter.LerpEmittersPositionAndOrientation = newValue;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-size: 12pt; font-weight: bold;">4 - Changed the MagnetList property on the default particle systems from a LinkedList&lt;DefaultParticleSystemMagnet&gt; to a List&lt;DefaultParticleSystemMagnet&gt;</span></p>
+<p>&nbsp;</p>
+<p>So if you were iterating over the particle system's MagnetList, you will need to change from iterating over it with LinkedListNodes to iterating over it as a regular list (e.g. use a foreach loop).</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-size: 12pt; font-weight: bold;">5 - Changed IDPSFParticleVertex interface to simply implement Microsoft.XNA.Framework.Graphics.IVertexType</span></p>
+<p>&nbsp;</p>
+<p>If you had written your own vertex structure you will need to modify it to simply comply with the IVertexType requirements, as the IDPSFParticleVertex requirements were all removed.</p>
+<p>&nbsp;</p>
+<p>For example, the old DefaultTexturedQuadParticleVertex was changed from:</p>
+<p>&nbsp;</p>
+<p><span style="width:48px">&nbsp;</span>public struct DefaultTexturedQuadParticleVertex : IDPSFParticleVertex</p>
+<p><span style="width:48px">&nbsp;</span>{</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;/// &lt;summary&gt;</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;/// The Position of the vertex in 3D space. The position of this vertex</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;/// relative to the quads other three vertices determines the Particle's orientation.</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;/// &lt;/summary&gt;</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;public Vector3 Position;</p>
+<p>&nbsp;</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;/// &lt;summary&gt;</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;/// The Coordinate of the Texture that this Vertex corresponds to</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;/// &lt;/summary&gt;</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;public Vector2 TextureCoordinate;</p>
+<p>&nbsp;</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;/// &lt;summary&gt;</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;/// The Color to tint the Texture</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;/// &lt;/summary&gt;</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;public Color Color;</p>
+<p>&nbsp;</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;// Describe the vertex structure used to display a Particle</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;<span style="background-color: #ff0000;">private static readonly VertexElement[] msVertexElements =</span></p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;new VertexElement(0, VertexElementFormat.Vector3,</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;VertexElementUsage.Position, 0),</p>
+<p>&nbsp;</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;new VertexElement(12, VertexElementFormat.Vector2,</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; VertexElementUsage.TextureCoordinate, 0),</p>
+<p>&nbsp;</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;new VertexElement(20, VertexElementFormat.Color,</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; VertexElementUsage.Color, 0)</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;};</p>
+<p>&nbsp;</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;<span style="background-color: #ff0000;">// The size of the vertex structure in bytes</span></p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;<span style="background-color: #ff0000;">private const int miSizeInBytes = 24;</span></p>
+<p>&nbsp;</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;<span style="background-color: #ff0000;">/// &lt;summary&gt;</span></p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;<span style="background-color: #ff0000;">/// An array describing the attributes of each Vertex</span></p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;<span style="background-color: #ff0000;">/// &lt;/summary&gt;</span></p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;<span style="background-color: #ff0000;">public VertexElement[] VertexElements</span></p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;<span style="background-color: #ff0000;">{</span></p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="background-color: #ff0000;">get { return DefaultTexturedQuadParticleVertex.msVertexElements; }</span></p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;<span style="background-color: #ff0000;">}</span></p>
+<p>&nbsp;</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;<span style="background-color: #ff0000;">/// &lt;summary&gt;</span></p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;<span style="background-color: #ff0000;">/// The Size of one Vertex in Bytes</span></p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;<span style="background-color: #ff0000;">/// &lt;/summary&gt;</span></p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;<span style="background-color: #ff0000;">public int SizeInBytes</span></p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;<span style="background-color: #ff0000;">{</span></p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="background-color: #ff0000;">get { return DefaultTexturedQuadParticleVertex.miSizeInBytes; }</span></p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;<span style="background-color: #ff0000;">}</span></p>
+<p><span style="width:48px">&nbsp;</span>}</p>
+<p>&nbsp;</p>
+<p>to:</p>
+<p>&nbsp;</p>
+<p><span style="width:48px">&nbsp;</span>public struct DefaultTexturedQuadParticleVertex : IDPSFParticleVertex</p>
+<p><span style="width:48px">&nbsp;</span>{</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;/// &lt;summary&gt;</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;/// The Position of the vertex in 3D space. The position of this vertex</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;/// relative to the quads other three vertices determines the Particle's orientation.</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;/// &lt;/summary&gt;</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;public Vector3 Position;</p>
+<p>&nbsp;</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;/// &lt;summary&gt;</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;/// The Coordinate of the Texture that this Vertex corresponds to</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;/// &lt;/summary&gt;</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;public Vector2 TextureCoordinate;</p>
+<p>&nbsp;</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;/// &lt;summary&gt;</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;/// The Color to tint the Texture</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;/// &lt;/summary&gt;</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;public Color Color;</p>
+<p>&nbsp;</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;// Describe the vertex structure used to display a Particle</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;<span style="background-color: #9bbb59;">private static readonly VertexDeclaration vertexDeclaration = new VertexDeclaration</span></p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;(</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;new VertexElement(0, VertexElementFormat.Vector3,</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;VertexElementUsage.Position, 0),</p>
+<p>&nbsp;</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;new VertexElement(12, VertexElementFormat.Vector2,</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; VertexElementUsage.TextureCoordinate, 0),</p>
+<p>&nbsp;</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;new VertexElement(20, VertexElementFormat.Color,</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; VertexElementUsage.Color, 0)</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;};</p>
+<p>&nbsp;</p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;<span style="background-color: #9bbb59;">/// &lt;summary&gt;</span></p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;<span style="background-color: #9bbb59;">/// An array describing the attributes of each Vertex</span></p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;<span style="background-color: #9bbb59;">/// &lt;/summary&gt;</span></p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;<span style="background-color: #9bbb59;">public VertexDeclaration VertexDeclaration</span></p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;<span style="background-color: #9bbb59;">{</span></p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="background-color: #9bbb59;">get { return DefaultTexturedQuadParticleVertex.vertexDeclaration; }</span></p>
+<p><span style="width:48px">&nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp;<span style="background-color: #9bbb59;">}</span></p>
+<p><span style="width:48px">&nbsp;</span>}</p>
+<p>&nbsp;</p>
+<p>So you can see that the VertexElement[] array gets changed to a VertexDeclaration, the VertexElements property is removed and replaced with the VertexDeclaration property, and the SizeInBytes variable and property is removed as it is no longer needed.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-size: 12pt; font-weight: bold;">6 - Changed the DPSF Splash Screen particle system to be in the DPSF.SplashScreen namespace</span></p>
+<p>&nbsp;</p>
+<p>If you update the DPSF Splash Screen to the new version, you will need to add a "using DPSF.SplashScreen" to your code file so it can find the particle system class in the new namespace (or you could change the namespace of the splash screen particle system class back to DPSF.ParticleSystems).</p>
+<p>&nbsp;</p>
+
+</td></tr></table>
+
+</body>
+</html>

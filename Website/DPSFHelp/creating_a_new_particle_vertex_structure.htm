@@ -1,0 +1,63 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<!-- saved from url=(0029)http://www.helpandmanual.com/ -->
+<head>
+   <title>Creating a New Particle Vertex Structure</title>
+   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="keywords" content="" />
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+   <meta http-equiv="Content-Style-Type" content="text/css" />
+   <link type="text/css" href="default.css" rel="stylesheet" />
+<script type="text/javascript" src="helpman_topicinit.js"></script>
+<!-- Redirect browser to frame page if page is not in the content frame. -->
+<script type="text/javascript">
+<!--
+if (location.search.lastIndexOf("toc=0")<=0) {
+  if (parent.frames.length==0) { parent.location.href="index.html?creating_a_new_particle_vertex_structure.htm"; }
+  else { parent.quicksync('a6.2'); }
+}
+//-->
+</script>
+<script type="text/javascript" src="highlight.js"></script></head>
+<body style="margin: 0px 0px 0px 0px; background: #FFFFFF;" onload="highlight();">
+<div id="hmpopupDiv" style="visibility:hidden; position:absolute; z-index:1000; "></div>
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="5" bgcolor="#D0D0D0">
+  <tr valign="middle">
+    <td align="left">
+      <p class="p_Heading1"><span class="f_Heading1">Creating a New Particle Vertex Structure</span></p>
+
+    </td>
+    <td align="right">
+     <span style="font-size: 9pt">
+     <a href="introduction.htm">Top</a>&nbsp;
+     <a href="creating_a_new_particle_class.htm">Previous</a>&nbsp;
+     <a href="creating_a_new_particle_system_class.htm">Next</a>
+     </span>
+    </td>
+  </tr>
+</table>
+
+
+<!-- Placeholder for topic body. -->
+<table width="100%" border="0" cellspacing="0" cellpadding="5"><tr valign="top"><td align="left">
+<p>The DPSF particle systems use a vertex structure to hold their particles' drawable properties in the vertex buffer in order to render the particles. &nbsp;This vertex structure must implement the <span style="font-weight: bold;">IDPSFParticleVertex</span> interface. &nbsp;The particle vertex structure should contain all of the information that you want sent to the effect file (i.e. shaders) to be rendered by the GPU (Graphics Processing Unit).</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold;">Step 0</span> - If you have not already <a href="creating_a_new_particle_class.htm">created the particle class</a>, do that first.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold;">Step 1</span> - Locate the particle vertex struct that implements the IDPSFParticleVertex interface. &nbsp;You should have already renamed / refactored this structs name when importing the template into your project, but if you did not then do it now.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold;">Step 2</span> - Define any properties that the vertex buffer should hold to pass to the effect file (i.e. shaders), making sure they are public so they can be modified later. &nbsp;The ones which can be used with the <a href="dpsf_default_effect.htm">DPSF Default Effect</a> are given by default in the template files, but these may be changed if you plan on specifying and <a href="creating_new_effects.htm">using your own effect file</a>.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold;">Step 3</span> - Define the corresponding properties in the <span style="font-weight: bold;">msVertexElements</span> array, being sure to use the correct parameters when specifying new VertexElements.</p>
+<p>&nbsp;</p>
+<p><span style="font-weight: bold;">Step 4</span> - Modify the <span style="font-weight: bold;">miSizeInBytes</span> variable to correspond to the size of one of the elements in the msVertexElements array.</p>
+<p>&nbsp;</p>
+<p>The particle vertex setup should now be complete. &nbsp;Continue on to <a href="creating_a_new_particle_system_class.htm">creating a new particle system class</a>.</p>
+<p>&nbsp;</p>
+
+</td></tr></table>
+
+</body>
+</html>
