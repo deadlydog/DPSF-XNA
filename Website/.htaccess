@@ -1,5 +1,0 @@
-ErrorDocument 400 /Errors/Error400-BadRequest.php
-ErrorDocument 401 /Errors/Error401-AuthorizationRequired.php
-ErrorDocument 403 /Errors/Error403-Forbidden.php
-ErrorDocument 404 /Errors/Error404-FileNotFound.php
-ErrorDocument 500 /Errors/Error500-InternalServerError.php
