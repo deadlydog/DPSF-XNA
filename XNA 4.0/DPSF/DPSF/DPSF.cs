@@ -1958,9 +1958,10 @@ namespace DPSF
 		private int miNumberOfParticlesToDraw = 0;  // Tells how many Particles in the Vertex Buffer should be drawn (i.e. How many are Active and Visible)
 
 		private Vertex[] mcParticleVerticesToDraw = null;   // Array used to hold Particle Vertex information (i.e. The Vertex Buffer used to draw the Point Sprites and Quads)
-		private int[] miaIndexBufferArray = null;           // The Index Buffer used along with the Vertex Buffer for drawing Quads in the HiDef profile
-		private short[] msaIndexBufferReachArray = null;    // The Index Buffer used along with the Vertex Buffer for drawing Quads in the Reach profile
+		private int[] miaIndexBufferArray = null;           // The 32-bit Index Buffer used along with the Vertex Buffer for drawing Quads in the HiDef profile
+		private short[] msaIndexBufferReachArray = null;    // The 16-bit Index Buffer used along with the Vertex Buffer for drawing Quads in the Reach profile
 		private int miIndexBufferIndex = 0;                 // The current Index we are at in the Index Buffer
+		private static bool? _SuseIntIndexBuffer = null;	// Tells whether the Int or Short Index Buffer should be used.
 	#if (WINDOWS)
 		[NonSerialized]
 	#endif
@@ -2528,6 +2529,25 @@ namespace DPSF
 			// Set the default Effect and Technique to use
 			SetDefaultEffect();
 
+			if (_SuseIntIndexBuffer == null)
+			{
+				// If we should be using the Windows HiDef profile, then use the full size Int Index Buffer.
+				if (GraphicsDevice.GraphicsProfile == GraphicsProfile.HiDef)
+				{
+					_SuseIntIndexBuffer = true;
+				}
+				// Else we are using the Windows Reach profile, so use the Short Index Buffer.
+				else
+				{
+					_SuseIntIndexBuffer = false;
+				}
+
+			// Using MonoGame for WinRT reports that it uses the HiDef profile, but doesn't actually support the Int Index Buffer, so tell it to use the Short Index Buffer for WinRT.
+			#if (WIN_RT)
+				_SuseIntIndexBuffer = false;
+			#endif
+			}
+
 			// Specify the Vertex Declaration.
 			Vertex vertex = new Vertex();
 			mcVertexDeclaration = vertex.VertexDeclaration;
@@ -3080,7 +3100,16 @@ namespace DPSF
 		}
 
 		/// <summary>
-		/// Get / Set the Index Buffer values. The Index Buffer is used when drawing Quads in the HiDef profile.
+		/// Get if we will be using the regular 32-bit Index Buffer (Integer) or the 16-bit Index Buffer (Short).
+		/// </summary>
+		protected bool IsUsingIntegerIndexBuffer
+		{
+			get { return _SuseIntIndexBuffer ?? false; }
+		}
+
+		/// <summary>
+		/// Get / Set the 32-bit Index Buffer values. 
+		/// <para>The Index Buffer is typically used when drawing Quads in the HiDef profile (except with MonoGame WinRT, which uses HiDef but only supports IndexBufferShort).</para>
 		/// </summary>
 		protected int[] IndexBuffer
 		{
@@ -3089,9 +3118,10 @@ namespace DPSF
 		}
 
 		/// <summary>
-		/// Get / Set the Index Buffer values. The Index Buffer Reach is used when drawing Quads in the Reach profile.
+		/// Get / Set the 16-bit Index Buffer values.
+		/// <para>The Index Buffer Short is typically used when drawing Quads in the Reach profile.</para>
 		/// </summary>
-		protected short[] IndexBufferReach
+		protected short[] IndexBufferShort
 		{
 			get { return msaIndexBufferReachArray; }
 			set { msaIndexBufferReachArray = value; }
@@ -3802,8 +3832,8 @@ namespace DPSF
 				case ParticleTypes.TexturedQuad:
 					// Initialize the Vertex and Index Buffer
 					mcParticleVerticesToDraw = new Vertex[iMaxNumberOfParticles * 4];
-					// HiDef uses a 32-bit array, Reach uses a 16-bit one
-					if (this.GraphicsDevice.GraphicsProfile == GraphicsProfile.HiDef)
+					// Only initialize the Index Buffer that we will be using.
+					if (IsUsingIntegerIndexBuffer)
 					{
 						miaIndexBufferArray = new int[iMaxNumberOfParticles * 6];
 					}
@@ -3946,8 +3976,8 @@ namespace DPSF
 										mcParticleVerticesToDraw[iIndex] = cOldParticleVertices[iIndex];
 									}
 
-									// If we're using the HiDef profile, copy the HiDef Index Buffer
-									if (this.GraphicsDevice.GraphicsProfile == GraphicsProfile.HiDef)
+									// If we're using the full Int Index Buffer, copy it.
+									if (IsUsingIntegerIndexBuffer)
 									{
 										// Copy the old Index Buffer into the new one
 										int lengthOfIndexBuffer = (miaIndexBufferArray == null) ? 0 : miaIndexBufferArray.Length;
@@ -3957,7 +3987,7 @@ namespace DPSF
 											miaIndexBufferArray[iIndex] = iaOldIndexBuffer[iIndex];
 										}
 									}
-									// Else we're using the Reach profile, so copy the Reach Index Buffer
+									// Else we're using the Short Index Buffer, so copy it.
 									else
 									{
 										// Copy the old Reach Index Buffer into the new one
@@ -4964,12 +4994,13 @@ namespace DPSF
 							}
 // Else we are running on Windows, so just draw the Quads
 #else
-							// Draw the Particles as Quads, where the Index Buffer we use depends on which Graphics Profile we are running in.
-							if (GraphicsDevice.GraphicsProfile == GraphicsProfile.HiDef)
+							// Draw the Particles as Quads according to the type of Index Buffer we are using.
+							// If we are using the full Int Index Buffer.
+							if (IsUsingIntegerIndexBuffer)
 							{
 								GraphicsDevice.DrawUserIndexedPrimitives<Vertex>(PrimitiveType.TriangleList, mcParticleVerticesToDraw, 0, miNumberOfParticlesToDraw * 4, miaIndexBufferArray, 0, miNumberOfParticlesToDraw * 2, mcVertexDeclaration);
 							}
-							// Else we are using the Reach profile, so use the Reach Index Buffer.
+							// Else we are using the Short Index Buffer.
 							else
 							{
 								GraphicsDevice.DrawUserIndexedPrimitives<Vertex>(PrimitiveType.TriangleList, mcParticleVerticesToDraw, 0, miNumberOfParticlesToDraw * 4, msaIndexBufferReachArray, 0, miNumberOfParticlesToDraw * 2, mcVertexDeclaration);

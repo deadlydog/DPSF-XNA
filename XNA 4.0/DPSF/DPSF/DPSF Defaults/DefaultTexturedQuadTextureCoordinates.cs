@@ -169,8 +169,8 @@ namespace DPSF
             // Fill in the Index Buffer for the newly added Vertices.
             // Specify the Vertices in Counter-Clockwise order.
             // It takes 6 Indices to represent a quad (2 triangles = 6 corners).
-            // If we're using the HiDef profile, fill in the regular Index Buffer.
-            if (this.GraphicsDevice.GraphicsProfile == GraphicsProfile.HiDef)
+            // If we should be using the 32-bit Integer Index Buffer, fill it.
+			if (this.IsUsingIntegerIndexBuffer)
             {
                 IndexBuffer[IndexBufferIndex++] = iIndex;
                 IndexBuffer[IndexBufferIndex++] = iIndex + 2;
@@ -179,15 +179,15 @@ namespace DPSF
                 IndexBuffer[IndexBufferIndex++] = iIndex + 3;
                 IndexBuffer[IndexBufferIndex++] = iIndex + 1;
             }
-            // Else we're using the Reach profile, so fill the Reach Index Buffer instead.
+            // Else we should be using the 16-bit Short Index Buffer.
             else
             {
-                IndexBufferReach[IndexBufferIndex++] = (short)(iIndex);
-                IndexBufferReach[IndexBufferIndex++] = (short)(iIndex + 2);
-                IndexBufferReach[IndexBufferIndex++] = (short)(iIndex + 1);
-                IndexBufferReach[IndexBufferIndex++] = (short)(iIndex + 2);
-                IndexBufferReach[IndexBufferIndex++] = (short)(iIndex + 3);
-                IndexBufferReach[IndexBufferIndex++] = (short)(iIndex + 1);
+                IndexBufferShort[IndexBufferIndex++] = (short)(iIndex);
+                IndexBufferShort[IndexBufferIndex++] = (short)(iIndex + 2);
+                IndexBufferShort[IndexBufferIndex++] = (short)(iIndex + 1);
+                IndexBufferShort[IndexBufferIndex++] = (short)(iIndex + 2);
+                IndexBufferShort[IndexBufferIndex++] = (short)(iIndex + 3);
+                IndexBufferShort[IndexBufferIndex++] = (short)(iIndex + 1);
             }
 		}
 	}
