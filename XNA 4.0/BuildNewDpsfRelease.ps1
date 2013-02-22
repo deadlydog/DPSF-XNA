@@ -44,8 +44,7 @@ New-Item -ItemType Directory -Path "$LATEST_DLL_FILES_DIRECTORY_PATH" > $null	# 
 Write-Host "Building the DPSF solution..."
 Invoke-MsBuild -Path "$DPSF_SOLUTION_FILE_PATH" -Configuration "Release" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -BuildVerbosity Quiet -ShowBuildWindow
 Write-Host "Building the DPSF WinRT solution..."
-Invoke-MsBuild -Path "$DPSF_WINRT_SOLUTION_FILE_PATH" -Configuration "Release" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -BuildVerbosity Quiet -ShowBuildWindow
-
+Invoke-MsBuild -Path "$DPSF_WINRT_SOLUTION_FILE_PATH" -Configuration "Release" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -BuildVerbosity Quiet -ShowBuildWindow -Wait
 
 
 
