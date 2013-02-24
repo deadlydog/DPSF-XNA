@@ -122,7 +122,7 @@ namespace DPSF_Demo
 			DefaultSprite3DBillboardParticleSystemTemplate,
 			DefaultQuadParticleSystemTemplate,
 			DefaultTexturedQuadParticleSystemTemplate,
-			LastInList = 44     // This value should be the number of Effects in the enumeration minus one (since we start at index 0) (excluding the Splash Screen)
+			LastInList = 45     // This value should be the number of Effects in the enumeration minus one (since we start at index 0) (excluding the Splash Screen)
 		}
 
 		// List of all the textures

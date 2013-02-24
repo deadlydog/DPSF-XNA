@@ -2529,7 +2529,7 @@ namespace DPSF
 			// Set the default Effect and Technique to use
 			SetDefaultEffect();
 
-			if (_SuseIntIndexBuffer == null)
+			if (_SuseIntIndexBuffer == null && GraphicsDevice != null)
 			{
 				// If we should be using the Windows HiDef profile, then use the full size Int Index Buffer.
 				if (GraphicsDevice.GraphicsProfile == GraphicsProfile.HiDef)
