@@ -15,6 +15,7 @@ public:
 - Got DPSF working properly on Android using MonoGame and added DPSF Demo for Mono for Android project to show DPSF working on Android.
 - Got DPSF working properly on WinRT using MonoGame and added DPSF Demo for WinRT project to show DPSF working on WinRT.
 - Updated the Trail particle system included in the DPSF Demo a bit.
+- Changed the DefaultSpriteParticleSystem to use BlendState.NonPremultipled by default so that transparency is drawn.
 
 Possible Breaking Changes:
 	- Changed the ParticleEmitterCollection's Add() function to return back the new ParticleEmitter, rather than the new ParticleEmitter's ID.

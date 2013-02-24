@@ -324,6 +324,17 @@ namespace DPSF
 			cSpriteBatch.Draw(Texture, sDestination, sSourceFromTexture, cParticle.Color, cParticle.Rotation, sOrigin, cParticle.FlipMode, fNormalizedDepth);
 		}
 
+		/// <summary>
+		/// Function to setup the Render Properties (i.e. BlendState, DepthStencilState, RasterizerState, and SamplerState)
+		/// which will be applied to the Graphics Device before drawing the Particle System's Particles.
+		/// <para>This function is called when initializing the particle system.</para>
+		/// </summary>
+		protected override void InitializeRenderProperties()
+		{
+			// Use the NonPremultiplied BlendState by default for Sprite particles so that transparency is drawn.
+			RenderProperties.BlendState = DPSFHelper.CloneBlendState(BlendState.NonPremultiplied);
+		}
+
 		//===========================================================
 		// Initialization Function
 		//===========================================================
