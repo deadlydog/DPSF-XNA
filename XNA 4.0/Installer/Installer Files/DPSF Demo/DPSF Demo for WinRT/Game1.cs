@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using DPSF_Demo.ParticleSystems;
+using DPSF;
 
 namespace DPSF_Demo_for_WinRT
 {
@@ -12,7 +13,12 @@ namespace DPSF_Demo_for_WinRT
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
 
-		DefaultTexturedQuadParticleSystemTemplate particleSystem = null;
+        ParticleSystemManager particleSystemManager = null;
+
+        DefaultQuadParticleSystemTemplate quadParticleSystem = null;
+		DefaultTexturedQuadParticleSystemTemplate texturedQuadParticleSystem = null;
+        DefaultSpriteParticleSystemTemplate spriteParticleSystem = null;
+        DefaultSprite3DBillboardParticleSystemTemplate sprite3DBillboardParticleSystem = null;
 
         public Game1()
         {
@@ -30,8 +36,17 @@ namespace DPSF_Demo_for_WinRT
         {
             // TODO: Add your initialization logic here
 
-			particleSystem = new DefaultTexturedQuadParticleSystemTemplate(null);
-			particleSystem.AutoInitialize(this.GraphicsDevice, this.Content, null);
+            quadParticleSystem = new DefaultQuadParticleSystemTemplate(null);
+            texturedQuadParticleSystem = new DefaultTexturedQuadParticleSystemTemplate(null);
+            spriteParticleSystem = new DefaultSpriteParticleSystemTemplate(null);
+            sprite3DBillboardParticleSystem = new DefaultSprite3DBillboardParticleSystemTemplate(null);
+
+            particleSystemManager = new ParticleSystemManager();
+            //particleSystemManager.AddParticleSystem(quadParticleSystem);
+            //particleSystemManager.AddParticleSystem(texturedQuadParticleSystem);
+            particleSystemManager.AddParticleSystem(spriteParticleSystem);
+            //particleSystemManager.AddParticleSystem(sprite3DBillboardParticleSystem);
+            particleSystemManager.AutoInitializeAllParticleSystems(this.GraphicsDevice, this.Content, null);
 
             base.Initialize();
         }
@@ -79,14 +94,10 @@ namespace DPSF_Demo_for_WinRT
 			// Setup the Projection matrix by specifying the field of view (1/4 pi), aspect ratio, and the near and far clipping planes
 			Matrix cProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, fAspectRatio, 1, 10000);
 
-			// If there is a particle system to update
-			if (particleSystem != null)
-			{
-				// TODO: Add your update logic here
-				particleSystem.CameraPosition = sCameraPosition;
-				particleSystem.SetWorldViewProjectionMatrices(Matrix.Identity, cViewMatrix, cProjectionMatrix);
-				particleSystem.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
-			}
+			// TODO: Add your update logic here
+            particleSystemManager.SetCameraPositionForAllParticleSystems(sCameraPosition);
+			particleSystemManager.SetWorldViewProjectionMatricesForAllParticleSystems(Matrix.Identity, cViewMatrix, cProjectionMatrix);
+			particleSystemManager.UpdateAllParticleSystems((float)gameTime.ElapsedGameTime.TotalSeconds);
 
             base.Update(gameTime);
         }
@@ -99,12 +110,8 @@ namespace DPSF_Demo_for_WinRT
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-			// If there is a particle system to draw
-			if (particleSystem != null)
-			{
-				// TODO: Add your drawing code here
-				particleSystem.Draw();
-			}
+			// TODO: Add your drawing code here
+            particleSystemManager.DrawAllParticleSystems();	
 
             base.Draw(gameTime);
         }

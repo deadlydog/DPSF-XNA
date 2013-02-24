@@ -131,6 +131,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\DPSF Demo\DPSF Demo\Templates\DefaultQuadParticleSystemTemplate.cs">
+      <Link>DefaultQuadParticleSystemTemplate.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF Demo\DPSF Demo\Templates\DefaultSprite3DBillboardParticleSystemTemplate.cs">
+      <Link>DefaultSprite3DBillboardParticleSystemTemplate.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF Demo\DPSF Demo\Templates\DefaultSpriteParticleSystemTemplate.cs">
+      <Link>DefaultSpriteParticleSystemTemplate.cs</Link>
+    </Compile>
     <Compile Include="..\DPSF Demo\DPSF Demo\Templates\DefaultTexturedQuadParticleSystemTemplate.cs">
       <Link>DefaultTexturedQuadParticleSystemTemplate.cs</Link>
     </Compile>
