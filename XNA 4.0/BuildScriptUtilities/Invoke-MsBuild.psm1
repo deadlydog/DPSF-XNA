@@ -35,8 +35,14 @@ function Invoke-MsBuild
 	.PARAMETER ShowBuildWindow
 	If set, this switch will cause a command prompt window to be shown in order to view the progress of the build.
 	
-	.PARAMETER Wait
-	If set, this switch will cause the script to wait until the build (launched in another process) completes before continuing execution.
+	.PARAMETER PromptForInputBeforeClosingBuildWindow
+	If set, the command prompt window used to show the build progress will remain open until the user presses a key on it.
+	NOTE: This switch only has an effect if the ShowBuildWindow switch is also used.
+	
+	.PARAMETER PassThru
+	If set, this switch will cause the script not to wait until the build (launched in another process) completes before continuing execution.
+	Instead the build will be started in a new process and that process will immediately be returned, allowing the calling script to continue 
+	execution while the build is performed.
 
     .EXAMPLE
 	Invoke-MsBuild -Path "C:\Some Folder\MySolution.sln"
@@ -56,11 +62,18 @@ function Invoke-MsBuild
 #>
 # Maybe make a separate Invoke-MsBuildAsync module since a lot of the switches won't apply if -Wait is specified; want a couple
 # 	different switches for async, like CreateLogFiles.
-# Add PauseForInput switch.
+
+# Have a switch to just return the full Log File Path. So it doesn't actually do a build, it just returns what the Log file path will be when it does do the build.
+
+# Google Parameter Sets for specifying the different sets of parameters that should be used together.
+
+# I think with ValueFromPipeline=$true I need to use the Begin Process End blocks.
+
+	[CmdletBinding(DefaultParameterSetName="Wait")]
 	param
 	(
-		[parameter(Mandatory=$true)]
-		[ValidateNotNullOrEmpty()]
+		[parameter(Position=0,Mandatory=$true,ValueFromPipeline=$true)]
+		[ValidateScript({Test-Path $_})]
 		[String] $Path,
 
 		[parameter(Mandatory=$false)]
@@ -72,7 +85,7 @@ function Invoke-MsBuild
 		[String] $Configuration = 'Debug',
 
 		[parameter(Mandatory=$false)]
-		[ValidateNotNullOrEmpty()]
+		[ValidateSet('q','quiet','m','minimal','n','normal','d','detailed','diag','diagnostic')]
 		[Alias("V")]
 		[String] $BuildVerbosity = 'minimal',
 
@@ -82,13 +95,13 @@ function Invoke-MsBuild
 
 		[parameter(Mandatory=$false)]
 		[Alias("L")]
-		[string] $BuildLogDirectoryPath,
+		[string] $BuildLogDirectoryPath, # = $env:Temp
 
-		[parameter(Mandatory=$false)]
+		[parameter(Mandatory=$false,ParameterSetName="Wait")]
 		[ValidateNotNullOrEmpty()]
 		[Switch] $AutoLaunchBuildLogOnFailure,
 
-		[parameter(Mandatory=$false)]
+		[parameter(Mandatory=$false,ParameterSetName="Wait")]
 		[ValidateNotNullOrEmpty()]
 		[Switch] $KeepBuildLogOnSuccessfulBuilds,
 
@@ -96,7 +109,10 @@ function Invoke-MsBuild
 		[Switch] $ShowBuildWindow,
 		
 		[parameter(Mandatory=$false)]
-		[Switch] $Wait
+		[Switch] $PromptForInputBeforeClosingBuildWindow,
+		
+		[parameter(Mandatory=$false,ParameterSetName="PassThru")]
+		[Switch] $PassThru
 	)
 
 	# Turn on Strict Mode to help catch syntax-related errors.
@@ -119,7 +135,7 @@ function Invoke-MsBuild
 
 	# Local Variables.
 	$solutionFileName = (Get-ItemProperty -Path $Path).Name
-	$buildLogFilePath = (Join-Path $BuildLogDirectoryPath $solutionFileName) + ".msbuild.log"
+	$buildLogFilePath = (Join-Path $BuildLogDirectoryPath $solutionFileName) + ".msbuild.$Configuration.log"
 	$windowStyle = if ($ShowBuildWindow) { "Normal" } else { "Hidden" }
 	$buildCrashed = $false;
 
@@ -132,17 +148,20 @@ function Invoke-MsBuild
 		# If a VS Command Prompt was found, build in that since it sets environmental variables that may be needed to build some projects.
 		if ($vsCommandPrompt -ne $null)
 		{
-			# Create the arguments to pass into cmd.exe in order to call MsBuild from the VS Command Prompt
-			$cmdArgumentsToRunMsBuildInVsCommandPrompt = "/k "" ""$vsCommandPrompt"" & msbuild $buildArguments & Pause & Exit"" "
+			# Create the arguments to pass into cmd.exe in order to call MsBuild from the VS Command Prompt.
+			$pauseForInput = if ($PromptForInputBeforeClosingBuildWindow) { "Pause & " } else { "" }
+			$cmdArgumentsToRunMsBuildInVsCommandPrompt = "/k "" ""$vsCommandPrompt"" & msbuild $buildArguments & $pauseForInput Exit"" "
 
-			# Perform the build, and then delete the text file we created to pipe the commands in.
-			if ($Wait)
+			Write-Debug "Starting new cmd.exe process with arguments ""$cmdArgumentsToRunMsBuildInVsCommandPrompt""."
+
+			# Perform the build.
+			if ($PassThru)
 			{
-				Start-Process cmd.exe -ArgumentList $cmdArgumentsToRunMsBuildInVsCommandPrompt -WindowStyle $windowStyle -Wait
+				return Start-Process cmd.exe -ArgumentList $cmdArgumentsToRunMsBuildInVsCommandPrompt -WindowStyle $windowStyle -PassThru
 			}
 			else
 			{
-				return Start-Process cmd.exe -ArgumentList $cmdArgumentsToRunMsBuildInVsCommandPrompt -WindowStyle $windowStyle -PassThru
+				Start-Process cmd.exe -ArgumentList $cmdArgumentsToRunMsBuildInVsCommandPrompt -WindowStyle $windowStyle -Wait
 			}
 		}
 		# Else let's just build using MSBuild directly.
@@ -150,13 +169,17 @@ function Invoke-MsBuild
 		{
 			# Get the path to the MsBuild executable.
 			$msBuildPath = Get-MsBuildPath
-			if ($Wait)
+			
+			Write-Debug "Starting new MsBuild.exe process with arguments ""$buildArguments""."
+			
+			# Perform the build.
+			if ($PassThru)
 			{
-				Start-Process -FilePath "$msBuildPath" -ArgumentList "$buildArguments" $waitForProcessToExit -WindowStyle $windowStyle -Wait
+				return Start-Process -FilePath "$msBuildPath" -ArgumentList "$buildArguments" $waitForProcessToExit -WindowStyle $windowStyle -PassThru
 			}
 			else
 			{
-				return Start-Process -FilePath "$msBuildPath" -ArgumentList "$buildArguments" $waitForProcessToExit -WindowStyle $windowStyle -PassThru
+				Start-Process -FilePath "$msBuildPath" -ArgumentList "$buildArguments" $waitForProcessToExit -WindowStyle $windowStyle -Wait
 			}
 		}
 	}
