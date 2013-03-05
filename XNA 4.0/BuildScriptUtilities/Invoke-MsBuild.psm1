@@ -8,7 +8,7 @@ function Invoke-MsBuild
 	Builds the given Visual Studio solution or project file using MSBuild.
 
     .PARAMETER Path
-    The path of the Visual Studio solution (.sln) or project to build.
+    The path of the Visual Studio solution or project to build (e.g. a .sln or .csproj file).
 	
 	.PARAMETER Target
     The targets for MsBuild (i.e. the actions it should perform), such as "Build", "Clean", "Deploy", etc. Default is "Clean;Build".
@@ -72,7 +72,7 @@ function Invoke-MsBuild
 	[CmdletBinding(DefaultParameterSetName="Wait")]
 	param
 	(
-		[parameter(Position=0,Mandatory=$true,ValueFromPipeline=$true)]
+		[parameter(Position=0,Mandatory=$true,ValueFromPipeline=$true,HelpMessage="The path to the file to build with MsBuild (e.g. a .sln or .csproj file).")]
 		[ValidateScript({Test-Path $_})]
 		[String] $Path,
 

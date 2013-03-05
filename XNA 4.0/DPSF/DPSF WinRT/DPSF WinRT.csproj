@@ -113,6 +113,9 @@
     <Compile Include="..\DPSF\AutoMemoryManagerSettings.cs">
       <Link>AutoMemoryManagerSettings.cs</Link>
     </Compile>
+    <Compile Include="..\DPSF\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="..\DPSF\DPSF Attributes\DPSFViewerParameterAttribute.cs">
       <Link>DPSF Attributes\DPSFViewerParameterAttribute.cs</Link>
     </Compile>

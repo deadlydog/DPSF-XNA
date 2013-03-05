@@ -117,6 +117,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutoMemoryManagerSettings.cs" />
+    <Compile Include="CommonAssemblyInfo.cs" />
     <Compile Include="DPSF Attributes\DPSFViewerParameterAttribute.cs" />
     <Compile Include="DPSF Defaults\DefaultBase.cs" />
     <Compile Include="DPSF Defaults\DefaultNoDisplay.cs" />
