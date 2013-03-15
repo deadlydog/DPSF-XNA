@@ -6,8 +6,6 @@ When releasing a new version of DPSF, be sure to follow these steps:
 
 1 - Go into the DPSF Project Properties and update the Assembly Information to use the new Assembly Version (Major.Minor.Build.Revision) (Major features, minor features, bug fixes, 0).
 
-You will need to manually update the AssemblyVersion property in the Mono for Android Copy of DPSF project's Properties/AssemblyInfo.cs file.
-
 2 - First make sure the configuration manager is set to Mixed Platforms, so that x86, Xbox 360, Windows Phone, and Mono for Android files are built.
 
 3 - Do a "Build Solution" in RELEASE mode to generate an updated DPSF.dll/.xml, DPSFXbox360.dll/.xml, and DPSFPhone.dll/.xml files.

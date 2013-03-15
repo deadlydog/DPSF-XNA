@@ -12,8 +12,8 @@
 
 param
 (
-	[parameter(Position=0,Mandatory=$false,HelpMessage="The new 4 hex-value version number to build the DPSF assemblies with.")]
-	[ValidateScript({$_ -match "^\d{1,5}\.\d{1,5}\.\d{1,5}\.\d{1,5}$"})]
+	[parameter(Position=0,Mandatory=$false,HelpMessage="The new 3 hex-value version number to build the DPSF assemblies with.")]
+	[ValidatePattern("^\d{1,5}\.\d{1,5}\.\d{1,5}$")]
 	[String] $VersionNumber
 )
 
@@ -43,6 +43,9 @@ $CSPROJ_FILE_PATHS_TO_MODIFY_AND_REBUILD = @( (Join-Path $DPSF_ROOT_DIRECTORY "D
 	(		Join-Path $DPSF_ROOT_DIRECTORY "DPSF/DPSF/Windows Phone Copy of DPSF.csproj"))
 $INSTALLER_FILES_DIRECTORY_PATH = Join-Path $DPSF_ROOT_DIRECTORY "/Installer/Installer Files/"
 $DPSF_COMMON_ASSEMBLY_INFO_FILE_PATH = Join-Path $DPSF_ROOT_DIRECTORY "/DPSF/DPSF/CommonAssemblyInfo.cs"
+$TEST_DPSF_DLL_SLN_PATH = Join-Path $DPSF_ROOT_DIRECTORY "Installer/Tests/TestDPSFDLL/TestDPSFDLL.sln"
+$TEST_DPSF_INHERITS_DLL_SLN_PATH = Join-Path $DPSF_ROOT_DIRECTORY "Installer/Tests/TestDPSFInheritsDLL/TestDPSFInheritsDLL.sln"
+$DPSF_SPLASH_SCREEN_EXAMPLE_SLN_PATH = Join-Path $DPSF_ROOT_DIRECTORY "Installer/Installer Files/Logos/DPSFSplashScreenExample/DPSFSplashScreenExample.sln"
 
 
 #==========================================================
@@ -117,7 +120,7 @@ param
 	[Switch] $SetVersionNumber,
 
 	[parameter(Position=1,Mandatory=$true,ParameterSetName="Set")]
-	[ValidateScript({$_ -match "^\d{1,5}\.\d{1,5}\.\d{1,5}\.\d{1,5}$"})]
+	[ValidateScript({$_ -match "^\d{1,5}\.\d{1,5}\.\d{1,5}$"})]
 	[String] $NewVersionNumber
 )
 
@@ -145,6 +148,9 @@ param
 		# Otherwise we want to set it.
 		else
 		{
+			# Append ".0" as the last hex value in the new version number.
+			$NewVersionNumber = "$NewVersionNumber.0"
+		
 			# If the Version Number is already what we want to set it to, don't do anything.
 			if ($currentVersionNumber -eq $NewVersionNumber)
 			{
@@ -169,6 +175,11 @@ param
 # Perform the script tasks.
 #==========================================================
 
+<#
+1 - Go into the DPSF Project Properties and update the Assembly Information to use the new Assembly Version (Major.Minor.Build.Revision) 
+(Major features, minor features, bug fixes, 0).
+#>
+
 # If a Version Number was supplied, update the DPSF Version Number before creating the DLLs.
 if ($VersionNumber)
 {
@@ -182,10 +193,29 @@ else
 
 Write-Host "Beginning script to create DPSF Release '$VersionNumber'..."
 
+<#
+2 - First make sure the configuration manager is set to Mixed Platforms, so that x86, Xbox 360, Windows Phone, and Mono for Android files are built.
+
+3 - Do a "Build Solution" in RELEASE mode to generate an updated DPSF.dll/.xml, DPSFXbox360.dll/.xml, and DPSFPhone.dll/.xml files.
+
+4 - In the "DPSF" Project Properties, change the Assembly Name to DPSFAsDrawableGameComponent and add DPSFAsDrawableGameComponent to the 
+Conditional Compilation Symbols (in the Build tab). In the DPSF Xbox 360 Project Properties change the Assembly Name to DPSFXbox360AsDrawableGameComponent 
+and add DPSFAsDrawableGameComponent to the Conditional Compilation Symbols. In the Windows Phone Copy of DPSF Project Properties change the Assembly Name to 
+DPSFPhoneAsDrawableGameComponent and add DPSFAsDrawableGameComponent to the Conditional Compilation Symbols. In the Mono for Android Copy of DPSF Project 
+Properties change the Assembly Name to DPSFMonoForAndoidAsDrawableGameComponent and add DPSFAsDrawableGameComponent to the Conditional Compilation Symbols. 
+
+Then do a Build Solution to generate new DPSFAsDrawableGameComponent.dll/.xml, DPSFXbox360AsDrawableGameComponent.dll/.xml, 
+DPSFPhoneAsDrawableGameComponent.dll/.xml, and DPSFMonoForAndoidAsDrawableGameComponent.dll/.xml files that inherit from DrawableGameComponent.
+#>
+
 # Delete the existing DPSF files before building the new ones.
 Write-Host "Deleting existing DLLs..."
 Remove-Item -Recurse -Path "$LATEST_DLL_FILES_DIRECTORY_PATH" # Delete the entire folder.
 New-Item -ItemType Directory -Path "$LATEST_DLL_FILES_DIRECTORY_PATH" > $null # Recreate the empty folder (and trash the output it creates).
+
+
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe /nologo /noconsolelogger "C:\Builds\49\RQ\Dev.RQ4.Core.Client.CI\Sources\RQ4.Server.sln" /nr:False /fl /flp:"logfile=C:\Builds\49\RQ\Dev.RQ4.Core.Client.CI\Sources\RQ4.Server.log;encoding=Unicode;verbosity=diagnostic" /p:SkipInvalidConfigurations=true /p:ReferencePath=C:\Builds\49\RQ\Dev.RQ4.Core.Client.CI\Binaries  /p:OutDir="C:\Builds\49\RQ\Dev.RQ4.Core.Client.CI\Binaries\\" /p:Configuration="Release" /p:Platform="Any CPU" /p:VCBuildOverride="C:\Builds\49\RQ\Dev.RQ4.Core.Client.CI\Sources\RQ4.Server.sln.Any CPU.Release.vsprops"  /dl:WorkflowCentralLogger,"C:\Program Files\Microsoft Team Foundation Server 11.0\Tools\Microsoft.TeamFoundation.Build.Server.Logger.dll";"Verbosity=Diagnostic;BuildUri=vstfs:///Build/Build/35213;InformationNodeId=113232167;TargetsNotLogged=GetNativeManifest,GetCopyToOutputDirectoryItems,GetTargetPath;TFSUrl=http://iq-rgtfs001:8080/tfs/iqprojectcollection;"*WorkflowForwardingLogger,"C:\Program Files\Microsoft Team Foundation Server 11.0\Tools\Microsoft.TeamFoundation.Build.Server.Logger.dll";"Verbosity=Diagnostic;"
+/p:Platform="Any CPU"
 
 # Build the DPSF solution in Release mode to create the new DLLs.
 Write-Host "Building the DPSF solution..."
@@ -207,6 +237,16 @@ foreach ($csprojFilePath in $CSPROJ_FILE_PATHS_TO_MODIFY_AND_REBUILD)
 Write-Host "Building the DPSF solution for AsDrawableGameComponent DLLs..."
 Invoke-MsBuild -Path "$DPSF_SOLUTION_FILE_PATH" -Configuration "Release" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -BuildVerbosity Quiet -ShowBuildWindow
 
+<#
+5 - Copy the DPSF.dll/.xml, DPSFAsDrawableGameComponent.dll/.xml, DPSFXbox360.dll/.xml, DPSFXbox360AsDrawableGameComponenet.dll/.xml, 
+DPSFPhone.dll/.xml, DPSFPhoneAsDrawableGameComponent.dll/.xml, DPSFMonoForAndoid.dll/.xml, and DPSFMonoForAndoidAsDrawableGameComponent.dll/.xml 
+files in the "DPSF\LatestDLLBuild" folder into the "Installer Files" folder, and copy them into the "C:\DPSF" folder as well so that the 
+"Installer Files\DPSF Demo" project can find the new files.
+
+6 - Remove the Conditional Compilation Symbol from all 4 Project Properties, and rename the Assembly Names back to DPSF, DPSFXbox360, DPSFPhone, 
+and DPSFMonoForAndroid.
+#>
+
 #Revert the .csproj files back to their original states now that we have the DLLs.
 Write-Host "Reverting .csproj files back to their original states..."
 foreach ($csprojFilePath in $CSPROJ_FILE_PATHS_TO_MODIFY_AND_REBUILD)
@@ -223,13 +263,57 @@ foreach ($csprojFilePath in $CSPROJ_FILE_PATHS_TO_MODIFY_AND_REBUILD)
 Write-Host "Copying new DLL and XML files to the Installer Files directory..."
 Copy-Item -Path "$LATEST_DLL_FILES_DIRECTORY_PATH/*" -Destination $INSTALLER_FILES_DIRECTORY_PATH -Include "*.dll","*.xml"
 
-
-
-
-
-
+# Copy the DLL files to the 'C:\DPSF' directory.
+Write-Host "Copying new DLL and XML files to the 'C:\DPSF' directory..."
+Copy-Item -Path "$LATEST_DLL_FILES_DIRECTORY_PATH/*" -Destination "C:\DPSF" -Include "*.dll","*.xml"
 
 <#
+7 - Open the TestDPSFDLL solution and run it to ensure that DPSF.dll is working correctly. Look at the DPSF Reference properties to make sure it is 
+using the correct version of the dll file. Test it both with "this" and "null" supplied in the particle system's constructor; both should run fine. Test it 
+on the Xbox 360 as well if possible by right-clicking the Xbox 360 copy of the project and selecting "Set as StartUp Project.
+
+8 - Open the TestDPSFInheritsDLL solution and run it to ensure that DPSFAsDrawableGameComponent.dll is working correctly. Look at the DPSF Reference 
+properties to make sure it is using the correct version of the dll file. Test it both with "this" and "null" supplied in the particle system's constructor; 
+using "null" should throw an exception when you try and run it. Test it on the Xbox 360 as well if possible by right-clicking the Xbox 360 copy of the project 
+and selecting "Set as StartUp Project.
+
+9 - Open the "Installer Files\Logos\DPSFSplashScreenExample" solution and make sure it still compiles and runs fine.
+#>
+
+# Open the TestDPSFDLL solution and verify that it works correctly.
+& $TEST_DPSF_DLL_SLN_PATH
+$answer = Read-Host -Prompt "Does the Test DPSF Dll solution run properly with both 'this' and 'null' supplied in the particle system's constructor? (Y|N)"
+if (!($answer.StartsWith("Y") -or $Answer.StartsWith("y"))) { Exit }
+
+# Open the TestDPSFInheritsDLL solution and verify that it works correctly.
+& $TEST_DPSF_INHERITS_DLL_SLN_PATH
+$answer = Read-Host -Prompt "Does the Test DPSF Inherits Dll solution run properly with both 'this' and 'null' supplied in the particle system's constructor? Using 'null' should throw an exception. (Y|N)"
+if (!($answer.StartsWith("Y") -or $Answer.StartsWith("y"))) { Exit }
+
+# Open the DPSFSplashScreenExample solution and verify that it works correctly.
+$DPSF_SPLASH_SCREEN_EXAMPLE_SLN_PATH
+$answer = Read-Host -Prompt "Does the DPSF Splash Screen Example solution run properly?(Y|N)"
+if (!($answer.StartsWith("Y") -or $Answer.StartsWith("y"))) { Exit }
+
+<#
+10 - Copy the files in "Installer Files\DPSF Demo\DPSF Demo\DPSF Demo\Templates" to the "Installer Files\Templates" folder.
+
+11 - Copy the files in "DPSF\DPSF\DPSF Defaults" to the "Installer Files\Templates\DPSF Defaults" folder.
+
+12 - Copy "DPSF\DPSF\DPSF Effects\HLSL\DPSFDefaultEffect.fx" to the "Installer Files\Templates" folder.
+#>
+
+# Copy the files in "Installer Files\DPSF Demo\DPSF Demo\DPSF Demo\Templates" to the "Installer Files\Templates" folder.
+Write-Host "Copying the files in 'Installer Files\DPSF Demo\DPSF Demo\DPSF Demo\Templates' to the 'Installer Files\Templates' folder..."
+Copy-Item -Path "path/*" -Destination $path -Include "*.dll","*.xml"
+
+
+
+
+
+
+
+<# Put these comments directly into the script so they explain what the script does manually.
 
 When releasing a new version of DPSF, be sure to follow these steps:
 

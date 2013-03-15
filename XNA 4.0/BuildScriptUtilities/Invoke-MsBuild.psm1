@@ -1,6 +1,6 @@
 function Invoke-MsBuild
 {
-	<#
+<#
     .SYNOPSIS
     Executes the MSBuild.exe tool against the specified Visual Studio solution or project file.
 
@@ -74,24 +74,24 @@ function Invoke-MsBuild
 	(
 		[parameter(Position=0,Mandatory=$true,ValueFromPipeline=$true,HelpMessage="The path to the file to build with MsBuild (e.g. a .sln or .csproj file).")]
 		[ValidateScript({Test-Path $_})]
-		[String] $Path,
+		[string] $Path,
 
 		[parameter(Mandatory=$false)]
 		[ValidateNotNullOrEmpty()]
-		[String] $Target = 'Clean;Build',
+		[string] $Target = 'Clean;Build',
 
 		[parameter(Mandatory=$false)]
 		[ValidateNotNullOrEmpty()]
-		[String] $Configuration = 'Debug',
+		[string] $Configuration = 'Debug',
 
 		[parameter(Mandatory=$false)]
 		[ValidateSet('q','quiet','m','minimal','n','normal','d','detailed','diag','diagnostic')]
 		[Alias("V")]
-		[String] $BuildVerbosity = 'minimal',
+		[string] $BuildVerbosity = 'minimal',
 
 		[parameter(Mandatory=$false)]
 		[Alias("Params")]
-		[String] $AdditionalParameters,
+		[string] $AdditionalParameters,
 
 		[parameter(Mandatory=$false)]
 		[Alias("L")]
@@ -99,20 +99,20 @@ function Invoke-MsBuild
 
 		[parameter(Mandatory=$false,ParameterSetName="Wait")]
 		[ValidateNotNullOrEmpty()]
-		[Switch] $AutoLaunchBuildLogOnFailure,
+		[switch] $AutoLaunchBuildLogOnFailure,
 
 		[parameter(Mandatory=$false,ParameterSetName="Wait")]
 		[ValidateNotNullOrEmpty()]
-		[Switch] $KeepBuildLogOnSuccessfulBuilds,
+		[switch] $KeepBuildLogOnSuccessfulBuilds,
 
 		[parameter(Mandatory=$false)]
-		[Switch] $ShowBuildWindow,
+		[switch] $ShowBuildWindow,
 		
 		[parameter(Mandatory=$false)]
-		[Switch] $PromptForInputBeforeClosingBuildWindow,
+		[switch] $PromptForInputBeforeClosingBuildWindow,
 		
 		[parameter(Mandatory=$false,ParameterSetName="PassThru")]
-		[Switch] $PassThru
+		[switch] $PassThru
 	)
 
 	# Turn on Strict Mode to help catch syntax-related errors.
@@ -253,11 +253,11 @@ function Get-MsBuildPath
 {
  <#
 	.SYNOPSIS
-		Gets the path to the latest version of MsBuild.exe. Returns $null if a path is not found.
+	Gets the path to the latest version of MsBuild.exe. Returns $null if a path is not found.
 	
 	.DESCRIPTION
-		Gets the path to the latest version of MsBuild.exe. Returns $null if a path is not found.
-	#>
+	Gets the path to the latest version of MsBuild.exe. Returns $null if a path is not found.
+#>
 
 # Array of valid MsBuild versions
 $Versions = @("4.0", "3.5", "2.0")

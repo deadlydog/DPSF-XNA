@@ -8,12 +8,15 @@ if (![System.IO.File]::Exists($AbsoluteDLLPath))
 # Grab the version number of the DPSF DLL file.
 [string]$VersionNumber = [System.Diagnostics.FileVersionInfo]::GetVersionInfo("$AbsoluteDLLPath").FileVersion.ToString()
 
+# Get the directory that this script is in.
+$thisScriptsDirectory = Split-Path $script:MyInvocation.MyCommand.Path
+
 # If the file to create already exists, prompt that we want to overwrite it.
-$NugetFilePath = "./Packages/DPSF.$VersionNumber.nupkg"
-if ([System.IO.File]::Exists($NugetFilePath))
+$NugetFilePath = "$thisScriptsDirectory/Packages/DPSF.$VersionNumber.nupkg"
+if (Test-Path $NugetFilePath)
 {
-	[string]$Answer = Read-Host "File `"$NugetFilePath`" already exists. Overwrite it? (Y|N): "
-	if (!($Answer.StartsWith("Y") -or $Answer.StartsWith("y")))
+	[string]$answer = Read-Host "File `"$NugetFilePath`" already exists. Overwrite it? (Y|N): "
+	if (!($answer.StartsWith("Y") -or $Answer.StartsWith("y")))
 	{
 		Write-Host "ABORTED: Did not create new NuGet package."
 		EXIT
@@ -21,7 +24,7 @@ if ([System.IO.File]::Exists($NugetFilePath))
 }
 
 # Create the nuget package with the proper version number.
-NuGet pack "./Package.nuspec" -OutputDirectory Packages -Version "$VersionNumber"
+NuGet pack "$thisScriptsDirectory/Package.nuspec" -OutputDirectory "$thisScriptsDirectory/Packages" -Version "$VersionNumber"
 
 $AbsolutePackagePath = [System.IO.Path]::GetFullPath($NugetFilePath)
 Write-Host "Created package: '$AbsolutePackagePath'"
