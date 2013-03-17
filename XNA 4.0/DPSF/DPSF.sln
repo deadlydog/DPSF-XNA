@@ -30,6 +30,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DPSF Demo for Windows PhoneContent", "..\Installer\Installer Files\DPSF Demo\DPSF Demo for Windows Phone\DPSF Demo for Windows PhoneContent\DPSF Demo for Windows PhoneContent.contentproj", "{1C7CE49B-AAF9-486C-8EFF-D5A329CD841C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DPSF Demo for Mono for Android", "..\Installer\Installer Files\DPSF Demo\DPSF Demo for Mono for Android\DPSF Demo for Mono for Android.csproj", "{0BF3802A-C5F1-4C19-AD21-141F5C147ED2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{30E4DE64-17B4-41EE-B21F-D7AD2EF6BC39} = {30E4DE64-17B4-41EE-B21F-D7AD2EF6BC39}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

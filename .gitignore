@@ -8,3 +8,6 @@
 bin/
 obj/
 _[Rr]e[Ss]harper.*
+*.appx
+*.appxupload
+*.log
