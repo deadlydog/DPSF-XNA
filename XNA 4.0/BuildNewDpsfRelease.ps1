@@ -12,8 +12,8 @@
 
 param
 (
-	[parameter(Position=0,Mandatory=$false,HelpMessage="The new 3 hex-value version number to build the DPSF assemblies with.")]
-	[ValidatePattern("^\d{1,5}\.\d{1,5}\.\d{1,5}$")]
+	[parameter(Position=0,Mandatory=$false,HelpMessage="The 4 hex-value version number to build the DPSF assemblies with (x.x.x.x).")]
+	[ValidatePattern("^\d{1,5}\.\d{1,5}\.\d{1,5}\.\d{1,5}$")]
 	[String] $VersionNumber
 )
 
@@ -120,7 +120,7 @@ param
 	[Switch] $SetVersionNumber,
 
 	[parameter(Position=1,Mandatory=$true,ParameterSetName="Set")]
-	[ValidateScript({$_ -match "^\d{1,5}\.\d{1,5}\.\d{1,5}$"})]
+	[ValidateScript({$_ -match "^\d{1,5}\.\d{1,5}\.\d{1,5}\.\d{1,5}$"})]
 	[String] $NewVersionNumber
 )
 
@@ -147,10 +147,7 @@ param
 		}
 		# Otherwise we want to set it.
 		else
-		{
-			# Append ".0" as the last hex value in the new version number.
-			$NewVersionNumber = "$NewVersionNumber.0"
-		
+		{		
 			# If the Version Number is already what we want to set it to, don't do anything.
 			if ($currentVersionNumber -eq $NewVersionNumber)
 			{
@@ -180,16 +177,18 @@ param
 (Major features, minor features, bug fixes, 0).
 #>
 
-# If a Version Number was supplied, update the DPSF Version Number before creating the DLLs.
-if ($VersionNumber)
+# If a Version Number was not supplied, get the current version number and prompt for a new one.
+if (!$VersionNumber)
 {
-	$VersionNumber = DpsfVersionNumber -SetVersionNumber -NewVersionNumber $VersionNumber
+	$currentVersionNumber = DpsfVersionNumber -GetVersionNumber
+	
+	# Prompt for the Version Number to use.
+	Add-Type -AssemblyName Microsoft.VisualBasic
+	$VersionNumber = [Microsoft.VisualBasic.Interaction]::InputBox("Enter the 4 hex-value version number to build the DPSF assemblies with (x.x.x.x):", "DPSF Version Number To Use", $currentVersionNumber)
 }
-# Else a Version Number was not supplied, so just get the current DPSF Version Number.
-else
-{
-	$VersionNumber = DpsfVersionNumber -GetVersionNumber
-}
+
+# Set the Version Number
+$VersionNumber = DpsfVersionNumber -SetVersionNumber -NewVersionNumber $VersionNumber
 
 Write-Host "Beginning script to create DPSF Release '$VersionNumber'..."
 
@@ -214,8 +213,8 @@ Remove-Item -Recurse -Path "$LATEST_DLL_FILES_DIRECTORY_PATH" # Delete the entir
 New-Item -ItemType Directory -Path "$LATEST_DLL_FILES_DIRECTORY_PATH" > $null # Recreate the empty folder (and trash the output it creates).
 
 
-C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe /nologo /noconsolelogger "C:\Builds\49\RQ\Dev.RQ4.Core.Client.CI\Sources\RQ4.Server.sln" /nr:False /fl /flp:"logfile=C:\Builds\49\RQ\Dev.RQ4.Core.Client.CI\Sources\RQ4.Server.log;encoding=Unicode;verbosity=diagnostic" /p:SkipInvalidConfigurations=true /p:ReferencePath=C:\Builds\49\RQ\Dev.RQ4.Core.Client.CI\Binaries  /p:OutDir="C:\Builds\49\RQ\Dev.RQ4.Core.Client.CI\Binaries\\" /p:Configuration="Release" /p:Platform="Any CPU" /p:VCBuildOverride="C:\Builds\49\RQ\Dev.RQ4.Core.Client.CI\Sources\RQ4.Server.sln.Any CPU.Release.vsprops"  /dl:WorkflowCentralLogger,"C:\Program Files\Microsoft Team Foundation Server 11.0\Tools\Microsoft.TeamFoundation.Build.Server.Logger.dll";"Verbosity=Diagnostic;BuildUri=vstfs:///Build/Build/35213;InformationNodeId=113232167;TargetsNotLogged=GetNativeManifest,GetCopyToOutputDirectoryItems,GetTargetPath;TFSUrl=http://iq-rgtfs001:8080/tfs/iqprojectcollection;"*WorkflowForwardingLogger,"C:\Program Files\Microsoft Team Foundation Server 11.0\Tools\Microsoft.TeamFoundation.Build.Server.Logger.dll";"Verbosity=Diagnostic;"
-/p:Platform="Any CPU"
+#C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe /nologo /noconsolelogger "C:\Builds\49\RQ\Dev.RQ4.Core.Client.CI\Sources\RQ4.Server.sln" /nr:False /fl /flp:"logfile=C:\Builds\49\RQ\Dev.RQ4.Core.Client.CI\Sources\RQ4.Server.log;encoding=Unicode;verbosity=diagnostic" /p:SkipInvalidConfigurations=true /p:ReferencePath=C:\Builds\49\RQ\Dev.RQ4.Core.Client.CI\Binaries  /p:OutDir="C:\Builds\49\RQ\Dev.RQ4.Core.Client.CI\Binaries\\" /p:Configuration="Release" /p:Platform="Any CPU" /p:VCBuildOverride="C:\Builds\49\RQ\Dev.RQ4.Core.Client.CI\Sources\RQ4.Server.sln.Any CPU.Release.vsprops"  /dl:WorkflowCentralLogger,"C:\Program Files\Microsoft Team Foundation Server 11.0\Tools\Microsoft.TeamFoundation.Build.Server.Logger.dll";"Verbosity=Diagnostic;BuildUri=vstfs:///Build/Build/35213;InformationNodeId=113232167;TargetsNotLogged=GetNativeManifest,GetCopyToOutputDirectoryItems,GetTargetPath;TFSUrl=http://iq-rgtfs001:8080/tfs/iqprojectcollection;"*WorkflowForwardingLogger,"C:\Program Files\Microsoft Team Foundation Server 11.0\Tools\Microsoft.TeamFoundation.Build.Server.Logger.dll";"Verbosity=Diagnostic;"
+#/p:Platform="Any CPU"
 
 # Build the DPSF solution in Release mode to create the new DLLs.
 Write-Host "Building the DPSF solution..."
@@ -266,6 +265,18 @@ Copy-Item -Path "$LATEST_DLL_FILES_DIRECTORY_PATH/*" -Destination $INSTALLER_FIL
 # Copy the DLL files to the 'C:\DPSF' directory.
 Write-Host "Copying new DLL and XML files to the 'C:\DPSF' directory..."
 Copy-Item -Path "$LATEST_DLL_FILES_DIRECTORY_PATH/*" -Destination "C:\DPSF" -Include "*.dll","*.xml"
+
+
+
+
+
+
+Exit
+
+
+
+
+
 
 <#
 7 - Open the TestDPSFDLL solution and run it to ensure that DPSF.dll is working correctly. Look at the DPSF Reference properties to make sure it is 
