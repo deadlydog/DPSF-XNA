@@ -180,7 +180,7 @@
     <None Include="Properties\DataSources\Viewer.datasource" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\DPSF\BasicVirtualEnvironment\BasicVirtualEnvironment\BasicVirtualEnvironment.csproj">
+    <ProjectReference Include="..\..\Installer\Installer Files\DPSF Demo\BasicVirtualEnvironment\BasicVirtualEnvironment\BasicVirtualEnvironment.csproj">
       <Project>{AA695311-58DA-4112-944D-DAA3F90C03C6}</Project>
       <Name>BasicVirtualEnvironment</Name>
     </ProjectReference>

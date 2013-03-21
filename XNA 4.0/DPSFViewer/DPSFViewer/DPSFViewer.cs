@@ -14,7 +14,7 @@ namespace DPSFViewer
 	/// <summary>
 	/// 
 	/// </summary>
-	public class DPSFViewer : DemoBase
+	public class DPSFViewer : BasicVirtualEnvironmentBase
 	{
 		#region Fields
 

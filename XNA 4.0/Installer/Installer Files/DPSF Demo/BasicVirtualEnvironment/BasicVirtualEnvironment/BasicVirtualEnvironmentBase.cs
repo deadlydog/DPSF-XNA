@@ -310,8 +310,12 @@ namespace BasicVirtualEnvironment
 		/// <param name="gameTime">How much time has elapsed in the game and between updates.</param>
 		protected override void Update(GameTime gameTime)
 		{
-			// Get and process user Input before anything else.
-			ProcessInput(gameTime);
+			// Only process input if the game has focus.
+			if (this.IsActive)
+			{
+				// Get and process user Input before anything else.
+				ProcessInput(gameTime);
+			}
 
 			// Allow the camera to be moved around, even if the particle systems are paused.
 			// Update the World, View, and Projection matrices.
