@@ -16,6 +16,7 @@ public:
 - Got DPSF working properly on WinRT using MonoGame and added DPSF Demo for WinRT project to show DPSF working on WinRT.
 - Updated the Trail particle system included in the DPSF Demo a bit.
 - Changed the DefaultSpriteParticleSystem to use BlendState.NonPremultipled by default so that transparency is drawn.
+- Added try-catch blocks to prevent DPSF from throwing exceptions when moving app window between monitors.
 
 Possible Breaking Changes:
 	- Changed the ParticleEmitterCollection's Add() function to return back the new ParticleEmitter, rather than the new ParticleEmitter's ID.
@@ -24,6 +25,7 @@ Possible Breaking Changes:
 
 private:
 - Renamed C# folder to CSharp to be VS 2012 compatible.
+- Changed some foreach loops to for loops.
 
 
 Changes made after Version 2.2.2:

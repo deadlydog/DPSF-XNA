@@ -546,8 +546,10 @@ namespace DPSF
 		protected void UpdateParticlePositionAccordingToMagnets(DPSFDefaultBaseParticle cParticle, float fElapsedTimeInSeconds)
 		{
 			// Loop through each of the Particle System's Magnets
-			foreach (DefaultParticleSystemMagnet magnet in MagnetList)
+			for (int index = 0; index < MagnetList.Count; index++)
 			{
+				DefaultParticleSystemMagnet magnet = MagnetList[index];
+
 				// If this is not a custom user Magnet (i.e. it is Attracting or Repelling)
 				if (magnet.Mode != DefaultParticleSystemMagnet.MagnetModes.Other)
 				{
@@ -566,8 +568,10 @@ namespace DPSF
 		protected void UpdateParticleVelocityAccordingToMagnets(DPSFDefaultBaseParticle cParticle, float fElapsedTimeInSeconds)
 		{
 			// Loop through each of the Particle System's Magnets
-			foreach (DefaultParticleSystemMagnet magnet in MagnetList)
+			for (int index = 0; index < MagnetList.Count; index++)
 			{
+				DefaultParticleSystemMagnet magnet = MagnetList[index];
+
 				// If this is not a custom user Magnet (i.e. it is Attracting or Repelling)
 				if (magnet.Mode != DefaultParticleSystemMagnet.MagnetModes.Other)
 				{

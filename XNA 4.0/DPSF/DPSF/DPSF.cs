@@ -4596,8 +4596,10 @@ namespace DPSF
 			var previousEmitter = _emitter;
 
 			// Loop through each Emitter and add their particles to the particle system.
-			foreach (int emitterID in emitterIDs)
+			for (int index = 0; index < emitterIDs.Count; index++)
 			{
+				int emitterID = emitterIDs[index];
+
 				// Make sure this emitter still exists in the list, as it may have been removed by a previous emitter's BustCompleted event.
 				if (!_emitters.Contains(emitterID))
 					continue;
@@ -4829,7 +4831,7 @@ namespace DPSF
 		public void Draw()
 		{
 			// Draw the Particle System
-			Draw(false);
+			TryDraw(false);
 		}
 
 		/// <summary>
@@ -4842,7 +4844,37 @@ namespace DPSF
 		public void DrawForced()
 		{
 			// Force the drawing of the Particle System
-			Draw(true);
+			TryDraw(true);
+		}
+
+		/// <summary>
+		/// Perform the Draw operation, catching any expected errors that we want to eat.
+		/// </summary>
+		/// <param name="calledByDrawableGameComponent">Indicates if this function was called manually by the user or called automatically by the Drawable Game Component.
+		/// If this function Inherits Drawable Game Component, but was not called by Drawable Game Component, nothing will be drawn since the Particle System will
+		/// automatically be drawn when the Game Component's Draw() function is called.</param>
+		private void TryDraw(bool calledByDrawableGameComponent)
+		{
+			try
+			{
+				Draw(calledByDrawableGameComponent);
+			}
+			// Eat any Object Disposed Exceptions, as they are often thrown from within the Draw function when moving the application from one monitor to another.
+			catch (ObjectDisposedException)
+			{
+				// Make sure we End the Sprite Batch, as calling Begin on it again without Ending it will cause another exception.
+				if (meParticleType == ParticleTypes.Sprite && !UsingExternalSpriteBatchToDrawParticles)
+				{
+					try
+					{
+						// Start the SpriteBatch for drawing before we start the Pass.
+						mcSpriteBatch.End();
+					}
+					// Eat the exception for the case where .Begin() had not been called yet.
+					catch (InvalidOperationException)
+					{ }
+				}
+			}
 		}
 
 		/// <summary>
@@ -5072,19 +5104,25 @@ namespace DPSF
 			if (this.GraphicsDevice == null)
 				return;
 
-			// Reset all of the Sampler States
-			for (int index = 0; index < 16; index++)
-				GraphicsDevice.SamplerStates[index] = SamplerState.PointClamp;
-// Apparently MonoGame doesn't know about the VertexSamplerStates property, so we can't update it when using MonoGame for porting to Android and WinRT.
-#if (!ANDROID && !WIN_RT)
-			// The Reach profile does not have VertexSamplerStates, but clear them out if we're using a HiDef profile.
-			if (this.GraphicsDevice.GraphicsProfile == GraphicsProfile.HiDef)
+			try
 			{
-				//  Reset all of the Vertex Sampler States
-				for (int index = 0; index < 2; index++)
-					GraphicsDevice.VertexSamplerStates[index] = SamplerState.PointWrap;
-			}
+				// Reset all of the Sampler States
+				for (int index = 0; index < 16; index++)
+					GraphicsDevice.SamplerStates[index] = SamplerState.PointClamp;
+				// Apparently MonoGame doesn't know about the VertexSamplerStates property, so we can't update it when using MonoGame for porting to Android and WinRT.
+#if (!ANDROID && !WIN_RT)
+				// The Reach profile does not have VertexSamplerStates, but clear them out if we're using a HiDef profile.
+				if (this.GraphicsDevice.GraphicsProfile == GraphicsProfile.HiDef)
+				{
+					//  Reset all of the Vertex Sampler States
+					for (int index = 0; index < 2; index++)
+						GraphicsDevice.VertexSamplerStates[index] = SamplerState.PointWrap;
+				}
 #endif
+			}
+			// Eat any Null Ref Exceptions, as they are often thrown from the SamplerStates property when moving the application window between monitors.
+			catch (NullReferenceException)
+			{ }
 		}
 
 		/// <summary>
