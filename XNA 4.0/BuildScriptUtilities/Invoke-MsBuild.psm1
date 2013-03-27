@@ -9,18 +9,10 @@ function Invoke-MsBuild
 
     .PARAMETER Path
     The path of the Visual Studio solution or project to build (e.g. a .sln or .csproj file).
-	
-	.PARAMETER Target
-    The targets for MsBuild (i.e. the actions it should perform), such as "Build", "Clean", "Deploy", etc. Default is "Clean;Build".
 
-    .PARAMETER Configuration
-    The project configuration to build within the solution file (e.g. "Debug", "Release", etc.). Default is "Debug".
-
-	.PARAMETER BuildVerbosity
-	The verbosity that the build should use. Valid values include: q[uiet], m[inimal], n[ormal], d[etailed], and diag[nostic]. Default is minimal.
-
-	.PARAMETER AdditionalParameters
-	Additional parameters to pass to the MsBuild command-line tool. This can be any valid MsBuild command-line parameters.
+	.PARAMETER MsBuildParameters
+	Additional parameters to pass to the MsBuild command-line tool. This can be any valid MsBuild command-line parameters except for the path of 
+	the solution/project to build.
 	http://msdn.microsoft.com/en-ca/library/vstudio/ms164311.aspx
 
 	.PARAMETER $BuildLogDirectoryPath
@@ -47,14 +39,48 @@ function Invoke-MsBuild
     .EXAMPLE
 	Invoke-MsBuild -Path "C:\Some Folder\MySolution.sln"
 	
-	.EXAMPLE
-	Invoke-MsBuild -Path "C:\Some Folder\MyProject.csproj" -Target Build -ShowBuildWindow
+	Perform the default MSBuild actions on the Visual Studio solution to build the projects in it.
+	The PowerShell script will halt execution until MsBuild completes.
 	
 	.EXAMPLE
-	Invoke-MsBuild -Path "C:\MySolution.sln" -Configuration "Release" -BuildLogDirectoryPath "C:\BuildLogs" -KeepBuildLogOnSuccessfulBuilds -BuildVerbosity Detailed -AdditionalParameters "/maxcpucount /p:BuildInParallel=true /nologo"
+	Invoke-MsBuild -Path "C:\Some Folder\MySolution.sln" -PassThru
+	
+	Perform the default MSBuild actions on the Visual Studio solution to build the projects in it.
+	The PowerShell script will not halt execution; instead it will return back to the caller while the MsBuild is performed on another thread.
 	
 	.EXAMPLE
-	Invoke-MsBuild -Path "C:\Database\Database.dbproj" -Target Deploy -AdditionalParameters "/property:TargetDatabase=MyDatabase /property:TargetConnectionString=`"Data Source=DatabaseServerName`;Integrated Security=True`;Pooling=False`" /property:DeployToDatabase=True"
+	Invoke-MsBuild -Path "C:\Some Folder\MyProject.csproj" -MsBuildParameters "/target:Clean;Build" -ShowBuildWindow
+	
+	Cleans then Builds the given C# project.
+	A window displaying the output from MsBuild will be shown so the user can view the progress of the build.
+	
+	.EXAMPLE
+	Invoke-MsBuild -Path "C:\MySolution.sln" -Params "/target:Clean;Build /property:Configuration=Release;Platform=x64;BuildInParallel=true /verbosity:Detailed /maxcpucount"
+	
+	Cleans then Builds the given solution, specifying to build the project in parallel in the Release configuration for the x64 platform.
+	Here the shorter "Params" alias is used instead of the full "MsBuildParameters" parameter name.
+	
+	.EXAMPLE
+	Invoke-MsBuild -Path "C:\Some Folder\MyProject.csproj" -ShowBuildWindow -PromptForInputBeforeClosingBuildWindow -AutoLaunchBuildLog
+	
+	Builds the given C# project.
+	A window displaying the output from MsBuild will be shown so the user can view the progress of the build, and it will not close until the user
+	gives the window some input. This function will also not return until the user gives the window some input, halting the powershell script execution.
+	If the build fails, the build log will automatically be opened in the default text viewer.
+	
+	.EXAMPLE
+	Invoke-MsBuild -Path "C:\Some Folder\MyProject.csproj" -$BuildLogDirectoryPath "C:\BuildLogs" -KeepBuildLogOnSuccessfulBuilds -AutoLaunchBuildLog
+	
+	Builds the given C# project.
+	The build log will be saved in "C:\BuildLogs", and they will not be automatically deleted even if the build succeeds.
+	If the build fails, the build log will automatically be opened in the default text viewer.
+	
+	.EXAMPLE
+	Invoke-MsBuild -Path "C:\Database\Database.dbproj" -P "/t:Deploy /p:TargetDatabase=MyDatabase /p:TargetConnectionString=`"Data Source=DatabaseServerName`;Integrated Security=True`;Pooling=False`" /p:DeployToDatabase=True"
+	
+	Deploy the Visual Studio Database Project to the database "MyDatabase".
+	Here the shorter "P" alias is used instead of the full "MsBuildParameters" parameter name.
+	The shorter alias' of the msbuild parameters are also used; "/t" instead of "/target", and "/p" instead of "/property".
 
     .NOTES
     Name:   Invoke-MsBuild
@@ -69,6 +95,8 @@ function Invoke-MsBuild
 
 # I think with ValueFromPipeline=$true I need to use the Begin Process End blocks.
 
+# Look for Configuration and Platform and use them in the log filename if specified.
+
 	[CmdletBinding(DefaultParameterSetName="Wait")]
 	param
 	(
@@ -77,21 +105,9 @@ function Invoke-MsBuild
 		[string] $Path,
 
 		[parameter(Mandatory=$false)]
-		[ValidateNotNullOrEmpty()]
-		[string] $Target = 'Clean;Build',
-
-		[parameter(Mandatory=$false)]
-		[ValidateNotNullOrEmpty()]
-		[string] $Configuration = 'Debug',
-
-		[parameter(Mandatory=$false)]
-		[ValidateSet('q','quiet','m','minimal','n','normal','d','detailed','diag','diagnostic')]
-		[Alias("V")]
-		[string] $BuildVerbosity = 'minimal',
-
-		[parameter(Mandatory=$false)]
 		[Alias("Params")]
-		[string] $AdditionalParameters,
+		[Alias("P")]
+		[string] $MsBuildParameters,
 
 		[parameter(Mandatory=$false)]
 		[Alias("L")]
@@ -120,22 +136,18 @@ function Invoke-MsBuild
 	# 	Forces a function to be the first non-comment code to appear in a PowerShell Script/Module.
 	Set-StrictMode -Version Latest
 
-	# If no Build Log Directory was supplied, default to placing the log in the same folder as the solution being built.
+	# If no Build Log Directory was supplied, default to placing the log in the same folder as the solution/project being built.
 	if ([string]::IsNullOrWhiteSpace($BuildLogDirectoryPath))
 	{
 		$BuildLogDirectoryPath = [System.IO.Path]::GetDirectoryName($Path)
 	}
-
-	# Get some environmental paths.
-	$vs2010CommandPrompt = $env:VS100COMNTOOLS + "vcvarsall.bat"
-	$vs2012CommandPrompt = $env:VS110COMNTOOLS + "VsDevCmd.bat"
 
 	# Store the VS Command Prompt to do the build in, if one exists.
 	$vsCommandPrompt = Get-VisualStudioCommandPromptPath
 
 	# Local Variables.
 	$solutionFileName = (Get-ItemProperty -Path $Path).Name
-	$buildLogFilePath = (Join-Path $BuildLogDirectoryPath $solutionFileName) + ".msbuild.$Configuration.log"
+	$buildLogFilePath = (Join-Path $BuildLogDirectoryPath $solutionFileName) + ".msbuild.log"
 	$windowStyle = if ($ShowBuildWindow) { "Normal" } else { "Hidden" }
 	$buildCrashed = $false;
 
@@ -143,7 +155,7 @@ function Invoke-MsBuild
 	try
 	{
 		# Build the arguments to pass to MsBuild.
-		$buildArguments = """$Path"" /target:$Target /property:Configuration=$Configuration /verbosity:$BuildVerbosity $AdditionalParameters /fileLoggerParameters:LogFile=""$buildLogFilePath"""
+		$buildArguments = """$Path"" $MsBuildParameters /fileLoggerParameters:LogFile=""$buildLogFilePath"""
 
 		# If a VS Command Prompt was found, build in that since it sets environmental variables that may be needed to build some projects.
 		if ($vsCommandPrompt -ne $null)

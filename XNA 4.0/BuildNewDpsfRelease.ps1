@@ -47,6 +47,8 @@ $TEST_DPSF_DLL_SLN_PATH = Join-Path $DPSF_ROOT_DIRECTORY "Installer/Tests/TestDP
 $TEST_DPSF_INHERITS_DLL_SLN_PATH = Join-Path $DPSF_ROOT_DIRECTORY "Installer/Tests/TestDPSFInheritsDLL/TestDPSFInheritsDLL.sln"
 $DPSF_SPLASH_SCREEN_EXAMPLE_SLN_PATH = Join-Path $DPSF_ROOT_DIRECTORY "Installer/Installer Files/Logos/DPSFSplashScreenExample/DPSFSplashScreenExample.sln"
 
+$MSBUILD_PARAMETERS = "/target:Clean;Build /property:Configuration=Release;Platform=""Mixed Platforms"" /verbosity:Quiet"
+$WINRT_MSBUILD_PARAMETERS = "/target:Clean;Build /property:Configuration=Release;Platform=""Any CPU"" /verbosity:Quiet"
 
 #==========================================================
 # Define functions used by the script.
@@ -212,15 +214,11 @@ Write-Host "Deleting existing DLLs..."
 Remove-Item -Recurse -Path "$LATEST_DLL_FILES_DIRECTORY_PATH" # Delete the entire folder.
 New-Item -ItemType Directory -Path "$LATEST_DLL_FILES_DIRECTORY_PATH" > $null # Recreate the empty folder (and trash the output it creates).
 
-
-#C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe /nologo /noconsolelogger "C:\Builds\49\RQ\Dev.RQ4.Core.Client.CI\Sources\RQ4.Server.sln" /nr:False /fl /flp:"logfile=C:\Builds\49\RQ\Dev.RQ4.Core.Client.CI\Sources\RQ4.Server.log;encoding=Unicode;verbosity=diagnostic" /p:SkipInvalidConfigurations=true /p:ReferencePath=C:\Builds\49\RQ\Dev.RQ4.Core.Client.CI\Binaries  /p:OutDir="C:\Builds\49\RQ\Dev.RQ4.Core.Client.CI\Binaries\\" /p:Configuration="Release" /p:Platform="Any CPU" /p:VCBuildOverride="C:\Builds\49\RQ\Dev.RQ4.Core.Client.CI\Sources\RQ4.Server.sln.Any CPU.Release.vsprops"  /dl:WorkflowCentralLogger,"C:\Program Files\Microsoft Team Foundation Server 11.0\Tools\Microsoft.TeamFoundation.Build.Server.Logger.dll";"Verbosity=Diagnostic;BuildUri=vstfs:///Build/Build/35213;InformationNodeId=113232167;TargetsNotLogged=GetNativeManifest,GetCopyToOutputDirectoryItems,GetTargetPath;TFSUrl=http://iq-rgtfs001:8080/tfs/iqprojectcollection;"*WorkflowForwardingLogger,"C:\Program Files\Microsoft Team Foundation Server 11.0\Tools\Microsoft.TeamFoundation.Build.Server.Logger.dll";"Verbosity=Diagnostic;"
-#/p:Platform="Any CPU"
-
 # Build the DPSF solution in Release mode to create the new DLLs.
 Write-Host "Building the DPSF solution..."
-Invoke-MsBuild -Path "$DPSF_SOLUTION_FILE_PATH" -Configuration "Release" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -BuildVerbosity Quiet -ShowBuildWindow
+Invoke-MsBuild -Path "$DPSF_SOLUTION_FILE_PATH" -MsBuildParameters "$MSBUILD_PARAMETERS" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -ShowBuildWindow
 Write-Host "Building the DPSF WinRT solution..."
-Invoke-MsBuild -Path "$DPSF_WINRT_SOLUTION_FILE_PATH" -Configuration "Release" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -BuildVerbosity Quiet -ShowBuildWindow
+Invoke-MsBuild -Path "$DPSF_WINRT_SOLUTION_FILE_PATH" -MsBuildParameters "$WINRT_MSBUILD_PARAMETERS" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -ShowBuildWindow
 
 # Update the .csproj files' to build the AsDrawableGameComponent DLLs.
 Write-Host "Updating the .csproj files to build AsDrawableGameComponent DLLs..."
@@ -234,7 +232,7 @@ foreach ($csprojFilePath in $CSPROJ_FILE_PATHS_TO_MODIFY_AND_REBUILD)
 
 # Rebuild the solution to create the AsDrawableGameComponent DLLs.
 Write-Host "Building the DPSF solution for AsDrawableGameComponent DLLs..."
-Invoke-MsBuild -Path "$DPSF_SOLUTION_FILE_PATH" -Configuration "Release" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -BuildVerbosity Quiet -ShowBuildWindow
+Invoke-MsBuild -Path "$DPSF_SOLUTION_FILE_PATH" -MsBuildParameters "$MSBUILD_PARAMETERS" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -ShowBuildWindow
 
 <#
 5 - Copy the DPSF.dll/.xml, DPSFAsDrawableGameComponent.dll/.xml, DPSFXbox360.dll/.xml, DPSFXbox360AsDrawableGameComponenet.dll/.xml, 
