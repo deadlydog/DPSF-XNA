@@ -30,15 +30,15 @@ Then do a Build Solution to generate new DPSFAsDrawableGameComponent.dll/.xml, D
 
 12 - Copy "DPSF\DPSF\DPSF Effects\HLSL\DPSFDefaultEffect.fx" to the "Installer Files\Templates" folder.
 
-13 - Update the "DPSF API Documentation" to use the .dll's new .xml files generated (using Sandcastle Help File Builder program). You will need to update the HelpFileVersion to match the new DPSF version number.
+13 - Do a search on the "Installer Files" folder and delete all "Debug" and "Release" folders, ".suo", and ".cachefile" files, and any files or folders with "Resharper" or "ncrunch" in their name.  This will help keep the size of the installer small, but will require users to build the applications (tutorials, etc.) in visual studio before running them. 
 
-14 - Update the Help document (including the change log), generating a new "DPSF Help.chm" and copy it into the "Installer Files" folder. Generating the Help document has it's own process document that should be followed (DPSF Help Update Process.txt).
-
-15 - Do a search on the "Installer Files" folder and delete all "Debug" and "Release" folders, ".suo", and ".cachefile" files, and any files or folders with "Resharper" or "ncrunch" in their name.  This will help keep the size of the installer small, but will require users to build the applications (tutorials, etc.) in visual studio before running them. 
-
-16 - Open the "DPSF\DPSF.sln" and change the DPSF Demo projects to reference the "C:\DPSF\DPSF.dll" files rather than the DPSF project. You will need to do this for the Windows, Xbox, and Windows Phone DPSF Demo projects. We need to do this so that when the user opens the DPSF Demo.sln the DPSF references will already be pointing to the "C:\DPSF" directory.
+14 - Open the "DPSF\DPSF.sln" and change the DPSF Demo projects to reference the "C:\DPSF\DPSF.dll" files rather than the DPSF project. You will need to do this for the Windows, Xbox, and Windows Phone DPSF Demo projects. We need to do this so that when the user opens the DPSF Demo.sln the DPSF references will already be pointing to the "C:\DPSF" directory.
 
 Then re-run the "DPSF\DPSF.sln" in x86 Release mode to generate the executable and required .xnb files so that the DPSF Demo can be ran without needing Visual Studio. The DPSF Demo (Phone) does not generate an executable that can be run by Windows, so we don't need to do this with it. Then change the configuration manager back to Mixed Debug mode when done.
+
+15 - Update the "DPSF API Documentation" to use the .dll's new .xml files generated (using Sandcastle Help File Builder program). You will need to update the HelpFileVersion to match the new DPSF version number.
+
+16 - Update the Help document (including the change log), generating a new "DPSF Help.chm" and copy it into the "Installer Files" folder. Generating the Help document has it's own process document that should be followed (DPSF Help Update Process.txt).
 
 17 - Open the "DPSF Installer Settings.iit" and Build a new "DPSF Installer.exe", making sure to include any new links that should appear in the Start Menu DPSF folder, such as links to new tutorials, demos, etc. and update the DPSF EULA if it was updated in the help documentation.
 

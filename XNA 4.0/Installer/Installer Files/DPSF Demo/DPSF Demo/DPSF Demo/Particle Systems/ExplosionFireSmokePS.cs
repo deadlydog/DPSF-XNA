@@ -45,11 +45,6 @@ namespace DPSF_Demo.ParticleSystems
         Rectangle _flameSmoke3TextureCoordinates = new Rectangle(0, 128, 128, 128);
         Rectangle _flameSmoke4TextureCoordinates = new Rectangle(128, 128, 128, 128);
 
-        /// <summary>
-        /// Get / Set the Camera Position used by the particle system
-        /// </summary>
-        public Vector3 CameraPosition { get; set; }
-
         //===========================================================
         // Overridden Particle System Functions
         //===========================================================

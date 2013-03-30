@@ -57,6 +57,7 @@
     <DefineConstants>TRACE;DEBUG;XBOX;XBOX360</DefineConstants>
     <XnaCompressContent>true</XnaCompressContent>
     <DocumentationFile>bin\Xbox 360\Debug\DPSFXbox360.xml</DocumentationFile>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Xbox 360' ">
     <OutputPath>bin\Xbox 360\Release</OutputPath>

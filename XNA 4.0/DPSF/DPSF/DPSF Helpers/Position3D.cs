@@ -47,7 +47,7 @@ namespace DPSF
         /// Copy the given Position3D object's data into this objects data
         /// </summary>
         /// <param name="cPositionToCopy">The Position3D to copy from</param>
-        public void CopyFrom(Position3D cPositionToCopy)
+        public virtual void CopyFrom(Position3D cPositionToCopy)
         {
             Position = cPositionToCopy.Position;
             Velocity = cPositionToCopy.Velocity;

@@ -26,6 +26,7 @@ Possible Breaking Changes:
 private:
 - Renamed C# folder to CSharp to be VS 2012 compatible.
 - Changed some foreach loops to for loops.
+- Fixed up a bunch of compiler warnings.
 
 
 Changes made after Version 2.2.2:

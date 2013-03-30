@@ -1,6 +1,6 @@
 function Invoke-MsBuild
 {
-<#
+	<#
     .SYNOPSIS
     Executes the MSBuild.exe tool against the specified Visual Studio solution or project file.
 
@@ -35,6 +35,10 @@ function Invoke-MsBuild
 	If set, this switch will cause the script not to wait until the build (launched in another process) completes before continuing execution.
 	Instead the build will be started in a new process and that process will immediately be returned, allowing the calling script to continue 
 	execution while the build is performed.
+	
+	.PARAMETER GetLogPath
+	If set, the build will not actually be performed.
+	Instead it will just return the full path of the MsBuild Log file that would be created if the build is performed with the same parameters.
 
     .EXAMPLE
 	Invoke-MsBuild -Path "C:\Some Folder\MySolution.sln"
@@ -69,7 +73,7 @@ function Invoke-MsBuild
 	If the build fails, the build log will automatically be opened in the default text viewer.
 	
 	.EXAMPLE
-	Invoke-MsBuild -Path "C:\Some Folder\MyProject.csproj" -$BuildLogDirectoryPath "C:\BuildLogs" -KeepBuildLogOnSuccessfulBuilds -AutoLaunchBuildLog
+	Invoke-MsBuild -Path "C:\Some Folder\MyProject.csproj" -BuildLogDirectoryPath "C:\BuildLogs" -KeepBuildLogOnSuccessfulBuilds -AutoLaunchBuildLog
 	
 	Builds the given C# project.
 	The build log will be saved in "C:\BuildLogs", and they will not be automatically deleted even if the build succeeds.
@@ -82,20 +86,27 @@ function Invoke-MsBuild
 	Here the shorter "P" alias is used instead of the full "MsBuildParameters" parameter name.
 	The shorter alias' of the msbuild parameters are also used; "/t" instead of "/target", and "/p" instead of "/property".
 
+	.EXAMPLE
+	Invoke-MsBuild -Path "C:\Some Folder\MyProject.csproj" -BuildLogDirectoryPath "C:\BuildLogs" -GetLogPath
+
+	Returns the full path to the MsBuild Log file that would be created if the build was ran with the same parameters.
+	In this example the returned log path might be "C:\BuildLogs\MyProject.msbuild.log".
+	If the BuildLogDirectoryPath was not provided, the returned log path might be "C:\Some Folder\MyProject.msbuild.log".
+	
     .NOTES
     Name:   Invoke-MsBuild
     Author: Daniel Schroeder (originally based on the module at http://geekswithblogs.net/dwdii/archive/2011/05/27/part-2-automating-a-visual-studio-build-with-powershell.aspx)
 #>
-# Maybe make a separate Invoke-MsBuildAsync module since a lot of the switches won't apply if -Wait is specified; want a couple
-# 	different switches for async, like CreateLogFiles.
+	# Maybe make a separate Invoke-MsBuildAsync module since a lot of the switches won't apply if -Wait is specified; want a couple
+	# 	different switches for async, like CreateLogFiles.
 
-# Have a switch to just return the full Log File Path. So it doesn't actually do a build, it just returns what the Log file path will be when it does do the build.
+	# Have a switch to just return the full Log File Path. So it doesn't actually do a build, it just returns what the Log file path will be when it does do the build.
 
-# Google Parameter Sets for specifying the different sets of parameters that should be used together.
+	# Google Parameter Sets for specifying the different sets of parameters that should be used together.
 
-# I think with ValueFromPipeline=$true I need to use the Begin Process End blocks.
+	# I think with ValueFromPipeline=$true I need to use the Begin Process End blocks.
 
-# Look for Configuration and Platform and use them in the log filename if specified.
+	# Look for Configuration and Platform and use them in the log filename if specified.
 
 	[CmdletBinding(DefaultParameterSetName="Wait")]
 	param
@@ -115,20 +126,27 @@ function Invoke-MsBuild
 
 		[parameter(Mandatory=$false,ParameterSetName="Wait")]
 		[ValidateNotNullOrEmpty()]
+		[Alias("AutoLaunch")]
 		[switch] $AutoLaunchBuildLogOnFailure,
 
 		[parameter(Mandatory=$false,ParameterSetName="Wait")]
 		[ValidateNotNullOrEmpty()]
+		[Alias("Keep")]
 		[switch] $KeepBuildLogOnSuccessfulBuilds,
 
 		[parameter(Mandatory=$false)]
+		[Alias("Show")]
 		[switch] $ShowBuildWindow,
+
+		[parameter(Mandatory=$false)]
+		[Alias("Prompt")]
+		[switch] $PromptForInputBeforeClosingBuildWindow,
+
+		[parameter(Mandatory=$false,ParameterSetName="PassThru")]
+		[switch] $PassThru,
 		
 		[parameter(Mandatory=$false)]
-		[switch] $PromptForInputBeforeClosingBuildWindow,
-		
-		[parameter(Mandatory=$false,ParameterSetName="PassThru")]
-		[switch] $PassThru
+		[switch] $GetLogPath
 	)
 
 	# Turn on Strict Mode to help catch syntax-related errors.
@@ -150,6 +168,12 @@ function Invoke-MsBuild
 	$buildLogFilePath = (Join-Path $BuildLogDirectoryPath $solutionFileName) + ".msbuild.log"
 	$windowStyle = if ($ShowBuildWindow) { "Normal" } else { "Hidden" }
 	$buildCrashed = $false;
+	
+	# If all we want is the path to the Log file that will be generated, return it.
+	if ($GetLogPath)
+	{
+		return $buildLogFilePath
+	}
 
 	# Try and build the solution.
 	try
@@ -181,9 +205,9 @@ function Invoke-MsBuild
 		{
 			# Get the path to the MsBuild executable.
 			$msBuildPath = Get-MsBuildPath
-			
+
 			Write-Debug "Starting new MsBuild.exe process with arguments ""$buildArguments""."
-			
+
 			# Perform the build.
 			if ($PassThru)
 			{
@@ -202,34 +226,39 @@ function Invoke-MsBuild
 		Write-Error ("Unexpect error occured while building ""$Path"": $errorMessage" );
 	}
 
-	# If the build didn't crash.
-	if (!$buildCrashed)
+	# If the build crashed, return that the build didn't succeed.
+	if ($buildCrashed)
 	{
-		# Get if the build failed or not by looking at the log file.
-		$buildFailed = Select-String -Path $buildLogFilePath -Pattern "Build FAILED." -SimpleMatch
+		return $false
+	}
+	
+	# Get if the build failed or not by looking at the log file.
+	$buildSucceeded = ((Select-String -Path $buildLogFilePath -Pattern "Build FAILED." -SimpleMatch) -eq $null)
 
-		# If the build succeeded.
-		if($buildFailed -eq $null)
+	# If the build succeeded.
+	if ($buildSucceeded)
+	{
+		# If we shouldn't keep the log around, delete it.
+		if (!$KeepBuildLogOnSuccessfulBuilds)
 		{
-			# If we shouldn't keep the log around, delete it.
-			if (!$KeepBuildLogOnSuccessfulBuilds)
-			{
-				Remove-Item -Path $buildLogFilePath
-			}
-		}
-		# Else at least one of the projects failed to build.
-		else
-		{
-			# Write the error message as a warning.
-			Write-Warning "FAILED to build ""$Path"". Please check the build log ""$buildLogFilePath"" for details." 
-
-			# If we should show the build log automatically, open it with the default viewer.
-			if($AutoLaunchBuildLogOnFailure)
-			{
-				Start-Process -verb "Open" $buildLogFilePath;
-			}
+			Remove-Item -Path $buildLogFilePath
 		}
 	}
+	# Else at least one of the projects failed to build.
+	else
+	{
+		# Write the error message as a warning.
+		Write-Warning "FAILED to build ""$Path"". Please check the build log ""$buildLogFilePath"" for details." 
+
+		# If we should show the build log automatically, open it with the default viewer.
+		if($AutoLaunchBuildLogOnFailure)
+		{
+			Start-Process -verb "Open" $buildLogFilePath;
+		}
+	}
+	
+	# Return if the Build Succeeded or Failed.
+	return $buildSucceeded
 }
 
 function Get-VisualStudioCommandPromptPath

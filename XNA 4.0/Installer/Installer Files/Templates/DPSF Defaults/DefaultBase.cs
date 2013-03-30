@@ -401,8 +401,7 @@ namespace DPSF
 		}
 
 		/// <summary>
-		/// Updates a Particle's Velocity according to its Acceleration, and then the Position according
-		/// to the new Velocity
+		/// Updates a Particle's Velocity according to its Acceleration, and then the Position according to the new Velocity
 		/// </summary>
 		/// <param name="cParticle">The Particle to update</param>
 		/// <param name="fElapsedTimeInSeconds">How long it has been since the last update</param>
@@ -472,8 +471,7 @@ namespace DPSF
 		}
 
 		/// <summary>
-		/// Linearly interpolates the Particles Color between it's Start Color and End Color based on the 
-		/// Particle's Normalized Elapsed Time.
+		/// Linearly interpolates the Particle's Color between it's Start Color and End Color based on the Particle's Normalized Elapsed Time.
 		/// </summary>
 		/// <param name="cParticle">The Particle to update</param>
 		/// <param name="fElapsedTimeInSeconds">How long it has been since the last update</param>
@@ -484,7 +482,7 @@ namespace DPSF
 		}
 
 		/// <summary>
-		/// Linearly interpolates the Particles Transparency to fade out based on the Particle's Normalized Elapsed Time.
+		/// Linearly interpolates the Particle's Transparency to fade out based on the Particle's Normalized Elapsed Time.
 		/// <para>If you are also updating the Particle Color using an EveryTime Event, be sure to set the ExecutionOrder of the 
 		/// event calling this function to be greater than that one, so that this function is called AFTER the color update function.</para>
 		/// </summary>
@@ -498,7 +496,7 @@ namespace DPSF
 		}
 
 		/// <summary>
-		/// Linearly interpolates the Particles Transparency to fade in based on the Particle's Normalized Elapsed Time.
+		/// Linearly interpolates the Particle's Transparency to fade in based on the Particle's Normalized Elapsed Time.
 		/// <para>If you are also updating the Particle Color using an EveryTime Event, be sure to set the ExecutionOrder of the 
 		/// event calling this function to be greater than that one, so that this function is called AFTER the color update function.</para>
 		/// </summary>
@@ -512,7 +510,7 @@ namespace DPSF
 		}
 
 		/// <summary>
-		/// Quickly fades particle in when born and slowly fades it out as it gets closer to death.
+		/// Quickly fades the particle in when born and slowly fades it out as it gets closer to death.
 		/// <para>If you are also updating the Particle Color using an EveryTime Event, be sure to set the ExecutionOrder of the 
 		/// event calling this function to be greater than that one, so that this function is called AFTER the color update function.</para>
 		/// </summary>
@@ -526,7 +524,7 @@ namespace DPSF
 		}
 
 		/// <summary>
-		/// Quickly fades particle in when born and quickly fades it out as it approaches its death.
+		/// Quickly fades the particle in when born and quickly fades it out as it approaches its death.
 		/// <para>If you are also updating the Particle Color using an EveryTime Event, be sure to set the ExecutionOrder of the 
 		/// event calling this function to be greater than that one, so that this function is called AFTER the color update function.</para>
 		/// </summary>
@@ -548,8 +546,10 @@ namespace DPSF
 		protected void UpdateParticlePositionAccordingToMagnets(DPSFDefaultBaseParticle cParticle, float fElapsedTimeInSeconds)
 		{
 			// Loop through each of the Particle System's Magnets
-			foreach (DefaultParticleSystemMagnet magnet in MagnetList)
+			for (int index = 0; index < MagnetList.Count; index++)
 			{
+				DefaultParticleSystemMagnet magnet = MagnetList[index];
+
 				// If this is not a custom user Magnet (i.e. it is Attracting or Repelling)
 				if (magnet.Mode != DefaultParticleSystemMagnet.MagnetModes.Other)
 				{
@@ -568,8 +568,10 @@ namespace DPSF
 		protected void UpdateParticleVelocityAccordingToMagnets(DPSFDefaultBaseParticle cParticle, float fElapsedTimeInSeconds)
 		{
 			// Loop through each of the Particle System's Magnets
-			foreach (DefaultParticleSystemMagnet magnet in MagnetList)
+			for (int index = 0; index < MagnetList.Count; index++)
 			{
+				DefaultParticleSystemMagnet magnet = MagnetList[index];
+
 				// If this is not a custom user Magnet (i.e. it is Attracting or Repelling)
 				if (magnet.Mode != DefaultParticleSystemMagnet.MagnetModes.Other)
 				{

@@ -63,6 +63,7 @@
     <DefineConstants>TRACE;DEBUG;WINDOWS_PHONE</DefineConstants>
     <XnaCompressContent>false</XnaCompressContent>
     <DocumentationFile>bin\Windows Phone\Debug\DPSFPhone.xml</DocumentationFile>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Windows Phone' ">
     <OutputPath>bin\Windows Phone\Release</OutputPath>

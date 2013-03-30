@@ -225,6 +225,12 @@ namespace BasicVirtualEnvironment
 		/// </summary>
 		protected Camera Camera { get; set; }
 
+		/// <summary>
+		/// Get if the user is currently moving/dragging the window or not.
+		/// </summary>
+		protected bool IsWindowBeingMoved { get { return _isWindowBeingMoved; } }
+		private bool _isWindowBeingMoved = false;
+
 		#endregion
 
 		#region Initialization
@@ -265,6 +271,24 @@ namespace BasicVirtualEnvironment
 
 			// Initialize the Camera and use a Fixed camera by default.
 			Camera = new Camera(true);
+#if (WINDOWS)
+			var xnaWinForm = (System.Windows.Forms.Control.FromHandle(Window.Handle) as System.Windows.Forms.Form);
+			if (xnaWinForm != null)
+			{
+				xnaWinForm.ResizeBegin += new EventHandler(xnaWinForm_ResizeBegin);
+				xnaWinForm.ResizeEnd += new EventHandler(xnaWinForm_ResizeEnd);
+			}
+#endif
+		}
+
+		void xnaWinForm_ResizeBegin(object sender, EventArgs e)
+		{
+			_isWindowBeingMoved = true;
+		}
+
+		void xnaWinForm_ResizeEnd(object sender, EventArgs e)
+		{
+			_isWindowBeingMoved = false;
 		}
 
 		/// <summary>
@@ -310,6 +334,10 @@ namespace BasicVirtualEnvironment
 		/// <param name="gameTime">How much time has elapsed in the game and between updates.</param>
 		protected override void Update(GameTime gameTime)
 		{
+			// Don't process anything while the user is moving the window.
+			if (IsWindowBeingMoved)
+				return;
+
 			// Only process input if the game has focus.
 			if (this.IsActive)
 			{
@@ -381,6 +409,10 @@ namespace BasicVirtualEnvironment
 		/// <param name="gameTime">How much time has elapsed in the game and between updates.</param>
 		protected override void Draw(GameTime gameTime)
 		{
+			// Don't draw anything while the user is moving the window.
+			if (IsWindowBeingMoved)
+				return;
+
 			// Do any pre-Draw work and exit without drawing anything if told.
 			if (!BeforeDrawGame(gameTime))
 				return;

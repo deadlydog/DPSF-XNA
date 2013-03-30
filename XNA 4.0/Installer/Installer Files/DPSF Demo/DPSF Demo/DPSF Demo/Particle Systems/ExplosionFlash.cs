@@ -45,11 +45,6 @@ namespace DPSF_Demo.ParticleSystems
         Rectangle _flash3TextureCoordinates = new Rectangle(256, 128, 128, 128);
         Rectangle _flash4TextureCoordinates = new Rectangle(384, 128, 128, 128);
 
-        /// <summary>
-        /// Get / Set the Camera Position used by the particle system
-        /// </summary>
-        public Vector3 CameraPosition { get; set; }
-
         //===========================================================
         // Overridden Particle System Functions
         //===========================================================

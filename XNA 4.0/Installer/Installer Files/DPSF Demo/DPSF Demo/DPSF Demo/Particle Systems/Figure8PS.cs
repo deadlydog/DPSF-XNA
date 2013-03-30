@@ -25,11 +25,6 @@ namespace DPSF_Demo.ParticleSystems
 		// Structures and Variables
 		//===========================================================
 
-		/// <summary>
-		/// Get / Set the Camera Position used by the particle system
-		/// </summary>
-		public Vector3 CameraPosition { get; set; }
-
 		//===========================================================
 		// Overridden Particle System Functions
 		//===========================================================

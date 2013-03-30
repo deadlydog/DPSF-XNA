@@ -34,11 +34,6 @@ namespace DPSF_Demo.ParticleSystems
         // How much the Particle should bounce back off of the floor
         public float mfBounciness = 0.35f;
 
-        /// <summary>
-        /// Get / Set the Camera Position used by the particle system
-        /// </summary>
-        public Vector3 CameraPosition { get; set; }
-
         //===========================================================
         // Overridden Particle System Functions
         //===========================================================

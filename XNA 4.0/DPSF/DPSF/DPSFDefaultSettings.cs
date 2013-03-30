@@ -82,7 +82,7 @@ namespace DPSF
 		/// Gets the AlphaTestEffect shared by all particle systems.
 		/// </summary>
 		/// <param name="graphicsDevice">The Graphics Device used to initialize the AlphaTestEffect.
-		/// <para>NOTE: This is only used the first time that this function is called.</param>
+		/// <para>NOTE: This is only used the first time that this function is called.</para></param>
 		internal static AlphaTestEffect GetSharedAlphaTestEffect(GraphicsDevice graphicsDevice)
 		{
 			return _alphaTestEffect ?? (_alphaTestEffect = new AlphaTestEffect(graphicsDevice));

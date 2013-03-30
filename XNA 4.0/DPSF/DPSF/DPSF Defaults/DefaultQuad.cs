@@ -596,7 +596,7 @@ namespace DPSF
 		/// <summary>
 		/// Turns the Particle into a Billboard Particle (i.e. The Particle always faces the Camera).
 		/// <para>NOTE: This Update function should be called after all other Update functions to ensure that 
-		/// the Particle is orientated correctly.</<para>
+		/// the Particle is orientated correctly.</para>
 		/// <para>NOTE: Update the Particle System's Camera Position every frame to ensure that this works correctly.</para>
 		/// <para>NOTE: Only Roll Rotations (i.e. around the Z axis) will be visible when this is used.</para>
 		/// </summary>

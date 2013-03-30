@@ -4,17 +4,36 @@ using Microsoft.Xna.Framework;
 namespace DPSF
 {
 	/// <summary>
-	/// Class containing the information necessary to Linearly Interpolate a ParticleEmitter's position and orientation when adding many particles.
+	/// Class containing the information necessary to Linearly Interpolate a ParticleEmitter's position and orientation between Updates when adding many particles.
 	/// </summary>
 #if (WINDOWS)
 	[Serializable]
 #endif
 	public class ParticleEmitterLerpInfo
 	{
+		/// <summary>
+		/// The Emitter's Previous Position (i.e. position at last Update).
+		/// </summary>
 		public Vector3 PreviousPosition = Vector3.Zero;
+
+		/// <summary>
+		/// The Emitter's Current Position.
+		/// </summary>
 		public Vector3 CurrentPosition = Vector3.Zero;
+
+		/// <summary>
+		/// The Emitter's Previous Orientation (i.e. orientation at last Update).
+		/// </summary>
 		public Quaternion PreviousOrientation = Quaternion.Identity;
+
+		/// <summary>
+		/// The Emitter's Current Orientation.
+		/// </summary>
 		public Quaternion CurrentOrientation = Quaternion.Identity;
+
+		/// <summary>
+		/// How many seconds have elapsed since the last Update, so we know how much to linearly interpolate the Emitter's Position and Orientation.
+		/// </summary>
 		public float ElapsedTimeInSeconds = 0.0f;
 	};
 

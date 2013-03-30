@@ -53,7 +53,7 @@ namespace DPSF
         /// Copies the given Orientation3D object's data into this object's data.
         /// </summary>
         /// <param name="cOrientationToCopy">The Orientation3D object to copy from.</param>
-        public void CopyFrom(Orientation3D cOrientationToCopy)
+        public virtual void CopyFrom(Orientation3D cOrientationToCopy)
         {
             Orientation = cOrientationToCopy.Orientation;
             RotationalVelocity = cOrientationToCopy.RotationalVelocity;

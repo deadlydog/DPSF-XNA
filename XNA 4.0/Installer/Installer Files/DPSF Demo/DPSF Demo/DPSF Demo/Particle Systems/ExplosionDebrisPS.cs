@@ -50,11 +50,6 @@ namespace DPSF_Demo.ParticleSystems
         Rectangle _debris8TextureCoordinates = new Rectangle(299, 349, 41, 25);
         Rectangle _debris9TextureCoordinates = new Rectangle(343, 342, 36, 40);
 
-        /// <summary>
-        /// Get / Set the Camera Position used by the particle system
-        /// </summary>
-        public Vector3 CameraPosition { get; set; }
-
         //===========================================================
         // Overridden Particle System Functions
         //===========================================================

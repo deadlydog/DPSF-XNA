@@ -63,11 +63,9 @@ namespace DPSF
         /// Copy the given Position3D object's data into this objects data.
         /// </summary>
         /// <param name="positionToCopy">The Position3D to copy from.</param>
-        public void CopyFrom(Position3D positionToCopy)
+        public override void CopyFrom(Position3D positionToCopy)
         {
-            Position = positionToCopy.Position;
-            Velocity = positionToCopy.Velocity;
-            Acceleration = positionToCopy.Acceleration;
+        	base.CopyFrom(positionToCopy);
 			PreviousPosition = Position;
 			UpdatePreviousPositionAutomatically = true;
         }

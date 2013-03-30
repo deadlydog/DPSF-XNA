@@ -560,7 +560,7 @@ namespace DPSF_Demo
 				// Else the Particle Systems should be drawn normally.
 				else
 				{
-					// Update all Particle Systems manually
+					// Update all Particle Systems manually.
 					_particleSystemManager.UpdateAllParticleSystems((float)gameTime.ElapsedGameTime.TotalSeconds);
 				}
 

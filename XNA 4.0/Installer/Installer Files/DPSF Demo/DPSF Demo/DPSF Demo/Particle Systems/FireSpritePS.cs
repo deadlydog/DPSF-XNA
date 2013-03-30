@@ -28,11 +28,6 @@ namespace DPSF_Demo.ParticleSystems
         private float mfAmountOfSmokeToRelease = 0f;
         public SmokeRingSpriteParticleSystem mcSmokeParticleSystem = null;
 
-        /// <summary>
-        /// Get / Set the Camera Position used by the particle system
-        /// </summary>
-        public Vector3 CameraPosition { get; set; }
-
         //===========================================================
         // Overridden Particle System Functions
         //===========================================================
@@ -269,11 +264,6 @@ namespace DPSF_Demo.ParticleSystems
         public class SmokeRingSpriteParticleSystem : DefaultSprite3DBillboardParticleSystem
         {
             public SmokeRingSpriteParticleSystem(Game cGame) : base(cGame) { }
-
-            /// <summary>
-            /// Get / Set the Camera Position used by the particle system
-            /// </summary>
-            public Vector3 CameraPosition { get; set; }
 
             //===========================================================
             // Overridden Particle System Functions
