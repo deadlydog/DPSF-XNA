@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shfbBuild product="Sandcastle Help File Builder" version="1.9.4.0" projectFile="D:\dev\Git\DPSFProject\XNA 4.0\Help Files\DPSF API Documentation\DPSF API Documentation Sandcastle Project.shfbproj" started="2012-09-30 12:18:09 AM">
+<shfbBuild product="Sandcastle Help File Builder" version="1.9.4.0" projectFile="D:\dev\Git\DPSFProject\XNA 4.0\Help Files\DPSF API Documentation\DPSF API Documentation Sandcastle Project.shfbproj" started="2013-04-01 5:50:14 PM">
 <buildStep step="Initializing">
 </buildStep>
 <buildStep step="FindingTools">
@@ -19,11 +19,11 @@ Copying XML comments files
 </buildStep>
 <buildStep step="GenerateSharedContent">
 Generating shared content files (en-US, English (United States))...
-    Last step completed in 00:00:00.0625
+    Last step completed in 00:00:00.0780
 </buildStep>
 <buildStep step="GenerateApiFilter">
 Generating API filter for MRefBuilder...
-    Last step completed in 00:00:00.0313
+    Last step completed in 00:00:00.0170
 </buildStep>
 <buildStep step="GenerateReflectionInfo">
 Generating reflection information...
@@ -31,22 +31,22 @@ Generating reflection information...
   MRefBuilder (v2.7.0.0)
   Copyright &#184; 2006-2012, Microsoft Corporation, All Rights Reserved
   Info: Loaded 1 assemblies for reflection and 1 dependency assemblies.
-  Info: Wrote information on 3 namespaces, 97 types, and 901 members
+  Info: Wrote information on 3 namespaces, 97 types, and 904 members
   XslTransform (v2.7.0.0)
   Copyright &#184; 2006-2012, Microsoft Corporation, All Rights Reserved
   Info: Applying XSL transformation &#39;C:\Program Files (x86)\Sandcastle\ProductionTransforms\MergeDuplicates.xsl&#39;.
-    Last step completed in 00:00:05.2654
+    Last step completed in 00:00:05.2435
 </buildStep>
 <buildStep step="GenerateNamespaceSummaries">
 Generating namespace summary information...
-    Last step completed in 00:00:00.0156
+    Last step completed in 00:00:00.0130
 </buildStep>
 <buildStep step="ApplyVisibilityProperties">
 Applying visibility properties to reflection information file
     6 attribute nodes removed
     0 explicit interface implementations removed
     4 local and base class EII elements removed
-    Last step completed in 00:00:00.0938
+    Last step completed in 00:00:00.0880
 </buildStep>
 <buildStep step="TransformReflectionInfo">
 Transforming reflection output...
@@ -58,12 +58,12 @@ Transforming reflection output...
   XslTransform (v2.7.0.0)
   Copyright &#184; 2006-2012, Microsoft Corporation, All Rights Reserved
   Info: Applying XSL transformation &#39;C:\Program Files (x86)\Sandcastle\ProductionTransforms\ReflectionToManifest.xsl&#39;.
-    Last step completed in 00:00:03.2710
+    Last step completed in 00:00:01.9825
 </buildStep>
 <buildStep step="ModifyHelpTopicFilenames">
 Modifying help topic filenames in reflection information file
     No changes required
-    Last step completed in 00:00:00.1250
+    Last step completed in 00:00:00.1130
 </buildStep>
 <buildStep step="CopyStandardContent">
 Copying standard help content...
@@ -174,16 +174,16 @@ C:\Program Files (x86)\Sandcastle\Presentation\vs2005\scripts\script_manifold.js
 C:\Program Files (x86)\Sandcastle\Presentation\vs2005\scripts\SplitScreen.js -&gt; D:\dev\Git\DPSFProject\XNA 4.0\Help Files\DPSF API Documentation\Working\Output\HtmlHelp1\scripts\SplitScreen.js
 C:\Program Files (x86)\Sandcastle\Presentation\vs2005\styles\Presentation.css -&gt; D:\dev\Git\DPSFProject\XNA 4.0\Help Files\DPSF API Documentation\Working\Output\HtmlHelp1\styles\Presentation.css
 C:\Program Files (x86)\Sandcastle\Presentation\vs2005\styles\Whidbey\Presentation.css -&gt; D:\dev\Git\DPSFProject\XNA 4.0\Help Files\DPSF API Documentation\Working\Output\HtmlHelp1\styles\Whidbey\Presentation.css
-    Last step completed in 00:00:00.4375
+    Last step completed in 00:00:00.4230
 </buildStep>
 <buildStep step="CopyAdditionalContent">
 Copying additional content files...
 No additional content to copy
-    Last step completed in 00:00:00.0000
+    Last step completed in 00:00:00.0120
 </buildStep>
 <buildStep step="MergeTablesOfContents">
 Merging conceptual and additional tables of contents...
-    Last step completed in 00:00:00.0156
+    Last step completed in 00:00:00.0040
 </buildStep>
 <buildStep step="GenerateIntermediateTableOfContents">
 Generating intermediate table of contents file...
@@ -192,17 +192,17 @@ Generating intermediate table of contents file...
   Copyright &#184; 2006-2012, Microsoft Corporation, All Rights Reserved
   Info: Applying XSL transformation &#39;C:\Program Files (x86)\Sandcastle\ProductionTransforms\CreateVSToc.xsl&#39;.
 Generating conceptual content intermediate TOC file...
-    Last step completed in 00:00:01.6230
+    Last step completed in 00:00:00.4190
 </buildStep>
 <buildStep step="CreateBuildAssemblerConfigs">
 Creating Sandcastle configuration files...
     sandcastle.config
-    Last step completed in 00:00:00.0469
+    Last step completed in 00:00:00.0440
 </buildStep>
 <buildStep step="MergeCustomConfigs">
 Merging custom build component configurations
 D:\dev\Git\DPSFProject\XNA 4.0\Help Files\DPSF API Documentation\Working\sandcastle.config
-    Last step completed in 00:00:00.0781
+    Last step completed in 00:00:00.0780
 </buildStep>
 <buildStep step="BuildReferenceTopics">
 Building reference help topics...
@@ -214,7 +214,7 @@ Building reference help topics...
   Info: CopyFromIndexComponent: Instantiating component.
   Info: CopyFromIndexComponent: Searching for files that match &#39;*.xml&#39; in &#39;C:\Program Files (x86)\Sandcastle\Data\Reflection&#39;.
   Info: CopyFromIndexComponent: Searching for files that match &#39;reflection.xml&#39;.
-  Info: CopyFromIndexComponent: Indexed 196108 elements in 420 files.
+  Info: CopyFromIndexComponent: Indexed 196111 elements in 420 files.
   Info: CopyFromIndexComponent: Loaded 0 copy components.
   Info: CopyFromIndexComponent: Instantiating component.
   Info: CopyFromIndexComponent: Loaded 0 copy components.
@@ -260,7 +260,7 @@ Building reference help topics...
   Info: CopyFromIndexComponent: Searching for files that match &#39;*.xml&#39; in &#39;C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0&#39;.
   Info: CopyFromIndexComponent: Searching for files that match &#39;*.xml&#39; in &#39;C:\Program Files (x86)\Reference Assemblies\Microsoft\FSharp\2.0\Runtime\v4.0&#39;.
   Info: CopyFromIndexComponent: Searching for files that match &#39;D:\dev\Git\DPSFProject\XNA 4.0\Help Files\DPSF API Documentation\Working\DPSF.xml&#39;.
-  Info: CopyFromIndexComponent: Indexed 146665 elements in 129 files.
+  Info: CopyFromIndexComponent: Indexed 147266 elements in 129 files.
   Info: CopyFromIndexComponent: Loaded 0 copy components.
   Info: ForEachComponent: Instantiating component.
   Info: ForEachComponent: Loading subcomponents.
@@ -342,7 +342,7 @@ Building reference help topics...
   Info: ResolveReferenceLinksComponent2: Creating MSDN URL resolver.
   Info: ResolveReferenceLinksComponent2: Searching directory &#39;C:\Program Files (x86)\Sandcastle\Data\Reflection&#39; for targets files of the form &#39;*.xml&#39;.
   Info: ResolveReferenceLinksComponent2: Searching directory &#39;D:\dev\Git\DPSFProject\XNA 4.0\Help Files\DPSF API Documentation\Working&#39; for targets files of the form &#39;reflection.xml&#39;.
-  Info: ResolveReferenceLinksComponent2: Loaded 196108 reference targets.
+  Info: ResolveReferenceLinksComponent2: Loaded 196111 reference targets.
   Info: SaveComponent: Instantiating component.
   Info: BuildAssembler: Building topic R:Project_DPSF_API_Documentation
   Info: BuildAssembler: Building topic N:DPSF
@@ -927,7 +927,7 @@ Building reference help topics...
   Info: BuildAssembler: Building topic P:DPSF.DPSF`2.InactiveParticles
   Info: BuildAssembler: Building topic P:DPSF.DPSF`2.IndexBuffer
   Info: BuildAssembler: Building topic P:DPSF.DPSF`2.IndexBufferIndex
-  Info: BuildAssembler: Building topic P:DPSF.DPSF`2.IndexBufferReach
+  Info: BuildAssembler: Building topic P:DPSF.DPSF`2.IndexBufferShort
   Info: BuildAssembler: Building topic P:DPSF.DPSF`2.InheritsDrawableGameComponent
   Info: BuildAssembler: Building topic M:DPSF.DPSF`2.InitializeNoDisplayParticleSystem(System.Int32,System.Int32)
   Info: BuildAssembler: Building topic M:DPSF.DPSF`2.InitializeNonSerializableProperties(Microsoft.Xna.Framework.Game,Microsoft.Xna.Framework.Graphics.GraphicsDevice,Microsoft.Xna.Framework.Content.ContentManager)
@@ -1030,6 +1030,7 @@ Building reference help topics...
   Warn: ResolveReferenceLinksComponent2: Unknown reference link target &#39;T:Microsoft.Xna.Framework.Content.ContentManager&#39;.
   Info: BuildAssembler: Building topic P:DPSF.DPSF`2.InternalSimulationSpeed
   Info: BuildAssembler: Building topic P:DPSF.DPSF`2.IsInitialized
+  Info: BuildAssembler: Building topic P:DPSF.DPSF`2.IsUsingIntegerIndexBuffer
   Info: BuildAssembler: Building topic P:DPSF.DPSF`2.MaxNumberOfParticlesAllowed
   Info: BuildAssembler: Building topic P:DPSF.DPSF`2.NumberOfActiveParticles
   Info: BuildAssembler: Building topic P:DPSF.DPSF`2.NumberOfParticlesAllocatedInMemory
@@ -1614,8 +1615,6 @@ Building reference help topics...
   Info: BuildAssembler: Building topic M:DPSF.DPSFDefaultQuadParticleSystem`2.UpdateParticleToBeConstrainedAroundYAxis(DPSF.DefaultQuadParticle,System.Single)
   Info: BuildAssembler: Building topic M:DPSF.DPSFDefaultQuadParticleSystem`2.UpdateParticleToBeConstrainedAroundZAxis(DPSF.DefaultQuadParticle,System.Single)
   Info: BuildAssembler: Building topic M:DPSF.DPSFDefaultQuadParticleSystem`2.UpdateParticleToFaceTheCamera(DPSF.DefaultQuadParticle,System.Single)
-  Warn: ShowMissingComponent: Missing &lt;param name=&quot;cParticle&quot;/&gt; documentation for M:DPSF.DPSFDefaultQuadParticleSystem`2.UpdateParticleToFaceTheCamera(DPSF.DefaultQuadParticle,System.Single)
-  Warn: ShowMissingComponent: Missing &lt;param name=&quot;fElapsedTimeInSeconds&quot;/&gt; documentation for M:DPSF.DPSFDefaultQuadParticleSystem`2.UpdateParticleToFaceTheCamera(DPSF.DefaultQuadParticle,System.Single)
   Info: BuildAssembler: Building topic M:DPSF.DPSFDefaultQuadParticleSystem`2.UpdateParticleWidthAndHeightUsingLerp(DPSF.DefaultQuadParticle,System.Single)
   Info: BuildAssembler: Building topic M:DPSF.DPSFDefaultQuadParticleSystem`2.UpdateParticleWidthUsingLerp(DPSF.DefaultQuadParticle,System.Single)
   Info: BuildAssembler: Building topic M:DPSF.DPSFDefaultQuadParticleSystem`2.UpdateVertexProperties(DPSF.DefaultQuadParticleVertex[]@,System.Int32,DPSF.DPSFParticle)
@@ -1745,6 +1744,7 @@ Building reference help topics...
   Warn: ResolveReferenceLinksComponent2: Unknown reference link target &#39;T:Microsoft.Xna.Framework.Graphics.SpriteBatch&#39;.
   Warn: ResolveReferenceLinksComponent2: Unknown reference link target &#39;T:Microsoft.Xna.Framework.Graphics.SpriteBatch&#39;.
   Info: BuildAssembler: Building topic M:DPSF.DPSFDefaultSpriteParticleSystem`2.InitializeParticleUsingInitialProperties(DPSF.DPSFParticle)
+  Info: BuildAssembler: Building topic M:DPSF.DPSFDefaultSpriteParticleSystem`2.InitializeRenderProperties
   Info: BuildAssembler: Building topic P:DPSF.DPSFDefaultSpriteParticleSystem`2.InitialProperties
   Info: BuildAssembler: Building topic M:DPSF.DPSFDefaultSpriteParticleSystem`2.UpdateParticleDepthFromBackToFrontUsingLerp(DPSF.DefaultSpriteParticle,System.Single)
   Info: BuildAssembler: Building topic M:DPSF.DPSFDefaultSpriteParticleSystem`2.UpdateParticleDepthFromFrontToBackUsingLerp(DPSF.DefaultSpriteParticle,System.Single)
@@ -1988,6 +1988,7 @@ Building reference help topics...
   Warn: ResolveReferenceLinksComponent2: Unknown reference link target &#39;T:Microsoft.Xna.Framework.Vector3&#39;.
   Warn: ResolveReferenceLinksComponent2: Unknown reference link target &#39;T:Microsoft.Xna.Framework.Vector3&#39;.
   Warn: ResolveReferenceLinksComponent2: Unknown reference link target &#39;T:Microsoft.Xna.Framework.Vector3&#39;.
+  Info: BuildAssembler: Building topic M:DPSF.DPSFHelper.ValueInRange(System.Single,System.Single,System.Single)
   Info: BuildAssembler: Building topic M:DPSF.DPSFHelper.VectorsAreEqualWithinTolerance(Microsoft.Xna.Framework.Vector3,Microsoft.Xna.Framework.Vector3,System.Single)
   Warn: ResolveReferenceLinksComponent2: Unknown reference link target &#39;T:Microsoft.Xna.Framework.Vector3&#39;.
   Warn: ResolveReferenceLinksComponent2: Unknown reference link target &#39;T:Microsoft.Xna.Framework.Vector3&#39;.
@@ -3054,12 +3055,12 @@ Building reference help topics...
   Info: BuildAssembler: Building topic Methods.T:System.Collections.Generic.GenericCollectionsExtensions
   Info: BuildAssembler: Building topic M:System.Collections.Generic.GenericCollectionsExtensions.Exists``1(System.Collections.Generic.List{``0},System.Func{``0,System.Boolean})
   Info: BuildAssembler: Building topic M:System.Collections.Generic.GenericCollectionsExtensions.RemoveAll``1(System.Collections.Generic.List{``0},System.Func{``0,System.Boolean})
-  Info: Processed 1390 topics
-    Last step completed in 00:01:27.9294
+  Info: Processed 1393 topics
+    Last step completed in 00:01:22.8847
 </buildStep>
 <buildStep step="CombiningIntermediateTocFiles">
 Combining conceptual and API intermediate TOC files...
-    Last step completed in 00:00:00.0000
+    Last step completed in 00:00:00.0070
 </buildStep>
 <buildStep step="ExtractingHtmlInfo">
 Extracting HTML info for HTML Help 1 and/or website...
@@ -3071,23 +3072,23 @@ E-Mail: Eric@EWoodruff.us
 Using LCID &#39;1033&#39;, code page &#39;65001&#39;, encoding charset &#39;UTF-8&#39;.
 
 Processing Help 1 files in D:\dev\Git\DPSFProject\XNA 4.0\Help Files\DPSF API Documentation\Working\Output\HtmlHelp1
-Processed 1390 HTML files
+Processed 1393 HTML files
 Sorting keywords and generating See Also indices
 Saving HTML Help 1 keyword index to D:\dev\Git\DPSFProject\XNA 4.0\Help Files\DPSF API Documentation\Working\DPSF API Documentation.hhk
 Saving HTML Help 1 table of contents to D:\dev\Git\DPSFProject\XNA 4.0\Help Files\DPSF API Documentation\Working\DPSF API Documentation.hhc
-    Last step completed in 00:00:03.1966
+    Last step completed in 00:00:02.1275
 </buildStep>
 <buildStep step="GenerateHelpFormatTableOfContents">
 Generating HTML Help 1 table of contents file...
-    Last step completed in 00:00:00.0000
+    Last step completed in 00:00:00.0030
 </buildStep>
 <buildStep step="GenerateHelpFileIndex">
 Generating HTML Help 1 index file...
-    Last step completed in 00:00:00.0000
+    Last step completed in 00:00:00.0020
 </buildStep>
 <buildStep step="GenerateHelpProject">
 Generating HTML Help 1 project file...
-    Last step completed in 00:00:00.0156
+    Last step completed in 00:00:00.0230
 </buildStep>
 <buildStep step="CompilingHelpFile">
 Compiling HTML Help 1 file...
@@ -3104,11 +3105,11 @@ Compiling HTML Help 1 file...
   
   Compile time: 0 minutes, 15 seconds
   
-  1,392	Topics
+  1,395	Topics
   
-  33,286	Local links
+  33,437	Local links
   
-  6,372	Internet links
+  5,801	Internet links
   
   0	Graphics
   
@@ -3116,19 +3117,19 @@ Compiling HTML Help 1 file...
   
   
   
-  Created d:\dev\Git\DPSFProject\XNA 4.0\Help Files\DPSF API Documentation\Working\Output\HtmlHelp1\DPSF API Documentation.chm, 3,714,253 bytes
+  Created d:\dev\Git\DPSFProject\XNA 4.0\Help Files\DPSF API Documentation\Working\Output\HtmlHelp1\DPSF API Documentation.chm, 3,720,639 bytes
   
-  Compression decreased file by 23,996,313 bytes.
+  Compression decreased file by 24,050,060 bytes.
   
-    Last step completed in 00:00:16.8303
+    Last step completed in 00:00:15.6902
 </buildStep>
 <buildStep step="CleanIntermediates">
 Removing intermediate files...
-    Last step completed in 00:00:00.1601
+    Last step completed in 00:00:00.1630
 </buildStep>
 <buildStep step="Completed">
 
-Build completed successfully at 09-30-2012 12:20 AM.  Total time: 00:01:59.4047
+Build completed successfully at 04-01-2013 05:52 PM.  Total time: 00:01:49.6215
 
 </buildStep>
 </shfbBuild>

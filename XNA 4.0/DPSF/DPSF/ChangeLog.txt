@@ -17,15 +17,16 @@ public:
 - Updated the Trail particle system included in the DPSF Demo a bit.
 - Changed the DefaultSpriteParticleSystem to use BlendState.NonPremultipled by default so that transparency is drawn.
 - Added try-catch blocks to prevent DPSF from throwing exceptions when moving app window between monitors.
+- Fixed bug where ParticleEmitterCollection's AllEmittersRemoved event was not firing.
 
 Possible Breaking Changes:
-	- Changed the ParticleEmitterCollection's Add() function to return back the new ParticleEmitter, rather than the new ParticleEmitter's ID.
-	- Renamed IndexBufferReach to IndexBufferShort, since sometimes we need to use the short Index Buffer with the HiDef profile (e.g. with MonoGame WinRT).
-	- Should now check the protected property IsUsingIntegerIndexBuffer to determine if the IndexBuffer or IndexBufferShort should be used (used to check "this.GraphicsDevice.GraphicsProfile == GraphicsProfile.HiDef").
+- Changed the ParticleEmitterCollection's Add() function to return back the new ParticleEmitter, rather than the new ParticleEmitter's ID.
+- Renamed IndexBufferReach to IndexBufferShort, since sometimes we need to use the short Index Buffer with the HiDef profile (e.g. with MonoGame WinRT).
+- Should now check the protected property IsUsingIntegerIndexBuffer to determine if the IndexBuffer or IndexBufferShort should be used (used to check "this.GraphicsDevice.GraphicsProfile == GraphicsProfile.HiDef").
 
 private:
 - Renamed C# folder to CSharp to be VS 2012 compatible.
-- Changed some foreach loops to for loops.
+- Changed some foreach loops to for loops to enhance performance.
 - Fixed up a bunch of compiler warnings.
 
 

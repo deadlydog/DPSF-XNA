@@ -65,7 +65,7 @@ namespace DPSF_Demo.ParticleSystems
         /// </summary>
         public void LoadParticleSystem()
         {
-			ParticleInitializationFunction = InitializeParticle;
+			ParticleInitializationFunction = InitializeParticleMultipleEmitter;
 
             // Remove all Events first so that none are added twice if this function is called again
             ParticleEvents.RemoveAllEvents();
@@ -120,7 +120,7 @@ namespace DPSF_Demo.ParticleSystems
         /// Example of how to create a Particle Initialization Function
         /// </summary>
         /// <param name="cParticle">The Particle to be Initialized</param>
-        public void InitializeParticle(DefaultSprite3DBillboardParticle cParticle)
+        public void InitializeParticleMultipleEmitter(DefaultSprite3DBillboardParticle cParticle)
         {
             cParticle.Lifetime = 1.0f;
 

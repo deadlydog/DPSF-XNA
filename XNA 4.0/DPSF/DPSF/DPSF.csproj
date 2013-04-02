@@ -83,6 +83,7 @@
     <XnaCompressContent>True</XnaCompressContent>
     <DocumentationFile>bin\x86\Release\DPSF.xml</DocumentationFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>

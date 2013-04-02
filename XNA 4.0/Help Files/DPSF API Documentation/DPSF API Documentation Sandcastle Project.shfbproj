@@ -35,7 +35,7 @@
     <RootNamespaceTitle>DPSF API Documentation</RootNamespaceTitle>
     <MissingTags>Parameter, AutoDocumentCtors, Namespace, TypeParameter, AutoDocumentDispose</MissingTags>
     <RootNamespaceContainer>True</RootNamespaceContainer>
-    <HelpFileVersion>2.0.0.0</HelpFileVersion>
+    <HelpFileVersion>2.4.0.0</HelpFileVersion>
     <FeedbackEMailAddress>Dan%40DansKingdom.com</FeedbackEMailAddress>
     <FeedbackEMailLinkText>
     </FeedbackEMailLinkText>

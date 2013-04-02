@@ -215,6 +215,9 @@ Properties change the Assembly Name to DPSFMonoForAndoidAsDrawableGameComponent 
 
 Then do a Build Solution to generate new DPSFAsDrawableGameComponent.dll/.xml, DPSFXbox360AsDrawableGameComponent.dll/.xml, 
 DPSFPhoneAsDrawableGameComponent.dll/.xml, and DPSFMonoForAndoidAsDrawableGameComponent.dll/.xml files that inherit from DrawableGameComponent.
+
+6 - Remove the Conditional Compilation Symbol from all 4 Project Properties, and rename the Assembly Names back to DPSF, DPSFXbox360, DPSFPhone, 
+and DPSFMonoForAndroid.
 #>
 
 # Delete the existing DPSF files before building the new ones.
@@ -245,16 +248,6 @@ Write-Host "Building the DPSF solution for AsDrawableGameComponent DLLs..."
 $buildSucceeded = Invoke-MsBuild -Path "$DPSF_SOLUTION_FILE_PATH" -MsBuildParameters "$MSBUILD_PARAMETERS" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -ShowBuildWindow -AutoLaunchBuildLogOnFailure
 if (!$buildSucceeded) { Write-Host "Build failed so exiting script."; Exit }
 
-<#
-5 - Copy the DPSF.dll/.xml, DPSFAsDrawableGameComponent.dll/.xml, DPSFXbox360.dll/.xml, DPSFXbox360AsDrawableGameComponenet.dll/.xml, 
-DPSFPhone.dll/.xml, DPSFPhoneAsDrawableGameComponent.dll/.xml, DPSFMonoForAndoid.dll/.xml, and DPSFMonoForAndoidAsDrawableGameComponent.dll/.xml 
-files in the "DPSF\LatestDLLBuild" folder into the "Installer Files" folder, and copy them into the "C:\DPSF" folder as well so that the 
-"Installer Files\DPSF Demo" project can find the new files.
-
-6 - Remove the Conditional Compilation Symbol from all 4 Project Properties, and rename the Assembly Names back to DPSF, DPSFXbox360, DPSFPhone, 
-and DPSFMonoForAndroid.
-#>
-
 #Revert the .csproj files back to their original states now that we have the DLLs.
 Write-Host "Reverting .csproj files back to their original states..."
 foreach ($csprojFilePath in $CSPROJ_FILE_PATHS_TO_MODIFY_AND_REBUILD)
@@ -266,6 +259,13 @@ foreach ($csprojFilePath in $CSPROJ_FILE_PATHS_TO_MODIFY_AND_REBUILD)
 		Remove-Item -Path "$csprojFilePath.backup"
 	}
 }
+
+<#
+5 - Copy the DPSF.dll/.xml, DPSFAsDrawableGameComponent.dll/.xml, DPSFXbox360.dll/.xml, DPSFXbox360AsDrawableGameComponenet.dll/.xml, 
+DPSFPhone.dll/.xml, DPSFPhoneAsDrawableGameComponent.dll/.xml, DPSFMonoForAndoid.dll/.xml, and DPSFMonoForAndoidAsDrawableGameComponent.dll/.xml 
+files in the "DPSF\LatestDLLBuild" folder into the "Installer Files" folder, and copy them into the "C:\DPSF" folder as well so that the 
+"Installer Files\DPSF Demo" project can find the new files.
+#>
 
 # Copy the DLL files to the 'Installer Files' directory.
 Write-Host "Copying new DLL and XML files to the Installer Files directory..."
@@ -304,8 +304,11 @@ if ([System.Windows.Forms.MessageBox]::Show("Do you want to launch the Test solu
 	# Ask user if the Test solutions all work correctly or not, and exit if they don't work correctly.
 	$confirmTestsWorkProperlyMessage = @"
 Do all of the Test solutions work correctly?
+
 1. Does the Test DPSF Dll solution run properly with both 'this' and 'null' supplied in the particle system's constructor?
+
 2. Does the Test DPSF Inherits Dll solution run properly with both 'this' and 'null' supplied in the particle system's constructor? Using 'null' should throw an exception.
+
 3. Does the DPSF Splash Screen Example solution run properly?
 "@
 	if ([System.Windows.Forms.MessageBox]::Show($confirmTestsWorkProperlyMessage, "Do Test Solutions Run Correctly?", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question) -eq [System.Windows.Forms.DialogResult]::No)
@@ -320,10 +323,6 @@ Do all of the Test solutions work correctly?
 11 - Copy the files in "DPSF\DPSF\DPSF Defaults" to the "Installer Files\Templates\DPSF Defaults" folder.
 
 12 - Copy "DPSF\DPSF\DPSF Effects\HLSL\DPSFDefaultEffect.fx" to the "Installer Files\Templates" folder.
-
-13 - Do a search on the "Installer Files" folder and delete all "Debug" and "Release" folders, ".suo", and ".cachefile" files, and any files or folders 
-with "Resharper" or "ncrunch" in their name.  This will help keep the size of the installer small, but will require users to build the applications 
-(tutorials, etc.) in visual studio before running them. 
 #>
 
 Write-Host "Deleting the folder '$INSTALLER_FILES_TEMPLATES_DIRECTORY_PATH'..."
@@ -339,8 +338,26 @@ RoboCopy "$DPSF_DEFAULTS_DIRECTORY" "$INSTALLER_FILES_TEMPLATES_DPSF_DEFAULTS_DI
 Write-Host "Copying the file '$DPSF_DEFAULT_EFFECT_FILE_PATH' to the folder '$INSTALLER_FILES_TEMPLATES_DIRECTORY_PATH'..."
 Copy-Item -Path "$DPSF_DEFAULT_EFFECT_FILE_PATH" -Destination "$INSTALLER_FILES_TEMPLATES_DIRECTORY_PATH"
 
-Write-Host "Delete the 'Debug' and 'Release' folders, and any other temp files in the 'Installer Files' directory..."
-Remove-Item -Recurse -Path $INSTALLER_FILES_DIRECTORY_PATH -Include "Debug","Release","*.suo","*.cachefile","*ncrunch*","*ReSharper*"
+<#
+13 - Do a search on the "Installer Files" folder and delete all "Debug" and "Release" folders, ".suo", and ".cachefile" files, and any files or folders 
+with "Resharper" or "ncrunch" in their name.  This will help keep the size of the installer small, but will require users to build the applications 
+(tutorials, etc.) in visual studio before running them. 
+#>
+
+Write-Host "Delete the 'Debug' and 'Release' folders, and any other temp files in the '$INSTALLER_FILES_DIRECTORY_PATH' directory..."
+Get-ChildItem -Recurse -Force -Path "$INSTALLER_FILES_DIRECTORY_PATH" -Include "bin","obj","*.suo","*.cachefile","*ncrunch*","*ReSharper*" | Remove-Item -Recurse -Force
+
+<#
+14 - Open the "DPSF\DPSF.sln" and change the DPSF Demo projects to reference the "C:\DPSF\DPSF.dll" files rather than the DPSF project. 
+You will need to do this for the Windows, Xbox, and Windows Phone DPSF Demo projects. We need to do this so that when the user opens the 
+DPSF Demo.sln the DPSF references will already be pointing to the "C:\DPSF" directory.
+
+Then re-run the "DPSF\DPSF.sln" in x86 Release mode to generate the executable and required .xnb files so that the DPSF Demo can be ran without 
+needing Visual Studio. The DPSF Demo (Phone) does not generate an executable that can be run by Windows, so we don't need to do this with it. 
+Then change the configuration manager back to Mixed Debug mode when done.
+#>
+
+
 
 
 

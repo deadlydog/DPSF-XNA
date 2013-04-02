@@ -122,9 +122,8 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="DPSFXbox360AsDrawableGameComponent, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Installer Files\DPSFXbox360AsDrawableGameComponent.dll</HintPath>
+    <Reference Include="DPSFXbox360AsDrawableGameComponent">
+      <HintPath>..\..\..\Installer Files\DPSFXbox360AsDrawableGameComponent.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Xna.Framework">
       <Private>False</Private>

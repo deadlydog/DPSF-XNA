@@ -1205,6 +1205,14 @@
             If not inheriting from DrawableGameComponent, this acts the same as calling Draw().</para>
             </summary>
         </member>
+        <member name="M:DPSF.DPSF`2.TryDraw(System.Boolean)">
+            <summary>
+            Perform the Draw operation, catching any expected errors that we want to eat.
+            </summary>
+            <param name="calledByDrawableGameComponent">Indicates if this function was called manually by the user or called automatically by the Drawable Game Component.
+            If this function Inherits Drawable Game Component, but was not called by Drawable Game Component, nothing will be drawn since the Particle System will
+            automatically be drawn when the Game Component's Draw() function is called.</param>
+        </member>
         <member name="M:DPSF.DPSF`2.Draw(System.Boolean)">
             <summary>
             Draws all of the Active Particles to the Graphics Device
@@ -3086,7 +3094,17 @@
             <param name="cParticle">The Particle to update</param>
             <param name="fElapsedTimeInSeconds">How long it has been since the last update</param>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:DPSF.DPSFDefaultQuadParticleSystem`2.UpdateParticleToFaceTheCamera(DPSF.DefaultQuadParticle,System.Single)" -->
+        <member name="M:DPSF.DPSFDefaultQuadParticleSystem`2.UpdateParticleToFaceTheCamera(DPSF.DefaultQuadParticle,System.Single)">
+            <summary>
+            Turns the Particle into a Billboard Particle (i.e. The Particle always faces the Camera).
+            <para>NOTE: This Update function should be called after all other Update functions to ensure that 
+            the Particle is orientated correctly.</para>
+            <para>NOTE: Update the Particle System's Camera Position every frame to ensure that this works correctly.</para>
+            <para>NOTE: Only Roll Rotations (i.e. around the Z axis) will be visible when this is used.</para>
+            </summary>
+            <param name="cParticle">The Particle to update.</param>
+            <param name="fElapsedTimeInSeconds">How long it has been since the last update.</param>
+        </member>
         <member name="M:DPSF.DPSFDefaultQuadParticleSystem`2.UpdateParticleToBeConstrainedAroundXAxis(DPSF.DefaultQuadParticle,System.Single)">
             <summary>
             Orientates the Particle to face the camera, but constrains the particle to always be perpendicular to the 
@@ -6260,7 +6278,13 @@
             <param name="graphicsDevice">The Graphics Device used to initialize the BasicEffect.
             <para>NOTE: This is only used the first time that this function is called.</para></param>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:DPSF.DPSFDefaultSettings.GetSharedAlphaTestEffect(Microsoft.Xna.Framework.Graphics.GraphicsDevice)" -->
+        <member name="M:DPSF.DPSFDefaultSettings.GetSharedAlphaTestEffect(Microsoft.Xna.Framework.Graphics.GraphicsDevice)">
+            <summary>
+            Gets the AlphaTestEffect shared by all particle systems.
+            </summary>
+            <param name="graphicsDevice">The Graphics Device used to initialize the AlphaTestEffect.
+            <para>NOTE: This is only used the first time that this function is called.</para></param>
+        </member>
         <member name="P:DPSF.DPSFDefaultSettings.AutoMemoryManagementSettings">
             <summary>
             Gets / Sets the default particle system memory management settings.
@@ -6501,7 +6525,32 @@
         </member>
         <member name="T:DPSF.ParticleEmitterLerpInfo">
             <summary>
-            Class containing the information necessary to Linearly Interpolate a ParticleEmitter's position and orientation when adding many particles.
+            Class containing the information necessary to Linearly Interpolate a ParticleEmitter's position and orientation between Updates when adding many particles.
+            </summary>
+        </member>
+        <member name="F:DPSF.ParticleEmitterLerpInfo.PreviousPosition">
+            <summary>
+            The Emitter's Previous Position (i.e. position at last Update).
+            </summary>
+        </member>
+        <member name="F:DPSF.ParticleEmitterLerpInfo.CurrentPosition">
+            <summary>
+            The Emitter's Current Position.
+            </summary>
+        </member>
+        <member name="F:DPSF.ParticleEmitterLerpInfo.PreviousOrientation">
+            <summary>
+            The Emitter's Previous Orientation (i.e. orientation at last Update).
+            </summary>
+        </member>
+        <member name="F:DPSF.ParticleEmitterLerpInfo.CurrentOrientation">
+            <summary>
+            The Emitter's Current Orientation.
+            </summary>
+        </member>
+        <member name="F:DPSF.ParticleEmitterLerpInfo.ElapsedTimeInSeconds">
+            <summary>
+            How many seconds have elapsed since the last Update, so we know how much to linearly interpolate the Emitter's Position and Orientation.
             </summary>
         </member>
         <member name="T:DPSF.ParticleEmitter">

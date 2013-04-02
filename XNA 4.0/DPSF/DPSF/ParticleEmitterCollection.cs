@@ -21,7 +21,7 @@ namespace DPSF
 		/// <summary>
 		/// Fires anytime a ParticleEmitter is removed from the collection and the collection is left empty.
 		/// </summary>
-		public event EventHandler AllEmittersRemoved = null;
+		public event EventHandler AllEmittersRemoved = delegate { };
 
 		/// <summary>
 		/// Adds a new ParticleEmitter to the list of emitters and returns the ParticleEmitter's unique ID that can be used to retrieve it from the collection.
@@ -57,7 +57,15 @@ namespace DPSF
 		/// <returns>Returns false if the ParticleEmitter was not found in the collection.</returns>
 		public bool Remove(int id)
 		{
-			return _emitters.Remove(id);
+			// Try and remove the emitter and record if it was found.
+			bool found = _emitters.Remove(id);
+
+			// If the last emitter was just removed, fire the All Emitters Removed event.
+			if (found && _emitters.Count <= 0)
+				AllEmittersRemoved(this, EventArgs.Empty);
+
+			// Return if the emitter was removed or not.
+			return found;
 		}
 
 		/// <summary>
@@ -70,7 +78,7 @@ namespace DPSF
 		{
 			if (emitter == null)
 				return false;
-			return _emitters.Remove(emitter.ID);
+			return Remove(emitter.ID);
 		}
 
 		/// <summary>
@@ -78,7 +86,14 @@ namespace DPSF
 		/// </summary>
 		public void RemoveAll()
 		{
+			bool hadAtLeastOneEmitter = _emitters.Any();
+
+			// Remove any emitters.
 			_emitters.Clear();
+
+			// If there was an emitter, we removed it, so fire the All Emitters Removed event.
+			if (hadAtLeastOneEmitter)
+				AllEmittersRemoved(this, EventArgs.Empty);
 		}
 
 		/// <summary>

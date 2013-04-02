@@ -321,18 +321,17 @@
     <AndroidResource Include="Resources\Drawable\Icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\DPSF\Mono for Android Copy of DPSF\Mono for Android Copy of DPSF.csproj">
-      <Project>{1930FFE8-7F1D-42BA-A713-A0BAB7995BCF}</Project>
-      <Name>Mono for Android Copy of DPSF</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Mono Dependencies\Lidgren.Network.dll" />
     <Content Include="Mono Dependencies\MonoGame.Framework.dll" />
     <Content Include="Mono Dependencies\OpenTK.dll" />
     <Content Include="Mono Dependencies\Tao.Sdl.dll" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\DPSF\Mono for Android Copy of DPSF\Mono for Android Copy of DPSF.csproj">
+      <Project>{1930FFE8-7F1D-42BA-A713-A0BAB7995BCF}</Project>
+      <Name>Mono for Android Copy of DPSF</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
      Other similar extension points exist, see Microsoft.Common.targets.

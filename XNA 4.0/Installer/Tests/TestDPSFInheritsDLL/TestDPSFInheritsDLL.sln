@@ -30,6 +30,7 @@ Global
 		{333F5DFF-A33F-48B0-943E-BE08670F18A3}.Debug|Mixed Platforms.ActiveCfg = Debug|Xbox 360
 		{333F5DFF-A33F-48B0-943E-BE08670F18A3}.Debug|Mixed Platforms.Build.0 = Debug|Xbox 360
 		{333F5DFF-A33F-48B0-943E-BE08670F18A3}.Debug|x86.ActiveCfg = Debug|Xbox 360
+		{333F5DFF-A33F-48B0-943E-BE08670F18A3}.Debug|x86.Build.0 = Debug|Xbox 360
 		{333F5DFF-A33F-48B0-943E-BE08670F18A3}.Debug|Xbox 360.ActiveCfg = Debug|Xbox 360
 		{333F5DFF-A33F-48B0-943E-BE08670F18A3}.Debug|Xbox 360.Build.0 = Debug|Xbox 360
 		{333F5DFF-A33F-48B0-943E-BE08670F18A3}.Debug|Xbox 360.Deploy.0 = Debug|Xbox 360
@@ -37,6 +38,7 @@ Global
 		{333F5DFF-A33F-48B0-943E-BE08670F18A3}.Release|Mixed Platforms.Build.0 = Release|Xbox 360
 		{333F5DFF-A33F-48B0-943E-BE08670F18A3}.Release|Mixed Platforms.Deploy.0 = Release|Xbox 360
 		{333F5DFF-A33F-48B0-943E-BE08670F18A3}.Release|x86.ActiveCfg = Release|Xbox 360
+		{333F5DFF-A33F-48B0-943E-BE08670F18A3}.Release|x86.Build.0 = Release|Xbox 360
 		{333F5DFF-A33F-48B0-943E-BE08670F18A3}.Release|Xbox 360.ActiveCfg = Release|Xbox 360
 		{333F5DFF-A33F-48B0-943E-BE08670F18A3}.Release|Xbox 360.Build.0 = Release|Xbox 360
 		{333F5DFF-A33F-48B0-943E-BE08670F18A3}.Release|Xbox 360.Deploy.0 = Release|Xbox 360
