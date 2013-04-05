@@ -26,7 +26,7 @@ Set-StrictMode -Version Latest
 $thisScriptsDirectory = Split-Path $script:MyInvocation.MyCommand.Path
 
 # Import the module used to build the .sln files.
-$InvokeMsBuildModulePath = Join-Path $thisScriptsDirectory "BuildScriptUtilities\Invoke-MsBuild.psm1"
+$InvokeMsBuildModulePath = Join-Path $thisScriptsDirectory "BuildScriptUtilities\Invoke-MsBuild\Invoke-MsBuild.psm1"
 Import-Module -Name $InvokeMsBuildModulePath
 
 
