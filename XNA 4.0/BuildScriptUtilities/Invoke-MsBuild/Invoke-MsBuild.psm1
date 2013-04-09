@@ -110,7 +110,7 @@ function Invoke-MsBuild
 	.NOTES
 	Name:   Invoke-MsBuild
 	Author: Daniel Schroeder (originally based on the module at http://geekswithblogs.net/dwdii/archive/2011/05/27/part-2-automating-a-visual-studio-build-with-powershell.aspx)
-	Version: 1.0
+	Version: 1.1
 #>
 	[CmdletBinding(DefaultParameterSetName="Wait")]
 	param
@@ -125,6 +125,7 @@ function Invoke-MsBuild
 		[string] $MsBuildParameters,
 
 		[parameter(Mandatory=$false)]
+		[ValidateNotNullOrEmpty()]
 		[Alias("L")]
 		[string] $BuildLogDirectoryPath = $env:Temp,
 
@@ -147,7 +148,6 @@ function Invoke-MsBuild
 
 		[parameter(Mandatory=$false)]
 		[Alias("Prompt")]
-		[Alias("P")]
 		[switch] $ShowBuildWindowAndPromptForInputBeforeClosing,
 
 		[parameter(Mandatory=$false,ParameterSetName="PassThru")]
