@@ -10,6 +10,10 @@ TODO - Do more multiple emitter examples. Have one extend the Emitter class to s
 TODO - Investigate using Tasks and running on multiple threads to boost performance.
 
 
+Changes made after Version 2.4.0:
+public:
+- Fixed blocking Xbox bug where a divide by zero exception was always thrown when running on the Xbox, making DPSF unusable on the Xbox.
+
 Changes made after Version 2.3.0:
 public:
 - Got DPSF working properly on Android using MonoGame and added DPSF Demo for Mono for Android project to show DPSF working on Android.

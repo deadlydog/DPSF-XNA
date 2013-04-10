@@ -1,15 +1,14 @@
 <#
-.SYNOPSIS
-   This script builds a new Release version for DPSF.
-.DESCRIPTION
-   This script adjusts the DPSF version to the given version, then builds all of the DPSF DLLs in Release mode.
-.PARAMETER VersionNumber
-   The new Version Number to give the DPSF DLLs.
-   If null or empty, the assembly version number will not be updated.
-.EXAMPLE
-   <An example of using the script>
+	.SYNOPSIS
+	This script builds a new Release version for DPSF.
+	
+	.DESCRIPTION
+	This script adjusts the DPSF version to the given version, then builds all of the DPSF DLLs in Release mode.
+	
+	.PARAMETER VersionNumber
+	The new Version Number to give the DPSF DLLs.
+	If null or empty, the user will be prompted for the assembly version number.
 #>
-
 param
 (
 	[parameter(Position=0,Mandatory=$false,HelpMessage="The 4 hex-value version number to build the DPSF assemblies with (x.x.x.x).")]
