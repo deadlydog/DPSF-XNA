@@ -2551,6 +2551,7 @@ namespace DPSF
 			// Specify the Vertex Declaration.
 			Vertex vertex = new Vertex();
 			mcVertexDeclaration = vertex.VertexDeclaration;
+            miVertexSizeInBytes = (mcVertexDeclaration == null) ? 0 : mcVertexDeclaration.VertexStride;
 
 			// If this is a Sprite Particle System
 			if (ParticleType == ParticleTypes.Sprite)
@@ -3845,9 +3846,14 @@ namespace DPSF
 // If we're on the Xbox, calculate the max number of particles it can display in a single Draw() call.
 // This only needs to be done for Quads since NoDisplay particles aren't drawn, and Sprite particles are drawn by a SpriteBatch.
 #if (XBOX)
-					miMaxParticlesThatXboxCanDrawAtOnce = MAX_MEMORY_IN_BYTES_THAT_XBOX_CAN_DRAW / (miVertexSizeInBytes * 4);
+                    if (miVertexSizeInBytes > 0)
+					    miMaxParticlesThatXboxCanDrawAtOnce = MAX_MEMORY_IN_BYTES_THAT_XBOX_CAN_DRAW / (miVertexSizeInBytes * 4);
+                    // The only time this Else clause should be hit is when using a NoDisplay or Sprite particle system (since Sprite uses a SpriteBatch to draw and not a Vertex), so 
+                    // assign an arbitrary value to the MaxParticlesThatXboxCanDrawAtOnce since it should never actually be used to draw anything.
+                    else
+                        miMaxParticlesThatXboxCanDrawAtOnce = 100;
 #endif
-					break;
+                    break;
 
 				// If we are using the Sprite Batch to draw Particles
 				case ParticleTypes.Sprite:

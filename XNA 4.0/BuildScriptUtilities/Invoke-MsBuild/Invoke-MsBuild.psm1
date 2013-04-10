@@ -108,7 +108,7 @@ function Invoke-MsBuild
 	If the BuildLogDirectoryPath was not provided, the returned log path might be "C:\Some Folder\MyProject.msbuild.log".
 	
 	.NOTES
-	Name:   Invoke-MsBuild
+	Name: Invoke-MsBuild
 	Author: Daniel Schroeder (originally based on the module at http://geekswithblogs.net/dwdii/archive/2011/05/27/part-2-automating-a-visual-studio-build-with-powershell.aspx)
 	Version: 1.1
 #>
