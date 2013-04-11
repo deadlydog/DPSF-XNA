@@ -121,7 +121,7 @@ function UpdateCsprojFileToAsDrawableGameComponent
 	else
 	{
 		# Throw an error.
-		Throw "ERROR: Invalid .csproj file name given. Cannot find the file '$CsprojFilePath'."
+		throw "ERROR: Invalid .csproj file name given. Cannot find the file '$CsprojFilePath'."
 	} 
 	
 	# Write the new file contents to the file.
@@ -154,7 +154,7 @@ function DpsfVersionNumber
 	# If we can't find the DPSF Common Assembly Info file, display an error and exit.
 	if (!(Test-Path -Path $DPSF_COMMON_ASSEMBLY_INFO_FILE_PATH))
 	{
-		Throw "Cannot find the DPSF Common Assembly Info file at '$DPSF_COMMON_ASSEMBLY_INFO_FILE_PATH'."
+		throw "Cannot find the DPSF Common Assembly Info file at '$DPSF_COMMON_ASSEMBLY_INFO_FILE_PATH'."
 	}
 	
 	$versionNumberLineRegex = [regex]'\[assembly: AssemblyVersion\("(?<VersionNumber>.*?)"\)\]'
@@ -190,10 +190,12 @@ function DpsfVersionNumber
 	}
 	else
 	{
-		Throw "Could not find version number in the DPSF CommonAssemblyInfo.cs file"
+		throw "Could not find version number in the DPSF CommonAssemblyInfo.cs file"
 	}
 }
 
+# Catch any exceptions thrown and stop the script.
+trap [Exception] { Write-Host "Error: $_"; break; }
 
 #==========================================================
 # Perform the script tasks.
@@ -245,10 +247,10 @@ New-Item -ItemType Directory -Path "$LATEST_DLL_FILES_DIRECTORY_PATH" > $null # 
 # Build the DPSF solution in Release mode to create the new DLLs.
 Write-Host "Building the DPSF solution..."
 $buildSucceeded = Invoke-MsBuild -Path "$DPSF_SOLUTION_FILE_PATH" -MsBuildParameters "$MSBUILD_PARAMETERS" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -ShowBuildWindow -AutoLaunchBuildLogOnFailure
-if (!$buildSucceeded) { Write-Host "Build failed so exiting script."; Exit }
+if (!$buildSucceeded) { throw "Build failed." }
 Write-Host "Building the DPSF WinRT solution..."
 $buildSucceeded = Invoke-MsBuild -Path "$DPSF_WINRT_SOLUTION_FILE_PATH" -MsBuildParameters "$WINRT_MSBUILD_PARAMETERS" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -ShowBuildWindow -AutoLaunchBuildLogOnFailure
-if (!$buildSucceeded) { Write-Host "Build failed so exiting script."; Exit }
+if (!$buildSucceeded) { throw "Build failed." }
 
 # Update the .csproj files' to build the AsDrawableGameComponent DLLs.
 Write-Host "Updating the .csproj files to build AsDrawableGameComponent DLLs..."
@@ -263,10 +265,10 @@ foreach ($csprojFilePath in $DPSF_CSPROJ_FILE_PATHS)
 # Rebuild the solutions to create the AsDrawableGameComponent DLLs.
 Write-Host "Building the DPSF solution for AsDrawableGameComponent DLLs..."
 $buildSucceeded = Invoke-MsBuild -Path "$DPSF_SOLUTION_FILE_PATH" -MsBuildParameters "$MSBUILD_PARAMETERS" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -ShowBuildWindow -AutoLaunchBuildLogOnFailure
-if (!$buildSucceeded) { Write-Host "Build failed so exiting script."; Exit }
+if (!$buildSucceeded) { throw "Build failed." }
 Write-Host "Building the DPSF WinRT for AsDrawableGameComponent DLLs..."
 $buildSucceeded = Invoke-MsBuild -Path "$DPSF_WINRT_SOLUTION_FILE_PATH" -MsBuildParameters "$WINRT_MSBUILD_PARAMETERS" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -ShowBuildWindow -AutoLaunchBuildLogOnFailure
-if (!$buildSucceeded) { Write-Host "Build failed so exiting script."; Exit }
+if (!$buildSucceeded) { throw "Build failed." }
 
 #Revert the .csproj files back to their original states now that we have the DLLs.
 Write-Host "Reverting .csproj files back to their original states..."
@@ -294,6 +296,26 @@ Copy-Item -Path "$LATEST_DLL_FILES_DIRECTORY_PATH/*" -Destination $INSTALLER_FIL
 # Copy the DLL files to the 'C:\DPSF' directory.
 Write-Host "Copying new DLL and XML files to the 'C:\DPSF' directory..."
 Copy-Item -Path "$LATEST_DLL_FILES_DIRECTORY_PATH/*" -Destination "C:\DPSF" -Include "*.dll","*.xml"
+
+# Make sure all of the DPSF DLLs were built and copied properly.
+Write-Host "Verifying that the DPSF DLL files were built and copied properly..."
+Get-ChildItem -Path "$LATEST_DLL_FILES_DIRECTORY_PATH/*" -Include "DPSF*.dll" | foreach {
+	# Make sure all of the DLLs are on the right version.
+	$fileVersion = $_.VersionInfo.FileVersion
+	if ($fileVersion -ne $VersionNumber)
+	{
+		throw "File '$_' is version '$fileVersion' instead of the expected '$VersionNumber'."
+	}
+	
+	# Make sure all of the DLLs were just updated.
+	$lastModifiedDateTime = [System.DateTime]::Parse($_.LastWriteTime)
+	$now = [System.DateTime]::Now
+	$timePassedSinceFileWasUpdated = ($now - $lastModifiedDateTime)
+	if ($timePassedSinceFileWasUpdated -gt [System.TimeSpan]::FromMinutes(5))
+	{
+		throw "File '$_' does not seem to have been updated. It was last updated at '$lastModifiedDateTime', which was '$($timePassedSinceFileWasUpdated.TotalMinutes)' minutes ago."
+	}
+}
 
 <#
 7 - Open the TestDPSFDLL solution and run it to ensure that DPSF.dll is working correctly. Look at the DPSF Reference properties to make sure it is 
@@ -451,4 +473,4 @@ Then do a Build Solution on both the DPSF.sln and the "DPSF WinRT.sln" to genera
 
 # Wait for input before closing.
 Write-Host "Press any key to continue ..."
-$x = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyUp")
+$x = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyUp")
