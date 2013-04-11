@@ -37,9 +37,13 @@ $DPSF_COMMON_ASSEMBLY_INFO_FILE_PATH = Join-Path $DPSF_ROOT_DIRECTORY "\DPSF\DPS
 $DPSF_SOLUTION_FILE_PATH = Join-Path $DPSF_ROOT_DIRECTORY "\DPSF\DPSF.sln"
 $DPSF_WINRT_SOLUTION_FILE_PATH = Join-Path $DPSF_ROOT_DIRECTORY "\DPSF\DPSF WinRT.sln"
 $LATEST_DLL_FILES_DIRECTORY_PATH = Join-Path $DPSF_ROOT_DIRECTORY "\DPSF\LatestDLLBuild"
-$CSPROJ_FILE_PATHS_TO_MODIFY_AND_REBUILD = @( (Join-Path $DPSF_ROOT_DIRECTORY "DPSF\DPSF\DPSF.csproj"),
-	(		Join-Path $DPSF_ROOT_DIRECTORY "DPSF\DPSF\Xbox 360 Copy of DPSF.csproj"), 
-	(		Join-Path $DPSF_ROOT_DIRECTORY "DPSF\DPSF\Windows Phone Copy of DPSF.csproj"))
+$DPSF_CSPROJ_FILE_PATHS = @( 
+	(Join-Path $DPSF_ROOT_DIRECTORY "DPSF\DPSF\DPSF.csproj"),
+	(Join-Path $DPSF_ROOT_DIRECTORY "DPSF\DPSF\Xbox 360 Copy of DPSF.csproj"), 
+	(Join-Path $DPSF_ROOT_DIRECTORY "DPSF\DPSF\Windows Phone Copy of DPSF.csproj"),
+	(Join-Path $DPSF_ROOT_DIRECTORY "DPSF\Mono for Android Copy of DPSF\Mono for Android Copy of DPSF.csproj"),
+	(Join-Path $DPSF_ROOT_DIRECTORY "DPSF\DPSF WinRT\DPSF WinRT.csproj")
+)
 $MSBUILD_LOG_DIRECTORY_PATH = $DPSF_ROOT_DIRECTORY
 
 $INSTALLER_FILES_DIRECTORY_PATH = Join-Path $DPSF_ROOT_DIRECTORY "\Installer\Installer Files"
@@ -99,6 +103,20 @@ function UpdateCsprojFileToAsDrawableGameComponent
 		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Windows Phone\Debug\DPSFPhone.xml</DocumentationFile>', '<DocumentationFile>bin\Windows Phone\Debug\DPSFPhoneAsDrawableGameComponent.xml</DocumentationFile>')
 		$fileContents = $fileContents.Replace('<DefineConstants>TRACE;WINDOWS_PHONE</DefineConstants>', '<DefineConstants>TRACE;WINDOWS_PHONE DPSFAsDrawableGameComponent</DefineConstants>')
 		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Windows Phone\Release\DPSFPhone.xml</DocumentationFile>', '<DocumentationFile>bin\Windows Phone\Release\DPSFPhoneAsDrawableGameComponent.xml</DocumentationFile>')
+	}
+	elseif ((Split-Path -Path $CsprojFilePath -Leaf) -eq 'Mono for Android Copy of DPSF.csproj')
+	{
+		$fileContents = $fileContents.Replace('<AssemblyName>DPSFMonoForAndoid</AssemblyName>', '<AssemblyName>DPSFMonoForAndoidAsDrawableGameComponent</AssemblyName>')
+		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Debug\DPSFMonoForAndoid.xml</DocumentationFile>', '<DocumentationFile>bin\Debug\DPSFMonoForAndoidAsDrawableGameComponent.xml</DocumentationFile>')
+		$fileContents = $fileContents.Replace('<DefineConstants>TRACE;ANDROID</DefineConstants>', '<DefineConstants>TRACE;ANDROID DPSFAsDrawableGameComponent</DefineConstants>')
+		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Release\DPSFMonoForAndoid.xml</DocumentationFile>', '<DocumentationFile>bin\Release\DPSFMonoForAndoidAsDrawableGameComponent.xml</DocumentationFile>')
+	}
+	elseif ((Split-Path -Path $CsprojFilePath -Leaf) -eq 'DPSF WinRT.csproj')
+	{
+		$fileContents = $fileContents.Replace('<AssemblyName>DPSFWinRT</AssemblyName>', '<AssemblyName>DPSFWinRTAsDrawableGameComponent</AssemblyName>')
+		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Debug\DPSFWinRT.xml</DocumentationFile>', '<DocumentationFile>bin\Debug\DPSFWinRTAsDrawableGameComponent.xml</DocumentationFile>')
+		$fileContents = $fileContents.Replace('<DefineConstants>TRACE;NETFX_CORE WIN_RT</DefineConstants>', '<DefineConstants>TRACE;NETFX_CORE WIN_RT DPSFAsDrawableGameComponent</DefineConstants>')
+		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Release\DPSFWinRT.xml</DocumentationFile>', '<DocumentationFile>bin\Release\DPSFWinRTAsDrawableGameComponent.xml</DocumentationFile>')
 	}
 	else
 	{
@@ -234,7 +252,7 @@ if (!$buildSucceeded) { Write-Host "Build failed so exiting script."; Exit }
 
 # Update the .csproj files' to build the AsDrawableGameComponent DLLs.
 Write-Host "Updating the .csproj files to build AsDrawableGameComponent DLLs..."
-foreach ($csprojFilePath in $CSPROJ_FILE_PATHS_TO_MODIFY_AND_REBUILD)
+foreach ($csprojFilePath in $DPSF_CSPROJ_FILE_PATHS)
 {
 	# Backup the file before modifying it.
 	Copy-Item -Path $csprojFilePath -Destination "$CsprojFilePath.backup"
@@ -242,14 +260,17 @@ foreach ($csprojFilePath in $CSPROJ_FILE_PATHS_TO_MODIFY_AND_REBUILD)
 	UpdateCsprojFileToAsDrawableGameComponent $csprojFilePath
 }
 
-# Rebuild the solution to create the AsDrawableGameComponent DLLs.
+# Rebuild the solutions to create the AsDrawableGameComponent DLLs.
 Write-Host "Building the DPSF solution for AsDrawableGameComponent DLLs..."
 $buildSucceeded = Invoke-MsBuild -Path "$DPSF_SOLUTION_FILE_PATH" -MsBuildParameters "$MSBUILD_PARAMETERS" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -ShowBuildWindow -AutoLaunchBuildLogOnFailure
+if (!$buildSucceeded) { Write-Host "Build failed so exiting script."; Exit }
+Write-Host "Building the DPSF WinRT for AsDrawableGameComponent DLLs..."
+$buildSucceeded = Invoke-MsBuild -Path "$DPSF_WINRT_SOLUTION_FILE_PATH" -MsBuildParameters "$WINRT_MSBUILD_PARAMETERS" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -ShowBuildWindow -AutoLaunchBuildLogOnFailure
 if (!$buildSucceeded) { Write-Host "Build failed so exiting script."; Exit }
 
 #Revert the .csproj files back to their original states now that we have the DLLs.
 Write-Host "Reverting .csproj files back to their original states..."
-foreach ($csprojFilePath in $CSPROJ_FILE_PATHS_TO_MODIFY_AND_REBUILD)
+foreach ($csprojFilePath in $DPSF_CSPROJ_FILE_PATHS)
 {
 	# Copy the backup back overtop of the original to revert it, and then delete the backup file.
 	if (Test-Path "$csprojFilePath.backup")
@@ -348,10 +369,14 @@ Get-ChildItem -Recurse -Force -Path "$INSTALLER_FILES_DIRECTORY_PATH" -Include "
 
 <#
 14 - Open the "DPSF\DPSF.sln" and change the DPSF Demo projects to reference the "C:\DPSF\DPSF.dll" files rather than the DPSF project. 
-You will need to do this for the Windows, Xbox, and Windows Phone DPSF Demo projects. We need to do this so that when the user opens the 
-DPSF Demo.sln the DPSF references will already be pointing to the "C:\DPSF" directory.
+You will need to do this for the Windows, Xbox, Windows Phone, and Mono for Android DPSF Demo projects, as well as the "DPSF\DPSF WinRT.sln" DPSF Demo project. 
+We need to do this so that when the user opens the DPSF Demo.sln the DPSF references will already be pointing to the "C:\DPSF" directory.
+#>
 
-Then re-run the "DPSF\DPSF.sln" in x86 Release mode to generate the executable and required .xnb files so that the DPSF Demo can be ran without 
+
+
+<#
+15 - Re-run the "DPSF\DPSF.sln" in x86 Release mode to generate the executable and required .xnb files so that the DPSF Demo can be ran without 
 needing Visual Studio. The DPSF Demo (Phone) does not generate an executable that can be run by Windows, so we don't need to do this with it. 
 Then change the configuration manager back to Mixed Debug mode when done.
 #>
@@ -371,19 +396,21 @@ When releasing a new version of DPSF, be sure to follow these steps:
 
 0b - If any files were added, removed, renamed, or moved in the DPSF project, you must reflect these changes in the Mono for Android Copy of DPSF project as well.
 
-1 - Go into the DPSF Project Properties and update the Assembly Information to use the new Assembly Version (Major.Minor.Build.Revision) (Major features, minor features, bug fixes, 0).
+1 - Update the CommonAssemblyInfo.cs file to use the new Assembly Version (Major.Minor.Build.Revision) (Major features, minor features, bug fixes, 0).
 
-2 - First make sure the configuration manager is set to Mixed Platforms, so that x86, Xbox 360, Windows Phone, and Mono for Android files are built.
+2 - First make sure the configuration manager is set to Mixed Platforms, so that x86, Xbox 360, Windows Phone, and Mono for Android files are built. It should be Any CPU in the "DPSF WinRT.sln".
 
-3 - Do a "Build Solution" in RELEASE mode to generate an updated DPSF.dll/.xml, DPSFXbox360.dll/.xml, and DPSFPhone.dll/.xml files.
+3 - Do a "Build Solution" in RELEASE mode to generate updated DPSF.dll/.xml, DPSFXbox360.dll/.xml, DPSFPhone.dll/.xml, and DPSFMonoForAndroid.dll/xml files. Also build the DPSF WinRT.sln in RELEASE mode to generate updated DPSFWinRT.dll/.xml files.
 
-4 - In the "DPSF" Project Properties, change the Assembly Name to DPSFAsDrawableGameComponent and add DPSFAsDrawableGameComponent to the Conditional Compilation Symbols (in the Build tab). In the DPSF Xbox 360 Project Properties change the Assembly Name to DPSFXbox360AsDrawableGameComponent and add DPSFAsDrawableGameComponent to the Conditional Compilation Symbols. In the Windows Phone Copy of DPSF Project Properties change the Assembly Name to DPSFPhoneAsDrawableGameComponent and add DPSFAsDrawableGameComponent to the Conditional Compilation Symbols. In the Mono for Android Copy of DPSF Project Properties change the Assembly Name to DPSFMonoForAndoidAsDrawableGameComponent and add DPSFAsDrawableGameComponent to the Conditional Compilation Symbols. 
+4 - In each of the DPSF Project Properties do the following:
+a. Append "AsDrawableGameComponent" to the Assembly Name. I.e. DPSF => DPSFAsDrawableGameComponent, DPSFXbox360 => DPSFXbox360AsDrawableGameComponent, DPSFPhone => DPSFPhoneAsDrawableGameComponent, DPSFMonoForAndroid => DPSFMonoForAndoidAsDrawableGameComponent, DPSFWinRT => DPSFWinRTAsDrawableGameComponent.
+b. Add "DPSFAsDrawableGameComponent" to the Conditional Compilation Symbols (in the Build tab).
 
-Then do a Build Solution to generate new DPSFAsDrawableGameComponent.dll/.xml, DPSFXbox360AsDrawableGameComponent.dll/.xml, DPSFPhoneAsDrawableGameComponent.dll/.xml, and DPSFMonoForAndoidAsDrawableGameComponent.dll/.xml files that inherit from DrawableGameComponent.
+Then do a Build Solution on both the DPSF.sln and the "DPSF WinRT.sln" to generate new DPSFAsDrawableGameComponent.dll/.xml, DPSFXbox360AsDrawableGameComponent.dll/.xml, DPSFPhoneAsDrawableGameComponent.dll/.xml, DPSFMonoForAndoidAsDrawableGameComponent.dll/.xml, and DPSFWinRTAsDrawableGameComponent.dll/.xml files that inherit from DrawableGameComponent.
 
-5 - Copy the DPSF.dll/.xml, DPSFAsDrawableGameComponent.dll/.xml, DPSFXbox360.dll/.xml, DPSFXbox360AsDrawableGameComponenet.dll/.xml, DPSFPhone.dll/.xml, DPSFPhoneAsDrawableGameComponent.dll/.xml, DPSFMonoForAndoid.dll/.xml, and DPSFMonoForAndoidAsDrawableGameComponent.dll/.xml files in the "DPSF\LatestDLLBuild" folder into the "Installer Files" folder, and copy them into the "C:\DPSF" folder as well so that the "Installer Files\DPSF Demo" project can find the new files.
+5 - Copy the DPSF.dll/.xml, DPSFAsDrawableGameComponent.dll/.xml, DPSFXbox360.dll/.xml, DPSFXbox360AsDrawableGameComponenet.dll/.xml, DPSFPhone.dll/.xml, DPSFPhoneAsDrawableGameComponent.dll/.xml, DPSFMonoForAndoid.dll/.xml, DPSFMonoForAndoidAsDrawableGameComponent.dll/.xml, DPSFWinRT.dll/.xml, and DPSFWinRTAsDrawableGameComponent.dll/.xml files in the "DPSF\LatestDLLBuild" folder into the "Installer Files" folder, and copy them into the "C:\DPSF" folder as well so that the "Installer Files\DPSF Demo" project can find the new files.
 
-6 - Remove the Conditional Compilation Symbol from all 4 Project Properties, and rename the Assembly Names back to DPSF, DPSFXbox360, DPSFPhone, and DPSFMonoForAndroid.
+6 - Remove the Conditional Compilation Symbol from all of the Project Properties, and rename the Assembly Names back to DPSF, DPSFXbox360, DPSFPhone, DPSFMonoForAndroid, and DPSFWinRT.
 
 7 - Open the TestDPSFDLL solution and run it to ensure that DPSF.dll is working correctly. Look at the DPSF Reference properties to make sure it is using the correct version of the dll file. Test it both with "this" and "null" supplied in the particle system's constructor; both should run fine. Test it on the Xbox 360 as well if possible by right-clicking the Xbox 360 copy of the project and selecting "Set as StartUp Project.
 
@@ -399,25 +426,25 @@ Then do a Build Solution to generate new DPSFAsDrawableGameComponent.dll/.xml, D
 
 13 - Do a search on the "Installer Files" folder and delete all "Debug" and "Release" folders, ".suo", and ".cachefile" files, and any files or folders with "Resharper" or "ncrunch" in their name.  This will help keep the size of the installer small, but will require users to build the applications (tutorials, etc.) in visual studio before running them. 
 
-14 - Open the "DPSF\DPSF.sln" and change the DPSF Demo projects to reference the "C:\DPSF\DPSF.dll" files rather than the DPSF project. You will need to do this for the Windows, Xbox, and Windows Phone DPSF Demo projects. We need to do this so that when the user opens the DPSF Demo.sln the DPSF references will already be pointing to the "C:\DPSF" directory.
+14 - Open the "DPSF\DPSF.sln" and change the DPSF Demo projects to reference the "C:\DPSF\DPSF.dll" files rather than the DPSF project. You will need to do this for the Windows, Xbox, Windows Phone, and Mono for Android DPSF Demo projects, as well as the "DPSF\DPSF WinRT.sln" DPSF Demo project. We need to do this so that when the user opens the DPSF Demo.sln the DPSF references will already be pointing to the "C:\DPSF" directory.
 
-Then re-run the "DPSF\DPSF.sln" in x86 Release mode to generate the executable and required .xnb files so that the DPSF Demo can be ran without needing Visual Studio. The DPSF Demo (Phone) does not generate an executable that can be run by Windows, so we don't need to do this with it. Then change the configuration manager back to Mixed Debug mode when done.
+15 - Re-run the "DPSF\DPSF.sln" in x86 Release mode to generate the executable and required .xnb files so that the DPSF Demo can be ran without needing Visual Studio. The DPSF Demo (Phone) does not generate an executable that can be run by Windows, so we don't need to do this with it. Then change the configuration manager back to Mixed Debug mode when done.
 
-15 - Update the "DPSF API Documentation" to use the .dll's new .xml files generated (using Sandcastle Help File Builder program). You will need to update the HelpFileVersion to match the new DPSF version number.
+16 - Update the "DPSF API Documentation" to use the .dll's new .xml files generated (using Sandcastle Help File Builder program). You will need to update the HelpFileVersion to match the new DPSF version number.
 
-16 - Update the Help document (including the change log), generating a new "DPSF Help.chm" and copy it into the "Installer Files" folder. Generating the Help document has it's own process document that should be followed (DPSF Help Update Process.txt).
+17 - Update the Help document (including the change log), generating a new "DPSF Help.chm" and copy it into the "Installer Files" folder. Generating the Help document has it's own process document that should be followed (DPSF Help Update Process.txt).
 
-17 - Open the "DPSF Installer Settings.iit" and Build a new "DPSF Installer.exe", making sure to include any new links that should appear in the Start Menu DPSF folder, such as links to new tutorials, demos, etc. and update the DPSF EULA if it was updated in the help documentation.
+18 - Open the "DPSF Installer Settings.iit" and Build a new "DPSF Installer.exe", making sure to include any new links that should appear in the Start Menu DPSF folder, such as links to new tutorials, demos, etc. and update the DPSF EULA if it was updated in the help documentation.
 
-18 - Install DPSF from the new installer and make sure the DPSF Demo works properly. Then uninstall it and make sure everything is removed properly.
+19 - Install DPSF from the new installer and make sure the DPSF Demo works properly. Then uninstall it and make sure everything is removed properly.
 
-19 - Create a copy of the installer and move it into the "Archived Installers" section, renaming it with it's version number, and then zip it up to be uploaded to the web.
+20 - Create a copy of the installer and move it into the "Archived Installers" section, renaming it with it's version number, and then zip it up to be uploaded to the web.
 
-20 - In the DPSF.sln, change the DPSF Demo projects back to referencing the DPSF project, rather than the DLL files in the C:\DPSF folder, and change back to using the Debug Mixed configuration.
+21 - In the DPSF.sln and "DPSF WinRT.sln", change the DPSF Demo projects back to referencing the DPSF projects, rather than the DLL files in the C:\DPSF folder, and change back to using the Debug Mixed configuration.
 
-21 - Check files into Git, adding the current dll version (e.g. v1.0.1.1) and Change Log to the SVN commit comments.
+22 - Check files into Git, adding the current dll version (e.g. v1.0.1.1) and Change Log to the SVN commit comments.
 
-22 - Upload the new version to the web, along with the new HTML help files, and update the RSS feed to show a new version. The web has it's own "Release Process.txt" file to follow.
+23 - Upload the new version to the web, along with the new HTML help files, and update the RSS feed to show a new version. The web has it's own "Release Process.txt" file to follow.
 
 #>
 
