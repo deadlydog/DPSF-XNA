@@ -12,7 +12,8 @@ TODO - Investigate using Tasks and running on multiple threads to boost performa
 
 Changes made after Version 2.4.0:
 public:
-- Fixed blocking Xbox bug where a divide by zero exception was always thrown when running on the Xbox, making DPSF unusable on the Xbox.
+- Fixed blocking Xbox bug introduced in v2.3.0 where a divide by zero exception was always thrown when running on the Xbox, making DPSF unusable on the Xbox.
+- Now also build the DPSFWinRTAsDrawableGameComponent.dll.
 
 Changes made after Version 2.3.0:
 public:
