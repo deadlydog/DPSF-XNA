@@ -1,3 +1,4 @@
 # Don't ignore any files in this folder
 !*
 *.shfbproj_*
+*.log
