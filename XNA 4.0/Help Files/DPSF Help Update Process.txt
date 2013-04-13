@@ -11,6 +11,6 @@ Once you are finished editing and want to create a new .chm for release:
 
 4. Click on the new DPSF API Documentation section and then click the "Topic Options" tab on the bottom. Change its Title Tag to be "DPSF API Documentation" if needed, and its Topic ID to be "DPSF_API_Documentation". This has to be done so that the links in the rest of the help documentation will work.
 
-Pre 5. Make sure you have unchecked Show Warnings in the "Program Options" Compilers tab, as there will be lots and if you display them it takes an extra 10 minutes or so.
+Pre 5. Make sure you have unchecked "Show Warnings" in the "Program Options" Compilers tab, as there will be lots and if you display them it takes an extra 10 minutes or so.
 
 5. Save the "DPSF Help.hmxz" project then publish (export) it to a HTML Help (.chm) file and a WebHelp file (HTML files). You should delete the existing "HTML" folder (if it exists) before exporting it to a WebHelp file to delete any files that are not in the updated version.  Each export will take around 5 minutes; 15 minutes if you forgot to uncheck the Show Warnings box in the previous step.

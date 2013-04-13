@@ -49,9 +49,10 @@ namespace TestDPSFInheritsDLL
 		/// </summary>
 		protected override void Initialize()
 		{
-			// TODO: Add your initialization logic here
+			// When passing Null into the constructor an exception should be thrown. Everything should work properly when passing This in though.
 			mcParticleSystem = new DefaultTexturedQuadParticleSystemTemplate(null);
-			mcParticleSystem.AutoInitialize(this.GraphicsDevice, this.Content, null);
+			
+            mcParticleSystem.AutoInitialize(this.GraphicsDevice, this.Content, null);
 
 			base.Initialize();
 		}

@@ -282,7 +282,7 @@ if (!$VersionNumber)
 
 	# Prompt for the Version Number to use.
 	Add-Type -AssemblyName Microsoft.VisualBasic
-	$VersionNumber = [Microsoft.VisualBasic.Interaction]::InputBox("Enter the 4 hex-value version number to build the DPSF assemblies with (x.x.x.x):", "DPSF Version Number To Use", $currentVersionNumber)
+	$VersionNumber = [Microsoft.VisualBasic.Interaction]::InputBox("Enter the 4 hex-value version number to build the DPSF assemblies with (x.x.x.x).`nThe last hex value is typically zero unless making an unoffical build", "DPSF Version Number To Use", $currentVersionNumber)
 }
 
 # Set the Version Number
