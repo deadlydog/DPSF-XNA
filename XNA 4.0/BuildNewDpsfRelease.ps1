@@ -443,10 +443,10 @@ Remove-Item -Recurse -Path "$INSTALLER_FILES_TEMPLATES_DIRECTORY_PATH" # Delete 
 New-Item -ItemType Directory -Path "$INSTALLER_FILES_TEMPLATES_DIRECTORY_PATH" > $null # Recreate the empty folder (and trash the output it creates).
 
 Write-Host "Copying the files in '$DPSF_DEMO_TEMPLATES_DIRECTORY_PATH' to '$INSTALLER_FILES_TEMPLATES_DIRECTORY_PATH'..."
-RoboCopy "$DPSF_DEMO_TEMPLATES_DIRECTORY_PATH" "$INSTALLER_FILES_TEMPLATES_DIRECTORY_PATH" /s
+RoboCopy "$DPSF_DEMO_TEMPLATES_DIRECTORY_PATH" "$INSTALLER_FILES_TEMPLATES_DIRECTORY_PATH" /s > $null	# Don't output the files copied to the powershell window.
 
 Write-Host "Copying the files in '$DPSF_DEFAULTS_DIRECTORY' to '$INSTALLER_FILES_TEMPLATES_DPSF_DEFAULTS_DIRECTORY'..."
-RoboCopy "$DPSF_DEFAULTS_DIRECTORY" "$INSTALLER_FILES_TEMPLATES_DPSF_DEFAULTS_DIRECTORY" /s
+RoboCopy "$DPSF_DEFAULTS_DIRECTORY" "$INSTALLER_FILES_TEMPLATES_DPSF_DEFAULTS_DIRECTORY" /s > $null	# Don't output the files copied to the powershell window.
 
 Write-Host "Copying the file '$DPSF_DEFAULT_EFFECT_FILE_PATH' to the folder '$INSTALLER_FILES_TEMPLATES_DIRECTORY_PATH'..."
 Copy-Item -Path "$DPSF_DEFAULT_EFFECT_FILE_PATH" -Destination "$INSTALLER_FILES_TEMPLATES_DIRECTORY_PATH"
@@ -468,6 +468,7 @@ We need to do this so that when the user opens the DPSF Demo.sln the DPSF refere
 
 # Update the .csproj files' to build the AsDrawableGameComponent DLLs.
 Write-Host "Updating the DPSF Demo .csproj files to reference the DPFS DLLs from the default DPFS install directory..."
+if (!(Test-Path $CSPROJ_FILE_PATHS_BACKUP_DIRECTORY)) { New-Item -ItemType Directory -Path $CSPROJ_FILE_PATHS_BACKUP_DIRECTORY > $null }	# Create the temp folder (and trash the output it creates).
 foreach ($csprojFilePath in $DPSF_DEMO_CSPROJ_FILE_PATHS)
 {
 	# Backup the file before modifying it.
@@ -512,7 +513,7 @@ if ([System.Windows.Forms.MessageBox]::Show("Revert the DPSF Demo project files 
 		$backupFilePath = Join-Path $CSPROJ_FILE_PATHS_BACKUP_DIRECTORY "$fileName.backup"
 	
 		# Copy the backup back overtop of the original to revert it, and then delete the backup file.
-		if (Test-Path "$csprojFilePath.backup")
+		if (Test-Path "$backupFilePath")
 		{
 			Copy-Item -Path "$backupFilePath" -Destination "$csprojFilePath"
 			Remove-Item -Path "$backupFilePath"
