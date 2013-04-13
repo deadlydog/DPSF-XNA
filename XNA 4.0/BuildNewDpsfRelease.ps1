@@ -32,6 +32,7 @@ Import-Module -Name $InvokeMsBuildModulePath
 #==========================================================
 # Define any necessary global variables, such as file paths.
 #==========================================================
+$DPSF_DEFAULT_INSTALL_DIRECTORY = "C:\DPSF"
 $DPSF_ROOT_DIRECTORY = $thisScriptsDirectory
 $DPSF_COMMON_ASSEMBLY_INFO_FILE_PATH = Join-Path $DPSF_ROOT_DIRECTORY "\DPSF\DPSF\CommonAssemblyInfo.cs"
 $DPSF_SOLUTION_FILE_PATH = Join-Path $DPSF_ROOT_DIRECTORY "\DPSF\DPSF.sln"
@@ -45,6 +46,9 @@ $DPSF_CSPROJ_FILE_PATHS = @(
 	(Join-Path $DPSF_ROOT_DIRECTORY "DPSF\DPSF WinRT\DPSF WinRT.csproj")
 )
 $MSBUILD_LOG_DIRECTORY_PATH = $DPSF_ROOT_DIRECTORY
+$MSBUILD_PARAMETERS = "/target:Clean;Build /property:Configuration=Release;Platform=""Mixed Platforms"" /verbosity:Quiet"
+$WINRT_MSBUILD_PARAMETERS = "/target:Clean;Build /property:Configuration=Release;Platform=""Any CPU"" /verbosity:Quiet"
+$MSBUILD_PARAMETERS_X86 = "/target:Clean;Build /property:Configuration=Release;Platform=""x86"" /verbosity:Quiet"
 
 $INSTALLER_FILES_DIRECTORY_PATH = Join-Path $DPSF_ROOT_DIRECTORY "\Installer\Installer Files"
 $TEST_DPSF_DLL_SLN_PATH = Join-Path $DPSF_ROOT_DIRECTORY "Installer\Tests\TestDPSFDLL\TestDPSFDLL.sln"
@@ -57,77 +61,18 @@ $DPSF_DEFAULTS_DIRECTORY = Join-Path $DPSF_ROOT_DIRECTORY "DPSF\DPSF\DPSF Defaul
 $INSTALLER_FILES_TEMPLATES_DPSF_DEFAULTS_DIRECTORY = Join-Path $INSTALLER_FILES_TEMPLATES_DIRECTORY_PATH "DPSF Defaults"
 $DPSF_DEFAULT_EFFECT_FILE_PATH = Join-Path $DPSF_ROOT_DIRECTORY "DPSF\DPSF\DPSF Effects\HLSL\DPSFDefaultEffect.fx"
 
-$MSBUILD_PARAMETERS = "/target:Clean;Build /property:Configuration=Release;Platform=""Mixed Platforms"" /verbosity:Quiet"
-$WINRT_MSBUILD_PARAMETERS = "/target:Clean;Build /property:Configuration=Release;Platform=""Any CPU"" /verbosity:Quiet"
+$DPSF_DEMO_CSPROJ_FILE_PATHS = @( 
+	(Join-Path $INSTALLER_FILES_DIRECTORY_PATH "DPSF Demo\DPSF Demo\DPSF Demo\DPSF Demo.csproj"),
+	(Join-Path $INSTALLER_FILES_DIRECTORY_PATH "DPSF Demo\DPSF Demo\DPSF Demo\Xbox 360 Copy of DPSF Demo.csproj"), 
+	(Join-Path $INSTALLER_FILES_DIRECTORY_PATH "DPSF Demo\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone.csproj"),
+	(Join-Path $INSTALLER_FILES_DIRECTORY_PATH "DPSF Demo\DPSF Demo for Mono for Android\DPSF Demo for Mono for Android.csproj"),
+	(Join-Path $INSTALLER_FILES_DIRECTORY_PATH "DPSF Demo\DPSF Demo for WinRT\DPSF Demo for WinRT.csproj")
+)
 
 
 #==========================================================
 # Define functions used by the script.
 #==========================================================
-function UpdateCsprojFileToAsDrawableGameComponent
-{
- <#
-	.SYNOPSIS
-	Edits the given .csproj file to build the AsDrawableGameComponent equivalent dll.
-
-	.DESCRIPTION
-	Edits the given .csproj file to build the AsDrawableGameComponent equivalent dll.
-#>
-	param 
-	(
-		[ValidateNotNullOrEmpty()]
-		[String] $CsprojFilePath
-	)
-	
-	# Read in the entire file contents
-	$fileContents = [System.IO.File]::ReadAllText($CsprojFilePath)
-	
-	# Replace all of the necessary settings, depending on which csproj file this is.
-	if ((Split-Path -Path $CsprojFilePath -Leaf) -eq 'DPSF.csproj')
-	{
-		$fileContents = $fileContents.Replace('<AssemblyName>DPSF</AssemblyName>', '<AssemblyName>DPSFAsDrawableGameComponent</AssemblyName>')
-		$fileContents = $fileContents.Replace('<DocumentationFile>bin\x86\Debug\DPSF.xml</DocumentationFile>', '<DocumentationFile>bin\x86\Debug\DPSFAsDrawableGameComponent.xml</DocumentationFile>')
-		$fileContents = $fileContents.Replace('<DefineConstants>TRACE;WINDOWS</DefineConstants>', '<DefineConstants>TRACE;WINDOWS DPSFAsDrawableGameComponent</DefineConstants>')
-		$fileContents = $fileContents.Replace('<DocumentationFile>bin\x86\Release\DPSF.xml</DocumentationFile>', '<DocumentationFile>bin\x86\Release\DPSFAsDrawableGameComponent.xml</DocumentationFile>')
-	} 
-	elseif ((Split-Path -Path $CsprojFilePath -Leaf) -eq 'Xbox 360 Copy of DPSF.csproj')
-	{
-		$fileContents = $fileContents.Replace('<AssemblyName>DPSFXbox360</AssemblyName>', '<AssemblyName>DPSFXbox360AsDrawableGameComponent</AssemblyName>')
-		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Xbox 360\Debug\DPSFXbox360.xml</DocumentationFile>', '<DocumentationFile>bin\Xbox 360\Debug\DPSFXbox360AsDrawableGameComponent.xml</DocumentationFile>')
-		$fileContents = $fileContents.Replace('<DefineConstants>TRACE;XBOX;XBOX360</DefineConstants>', '<DefineConstants>TRACE;XBOX;XBOX360 DPSFAsDrawableGameComponent</DefineConstants>')
-		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Xbox 360\Release\DPSFXbox360.xml</DocumentationFile>', '<DocumentationFile>bin\Xbox 360\Release\DPSFXbox360AsDrawableGameComponent.xml</DocumentationFile>')
-	}
-	elseif ((Split-Path -Path $CsprojFilePath -Leaf) -eq 'Windows Phone Copy of DPSF.csproj')
-	{
-		$fileContents = $fileContents.Replace('<AssemblyName>DPSFPhone</AssemblyName>', '<AssemblyName>DPSFPhoneAsDrawableGameComponent</AssemblyName>')
-		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Windows Phone\Debug\DPSFPhone.xml</DocumentationFile>', '<DocumentationFile>bin\Windows Phone\Debug\DPSFPhoneAsDrawableGameComponent.xml</DocumentationFile>')
-		$fileContents = $fileContents.Replace('<DefineConstants>TRACE;WINDOWS_PHONE</DefineConstants>', '<DefineConstants>TRACE;WINDOWS_PHONE DPSFAsDrawableGameComponent</DefineConstants>')
-		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Windows Phone\Release\DPSFPhone.xml</DocumentationFile>', '<DocumentationFile>bin\Windows Phone\Release\DPSFPhoneAsDrawableGameComponent.xml</DocumentationFile>')
-	}
-	elseif ((Split-Path -Path $CsprojFilePath -Leaf) -eq 'Mono for Android Copy of DPSF.csproj')
-	{
-		$fileContents = $fileContents.Replace('<AssemblyName>DPSFMonoForAndoid</AssemblyName>', '<AssemblyName>DPSFMonoForAndoidAsDrawableGameComponent</AssemblyName>')
-		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Debug\DPSFMonoForAndoid.xml</DocumentationFile>', '<DocumentationFile>bin\Debug\DPSFMonoForAndoidAsDrawableGameComponent.xml</DocumentationFile>')
-		$fileContents = $fileContents.Replace('<DefineConstants>TRACE;ANDROID</DefineConstants>', '<DefineConstants>TRACE;ANDROID DPSFAsDrawableGameComponent</DefineConstants>')
-		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Release\DPSFMonoForAndoid.xml</DocumentationFile>', '<DocumentationFile>bin\Release\DPSFMonoForAndoidAsDrawableGameComponent.xml</DocumentationFile>')
-	}
-	elseif ((Split-Path -Path $CsprojFilePath -Leaf) -eq 'DPSF WinRT.csproj')
-	{
-		$fileContents = $fileContents.Replace('<AssemblyName>DPSFWinRT</AssemblyName>', '<AssemblyName>DPSFWinRTAsDrawableGameComponent</AssemblyName>')
-		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Debug\DPSFWinRT.xml</DocumentationFile>', '<DocumentationFile>bin\Debug\DPSFWinRTAsDrawableGameComponent.xml</DocumentationFile>')
-		$fileContents = $fileContents.Replace('<DefineConstants>TRACE;NETFX_CORE WIN_RT</DefineConstants>', '<DefineConstants>TRACE;NETFX_CORE WIN_RT DPSFAsDrawableGameComponent</DefineConstants>')
-		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Release\DPSFWinRT.xml</DocumentationFile>', '<DocumentationFile>bin\Release\DPSFWinRTAsDrawableGameComponent.xml</DocumentationFile>')
-	}
-	else
-	{
-		# Throw an error.
-		throw "ERROR: Invalid .csproj file name given. Cannot find the file '$CsprojFilePath'."
-	} 
-	
-	# Write the new file contents to the file.
-	[System.IO.File]::WriteAllText($CsprojFilePath, $fileContents)
-}
-
 function DpsfVersionNumber
 {
  <#
@@ -192,6 +137,130 @@ function DpsfVersionNumber
 	{
 		throw "Could not find version number in the DPSF CommonAssemblyInfo.cs file"
 	}
+}
+
+function UpdateCsprojFileToAsDrawableGameComponent
+{
+ <#
+	.SYNOPSIS
+	Edits the given .csproj file to build the AsDrawableGameComponent equivalent dll.
+
+	.DESCRIPTION
+	Edits the given .csproj file to build the AsDrawableGameComponent equivalent dll.
+#>
+	param 
+	(
+		[ValidateNotNullOrEmpty()]
+		[String] $CsprojFilePath
+	)
+	
+	# Read in the entire file contents
+	$fileContents = [System.IO.File]::ReadAllText($CsprojFilePath)
+	
+	# Replace all of the necessary settings, depending on which csproj file this is.
+	if ((Split-Path -Path $CsprojFilePath -Leaf) -eq 'DPSF.csproj')
+	{
+		$fileContents = $fileContents.Replace('<AssemblyName>DPSF</AssemblyName>', '<AssemblyName>DPSFAsDrawableGameComponent</AssemblyName>')
+		$fileContents = $fileContents.Replace('<DocumentationFile>bin\x86\Debug\DPSF.xml</DocumentationFile>', '<DocumentationFile>bin\x86\Debug\DPSFAsDrawableGameComponent.xml</DocumentationFile>')
+		$fileContents = $fileContents.Replace('<DefineConstants>TRACE;WINDOWS</DefineConstants>', '<DefineConstants>TRACE;WINDOWS DPSFAsDrawableGameComponent</DefineConstants>')
+		$fileContents = $fileContents.Replace('<DocumentationFile>bin\x86\Release\DPSF.xml</DocumentationFile>', '<DocumentationFile>bin\x86\Release\DPSFAsDrawableGameComponent.xml</DocumentationFile>')
+	} 
+	elseif ((Split-Path -Path $CsprojFilePath -Leaf) -eq 'Xbox 360 Copy of DPSF.csproj')
+	{
+		$fileContents = $fileContents.Replace('<AssemblyName>DPSFXbox360</AssemblyName>', '<AssemblyName>DPSFXbox360AsDrawableGameComponent</AssemblyName>')
+		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Xbox 360\Debug\DPSFXbox360.xml</DocumentationFile>', '<DocumentationFile>bin\Xbox 360\Debug\DPSFXbox360AsDrawableGameComponent.xml</DocumentationFile>')
+		$fileContents = $fileContents.Replace('<DefineConstants>TRACE;XBOX;XBOX360</DefineConstants>', '<DefineConstants>TRACE;XBOX;XBOX360 DPSFAsDrawableGameComponent</DefineConstants>')
+		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Xbox 360\Release\DPSFXbox360.xml</DocumentationFile>', '<DocumentationFile>bin\Xbox 360\Release\DPSFXbox360AsDrawableGameComponent.xml</DocumentationFile>')
+	}
+	elseif ((Split-Path -Path $CsprojFilePath -Leaf) -eq 'Windows Phone Copy of DPSF.csproj')
+	{
+		$fileContents = $fileContents.Replace('<AssemblyName>DPSFPhone</AssemblyName>', '<AssemblyName>DPSFPhoneAsDrawableGameComponent</AssemblyName>')
+		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Windows Phone\Debug\DPSFPhone.xml</DocumentationFile>', '<DocumentationFile>bin\Windows Phone\Debug\DPSFPhoneAsDrawableGameComponent.xml</DocumentationFile>')
+		$fileContents = $fileContents.Replace('<DefineConstants>TRACE;WINDOWS_PHONE</DefineConstants>', '<DefineConstants>TRACE;WINDOWS_PHONE DPSFAsDrawableGameComponent</DefineConstants>')
+		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Windows Phone\Release\DPSFPhone.xml</DocumentationFile>', '<DocumentationFile>bin\Windows Phone\Release\DPSFPhoneAsDrawableGameComponent.xml</DocumentationFile>')
+	}
+	elseif ((Split-Path -Path $CsprojFilePath -Leaf) -eq 'Mono for Android Copy of DPSF.csproj')
+	{
+		$fileContents = $fileContents.Replace('<AssemblyName>DPSFMonoForAndoid</AssemblyName>', '<AssemblyName>DPSFMonoForAndoidAsDrawableGameComponent</AssemblyName>')
+		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Debug\DPSFMonoForAndoid.xml</DocumentationFile>', '<DocumentationFile>bin\Debug\DPSFMonoForAndoidAsDrawableGameComponent.xml</DocumentationFile>')
+		$fileContents = $fileContents.Replace('<DefineConstants>TRACE;ANDROID</DefineConstants>', '<DefineConstants>TRACE;ANDROID DPSFAsDrawableGameComponent</DefineConstants>')
+		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Release\DPSFMonoForAndoid.xml</DocumentationFile>', '<DocumentationFile>bin\Release\DPSFMonoForAndoidAsDrawableGameComponent.xml</DocumentationFile>')
+	}
+	elseif ((Split-Path -Path $CsprojFilePath -Leaf) -eq 'DPSF WinRT.csproj')
+	{
+		$fileContents = $fileContents.Replace('<AssemblyName>DPSFWinRT</AssemblyName>', '<AssemblyName>DPSFWinRTAsDrawableGameComponent</AssemblyName>')
+		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Debug\DPSFWinRT.xml</DocumentationFile>', '<DocumentationFile>bin\Debug\DPSFWinRTAsDrawableGameComponent.xml</DocumentationFile>')
+		$fileContents = $fileContents.Replace('<DefineConstants>TRACE;NETFX_CORE WIN_RT</DefineConstants>', '<DefineConstants>TRACE;NETFX_CORE WIN_RT DPSFAsDrawableGameComponent</DefineConstants>')
+		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Release\DPSFWinRT.xml</DocumentationFile>', '<DocumentationFile>bin\Release\DPSFWinRTAsDrawableGameComponent.xml</DocumentationFile>')
+	}
+	else
+	{
+		# Throw an error.
+		throw "ERROR: Invalid .csproj file name given. Cannot find the file '$CsprojFilePath'."
+	} 
+	
+	# Write the new file contents to the file.
+	[System.IO.File]::WriteAllText($CsprojFilePath, $fileContents)
+}
+
+function UpdateCsprojFileToReferenceDllInDpsfInstallDirectory
+{
+ <#
+	.SYNOPSIS
+	Edits the given .csproj file to refernce the DPSF dlls from the DPSF Install directory.
+
+	.DESCRIPTION
+	Edits the given .csproj file to refernce the DPSF dlls from the DPSF Install directory.
+#>
+	param 
+	(
+		[ValidateNotNullOrEmpty()]
+		[String] $CsprojFilePath
+	)
+	
+	# Read in the entire file contents
+	$fileContents = [System.IO.File]::ReadAllText($CsprojFilePath)
+	
+	# Replace all of the necessary settings, depending on which csproj file this is.
+	if ((Split-Path -Path $CsprojFilePath -Leaf) -eq 'DPSF Demo.csproj')
+	{
+		$projectAssemblyName = "DPSF"
+		$projectFileName = "DPSF.csproj"
+	} 
+	elseif ((Split-Path -Path $CsprojFilePath -Leaf) -eq 'Xbox 360 Copy of DPSF Demo.csproj')
+	{
+		$projectAssemblyName = "DPSFXbox360"
+		$projectFileName = "Xbox 360 Copy of DPSF.csproj"
+	}
+	elseif ((Split-Path -Path $CsprojFilePath -Leaf) -eq 'DPSF Demo for Windows Phone.csproj')
+	{
+		$projectAssemblyName = "DPSFPhone"
+		$projectFileName = "Windows Phone Copy of DPSF.csproj"
+	}
+	elseif ((Split-Path -Path $CsprojFilePath -Leaf) -eq 'DPSF Demo for Mono for Android.csproj')
+	{
+		$projectAssemblyName = "DPSFMonoForAndoid"
+		$projectFileName = "Mono for Android Copy of DPSF.csproj"
+	}
+	elseif ((Split-Path -Path $CsprojFilePath -Leaf) -eq 'DPSF Demo for WinRT.csproj')
+	{
+		$projectAssemblyName = "DPSFWinRT"
+		$projectFileName = "DPSF WinRT.csproj"
+	}
+	else
+	{
+		# Throw an error.
+		throw "ERROR: Invalid .csproj file name given. Cannot find the file '$CsprojFilePath'."
+	}
+	
+	# Replace the regex match with the replacement text.
+	$dllFilePath = Join-Path $DPSF_DEFAULT_INSTALL_DIRECTORY "$projectAssemblyName.dll"
+	$regex = [regex] "(?i)(<ProjectReference Include=`".*?\\$projectFileName`">(.|\n|\r)*?</ProjectReference>)"
+	$replacementText = "<Reference Include=`"$projectAssemblyName`"><HintPath>$dllFilePath</HintPath></Reference>"
+	$fileContents = $regex.Replace($fileContents, $replacementText)
+	
+	# Write the new file contents to the file.
+	[System.IO.File]::WriteAllText($CsprojFilePath, $fileContents)
 }
 
 # Catch any exceptions thrown and stop the script.
@@ -295,7 +364,7 @@ Copy-Item -Path "$LATEST_DLL_FILES_DIRECTORY_PATH/*" -Destination $INSTALLER_FIL
 
 # Copy the DLL files to the 'C:\DPSF' directory.
 Write-Host "Copying new DLL and XML files to the 'C:\DPSF' directory..."
-Copy-Item -Path "$LATEST_DLL_FILES_DIRECTORY_PATH/*" -Destination "C:\DPSF" -Include "*.dll","*.xml"
+Copy-Item -Path "$LATEST_DLL_FILES_DIRECTORY_PATH/*" -Destination $DPSF_DEFAULT_INSTALL_DIRECTORY -Include "*.dll","*.xml"
 
 # Make sure all of the DPSF DLLs were built and copied properly.
 Write-Host "Verifying that the DPSF DLL files were built and copied properly..."
@@ -395,19 +464,53 @@ You will need to do this for the Windows, Xbox, Windows Phone, and Mono for Andr
 We need to do this so that when the user opens the DPSF Demo.sln the DPSF references will already be pointing to the "C:\DPSF" directory.
 #>
 
+# Update the .csproj files' to build the AsDrawableGameComponent DLLs.
+Write-Host "Updating the DPSF Demo .csproj files to reference the DPFS DLLs from the default DPFS install directory..."
+foreach ($csprojFilePath in $DPSF_DEMO_CSPROJ_FILE_PATHS)
+{
+	# Backup the file before modifying it.
+	Copy-Item -Path $csprojFilePath -Destination "$CsprojFilePath.backup"
 
+	UpdateCsprojFileToReferenceDllInDpsfInstallDirectory $csprojFilePath
+}
 
 <#
 15 - Re-run the "DPSF\DPSF.sln" in x86 Release mode to generate the executable and required .xnb files so that the DPSF Demo can be ran without 
-needing Visual Studio. The DPSF Demo (Phone) does not generate an executable that can be run by Windows, so we don't need to do this with it. 
+needing Visual Studio. No other projects generate an executable that can be run by Windows, so we don't need to do this with them. 
 Then change the configuration manager back to Mixed Debug mode when done.
 #>
 
+# Build the DPSF solution in x86 Release mode to create the new .xnb files.
+Write-Host "Building the DPSF solution in x86 Release mode to create .xnb files for the installer..."
+$buildSucceeded = Invoke-MsBuild -Path "$DPSF_SOLUTION_FILE_PATH" -MsBuildParameters "$MSBUILD_PARAMETERS_X86" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -ShowBuildWindow -AutoLaunchBuildLogOnFailure
+if (!$buildSucceeded) { throw "Build failed." }
 
 
 
 
 
+
+
+<#
+21 - In the DPSF.sln and "DPSF WinRT.sln", change the DPSF Demo projects back to referencing the DPSF projects, rather than the DLL files in 
+the C:\DPSF folder, and change back to using the Debug Mixed configuration.
+#>
+
+Add-Type -AssemblyName System.Windows.Forms
+if ([System.Windows.Forms.MessageBox]::Show("Revert the DPSF Demo project files now?", "Revert DPSF Demo Project Files?", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question) -eq [System.Windows.Forms.DialogResult]::Yes)
+{
+	#Revert the .csproj files back to their original states now that we have the DLLs.
+	Write-Host "Reverting .csproj files back to their original states..."
+	foreach ($csprojFilePath in $DPSF_DEMO_CSPROJ_FILE_PATHS)
+	{
+		# Copy the backup back overtop of the original to revert it, and then delete the backup file.
+		if (Test-Path "$csprojFilePath.backup")
+		{
+			Copy-Item -Path "$csprojFilePath.backup" -Destination "$csprojFilePath"
+			Remove-Item -Path "$csprojFilePath.backup"
+		}
+	}
+}
 
 
 <# Put these comments directly into the script so they explain what the script does manually.
@@ -450,7 +553,7 @@ Then do a Build Solution on both the DPSF.sln and the "DPSF WinRT.sln" to genera
 
 14 - Open the "DPSF\DPSF.sln" and change the DPSF Demo projects to reference the "C:\DPSF\DPSF.dll" files rather than the DPSF project. You will need to do this for the Windows, Xbox, Windows Phone, and Mono for Android DPSF Demo projects, as well as the "DPSF\DPSF WinRT.sln" DPSF Demo project. We need to do this so that when the user opens the DPSF Demo.sln the DPSF references will already be pointing to the "C:\DPSF" directory.
 
-15 - Re-run the "DPSF\DPSF.sln" in x86 Release mode to generate the executable and required .xnb files so that the DPSF Demo can be ran without needing Visual Studio. The DPSF Demo (Phone) does not generate an executable that can be run by Windows, so we don't need to do this with it. Then change the configuration manager back to Mixed Debug mode when done.
+15 - Re-run the "DPSF\DPSF.sln" in x86 Release mode to generate the executable and required .xnb files so that the DPSF Demo can be ran without needing Visual Studio. No other projects generate an executable that can be run by Windows, so we don't need to do this with them. Then change the configuration manager back to Mixed Debug mode when done.
 
 16 - Update the "DPSF API Documentation" to use the .dll's new .xml files generated (using Sandcastle Help File Builder program). You will need to update the HelpFileVersion to match the new DPSF version number.
 

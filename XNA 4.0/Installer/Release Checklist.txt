@@ -4,11 +4,7 @@ When releasing a new version of DPSF, be sure to follow these steps:
 
 0b - If any files were added, removed, renamed, or moved in the DPSF project, you must reflect these changes in the Mono for Android Copy of DPSF project as well.
 
-Steps 1 - 13 are now handled by the BuildNewDpsfRelease.ps1 script.
-
-14 - Open the "DPSF\DPSF.sln" and change the DPSF Demo projects to reference the "C:\DPSF\DPSF.dll" files rather than the DPSF project. You will need to do this for the Windows, Xbox, Windows Phone, and Mono for Android DPSF Demo projects, as well as the "DPSF\DPSF WinRT.sln" DPSF Demo project. We need to do this so that when the user opens the DPSF Demo.sln the DPSF references will already be pointing to the "C:\DPSF" directory.
-
-15 - Re-run the "DPSF\DPSF.sln" in x86 Release mode to generate the executable and required .xnb files so that the DPSF Demo can be ran without needing Visual Studio. The DPSF Demo (Phone) does not generate an executable that can be run by Windows, so we don't need to do this with it. Then change the configuration manager back to Mixed Debug mode when done.
+Steps 1 - 15 are now handled by the BuildNewDpsfRelease.ps1 script.
 
 16 - Update the "DPSF API Documentation" to use the .dll's new .xml files generated (using Sandcastle Help File Builder program). You will need to update the HelpFileVersion to match the new DPSF version number.
 
