@@ -68,6 +68,7 @@ $DPSF_DEMO_CSPROJ_FILE_PATHS = @(
 	(Join-Path $INSTALLER_FILES_DIRECTORY_PATH "DPSF Demo\DPSF Demo for Mono for Android\DPSF Demo for Mono for Android.csproj"),
 	(Join-Path $INSTALLER_FILES_DIRECTORY_PATH "DPSF Demo\DPSF Demo for WinRT\DPSF Demo for WinRT.csproj")
 )
+$CSPROJ_FILE_PATHS_BACKUP_DIRECTORY = Join-Path $DPSF_ROOT_DIRECTORY "CsprojBackups"
 
 
 #==========================================================
@@ -335,7 +336,7 @@ foreach ($csprojFilePath in $DPSF_CSPROJ_FILE_PATHS)
 Write-Host "Building the DPSF solution for AsDrawableGameComponent DLLs..."
 $buildSucceeded = Invoke-MsBuild -Path "$DPSF_SOLUTION_FILE_PATH" -MsBuildParameters "$MSBUILD_PARAMETERS" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -ShowBuildWindow -AutoLaunchBuildLogOnFailure
 if (!$buildSucceeded) { throw "Build failed." }
-Write-Host "Building the DPSF WinRT for AsDrawableGameComponent DLLs..."
+Write-Host "Building the DPSF WinRT solution for AsDrawableGameComponent DLLs..."
 $buildSucceeded = Invoke-MsBuild -Path "$DPSF_WINRT_SOLUTION_FILE_PATH" -MsBuildParameters "$WINRT_MSBUILD_PARAMETERS" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -ShowBuildWindow -AutoLaunchBuildLogOnFailure
 if (!$buildSucceeded) { throw "Build failed." }
 
@@ -400,6 +401,7 @@ and selecting "Set as StartUp Project.
 #>
 
 # Prompt if user wants to launch the test solutions and verify they work correctly and save answer for later.
+Write-Host "Have user manually verify that the Test solutions work as expected..."
 Add-Type -AssemblyName System.Windows.Forms
 if ([System.Windows.Forms.MessageBox]::Show("Do you want to launch the Test solutions to verify they work correctly?", "Launch Test Solutions", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question) -eq [System.Windows.Forms.DialogResult]::Yes)
 {
@@ -469,8 +471,11 @@ Write-Host "Updating the DPSF Demo .csproj files to reference the DPFS DLLs from
 foreach ($csprojFilePath in $DPSF_DEMO_CSPROJ_FILE_PATHS)
 {
 	# Backup the file before modifying it.
-	Copy-Item -Path $csprojFilePath -Destination "$CsprojFilePath.backup"
-
+	# Have to back these up to a different directory outside of the Installer Files folder so they aren't included in the DPSF installer.
+	$fileName = [System.IO.Path]::GetFileName($csprojFilePath)
+	$backupFilePath = Join-Path $CSPROJ_FILE_PATHS_BACKUP_DIRECTORY "$fileName.backup"
+	Copy-Item -Path $csprojFilePath -Destination $backupFilePath
+	
 	UpdateCsprojFileToReferenceDllInDpsfInstallDirectory $csprojFilePath
 }
 
@@ -499,17 +504,23 @@ the C:\DPSF folder, and change back to using the Debug Mixed configuration.
 Add-Type -AssemblyName System.Windows.Forms
 if ([System.Windows.Forms.MessageBox]::Show("Revert the DPSF Demo project files now?", "Revert DPSF Demo Project Files?", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question) -eq [System.Windows.Forms.DialogResult]::Yes)
 {
-	#Revert the .csproj files back to their original states now that we have the DLLs.
+	# Revert the .csproj files back to their original states now that we have the DLLs.
 	Write-Host "Reverting .csproj files back to their original states..."
 	foreach ($csprojFilePath in $DPSF_DEMO_CSPROJ_FILE_PATHS)
 	{
+		$fileName = [System.IO.Path]::GetFileName($csprojFilePath)
+		$backupFilePath = Join-Path $CSPROJ_FILE_PATHS_BACKUP_DIRECTORY "$fileName.backup"
+	
 		# Copy the backup back overtop of the original to revert it, and then delete the backup file.
 		if (Test-Path "$csprojFilePath.backup")
 		{
-			Copy-Item -Path "$csprojFilePath.backup" -Destination "$csprojFilePath"
-			Remove-Item -Path "$csprojFilePath.backup"
+			Copy-Item -Path "$backupFilePath" -Destination "$csprojFilePath"
+			Remove-Item -Path "$backupFilePath"
 		}
 	}
+	
+	# Delete the backups directory now that we are done with it.
+	Remove-Item -Path $CSPROJ_FILE_PATHS_BACKUP_DIRECTORY
 }
 
 
