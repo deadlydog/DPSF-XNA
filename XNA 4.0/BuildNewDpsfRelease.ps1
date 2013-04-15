@@ -70,6 +70,12 @@ $DPSF_DEMO_CSPROJ_FILE_PATHS = @(
 )
 $CSPROJ_FILE_PATHS_BACKUP_DIRECTORY = Join-Path $DPSF_ROOT_DIRECTORY "CsprojBackups"
 
+$HELP_FILES_DIRECTORY_PATH = Join-Path $DPSF_ROOT_DIRECTORY "Help Files"
+$API_DOCUMENTATION_SANDCASTLE_PROJECT_FILE_PATH = Join-Path $HELP_FILES_DIRECTORY_PATH "DPSF API Documentation\DPSF API Documentation Sandcastle Project.shfbproj"
+$HELP_DOCUMENTATION_HELP_AND_MANUAL_PROJECT_FILE_PATH = Join-Path $HELP_FILES_DIRECTORY_PATH "DPSF Help Without API Documentation.hmxz"
+$HELP_DOCUMENTATION_UPDATE_PROCESS_FILE_PATH = Join-Path $HELP_FILES_DIRECTORY_PATH "DPSF Help Update Process.txt"
+$HELP_DOCUMENTATION_HTML_DIRECTORY = Join-Path $HELP_FILES_DIRECTORY_PATH "HTML"
+
 
 #==========================================================
 # Define functions used by the script.
@@ -271,6 +277,46 @@ trap [Exception] { Write-Host "Error: $_"; break; }
 # Perform the script tasks.
 #==========================================================
 
+Write-Host "Beginning script to create DPSF Release '$VersionNumber'..."
+
+$creatingRealRelease = $false
+Add-Type -AssemblyName System.Windows.Forms
+if ([System.Windows.Forms.MessageBox]::Show("Are you making an actual release?`nIf not, many prompts will be skipped and the script will exit after the new DLL files have been created.", "Is This A Real Release?", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question) -eq [System.Windows.Forms.DialogResult]::Yes)
+{
+	$creatingRealRelease = $true
+}
+
+<#
+0a - If the DPSPDefaultEffect.fx file was modified, you will need to re-add the .bin files as resources so that the changes take effect. 
+Make sure to do the build in release mode so the generated .bin files are nice and small, then go into DPSFResources.resx in the DPSF Project, remove the effect resources, 
+and then re-add them from "DPSF/DPSF Effects/Raw Effect Code". Be sure to do a thorough test on both the PC and Xbox for all particle types to make sure everything is good.
+
+0b - If any files were added, removed, renamed, or moved in the DPSF project, you must reflect these changes in the 'DPSF WinRT' and 'Mono for Android Copy of DPSF' project as well.
+#>
+
+Add-Type -AssemblyName System.Windows.Forms
+if ($creatingRealRelease -and [System.Windows.Forms.MessageBox]::Show("Was the DPSFDefaultEffect.fx file modified?", "Was The Effect File Modified?", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question) -eq [System.Windows.Forms.DialogResult]::Yes)
+{
+	$prompt = "Did you re-add the .bin files as resources so that the changes take effect?"
+	if ($creatingRealRelease -and [System.Windows.Forms.MessageBox]::Show($prompt, "Did You Update The Bin Files In DPSFReources.resx?", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question) -eq [System.Windows.Forms.DialogResult]::No)
+	{
+		Write-Host "To re-add the .bin files do a build in Release mode, then go into DPSFResources.resx in the DPSF Project, remove the effect resources, and then re-add them from 'DPSF\DPSF Effects\Raw Effect Code'."
+		Write-Host "Exiting the script so that you can update the Effect in the Resource files."
+		Exit
+	}
+}
+
+Add-Type -AssemblyName System.Windows.Forms
+if ($creatingRealRelease -and [System.Windows.Forms.MessageBox]::Show("Were any files added, removed, renamed, or moved in the projects?", "Were Project File Names Modified?", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question) -eq [System.Windows.Forms.DialogResult]::Yes)
+{
+	$prompt = "Did you reflect the changes in the 'DPSF WinRT' and 'Mono for Android Copy of DPSF' projects?"
+	if ($creatingRealRelease -and [System.Windows.Forms.MessageBox]::Show($prompt, "Did You Update The Bin Files In DPSFReources.resx?", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question) -eq [System.Windows.Forms.DialogResult]::No)
+	{
+		Write-Host "Exiting the script so that you can update the 'DPSF WinRT' and 'Mono for Android Copy of DPSF' projects."
+		Exit
+	}
+}
+
 <#
 1 - Go into the DPSF Project Properties and update the Assembly Information to use the new Assembly Version (Major.Minor.Build.Revision) 
 (Major features, minor features, bug fixes, 0).
@@ -288,8 +334,6 @@ if (!$VersionNumber)
 
 # Set the Version Number
 $VersionNumber = DpsfVersionNumber -SetVersionNumber -NewVersionNumber $VersionNumber
-
-Write-Host "Beginning script to create DPSF Release '$VersionNumber'..."
 
 <#
 2 - First make sure the configuration manager is set to Mixed Platforms, so that x86, Xbox 360, Windows Phone, and Mono for Android files are built.
@@ -403,7 +447,7 @@ and selecting "Set as StartUp Project.
 # Prompt if user wants to launch the test solutions and verify they work correctly and save answer for later.
 Write-Host "Have user manually verify that the Test solutions work as expected..."
 Add-Type -AssemblyName System.Windows.Forms
-if ([System.Windows.Forms.MessageBox]::Show("Do you want to launch the Test solutions to verify they work correctly?", "Launch Test Solutions", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question) -eq [System.Windows.Forms.DialogResult]::Yes)
+if ($creatingRealRelease -and [System.Windows.Forms.MessageBox]::Show("Do you want to launch the Test solutions to verify they work correctly?", "Launch Test Solutions", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question) -eq [System.Windows.Forms.DialogResult]::Yes)
 {
 	# Open the TestDPSFDLL solution to verify that it works correctly.
 	& $TEST_DPSF_DLL_SLN_PATH
@@ -451,6 +495,13 @@ RoboCopy "$DPSF_DEFAULTS_DIRECTORY" "$INSTALLER_FILES_TEMPLATES_DPSF_DEFAULTS_DI
 Write-Host "Copying the file '$DPSF_DEFAULT_EFFECT_FILE_PATH' to the folder '$INSTALLER_FILES_TEMPLATES_DIRECTORY_PATH'..."
 Copy-Item -Path "$DPSF_DEFAULT_EFFECT_FILE_PATH" -Destination "$INSTALLER_FILES_TEMPLATES_DIRECTORY_PATH"
 
+# If we are not creating a full release, exit the script now.
+if (-not $creatingRealRelease)
+{
+	Write-Host "Exiting script since this was not a full release."
+	Exit
+}
+
 <#
 13 - Do a search on the "Installer Files" folder and delete all "Debug" and "Release" folders, ".suo", and ".cachefile" files, and any files or folders 
 with "Resharper" or "ncrunch" in their name.  This will help keep the size of the installer small, but will require users to build the applications 
@@ -490,6 +541,46 @@ Then change the configuration manager back to Mixed Debug mode when done.
 Write-Host "Building the DPSF solution in x86 Release mode to create .xnb files for the installer..."
 $buildSucceeded = Invoke-MsBuild -Path "$DPSF_SOLUTION_FILE_PATH" -MsBuildParameters "$MSBUILD_PARAMETERS_X86" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -ShowBuildWindow -AutoLaunchBuildLogOnFailure
 if (!$buildSucceeded) { throw "Build failed." }
+
+<#
+16 - Update the "DPSF API Documentation" to use the .dll's new .xml files generated (using Sandcastle Help File Builder program). 
+You will need to update the HelpFileVersion to match the new DPSF version number.
+#>
+
+# Update the version number in the API Documentation builder project file.
+Write-Host "Updating version number in the DPSF API Documentation builder project file..."
+$fileContents = [System.IO.File]::ReadAllText($API_DOCUMENTATION_SANDCASTLE_PROJECT_FILE_PATH)
+$rxHelpFileVersion = [regex] "(?i)(<HelpFileVersion>.*?</HelpFileVersion>)"
+$fileContents = $rxHelpFileVersion.Replace($fileContents, "<HelpFileVersion>$VersionNumber</HelpFileVersion>")
+[System.IO.File]::WriteAllText($API_DOCUMENTATION_SANDCASTLE_PROJECT_FILE_PATH, $fileContents)
+
+# Open the API Documentation builder project so that we can manually create the new .chm file.
+Write-Host "Launching Sandcastle so you can generate the DPSF API Documentation..."
+Invoke-Item $API_DOCUMENTATION_SANDCASTLE_PROJECT_FILE_PATH
+
+Add-Type -AssemblyName System.Windows.Forms
+[System.Windows.Forms.MessageBox]::Show("Hit OK once the new DPSF API Documentation file has been generated by Sandcastle.", "Create Sandcastle Documentation", [System.Windows.Forms.MessageBoxButtons]::Ok, [System.Windows.Forms.MessageBoxIcon]::Stop)
+
+<#
+17 - Update the Help document (including the change log), generating a new "DPSF Help.chm" and copy it into the "Installer Files" folder. 
+Generating the Help document has it's own process document that should be followed (DPSF Help Update Process.txt).
+#>
+
+# Delete the existing HTML documentation if it exists.
+if (Test-Path $HELP_DOCUMENTATION_HTML_DIRECTORY)
+{
+	Write-Host "Deleting Help Documentation HTML directory..."
+	Remove-Item -Path $HELP_DOCUMENTATION_HTML_DIRECTORY -Recurse -Force
+}
+
+Write-Host "Launching Help And Manual project and Help Update Process file so you can update and generate the new Help Documentation..."
+Invoke-Item $HELP_DOCUMENTATION_HELP_AND_MANUAL_PROJECT_FILE_PATH
+Invoke-Item $HELP_DOCUMENTATION_UPDATE_PROCESS_FILE_PATH
+
+Add-Type -AssemblyName System.Windows.Forms
+[System.Windows.Forms.MessageBox]::Show("Hit OK once the new DPSF Help documentation has been generated by Help And Manual.", "Create New DPSF Help Documentation", [System.Windows.Forms.MessageBoxButtons]::Ok, [System.Windows.Forms.MessageBoxIcon]::Stop)
+
+
 
 
 
@@ -531,7 +622,7 @@ When releasing a new version of DPSF, be sure to follow these steps:
 
 0a - If the DPSPDefaultEffect.fx file was modified, you will need to re-add the .bin files as resources so that the changes take effect. Make sure to do the build in release mode so the generated .bin files are nice and small, then go into DPSFResources.resx in the DPSF Project, remove the effect resources, and then re-add them from "DPSF/DPSF Effects/Raw Effect Code". Be sure to do a thorough test on both the PC and Xbox for all particle types to make sure everything is good.
 
-0b - If any files were added, removed, renamed, or moved in the DPSF project, you must reflect these changes in the Mono for Android Copy of DPSF project as well.
+0b - If any files were added, removed, renamed, or moved in the DPSF project, you must reflect these changes in the 'DPSF WinRT' and 'Mono for Android Copy of DPSF' project as well.
 
 1 - Update the CommonAssemblyInfo.cs file to use the new Assembly Version (Major.Minor.Build.Revision) (Major features, minor features, bug fixes, 0).
 

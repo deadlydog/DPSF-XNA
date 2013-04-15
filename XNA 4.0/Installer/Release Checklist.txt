@@ -1,9 +1,5 @@
 When releasing a new version of DPSF, be sure to follow these steps:
 
-0a - If the DPSPDefaultEffect.fx file was modified, you will need to re-add the .bin files as resources so that the changes take effect. Make sure to do the build in release mode so the generated .bin files are nice and small, then go into DPSFResources.resx in the DPSF Project, remove the effect resources, and then re-add them from "DPSF/DPSF Effects/Raw Effect Code". Be sure to do a thorough test on both the PC and Xbox for all particle types to make sure everything is good.
-
-0b - If any files were added, removed, renamed, or moved in the DPSF project, you must reflect these changes in the Mono for Android Copy of DPSF project and "DPSF WinRT.sln" as well.
-
 Steps 1 - 15 are now handled by the BuildNewDpsfRelease.ps1 script.
 
 16 - Update the "DPSF API Documentation" to use the .dll's new .xml files generated (using Sandcastle Help File Builder program). You will need to update the HelpFileVersion to match the new DPSF version number.
