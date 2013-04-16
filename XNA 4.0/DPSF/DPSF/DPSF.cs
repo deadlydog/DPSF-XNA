@@ -4912,13 +4912,16 @@ namespace DPSF
 				_performanceProfilingStopwatch.Reset();
 				_performanceProfilingStopwatch.Start();
 #endif
-			}
+            }
 
-			// Reset all of the render states.
+// There's an XNA 4 bug on the Xbox that will throw a run-time error if we don't clear out the Render State before drawing, so clear them out.
+#if (XBOX)
+            // Reset all of the render states.
 			if (ParticleType != ParticleTypes.NoDisplay)
-				ClearRenderStates();
+				ClearRenderStatesOnXbox();
+#endif
 
-			// Perform other functions before this Particle System is drawn.
+            // Perform other functions before this Particle System is drawn.
 			BeforeDraw();
 
 			// If there are no Particles to draw.
@@ -5103,33 +5106,22 @@ namespace DPSF
 		/// This must be done before any rendering to prevent an XNA 4 bug that causes the graphics device
 		/// to incorrectly track state information, which manifests itself as run-time errors.
 		/// https://connect.microsoft.com/site226/feedback/details/586216/cloned-effect-
+        /// <para>It looks like this bug is only on the Xbox 360, so we only need to call this function on that platform.
+        /// I've removed all of the checks that were required to make this code run properly on other platforms.</para>
 		/// </summary>
-		private void ClearRenderStates()
+		private void ClearRenderStatesOnXbox()
 		{
 			// If we don't have a handle to a Graphics Device (e.g. NoDisplay particle system), just exit.
 			if (this.GraphicsDevice == null)
 				return;
 
-			try
-			{
-				// Reset all of the Sampler States
-                int numberOfSamplerStates = DPSFDefaultSettings.NumberOfSamplerStates(this.GraphicsDevice);
-                for (int index = 0; index < numberOfSamplerStates; index++)
-					GraphicsDevice.SamplerStates[index] = SamplerState.PointClamp;
-// Apparently MonoGame doesn't know about the VertexSamplerStates property, so we can't update it when using MonoGame for porting to Android and WinRT.
-#if (!ANDROID && !WIN_RT)
-				// The Reach profile does not have VertexSamplerStates, but clear them out if we're using a HiDef profile.
-				if (this.GraphicsDevice.GraphicsProfile == GraphicsProfile.HiDef)
-				{
-					//  Reset all of the Vertex Sampler States
-					for (int index = 0; index < 2; index++)
-						GraphicsDevice.VertexSamplerStates[index] = SamplerState.PointWrap;
-				}
-#endif
-			}
-			// Eat any Null Ref Exceptions, as they are often thrown from the SamplerStates property when moving the application window between monitors.
-			catch (NullReferenceException)
-			{ }
+			// Reset all of the Sampler States
+            for (int index = 0; index < 16; index++)
+				GraphicsDevice.SamplerStates[index] = SamplerState.PointClamp;
+
+			//  Reset all of the Vertex Sampler States
+			for (int index = 0; index < 2; index++)
+				GraphicsDevice.VertexSamplerStates[index] = SamplerState.PointWrap;
 		}
 
 		/// <summary>

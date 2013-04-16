@@ -88,26 +88,5 @@ namespace DPSF
 			return _alphaTestEffect ?? (_alphaTestEffect = new AlphaTestEffect(graphicsDevice));
 		}
     	private static AlphaTestEffect _alphaTestEffect = null;
-
-        /// <summary>
-        /// Gets the number of Sampler States supported by the current hardware.
-        /// <para>XNA default is 16, but may be different when using MonoGame to support other hardware.</para>
-        /// </summary>
-        /// <param name="graphicsDevice">The Graphics Device to check.
-        /// <para>NOTE: This is only used the first time that this function is called.</para></param>
-        internal static int NumberOfSamplerStates(GraphicsDevice graphicsDevice)
-        {
-            if (_numberOfSamplerStates == -1)
-            {
-                _numberOfSamplerStates = 16;
-#if (ANDROID || WIN_RT)
-                // Use reflection to inspect MonoGame's GraphicsDevice.MaxTextureSlots property for the number of Sampler States supported.
-                _numberOfSamplerStates = graphicsDevice.GetType().GetProperty("MaxTextureSlots").GetValue(graphicsDevice, null);
-#endif
-            }
-
-            return _numberOfSamplerStates;
-        }
-        private static int _numberOfSamplerStates = -1;
     }
 }
