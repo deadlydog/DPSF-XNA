@@ -2,10 +2,6 @@ When releasing a new version of DPSF, be sure to follow these steps:
 
 Steps 1 - 15 are now handled by the BuildNewDpsfRelease.ps1 script.
 
-16 - Update the "DPSF API Documentation" to use the .dll's new .xml files generated (using Sandcastle Help File Builder program). You will need to update the HelpFileVersion to match the new DPSF version number.
-
-17 - Update the Help document (including the change log), generating a new "DPSF Help.chm" and copy it into the "Installer Files" folder. Generating the Help document has it's own process document that should be followed (DPSF Help Update Process.txt).
-
 18 - Open the "DPSF Installer Settings.iit" and Build a new "DPSF Installer.exe", making sure to include any new links that should appear in the Start Menu DPSF folder, such as links to new tutorials, demos, etc. and update the DPSF EULA if it was updated in the help documentation.
 
 19 - Install DPSF from the new installer and make sure the DPSF Demo works properly. Then uninstall it and make sure everything is removed properly.
