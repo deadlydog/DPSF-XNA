@@ -525,6 +525,12 @@ Copy-Item -Path "$DPSF_DEFAULT_EFFECT_FILE_PATH" -Destination "$INSTALLER_FILES_
 # If we are not creating a full release, exit the script now.
 if (-not $creatingRealRelease)
 {
+	Write-Host "Zipping temporary dll files up..."
+	Write-Zip -Path $LATEST_DLL_FILES_DIRECTORY_PATH\* -OutputPath "$LATEST_DLL_FILES_DIRECTORY_PATH\DPSF $VersionNumber DLLs.zip"
+
+	Write-Host "Opening folder containing new DLL files..."
+	Invoke-Item $LATEST_DLL_FILES_DIRECTORY_PATH
+
 	Write-Host "Exiting script since this was not a full release."
 	Exit
 }
@@ -642,8 +648,7 @@ UninstallDPSF
 
 # Remove any files that may have been left over in the DPSF directory.
 Write-Host "Removing '$DPSF_DEFAULT_INSTALL_DIRECTORY' in case files were left over from the uninstall..."
-Get-ChildItem -Recurse -Force -Path $DPSF_DEFAULT_INSTALL_DIRECTORY | Remove-Item -Recurse -Force
-Remove-Item $DPSF_DEFAULT_INSTALL_DIRECTORY
+Remove-Item -Path $DPSF_DEFAULT_INSTALL_DIRECTORY -Recurse -Force
 
 Write-Host "Starting the DPSF Installer for you to install DPSF and verify it works correctly..."
 Invoke-Item $DPSF_INSTALLER_FILE_PATH
@@ -720,9 +725,13 @@ if ([System.Windows.Forms.MessageBox]::Show("Revert the DPSF Demo project files 
 #>
 
 
+<#
+23 - Rebuild the DPSF.sln in Release mode so that it doesn't error out next time we build it in Debug mode, since the Android project relies on the .xnb files being created in bin\Release.
+#>
+
 
 <#
-23 - Upload the new version to the web, along with the new HTML help files, and update the RSS feed to show a new version. The web has it's own "Release Process.txt" file to follow.
+24 - Upload the new version to the web, along with the new HTML help files, and update the RSS feed to show a new version. The web has it's own "Release Process.txt" file to follow.
 #>
 
 
@@ -784,7 +793,9 @@ Then do a Build Solution on both the DPSF.sln and the "DPSF WinRT.sln" to genera
 
 22 - Check files into Git, adding the current dll version (e.g. v1.0.1.1) and Change Log to the SVN commit comments.
 
-23 - Zip and upload the new version to the web, along with the new HTML help files, and update the RSS feed to show a new version. The web has it's own "Release Process.txt" file to follow.
+23 - Rebuild the DPSF.sln in Release mode so that it doesn't error out next time we build it in Debug mode, since the Android project relies on the .xnb files being created in bin\Release.
+
+24 - Zip and upload the new version to the web, along with the new HTML help files, and update the RSS feed to show a new version. The web has it's own "Release Process.txt" file to follow.
 
 #>
 
