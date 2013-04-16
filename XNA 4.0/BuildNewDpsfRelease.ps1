@@ -28,6 +28,8 @@ $thisScriptsDirectory = Split-Path $script:MyInvocation.MyCommand.Path
 $InvokeMsBuildModulePath = Join-Path $thisScriptsDirectory "BuildScriptUtilities\Invoke-MsBuild\Invoke-MsBuild.psm1"
 Import-Module -Name $InvokeMsBuildModulePath
 
+# Import the System.Windows.Forms namespace which is used to show Message Boxes.
+Add-Type -AssemblyName System.Windows.Forms
 
 #==========================================================
 # Define any necessary global variables, such as file paths.
@@ -78,6 +80,9 @@ $HELP_DOCUMENTATION_HTML_DIRECTORY = Join-Path $HELP_FILES_DIRECTORY_PATH "HTML"
 $HELP_DOCUMENTATION_CHM_FILE_NAME = "DPSF Help.chm"
 
 $INSTALLER_CREATOR_PROJECT_FILE_PATH = Join-Path $DPSF_ROOT_DIRECTORY "Installer\DPSF Installer Settings.iit"
+$DPSF_INSTALLER_FILE_PATH = Join-Path $DPSF_ROOT_DIRECTORY "Installer\DPSF Installer.exe"
+$DPSF_UNINSTALLER_FILE_PATH = Join-Path $DPSF_DEFAULT_INSTALL_DIRECTORY "Uninstal.exe"
+$ARCHIVED_INSTALLERS_DIRECTORY = Join-Path $DPSF_ROOT_DIRECTORY "Installer\Archived Installers"
 
 
 #==========================================================
@@ -273,6 +278,23 @@ function UpdateCsprojFileToReferenceDllInDpsfInstallDirectory
 	[System.IO.File]::WriteAllText($CsprojFilePath, $fileContents)
 }
 
+function UninstallDPSF
+{
+	# If DPSF is installed, launch the uninstaller.
+	if (Test-Path $DPSF_UNINSTALLER_FILE_PATH)
+	{
+		Write-Host "Launching DPSF Uninstaller for you to uninstall DPSF before installing the new version..."
+		Invoke-Item $DPSF_UNINSTALLER_FILE_PATH
+		
+		Write-Host "Prompt for when the DPSF Uninstaller has completed..."
+		if ([System.Windows.Forms.MessageBox]::Show("Hit OK once DPSF has been uninstalled.", "Uninstall DPSF", [System.Windows.Forms.MessageBoxButtons]::OKCancel, [System.Windows.Forms.MessageBoxIcon]::Stop) -eq [System.Windows.Forms.DialogResult]::Cancel)
+		{
+			Write-Host "Exiting script since Cancel was pressed when asked to uninstall DPSF."
+			Exit
+		}
+	}
+}
+
 # Catch any exceptions thrown and stop the script.
 trap [Exception] { Write-Host "Error: $_"; break; }
 
@@ -283,8 +305,8 @@ trap [Exception] { Write-Host "Error: $_"; break; }
 Write-Host "Beginning script to create DPSF Release '$VersionNumber'..."
 
 $creatingRealRelease = $false
-Add-Type -AssemblyName System.Windows.Forms
-if ([System.Windows.Forms.MessageBox]::Show("Are you making an actual release?`nIf not, many prompts will be skipped and the script will exit after the new DLL files have been created.", "Is This A Real Release?", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question) -eq [System.Windows.Forms.DialogResult]::Yes)
+Write-Host "Prompt to see if we are making an actual official release or not..."
+if ([System.Windows.Forms.MessageBox]::Show("Are you making an actual official release?`nIf not, many prompts will be skipped and the script will exit after the new DLL files have been created.", "Is This A Real Release?", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question) -eq [System.Windows.Forms.DialogResult]::Yes)
 {
 	$creatingRealRelease = $true
 }
@@ -297,7 +319,7 @@ and then re-add them from "DPSF/DPSF Effects/Raw Effect Code". Be sure to do a t
 0b - If any files were added, removed, renamed, or moved in the DPSF project, you must reflect these changes in the 'DPSF WinRT' and 'Mono for Android Copy of DPSF' project as well.
 #>
 
-Add-Type -AssemblyName System.Windows.Forms
+Write-Host "Prompt to see if the DPSFDefaultEffect.fx file was modified..."
 if ($creatingRealRelease -and [System.Windows.Forms.MessageBox]::Show("Was the DPSFDefaultEffect.fx file modified?", "Was The Effect File Modified?", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question) -eq [System.Windows.Forms.DialogResult]::Yes)
 {
 	$prompt = "Did you re-add the .bin files as resources so that the changes take effect?"
@@ -309,7 +331,7 @@ if ($creatingRealRelease -and [System.Windows.Forms.MessageBox]::Show("Was the D
 	}
 }
 
-Add-Type -AssemblyName System.Windows.Forms
+Write-Host "Prompt to see if any project files were added, removed, renamed, or moved..."
 if ($creatingRealRelease -and [System.Windows.Forms.MessageBox]::Show("Were any files added, removed, renamed, or moved in the projects?", "Were Project File Names Modified?", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question) -eq [System.Windows.Forms.DialogResult]::Yes)
 {
 	$prompt = "Did you reflect the changes in the 'DPSF WinRT' and 'Mono for Android Copy of DPSF' projects?"
@@ -448,8 +470,7 @@ and selecting "Set as StartUp Project.
 #>
 
 # Prompt if user wants to launch the test solutions and verify they work correctly and save answer for later.
-Write-Host "Have user manually verify that the Test solutions work as expected..."
-Add-Type -AssemblyName System.Windows.Forms
+Write-Host "Prompt to have user manually verify that the Test solutions work as expected..."
 if ($creatingRealRelease -and [System.Windows.Forms.MessageBox]::Show("Do you want to launch the Test solutions to verify they work correctly?", "Launch Test Solutions", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question) -eq [System.Windows.Forms.DialogResult]::Yes)
 {
 	# Open the TestDPSFDLL solution to verify that it works correctly.
@@ -471,6 +492,7 @@ Do all of the Test solutions work correctly?
 
 3. Does the DPSF Splash Screen Example solution run properly?
 "@
+	Write-Host "Prompt to confirm that the test solutions ran correctly..."
 	if ([System.Windows.Forms.MessageBox]::Show($confirmTestsWorkProperlyMessage, "Do Test Solutions Run Correctly?", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question) -eq [System.Windows.Forms.DialogResult]::No)
 	{
 		Exit
@@ -561,7 +583,7 @@ $fileContents = $rxHelpFileVersion.Replace($fileContents, "<HelpFileVersion>$Ver
 Write-Host "Launching Sandcastle so you can generate the DPSF API Documentation..."
 Invoke-Item $API_DOCUMENTATION_SANDCASTLE_PROJECT_FILE_PATH
 
-Add-Type -AssemblyName System.Windows.Forms
+Write-Host "Prompt for when the DPSF API Documentation has been generated..."
 if ([System.Windows.Forms.MessageBox]::Show("Hit OK once the new DPSF API Documentation file has been generated by Sandcastle.", "Create Sandcastle Documentation", [System.Windows.Forms.MessageBoxButtons]::OKCancel, [System.Windows.Forms.MessageBoxIcon]::Stop) -eq [System.Windows.Forms.DialogResult]::Cancel)
 {
 	Write-Host "Exiting script since Cancel was pressed when asked to create the new DPSF API Documentation using Sandcastle."
@@ -584,7 +606,7 @@ Write-Host "Launching Help And Manual project and Help Update Process file so yo
 Invoke-Item $HELP_DOCUMENTATION_HELP_AND_MANUAL_PROJECT_FILE_PATH
 Invoke-Item $HELP_DOCUMENTATION_UPDATE_PROCESS_FILE_PATH
 
-Add-Type -AssemblyName System.Windows.Forms
+Write-Host "Prompt for when the DPSF Help has finished being generated..."
 if ([System.Windows.Forms.MessageBox]::Show("Hit OK once the new DPSF Help documentation has been generated by Help And Manual.", "Create New DPSF Help Documentation", [System.Windows.Forms.MessageBoxButtons]::OKCancel, [System.Windows.Forms.MessageBoxIcon]::Stop) -eq [System.Windows.Forms.DialogResult]::Cancel)
 {
 	Write-Host "Exiting script since Cancel was pressed when asked to create the new 'DPSF Help.chm' using Help And Manual."
@@ -602,7 +624,7 @@ Copy-Item -Path (Join-Path $HELP_FILES_DIRECTORY_PATH $HELP_DOCUMENTATION_CHM_FI
 Write-Host "Opening the DPSF Install Creator project for you to create a new 'DPSF Installer.exe'..."
 Invoke-Item $INSTALLER_CREATOR_PROJECT_FILE_PATH
 
-Add-Type -AssemblyName System.Windows.Forms
+Write-Host "Prompt for when the new DPSF Installer has finished being created..."
 if ([System.Windows.Forms.MessageBox]::Show("Hit OK once the new 'DPSF Installer.exe' has been created.", "Create New DPSF Installer", [System.Windows.Forms.MessageBoxButtons]::OKCancel, [System.Windows.Forms.MessageBoxIcon]::Stop) -eq [System.Windows.Forms.DialogResult]::Cancel)
 {
 	Write-Host "Exiting script since Cancel was pressed when asked to create the new 'DPSF Installer.exe'."
@@ -613,24 +635,63 @@ if ([System.Windows.Forms.MessageBox]::Show("Hit OK once the new 'DPSF Installer
 19 - Install DPSF from the new installer and make sure the DPSF Demo works properly. Then uninstall it and make sure everything is removed properly.
 #>
 
+# If DPSF is already installed, uninstall it before installing the new version.
+UninstallDPSF
 
+# Remove any files that may have been left over in the DPSF directory.
+Write-Host "Removing '$DPSF_DEFAULT_INSTALL_DIRECTORY' in case files were left over from the uninstall..."
+Get-ChildItem -Recurse -Force -Path $DPSF_DEFAULT_INSTALL_DIRECTORY | Remove-Item -Recurse -Force
+Remove-Item $DPSF_DEFAULT_INSTALL_DIRECTORY
 
-20 - Create a copy of the installer and move it into the "Archived Installers" section, renaming it with it's version number, and then zip it up to be uploaded to the web.
+Write-Host "Starting the DPSF Installer for you to install DPSF and verify it works correctly..."
+Invoke-Item $DPSF_INSTALLER_FILE_PATH
 
-21 - In the DPSF.sln and "DPSF WinRT.sln", change the DPSF Demo projects back to referencing the DPSF projects, rather than the DLL files in the C:\DPSF folder, and change back to using the Debug Mixed configuration.
+Write-Host "Prompt for when the DPSF Installer has finished installing DPSF..."
+if ([System.Windows.Forms.MessageBox]::Show("Hit OK once the new version of DPSF has been installed.", "Install DPSF", [System.Windows.Forms.MessageBoxButtons]::OKCancel, [System.Windows.Forms.MessageBoxIcon]::Stop) -eq [System.Windows.Forms.DialogResult]::Cancel)
+{
+	Write-Host "Exiting script since Cancel was pressed when asked to install the new version of DPSF."
+	Exit
+}
 
-22 - Check files into Git, adding the current dll version (e.g. v1.0.1.1) and Change Log to the SVN commit comments.
+Write-Host "Prompt that DPSF was installed correctly..."
+if ([System.Windows.Forms.MessageBox]::Show("Was DPSF installed correctly?`n`nCan you run the DPSF Demo from the Start Menu?", "Was DPSF Installed Correctly?", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question) -eq [System.Windows.Forms.DialogResult]::No)
+{
+	Write-Host "Exiting script because you said that DPSF was not installed correctly."
+	Exit
+}
 
-23 - Upload the new version to the web, along with the new HTML help files, and update the RSS feed to show a new version. The web has it's own "Release Process.txt" file to follow.
+# Uninstall DPSF to make sure the uninstall went properly.
+UninstallDPSF
 
+# If the default DPSF install directory still exists after doing the uninstall.
+if (Test-Path $DPSF_DEFAULT_INSTALL_DIRECTORY)
+{
+	Write-Host "Prompt to see if the user wants to continue since DPSF does not appear to have uninstalled correctly..."
+	if ([System.Windows.Forms.MessageBox]::Show("'$DPSF_DEFAULT_INSTALL_DIRECTORY' still exists after DPSF was uninstalled. This folder should have been completely deleted.`n`nDo you want to continue making the new Release anyways?", "Continue Even Though Uninstall Went Wrong?", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question) -eq [System.Windows.Forms.DialogResult]::No)
+	{
+		Write-Host "Exiting script because '$DPSF_DEFAULT_INSTALL_DIRECTORY' still exists after uninstalling DPSF and you chose to cancel the release process."
+		Exit
+	}
+}
 
+<#
+20 - Create a copy of the installer and move it into the "Archived Installers" section, renaming it with it's version number.
+#>
+
+# Grab the first 3 hex values of the version number (i.e. the public version number) and create the path to copy the DPSF Installer to.
+$rxPublicVersionNumber = [regex] "^\d{1,5}\.\d{1,5}\.\d{1,5}"
+$publicVersionNumber = rxPublicVersionNumber.Match($VersionNumber).Value
+$archivedInstallerFilePath = Join-Path $ARCHIVED_INSTALLERS_DIRECTORY "DPSF Installer v$publicVersionNumber.exe"
+
+Write-Host "Copying new DPSF Installer to '$archivedInstallerFilePath'"
+Copy-Item -Path $DPSF_INSTALLER_FILE_PATH -Destination $archivedInstallerFilePath
 
 <#
 21 - In the DPSF.sln and "DPSF WinRT.sln", change the DPSF Demo projects back to referencing the DPSF projects, rather than the DLL files in 
 the C:\DPSF folder, and change back to using the Debug Mixed configuration.
 #>
 
-Add-Type -AssemblyName System.Windows.Forms
+Write-Host "Prompt to revert the DPSF Demo project files back..."
 if ([System.Windows.Forms.MessageBox]::Show("Revert the DPSF Demo project files now?", "Revert DPSF Demo Project Files?", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question) -eq [System.Windows.Forms.DialogResult]::Yes)
 {
 	# Revert the .csproj files back to their original states now that we have the DLLs.
@@ -651,6 +712,18 @@ if ([System.Windows.Forms.MessageBox]::Show("Revert the DPSF Demo project files 
 	# Delete the backups directory now that we are done with it.
 	Remove-Item -Path $CSPROJ_FILE_PATHS_BACKUP_DIRECTORY
 }
+
+<#
+22 - Check files into Git, adding the current dll version (e.g. v1.0.1.1) and Change Log to the SVN commit comments.
+#>
+
+
+
+<#
+23 - Upload the new version to the web, along with the new HTML help files, and update the RSS feed to show a new version. The web has it's own "Release Process.txt" file to follow.
+#>
+
+
 
 
 <# Put these comments directly into the script so they explain what the script does manually.
@@ -703,13 +776,13 @@ Then do a Build Solution on both the DPSF.sln and the "DPSF WinRT.sln" to genera
 
 19 - Install DPSF from the new installer and make sure the DPSF Demo works properly. Then uninstall it and make sure everything is removed properly.
 
-20 - Create a copy of the installer and move it into the "Archived Installers" section, renaming it with it's version number, and then zip it up to be uploaded to the web.
+20 - Create a copy of the installer and move it into the "Archived Installers" section, renaming it with it's version number.
 
 21 - In the DPSF.sln and "DPSF WinRT.sln", change the DPSF Demo projects back to referencing the DPSF projects, rather than the DLL files in the C:\DPSF folder, and change back to using the Debug Mixed configuration.
 
 22 - Check files into Git, adding the current dll version (e.g. v1.0.1.1) and Change Log to the SVN commit comments.
 
-23 - Upload the new version to the web, along with the new HTML help files, and update the RSS feed to show a new version. The web has it's own "Release Process.txt" file to follow.
+23 - Zip and upload the new version to the web, along with the new HTML help files, and update the RSS feed to show a new version. The web has it's own "Release Process.txt" file to follow.
 
 #>
 
