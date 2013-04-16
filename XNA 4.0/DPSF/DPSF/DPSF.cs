@@ -5102,7 +5102,7 @@ namespace DPSF
 		/// Resets all of the Sampler States and Vertex Sampler States on the Graphics Device.
 		/// This must be done before any rendering to prevent an XNA 4 bug that causes the graphics device
 		/// to incorrectly track state information, which manifests itself as run-time errors.
-		/// https://connect.microsoft.com/site226/feedback/details/586216/cloned-effect-?wa=wsignin1.0
+		/// https://connect.microsoft.com/site226/feedback/details/586216/cloned-effect-
 		/// </summary>
 		private void ClearRenderStates()
 		{
@@ -5115,7 +5115,7 @@ namespace DPSF
 				// Reset all of the Sampler States
 				for (int index = 0; index < 16; index++)
 					GraphicsDevice.SamplerStates[index] = SamplerState.PointClamp;
-				// Apparently MonoGame doesn't know about the VertexSamplerStates property, so we can't update it when using MonoGame for porting to Android and WinRT.
+// Apparently MonoGame doesn't know about the VertexSamplerStates property, so we can't update it when using MonoGame for porting to Android and WinRT.
 #if (!ANDROID && !WIN_RT)
 				// The Reach profile does not have VertexSamplerStates, but clear them out if we're using a HiDef profile.
 				if (this.GraphicsDevice.GraphicsProfile == GraphicsProfile.HiDef)
