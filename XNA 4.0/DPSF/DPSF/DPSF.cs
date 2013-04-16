@@ -5113,7 +5113,8 @@ namespace DPSF
 			try
 			{
 				// Reset all of the Sampler States
-				for (int index = 0; index < 16; index++)
+                int numberOfSamplerStates = DPSFDefaultSettings.NumberOfSamplerStates(this.GraphicsDevice);
+                for (int index = 0; index < numberOfSamplerStates; index++)
 					GraphicsDevice.SamplerStates[index] = SamplerState.PointClamp;
 // Apparently MonoGame doesn't know about the VertexSamplerStates property, so we can't update it when using MonoGame for porting to Android and WinRT.
 #if (!ANDROID && !WIN_RT)

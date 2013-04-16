@@ -9,11 +9,16 @@ TODO - Do more multiple emitter examples. Have one extend the Emitter class to s
 	text coordinates maybe to have the same particle system display different textures.  Show all 3 solutions in a tutorial.
 TODO - Investigate using Tasks and running on multiple threads to boost performance.
 
+Changes made after Version 4.2.1:
+public:
+- Fixed Android bug where IndexOutOfRangeException would be thrown on some Android devices, depending on their hardware capabilities.
+
 
 Changes made after Version 2.4.0:
 public:
 - Fixed blocking Xbox bug introduced in v2.3.0 where a divide by zero exception was always thrown when running on the Xbox, making DPSF unusable on the Xbox.
 - Now also build the DPSFWinRTAsDrawableGameComponent.dll.
+
 
 Changes made after Version 2.3.0:
 public:
