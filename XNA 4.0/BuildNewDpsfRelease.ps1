@@ -3,7 +3,11 @@
 	This script builds a new Release version for DPSF.
 	
 	.DESCRIPTION
-	This script adjusts the DPSF version to the given version, then builds all of the DPSF DLLs in Release mode.
+	This script performs the complete process required for making a new DPSF Release, prompting the user when it requires they do work in 
+	other applications (e.g. create help documentation, verify test solutions run properly, etc.)
+	
+	Depends on having the Powershell Community Extensions installed for zipping files (http://pscx.codeplex.com/).
+	Depends on having Git Extensions installed for checking files into Git (http://code.google.com/p/gitextensions/).
 	
 	.PARAMETER VersionNumber
 	The new Version Number to give the DPSF DLLs.
@@ -34,8 +38,10 @@ Add-Type -AssemblyName System.Windows.Forms
 #==========================================================
 # Define any necessary global variables, such as file paths.
 #==========================================================
-$DPSF_DEFAULT_INSTALL_DIRECTORY = "C:\DPSF"
+
+# Relative paths in the repository.
 $DPSF_ROOT_DIRECTORY = $thisScriptsDirectory
+$DPSF_REPOSITORY_ROOT_DIRECTORY = Resolve-Path -Path "$DPSF_ROOT_DIRECTORY\.."
 $DPSF_COMMON_ASSEMBLY_INFO_FILE_PATH = Join-Path $DPSF_ROOT_DIRECTORY "\DPSF\DPSF\CommonAssemblyInfo.cs"
 $DPSF_SOLUTION_FILE_PATH = Join-Path $DPSF_ROOT_DIRECTORY "\DPSF\DPSF.sln"
 $DPSF_WINRT_SOLUTION_FILE_PATH = Join-Path $DPSF_ROOT_DIRECTORY "\DPSF\DPSF WinRT.sln"
@@ -83,6 +89,12 @@ $INSTALLER_CREATOR_PROJECT_FILE_PATH = Join-Path $DPSF_ROOT_DIRECTORY "Installer
 $DPSF_INSTALLER_FILE_PATH = Join-Path $DPSF_ROOT_DIRECTORY "Installer\DPSF Installer.exe"
 $DPSF_UNINSTALLER_FILE_PATH = Join-Path $DPSF_DEFAULT_INSTALL_DIRECTORY "Uninstal.exe"
 $ARCHIVED_INSTALLERS_DIRECTORY = Join-Path $DPSF_ROOT_DIRECTORY "Installer\Archived Installers"
+$DPSF_CHANGE_LOG_FILE_PATH = Join-Path $DPSF_ROOT_DIRECTORY "DPSF\DPSF\ChangeLog.txt"
+
+# Paths outside of this git repository.
+$GIT_EXTENSIONS_COMMAND_LINE_TOOL_PATH = "C:\Program Files (x86)\GitExtensions\gitex.cmd"
+$DPSF_DEFAULT_INSTALL_DIRECTORY = "C:\DPSF"
+$DPSF_DEV_WEBSITE_DIRECTORY = Resolve-Path -Path (Join-Path "$DPSF_REPOSITORY_ROOT_DIRECTORY\.." "Websites\DPSF Website\Dev")
 
 
 #==========================================================
@@ -117,7 +129,7 @@ function DpsfVersionNumber
 		throw "Cannot find the DPSF Common Assembly Info file at '$DPSF_COMMON_ASSEMBLY_INFO_FILE_PATH'."
 	}
 	
-	$versionNumberLineRegex = [regex]'\[assembly: AssemblyVersion\("(?<VersionNumber>.*?)"\)\]'
+	$versionNumberLineRegex = [regex] '\[assembly: AssemblyVersion\("(?<VersionNumber>.*?)"\)\]'
 	$fileContents = [System.IO.File]::ReadAllText($DPSF_COMMON_ASSEMBLY_INFO_FILE_PATH)
 	
 	# If we were able to find the version number in the DPSF Comoon Assembly Info file.
@@ -306,9 +318,15 @@ Write-Host "Beginning script to create DPSF Release..."
 
 $creatingRealRelease = $false
 Write-Host "Prompt to see if we are making an actual official release or not..."
-if ([System.Windows.Forms.MessageBox]::Show("Are you making an actual official release?`nIf not, many prompts will be skipped and the script will exit after the new DLL files have been created.", "Is This A Real Release?", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question) -eq [System.Windows.Forms.DialogResult]::Yes)
+$answer = [System.Windows.Forms.MessageBox]::Show("Are you making an actual official release?`nIf not, many prompts will be skipped and the script will exit after the new DLL files have been created.", "Is This A Real Release?", [System.Windows.Forms.MessageBoxButtons]::YesNoCancel, [System.Windows.Forms.MessageBoxIcon]::Question)
+if ($answer -eq [System.Windows.Forms.DialogResult]::Yes)
 {
 	$creatingRealRelease = $true
+}
+elseif ($answer -eq [System.Windows.Forms.DialogResult]::Cancel)
+{
+	Write-Host "Exiting script because you clicked the Cancel button."
+	Exit
 }
 
 <#
@@ -387,10 +405,10 @@ New-Item -ItemType Directory -Path "$LATEST_DLL_FILES_DIRECTORY_PATH" > $null # 
 
 # Build the DPSF solution in Release mode to create the new DLLs.
 Write-Host "Building the DPSF solution..."
-$buildSucceeded = Invoke-MsBuild -Path "$DPSF_SOLUTION_FILE_PATH" -MsBuildParameters "$MSBUILD_PARAMETERS" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -ShowBuildWindow -AutoLaunchBuildLogOnFailure
+$buildSucceeded = Invoke-MsBuild -Path "$DPSF_SOLUTION_FILE_PATH" -MsBuildParameters "$MSBUILD_PARAMETERS" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -AutoLaunchBuildLogOnFailure
 if (!$buildSucceeded) { throw "Build failed." }
 Write-Host "Building the DPSF WinRT solution..."
-$buildSucceeded = Invoke-MsBuild -Path "$DPSF_WINRT_SOLUTION_FILE_PATH" -MsBuildParameters "$WINRT_MSBUILD_PARAMETERS" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -ShowBuildWindow -AutoLaunchBuildLogOnFailure
+$buildSucceeded = Invoke-MsBuild -Path "$DPSF_WINRT_SOLUTION_FILE_PATH" -MsBuildParameters "$WINRT_MSBUILD_PARAMETERS" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -AutoLaunchBuildLogOnFailure
 if (!$buildSucceeded) { throw "Build failed." }
 
 # Update the .csproj files' to build the AsDrawableGameComponent DLLs.
@@ -405,10 +423,10 @@ foreach ($csprojFilePath in $DPSF_CSPROJ_FILE_PATHS)
 
 # Rebuild the solutions to create the AsDrawableGameComponent DLLs.
 Write-Host "Building the DPSF solution for AsDrawableGameComponent DLLs..."
-$buildSucceeded = Invoke-MsBuild -Path "$DPSF_SOLUTION_FILE_PATH" -MsBuildParameters "$MSBUILD_PARAMETERS" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -ShowBuildWindow -AutoLaunchBuildLogOnFailure
+$buildSucceeded = Invoke-MsBuild -Path "$DPSF_SOLUTION_FILE_PATH" -MsBuildParameters "$MSBUILD_PARAMETERS" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -AutoLaunchBuildLogOnFailure
 if (!$buildSucceeded) { throw "Build failed." }
 Write-Host "Building the DPSF WinRT solution for AsDrawableGameComponent DLLs..."
-$buildSucceeded = Invoke-MsBuild -Path "$DPSF_WINRT_SOLUTION_FILE_PATH" -MsBuildParameters "$WINRT_MSBUILD_PARAMETERS" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -ShowBuildWindow -AutoLaunchBuildLogOnFailure
+$buildSucceeded = Invoke-MsBuild -Path "$DPSF_WINRT_SOLUTION_FILE_PATH" -MsBuildParameters "$WINRT_MSBUILD_PARAMETERS" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -AutoLaunchBuildLogOnFailure
 if (!$buildSucceeded) { throw "Build failed." }
 
 #Revert the .csproj files back to their original states now that we have the DLLs.
@@ -572,7 +590,7 @@ Then change the configuration manager back to Mixed Debug mode when done.
 
 # Build the DPSF solution in x86 Release mode to create the new .xnb files.
 Write-Host "Building the DPSF solution in x86 Release mode to create .xnb files for the installer..."
-$buildSucceeded = Invoke-MsBuild -Path "$DPSF_SOLUTION_FILE_PATH" -MsBuildParameters "$MSBUILD_PARAMETERS_X86" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -ShowBuildWindow -AutoLaunchBuildLogOnFailure
+$buildSucceeded = Invoke-MsBuild -Path "$DPSF_SOLUTION_FILE_PATH" -MsBuildParameters "$MSBUILD_PARAMETERS_X86" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -AutoLaunchBuildLogOnFailure
 if (!$buildSucceeded) { throw "Build failed." }
 
 <#
@@ -724,11 +742,25 @@ if ([System.Windows.Forms.MessageBox]::Show("Revert the DPSF Demo project files 
 22 - Check files into Git, adding the current dll version (e.g. v1.0.1.1) and Change Log to the SVN commit comments.
 #>
 
+# Open the Changelog file so user can copy the comments into the Git commit.
+Invoke-Item -Path $DPSF_CHANGE_LOG_FILE_PATH
+
+# Launch the Git Extensions commit window so user can check in the changes.
+Start-Process -FilePath cmd.exe -ArgumentList "/k `" cd `"$DPSF_REPOSITORY_ROOT_DIRECTORY`" & `"$GIT_EXTENSIONS_COMMAND_LINE_TOOL_PATH`" commit & EXIT"
+
+Write-Host "Prompt to see if the user has finished checking files into Git..."
+if ([System.Windows.Forms.MessageBox]::Show("Hit OK once the you have checked the changes into Git.`n`nInclude the ", "Check Changes Into Git", [System.Windows.Forms.MessageBoxButtons]::OKCancel, [System.Windows.Forms.MessageBoxIcon]::Stop) -eq [System.Windows.Forms.DialogResult]::Cancel)
+{
+	Write-Host "Exiting script since Cancel was pressed when asked to check the changes into Git."
+	Exit
+}
 
 <#
 23 - Rebuild the DPSF.sln in Release mode so that it doesn't error out next time we build it in Debug mode, since the Android project relies on the .xnb files being created in bin\Release.
 #>
 
+Write-Host "Building the DPSF solution to create required .xnb files before it can be built in Debug mode..."
+Invoke-MsBuild -Path "$DPSF_SOLUTION_FILE_PATH" -MsBuildParameters "$MSBUILD_PARAMETERS" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -ShowBuildWindow -PassThru
 
 <#
 24 - Upload the new version to the web, along with the new HTML help files, and update the RSS feed to show a new version. The web has it's own "Release Process.txt" file to follow.
