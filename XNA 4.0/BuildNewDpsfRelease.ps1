@@ -302,7 +302,7 @@ trap [Exception] { Write-Host "Error: $_"; break; }
 # Perform the script tasks.
 #==========================================================
 
-Write-Host "Beginning script to create DPSF Release '$VersionNumber'..."
+Write-Host "Beginning script to create DPSF Release..."
 
 $creatingRealRelease = $false
 Write-Host "Prompt to see if we are making an actual official release or not..."
@@ -359,6 +359,8 @@ if (!$VersionNumber)
 
 # Set the Version Number
 $VersionNumber = DpsfVersionNumber -SetVersionNumber -NewVersionNumber $VersionNumber
+
+Write-Host "New DPSF version number set to '$VersionNumber'."
 
 <#
 2 - First make sure the configuration manager is set to Mixed Platforms, so that x86, Xbox 360, Windows Phone, and Mono for Android files are built.

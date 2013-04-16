@@ -5118,11 +5118,13 @@ namespace DPSF
 			// Reset all of the Sampler States
             for (int index = 0; index < 16; index++)
 				GraphicsDevice.SamplerStates[index] = SamplerState.PointClamp;
-
+// Apparently MonoGame doesn't know about the VertexSamplerStates property, so we can't update it when using MonoGame for porting to Android and WinRT.
+#if (!ANDROID && !WIN_RT)
 			//  Reset all of the Vertex Sampler States
 			for (int index = 0; index < 2; index++)
 				GraphicsDevice.VertexSamplerStates[index] = SamplerState.PointWrap;
-		}
+#endif
+        }
 
 		/// <summary>
 		/// Applies the Particle System's Render State properties to the Graphics Device.
