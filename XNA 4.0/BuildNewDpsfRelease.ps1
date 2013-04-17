@@ -32,14 +32,16 @@ $thisScriptsDirectory = Split-Path $script:MyInvocation.MyCommand.Path
 $InvokeMsBuildModulePath = Join-Path $thisScriptsDirectory "BuildScriptUtilities\Invoke-MsBuild\Invoke-MsBuild.psm1"
 Import-Module -Name $InvokeMsBuildModulePath
 
-# Import the System.Windows.Forms namespace which is used to show Message Boxes.
+# Import the System.Windows.Forms namespace which is used to show Message Boxes and the Open File Dialog.
 Add-Type -AssemblyName System.Windows.Forms
+
 
 #==========================================================
 # Define any necessary global variables, such as file paths.
 #==========================================================
+$GIT_EXTENSIONS_COMMAND_LINE_TOOL_PATH = "C:\Program Files (x86)\GitExtensions\gitex.cmd"
+$DPSF_DEFAULT_INSTALL_DIRECTORY = "C:\DPSF"
 
-# Relative paths in the repository.
 $DPSF_ROOT_DIRECTORY = $thisScriptsDirectory
 $DPSF_REPOSITORY_ROOT_DIRECTORY = Resolve-Path -Path "$DPSF_ROOT_DIRECTORY\.."
 $DPSF_COMMON_ASSEMBLY_INFO_FILE_PATH = Join-Path $DPSF_ROOT_DIRECTORY "\DPSF\DPSF\CommonAssemblyInfo.cs"
@@ -91,10 +93,11 @@ $DPSF_UNINSTALLER_FILE_PATH = Join-Path $DPSF_DEFAULT_INSTALL_DIRECTORY "Uninsta
 $ARCHIVED_INSTALLERS_DIRECTORY = Join-Path $DPSF_ROOT_DIRECTORY "Installer\Archived Installers"
 $DPSF_CHANGE_LOG_FILE_PATH = Join-Path $DPSF_ROOT_DIRECTORY "DPSF\DPSF\ChangeLog.txt"
 
-# Paths outside of this git repository.
-$GIT_EXTENSIONS_COMMAND_LINE_TOOL_PATH = "C:\Program Files (x86)\GitExtensions\gitex.cmd"
-$DPSF_DEFAULT_INSTALL_DIRECTORY = "C:\DPSF"
 $DPSF_DEV_WEBSITE_DIRECTORY = Resolve-Path -Path (Join-Path "$DPSF_REPOSITORY_ROOT_DIRECTORY\.." "Websites\DPSF Website\Dev")
+$DPSF_DEV_WEBSITE_DPSF_INSTALLER_ZIP_FILE_PATH = Join-Path $DPSF_DEV_WEBSITE_DIRECTORY "DPSF Installer.zip"
+$DPSF_DEV_WEBSITE_ARCHIVED_INSTALLERS_DIRECTORY = Join-Path $DPSF_DEV_WEBSITE_DIRECTORY "ArchivedDPSFVersions"
+$DPSF_DEV_WEBSITE_HELP_FILES_DIRECTORY = Join-Path $DPSF_DEV_WEBSITE_DIRECTORY "DPSFHelp"
+$DPSF_DEV_WEBSITE_RELEASE_PROCESS_FILE_PATH = Join-Path $DPSF_DEV_WEBSITE_DIRECTORY "Release Process.txt"
 
 
 #==========================================================
@@ -305,6 +308,29 @@ function UninstallDPSF
 			Exit
 		}
 	}
+}
+
+# Show an Open File Dialog and return the file selected by the user.
+function Get-FileName([string]$initialDirectory, [switch]$allowMultiSelect)
+{  
+	Add-Type -AssemblyName System.Windows.Forms
+	$openFileDialog = New-Object System.Windows.Forms.OpenFileDialog
+	$openFileDialog.initialDirectory = $initialDirectory
+	$openFileDialog.filter = "All files (*.*)| *.*"
+	if ($allowMultiSelect) { $openFileDialog.MultiSelect = $true }
+	$openFileDialog.ShowDialog() > $null
+	if ($allowMultiSelect) { return $openFileDialog.Filenames } else { return $openFileDialog.Filename }
+}
+
+# Show an Open Folder Dialog and return the directory selected by the user.
+function Get-Directory([string]$initialDirectory)
+{
+	Add-Type -AssemblyName System.Windows.Forms
+	$openFolderDialog = New-Object System.Windows.Forms.FolderBrowserDialog
+	$openFolderDialog.ShowNewFolderButton = $true
+	$openFolderDialog.RootFolder = $initialDirectory
+	$openFolderDialog.ShowDialog()
+	return $openFolderDialog.SelectedPath
 }
 
 # Catch any exceptions thrown and stop the script.
@@ -544,7 +570,7 @@ Copy-Item -Path "$DPSF_DEFAULT_EFFECT_FILE_PATH" -Destination "$INSTALLER_FILES_
 if (-not $creatingRealRelease)
 {
 	Write-Host "Zipping temporary dll files up..."
-	Write-Zip -Path $LATEST_DLL_FILES_DIRECTORY_PATH\* -OutputPath "$LATEST_DLL_FILES_DIRECTORY_PATH\DPSF $VersionNumber DLLs.zip"
+	Write-Zip -Path $LATEST_DLL_FILES_DIRECTORY_PATH\* -OutputPath "$LATEST_DLL_FILES_DIRECTORY_PATH\DPSF $VersionNumber DLLs.zip" -Level 9 -Quiet > $null # Don't output the zip file info to the powershell window.
 
 	Write-Host "Opening folder containing new DLL files..."
 	Invoke-Item $LATEST_DLL_FILES_DIRECTORY_PATH
@@ -706,10 +732,10 @@ if (Test-Path $DPSF_DEFAULT_INSTALL_DIRECTORY)
 # Grab the first 3 hex values of the version number (i.e. the public version number) and create the path to copy the DPSF Installer to.
 $rxPublicVersionNumber = [regex] "^\d{1,5}\.\d{1,5}\.\d{1,5}"
 $publicVersionNumber = rxPublicVersionNumber.Match($VersionNumber).Value
-$archivedInstallerFilePath = Join-Path $ARCHIVED_INSTALLERS_DIRECTORY "DPSF Installer v$publicVersionNumber.exe"
+$newDpsfInstallerInArchiveDirectoryFilePath = Join-Path $ARCHIVED_INSTALLERS_DIRECTORY "DPSF Installer v$publicVersionNumber.exe"
 
-Write-Host "Copying new DPSF Installer to '$archivedInstallerFilePath'"
-Copy-Item -Path $DPSF_INSTALLER_FILE_PATH -Destination $archivedInstallerFilePath
+Write-Host "Copying new DPSF Installer to '$newDpsfInstallerInArchiveDirectoryFilePath'"
+Copy-Item -Path $DPSF_INSTALLER_FILE_PATH -Destination $newDpsfInstallerInArchiveDirectoryFilePath
 
 <#
 21 - In the DPSF.sln and "DPSF WinRT.sln", change the DPSF Demo projects back to referencing the DPSF projects, rather than the DLL files in 
@@ -763,13 +789,64 @@ Write-Host "Building the DPSF solution to create required .xnb files before it c
 Invoke-MsBuild -Path "$DPSF_SOLUTION_FILE_PATH" -MsBuildParameters "$MSBUILD_PARAMETERS" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -ShowBuildWindow -PassThru
 
 <#
-24 - Upload the new version to the web, along with the new HTML help files, and update the RSS feed to show a new version. The web has it's own "Release Process.txt" file to follow.
+24 - Upload the new DPSF Installer and HTML help files to the Dev website.
 #>
 
+# If the path to the DPSF Dev Website doesn't exist, prompt the user for it.
+if (!(Test-Path $DPSF_DEV_WEBSITE_DIRECTORY))
+{
+	$DPSF_DEV_WEBSITE_DIRECTORY = Get-Directory $DPSF_REPOSITORY_ROOT_DIRECTORY
+	
+	# If the user didn't choose a valid directory, exit.
+	if (!(Test-Path $DPSF_DEV_WEBSITE_DIRECTORY))
+	{
+		Write-Host "Exiting script because a valid directory was not chosen for the DSPF Dev Website."
+		Exit
+	}
+}
+
+# Extract the previous DPSF Installer zip file into the Dev website's archived installers directory.
+Write-Host "Unzipping previous DPSF Installer to the Dev website's archived installers directory..."
+Expand-Archive -Path $DPSF_DEV_WEBSITE_DPSF_INSTALLER_ZIP_FILE_PATH -OutputPath $DPSF_DEV_WEBSITE_ARCHIVED_INSTALLERS_DIRECTORY
+
+# Delete the old DPSF Installer zip file from the Dev website.
+Write-Host "Deleting old '$DPSF_DEV_WEBSITE_DPSF_INSTALLER_ZIP_FILE_PATH'..."
+Remove-Item $DPSF_DEV_WEBSITE_DPSF_INSTALLER_ZIP_FILE_PATH
+
+# Zip up the new DPSF Installer and copy it to the Dev website.
+Write-Host "Zipping up new DPSF installer and copying it to '$DPSF_DEV_WEBSITE_DPSF_INSTALLER_ZIP_FILE_PATH'..."
+Write-Zip -Path $newDpsfInstallerInArchiveDirectoryFilePath -OutputPath $DPSF_DEV_WEBSITE_DPSF_INSTALLER_ZIP_FILE_PATH -Level 9 -Quiet > $null # Don't output the zip file info to the powershell window.
+
+# Delete the previous HTML DPSF Help documenation on the Dev website.
+Write-Host "Deleting the old Dev website HTML Help Documentation at '$DPSF_DEV_WEBSITE_HELP_FILES_DIRECTORY'."
+Remove-Item -Recurse -Path $DPSF_DEV_WEBSITE_HELP_FILES_DIRECTORY
+
+# Move to the new HTML DPSF Help Documentation to the Dev website.
+Write-Host "Moving the new HTML DPSF Help documentation to the Dev website at '$DPSF_DEV_WEBSITE_HELP_FILES_DIRECTORY'."
+RoboCopy $HELP_DOCUMENTATION_HTML_DIRECTORY $DPSF_DEV_WEBSITE_HELP_FILES_DIRECTORY /move > $null	# Don't output the files copied to the powershell window.
+
+<#
+25 - The web has it's own "Release Process.txt" file to follow to finish posting the new DPSF version online.
+#>
+
+# Open the Dev website Release Process file for user to finish up those steps.
+Write-Host "Opening the Dev website release process file '$DPSF_DEV_WEBSITE_RELEASE_PROCESS_FILE_PATH'."
+Invoke-Item -Path $DPSF_DEV_WEBSITE_RELEASE_PROCESS_FILE_PATH
+
+# Tell user to do the Dev website Release Process steps to complete the release process.
+Write-Host "Prompt user to complete the Dev website steps..."
+[System.Windows.Forms.MessageBox]::Show("Follow the steps in the Dev website's Release Process file to complete the release process.", "Perform Dev Website Steps", [System.Windows.Forms.MessageBoxButtons]::OKCancel, [System.Windows.Forms.MessageBoxIcon]::Stop)
+
+# Tell user that we are finished.
+Write-Host "All done!!!"
+
+# Wait for input before closing.
+Write-Host "Press any key to continue ..."
+$x = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyUp")
 
 
 
-<# Put these comments directly into the script so they explain what the script does manually.
+<#
 
 When releasing a new version of DPSF, be sure to follow these steps:
 
@@ -827,11 +904,8 @@ Then do a Build Solution on both the DPSF.sln and the "DPSF WinRT.sln" to genera
 
 23 - Rebuild the DPSF.sln in Release mode so that it doesn't error out next time we build it in Debug mode, since the Android project relies on the .xnb files being created in bin\Release.
 
-24 - Zip and upload the new version to the web, along with the new HTML help files, and update the RSS feed to show a new version. The web has it's own "Release Process.txt" file to follow.
+24 - Upload the new DPSF Installer and HTML help files to the Dev website.
+
+25 - The web has it's own "Release Process.txt" file to follow to finish posting the new DPSF version online.
 
 #>
-
-
-# Wait for input before closing.
-Write-Host "Press any key to continue ..."
-$x = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyUp")
