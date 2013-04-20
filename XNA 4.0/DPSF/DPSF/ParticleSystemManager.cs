@@ -104,7 +104,7 @@ namespace DPSF
         }
 
         /// <summary>
-        /// Get / Set if the Particle Systems should be Updated or not
+        /// Get / Set if the Particle Systems should be Updated or not.
         /// </summary>
         public bool Enabled
         {
@@ -440,6 +440,71 @@ namespace DPSF
                 {
                     // Update its Camera Position
                     particleSystem.SetCameraPosition(cameraPosition);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets the Enabled property of all particle systems in this manager to the given state.
+        /// </summary>
+        /// <param name="isEnabled">If the particle systems should be enabled or not.</param>
+        public void SetEnabledStateForAllParticleSystems(bool isEnabled)
+        {
+            // Loop through all of the Particle Systems
+            IDPSFParticleSystem particleSystem = null;
+            int iNumberOfParticleSystems = mcParticleSystemListSortedByUpdateOrder.Count;
+            for (int iIndex = 0; iIndex < iNumberOfParticleSystems; iIndex++)
+            {
+                // If this Particle System is Initialized
+                particleSystem = mcParticleSystemListSortedByUpdateOrder[iIndex];
+                if (particleSystem.IsInitialized)
+                {
+                    // Update its Enabled state.
+                    particleSystem.Enabled = isEnabled;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets the Visible property of all particle systems in this manager to the given state.
+        /// </summary>
+        /// <param name="isVisible">If the particle systems should be visible or not.</param>
+        public void SetVisibleStateForAllParticleSystems(bool isVisible)
+        {
+            // Loop through all of the Particle Systems
+            IDPSFParticleSystem particleSystem = null;
+            int iNumberOfParticleSystems = mcParticleSystemListSortedByUpdateOrder.Count;
+            for (int iIndex = 0; iIndex < iNumberOfParticleSystems; iIndex++)
+            {
+                // If this Particle System is Initialized
+                particleSystem = mcParticleSystemListSortedByUpdateOrder[iIndex];
+                if (particleSystem.IsInitialized)
+                {
+                    // Update its Visible state.
+                    particleSystem.Visible = isVisible;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets the Enabled and Visible properties of all particle systems in this manager to the given states.
+        /// </summary>
+        /// <param name="isEnabled">If the particle systems should be enabled or not.</param>
+        /// <param name="isVisible">If the particle systems should be visible or not.</param>
+        public void SetEnabledAndVisibleStatesForAllParticleSystems(bool isEnabled, bool isVisible)
+        {
+            // Loop through all of the Particle Systems
+            IDPSFParticleSystem particleSystem = null;
+            int iNumberOfParticleSystems = mcParticleSystemListSortedByUpdateOrder.Count;
+            for (int iIndex = 0; iIndex < iNumberOfParticleSystems; iIndex++)
+            {
+                // If this Particle System is Initialized
+                particleSystem = mcParticleSystemListSortedByUpdateOrder[iIndex];
+                if (particleSystem.IsInitialized)
+                {
+                    // Update its Enabled and Visible state.
+                    particleSystem.Enabled = isEnabled;
+                    particleSystem.Visible = isVisible;
                 }
             }
         }

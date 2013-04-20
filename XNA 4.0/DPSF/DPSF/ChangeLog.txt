@@ -12,6 +12,7 @@ TODO - Investigate using Tasks and running on multiple threads to boost performa
 Changes made after Version 4.2.1:
 public:
 - Fixed Android bug where IndexOutOfRangeException would be thrown on some Android devices, depending on their hardware capabilities.
+- Added SetEnabledStateForAllParticleSystems(), SetVisibleStateForAllParticleSystems(), and SetEnabledAndVisibleStatesForAllParticleSystems() functions to the ParticleSystemManager class.
 
 
 Changes made after Version 2.4.0:

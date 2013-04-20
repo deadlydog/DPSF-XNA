@@ -84,7 +84,7 @@ namespace DPSF_Demo_Phone
 			_dpsfSplashScreenParticleSystem.Destroy();
 			_dpsfSplashScreenParticleSystem = null;
 
-			// Start displaying the demo's particle systems
+			// Start displaying the demo's particle systems.
 			_particleSystemManager.AddParticleSystem(_spriteParticleSystem);
 			_particleSystemManager.AutoInitializeAllParticleSystems(this.GraphicsDevice, this.Content, _spriteBatch);
 		}
@@ -169,7 +169,7 @@ namespace DPSF_Demo_Phone
 		/// Returns the Area of the Screen that it is safe to draw Text to (as this differs on PC and TVs).
 		/// </summary>
 		/// <returns>Returns the Area of the Screen that it is safe to draw Text to (as this differs on PC and TVs).</returns>
-		Rectangle GetTextSafeArea()
+		private Rectangle GetTextSafeArea()
 		{
 			return GetTextSafeArea(0.9f);
 		}
@@ -180,7 +180,7 @@ namespace DPSF_Demo_Phone
 		/// <param name="fNormalizedPercent">The amount of screen space (normalized between 0.0 - 1.0) that should 
 		/// safe to draw to (e.g. 0.8 to have a 10% border on all sides)</param>
 		/// <returns>Returns the Area of the Screen that it is safe to draw Text to (as this differs on PC and TVs).</returns>
-		Rectangle GetTextSafeArea(float fNormalizedPercent)
+		private Rectangle GetTextSafeArea(float fNormalizedPercent)
 		{
 			Rectangle rTextSafeArea = new Rectangle(GraphicsDevice.Viewport.X, GraphicsDevice.Viewport.Y,
 											GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
@@ -242,14 +242,11 @@ namespace DPSF_Demo_Phone
 				}
 			}
 
+			// Process multiple touch locations on the screen
 			if (touchLocations.Count > 0)
 			{
-				// Process touch locations on the screen
-				if (touchLocations.Count > 0)
-				{
-					foreach (TouchLocation touch in touchLocations.Where(t => t.State != TouchLocationState.Invalid))
-						_spriteParticleSystem.AttractorPosition = new Vector3(touch.Position, 0);
-				}
+				foreach (TouchLocation touch in touchLocations.Where(t => t.State != TouchLocationState.Invalid))
+					_spriteParticleSystem.AttractorPosition = new Vector3(touch.Position, 0);
 			}
 		}
 	}

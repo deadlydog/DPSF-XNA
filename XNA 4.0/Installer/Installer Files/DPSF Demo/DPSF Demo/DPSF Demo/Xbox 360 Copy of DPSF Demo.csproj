@@ -9,6 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DPSF_Demo</RootNamespace>
     <AssemblyName>DPSF Demo</AssemblyName>
+    <XnaRefreshLevel>1</XnaRefreshLevel>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>

@@ -2903,7 +2903,8 @@ namespace DPSF
 
 		/// <summary>
 		/// Get / Set if this Particle System should Update itself and its Particles or not.
-		/// <para>NOTE: Setting this to false causes the Update() function to not update anything.</para>
+		/// <para>NOTE: Setting this to false causes the Update() function to not update anything, including the
+        /// BeforeUpdate() and AfterUpdate() function not to be called.</para>
 		/// </summary>
 		[DPSFViewerParameter(Description="Toggle whether the particle system should be updated or not.", Group="DPSF")]
 		public bool Enabled

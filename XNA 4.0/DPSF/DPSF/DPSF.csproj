@@ -9,6 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DPSF</RootNamespace>
     <AssemblyName>DPSF</AssemblyName>
+    <XnaRefreshLevel>1</XnaRefreshLevel>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
     <XnaPlatform>Windows</XnaPlatform>
