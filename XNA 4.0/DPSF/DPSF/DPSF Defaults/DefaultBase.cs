@@ -537,6 +537,20 @@ namespace DPSF
 			cParticle.Color = new Color(cParticle.Color.R, cParticle.Color.G, cParticle.Color.B, bAlpha);
 		}
 
+		protected void UpdateParticleTransparencyWithQuickFadeIn(DPSFDefaultBaseParticle cParticle, float fElapsedTimeInSeconds)
+		{
+			// Calculate how transparent the Particle should be and apply it
+			byte bAlpha = DPSFHelper.FadeInQuicklyBasedOnLifetime(cParticle.NormalizedElapsedTime);
+			cParticle.Color = new Color(cParticle.Color.R, cParticle.Color.G, cParticle.Color.B, bAlpha);
+		}
+
+		protected void UpdateParticleTransparencyWithQuickFadeOut(DPSFDefaultBaseParticle cParticle, float fElapsedTimeInSeconds)
+		{
+			// Calculate how transparent the Particle should be and apply it
+			byte bAlpha = DPSFHelper.FadeOutQuicklyBasedOnLifetime(cParticle.NormalizedElapsedTime);
+			cParticle.Color = new Color(cParticle.Color.R, cParticle.Color.G, cParticle.Color.B, bAlpha);
+		}
+
 		/// <summary>
 		/// Calculates how much affect each of the Particle System's Magnets should have on 
 		/// this Particle and updates the Particle's Position accordingly.

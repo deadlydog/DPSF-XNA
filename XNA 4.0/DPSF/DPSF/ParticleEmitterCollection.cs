@@ -129,10 +129,7 @@ namespace DPSF
 		/// <returns>Returns all of the ParticleEmitters in this collection.</returns>
 		public IList<ParticleEmitter> Emitters
 		{
-			get
-			{
-				return _emitters.Values.ToList();
-			}
+			get { return _emitters.Values.ToList(); }
 		}
 
 		/// <summary>

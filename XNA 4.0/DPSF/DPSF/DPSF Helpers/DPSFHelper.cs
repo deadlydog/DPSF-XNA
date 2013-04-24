@@ -147,6 +147,34 @@ namespace DPSF
 			}
 		}
 
+		public static byte FadeInQuicklyBasedOnLifetime(float normalizedElapsedTime)
+		{
+			// If the Particle should be fading in
+			if (normalizedElapsedTime < 0.1f)
+			{
+				return (byte)(int)MathHelper.Lerp(0, 255, normalizedElapsedTime * 10);
+			}
+			// Else the Particle should be fully opaque
+			else
+			{
+				return (byte)255;
+			}
+		}
+
+		public static byte FadeOutQuicklyBasedOnLifetime(float nomalizedElapsedTime)
+		{
+			// If the Particle should be fading out
+			if (nomalizedElapsedTime > 0.8f)
+			{
+				return (byte)(int)MathHelper.Lerp(255, 0, (nomalizedElapsedTime - 0.8f) * 5);
+			}
+			// Else the Particle should be fully opaque
+			else
+			{
+				return (byte)255;
+			}
+		}
+
 		/// <summary>
 		/// Returns the interpolation amount (between 0.0 and 1.0) that should be used in a Lerp function to have a 
 		/// property reach its full value when the NormalizedLifetime reaches 0.5, and go back to its original value 
