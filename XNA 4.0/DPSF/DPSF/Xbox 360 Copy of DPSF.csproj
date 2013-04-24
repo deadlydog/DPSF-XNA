@@ -141,7 +141,10 @@
     <Compile Include="ParticleEmitter.cs" />
     <Compile Include="ParticleEmitterCollection.cs" />
     <Compile Include="ParticleSystemManager.cs" />
+    <Compile Include="ParticleTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RenderProperties.cs" />
+    <Compile Include="SpriteBatchSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <NestedContentProject Include="Content\Content.contentproj">

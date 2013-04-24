@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DPSF</RootNamespace>
     <AssemblyName>DPSFPhone</AssemblyName>
-		<XnaRefreshLevel>1</XnaRefreshLevel>
+    <XnaRefreshLevel>1</XnaRefreshLevel>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
     <XnaPlatform>Windows Phone</XnaPlatform>
@@ -149,7 +149,10 @@
     <Compile Include="ParticleEmitter.cs" />
     <Compile Include="ParticleEmitterCollection.cs" />
     <Compile Include="ParticleSystemManager.cs" />
+    <Compile Include="ParticleTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RenderProperties.cs" />
+    <Compile Include="SpriteBatchSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <NestedContentProject Include="Content\Content.contentproj">

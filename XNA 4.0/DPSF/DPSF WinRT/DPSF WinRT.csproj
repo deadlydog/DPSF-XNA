@@ -257,8 +257,17 @@
     <Compile Include="..\DPSF\ParticleSystemManager.cs">
       <Link>ParticleSystemManager.cs</Link>
     </Compile>
+    <Compile Include="..\DPSF\ParticleTypes.cs">
+      <Link>ParticleTypes.cs</Link>
+    </Compile>
     <Compile Include="..\DPSF\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\RenderProperties.cs">
+      <Link>RenderProperties.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\SpriteBatchSettings.cs">
+      <Link>SpriteBatchSettings.cs</Link>
     </Compile>
     <Compile Include="DPSFResources.Designer.winrt.cs" />
   </ItemGroup>
