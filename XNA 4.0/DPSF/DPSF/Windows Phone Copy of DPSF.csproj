@@ -137,6 +137,7 @@
     </Compile>
     <Compile Include="Exceptions\DPSFArgumentException.cs" />
     <Compile Include="Exceptions\DPSFArgumentNullException.cs" />
+    <Compile Include="Exceptions\DPSFDebugWarningException.cs" />
     <Compile Include="Exceptions\DPSFException.cs" />
     <Compile Include="Exceptions\DPSFInvalidOperationException.cs" />
     <Compile Include="Exceptions\DPSFKeyNotFoundException.cs" />

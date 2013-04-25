@@ -3096,7 +3096,8 @@ namespace DPSF
 		/// The Emitter is used to automatically generate new Particles.
 		/// <para>NOTE: This is just a pointer to one of the ParticleEmitters in the Emitters ParticleEmitterCollection.</para>
 		/// <para>NOTE: If you set this to a ParticleEmitter that is not in the Emitters collection, it will be added to it.</para>
-		/// <para>During the particle system Update() this Emitter property is updated to point to the ParticleEmitter in the Emitters collection that is being updated.</para>
+		/// <para>During the particle system Update() this Emitter property is updated to point to the ParticleEmitter in the Emitters collection that is being updated.
+        /// This allows you to use this property to reference the ParticleEmitter that is actually being used to add particles to the particle system.</para>
 		/// </summary>
 		[DPSFViewerParameter(Description = "The Emitter used by the particle system.", Group = "DPSF")]
 		public ParticleEmitter Emitter
@@ -4008,12 +4009,10 @@ namespace DPSF
 
 		/// <summary>
 		/// Get / Protected Set a Linked List whose Nodes point to the Active Particles.
-		/// <para>NOTE: The Protected Set option is only provided to allow the order of the 
-		/// LinkedListNodes to be changed, changing the update and drawing 
-		/// order of the Particles. Be sure that all of the original LinkedListNodes 
-		/// (and only the original LinkedListNodes, no more) obtained from the 
-		/// Get are included; they may only be rearranged. If they are not, 
-		/// there may (and probably will) be unexpected results.</para>
+        /// <para>NOTE: New particles are added to the start of the Active Particles list, so by default the oldest particles should be at the end.</para>
+		/// <para>NOTE: The Protected Set option is only provided to allow the order of the LinkedListNodes to be changed, changing the update and drawing 
+		/// order of the Particles. Be sure that all of the original LinkedListNodes (and only the original LinkedListNodes, no more) obtained from the 
+		/// Get are included; they may only be rearranged. If they are not, there may (and probably will) be unexpected results.</para>
 		/// </summary>
 		public LinkedList<Particle> ActiveParticles
 		{
@@ -4083,33 +4082,71 @@ namespace DPSF
 		/// <returns>True if a particle was added, False if there is not enough memory for another Particle</returns>
 		public bool AddParticle(Particle cParticleToCopy)
 		{
-			// If we have reached the Max Number Of Particles Allowed
+#if (DEBUG)
+			if (DPSFHelper.ThrowDebugWarningExceptions)
+			{
+				// If we want to use DisabledWithEarlyRecycling mode, but don't have things configured properly for it to take effect, warn the user.
+				if (AutoMemoryManagerSettings.MemoryManagementMode == AutoMemoryManagerModes.DisabledWithEarlyRecycling &&
+					miMaxNumberOfParticlesAllowed <= NumberOfParticlesAllocatedInMemory)
+				{
+					string message = "The particle system call '" + this.ClassName + "' is configured with the AutoMemoryManagerSettings.MemoryManagementMode " +
+						"set to DisabledWithEarlyRecycling, but has the MaxNumberOfParticlesAllowed set to less than or equal to the NumberOfParticlesAllocatedInMemory " +
+						"(" + miMaxNumberOfParticlesAllowed + " <= " + NumberOfParticlesAllocatedInMemory + ")." +
+						"This means that particles will never be recycled, since the DisabledWithEarlyRecycling property only takes effect when the NumberOfParticlesAllocatedInMemory " +
+						"has been reached and not the MaxNumberOfParticlesAllowed. If you do want particles to be recycled you should set the MaxNumberOfParticlesAllowed " +
+						"to be greater than the NumberOfParticlesAllocatedInMemory. These variables are typically set in the AutoInitialize() function.";
+					throw new DPSFDebugWarningException(message);
+				}
+
+				if (AutoMemoryManagerSettings.MemoryManagementMode == AutoMemoryManagerModes.Disabled ||
+					AutoMemoryManagerSettings.MemoryManagementMode == AutoMemoryManagerModes.DisabledWithEarlyRecycling)
+				{
+					// If we have allocated memory that may never get used, warn the user.
+					if (miMaxNumberOfParticlesAllowed < NumberOfParticlesAllocatedInMemory)
+					{
+						string message = "The particle system class '" + this.ClassName + "' is configured with the AutoMemoryManagerSettings.MemoryManagementMode " + 
+							"set to Disabled, but has the MaxNumberOfParticlesAllowed set to less than the NumberOfParticlesAllocatedInMemory. " +
+							"(" + miMaxNumberOfParticlesAllowed + " < " + NumberOfParticlesAllocatedInMemory + "). This means that you have allocated memory for " + 
+							"more particles than are allowed to be created. Unless you are changing the MaxNumberOfParticlesAllowed at run-time, " +
+							"it is recommended that you change the MaxNumberOfParticlesAllowed to match the NumberOfParticlesAllocatedInMemory when using one of the " +
+							"'Disabled' Memory Management Modes. These variables are typically set in the AutoInitialize() function.";
+						throw new DPSFDebugWarningException(message);
+					}
+				}
+			}
+#endif
+			// If we have reached the Max Number Of Particles Allowed.
 			if (mcActiveParticlesList.Count >= miMaxNumberOfParticlesAllowed)
 			{
-				// Return that we cannot add a new Particle at this time
+				// Return that we cannot add a new Particle at this time.
 				return false;
 			}
 
-			// If we have reached the Number Of Particles Allocated In Memory
+			// If we have reached the Number Of Particles Allocated In Memory.
 			if (mcInactiveParticlesList.Count <= 0)
 			{
-				// If Auto Memory Management is Enabled to allow the increasing of memory
-				if (AutoMemoryManagerSettings.MemoryManagementMode == AutoMemoryManagerModes.IncreaseAndDecrease ||
+				// If we should recycle the oldest particle to make room for this new particle.
+				if (AutoMemoryManagerSettings.MemoryManagementMode == AutoMemoryManagerModes.DisabledWithEarlyRecycling)
+				{
+					MoveActiveParticleToInactiveParticleList(this.ActiveParticles.Last);
+				}
+				// Else If Auto Memory Management is Enabled to allow the increasing of memory.
+				else if (AutoMemoryManagerSettings.MemoryManagementMode == AutoMemoryManagerModes.IncreaseAndDecrease ||
 					AutoMemoryManagerSettings.MemoryManagementMode == AutoMemoryManagerModes.IncreaseOnly)
 				{
-					// Calculate what the new increased Max Number Of Particles should be
-					int iNewMaxNumberOfParticles = (int)(Math.Ceiling((float)(NumberOfParticlesAllocatedInMemory * AutoMemoryManagerSettings.IncreaseAmount)));
+					// Calculate what the new increased Number Of Particles Allocated In Memory should be..
+					int iNewNumberOfParticlesAllocatedInMemory = (int)(Math.Ceiling((float)(NumberOfParticlesAllocatedInMemory * AutoMemoryManagerSettings.IncreaseAmount)));
 
-					// Make sure we do not allocate more than the Max Number Of Particles
-					iNewMaxNumberOfParticles = (int)MathHelper.Min(iNewMaxNumberOfParticles, MaxNumberOfParticlesAllowed);
+					// Make sure we do not allocate more than the Max Number Of Particles.
+					iNewNumberOfParticlesAllocatedInMemory = (int)MathHelper.Min(iNewNumberOfParticlesAllocatedInMemory, MaxNumberOfParticlesAllowed);
 
-					// Set the new Max Number Of Particles
-					NumberOfParticlesAllocatedInMemory = iNewMaxNumberOfParticles;
+					// Set the new Number Of Particles Allocated In Memory.
+					NumberOfParticlesAllocatedInMemory = iNewNumberOfParticlesAllocatedInMemory;
 				}
-				// Else we cannot increase the Max Number Of Particles
+				// Else we cannot add another Particle at this time.
 				else
 				{
-					// Return that we cannot add a new Particle at this time
+					// Return that we cannot add a new Particle at this time.
 					return false;
 				}
 			}
@@ -4192,6 +4229,7 @@ namespace DPSF
 		/// <summary>
 		/// Adds the specified number of new Particles to the particle system, linearly interpolating (Lerp) the Emitter's 
 		/// Position/Orientation to be between its Previous Position/Orientation and current Position/Orientation when adding new particles.
+		/// <para>Returns how many Particles were able to be added to the particle system.</para>
 		/// <para>These new Particles are initialized using the particle system's Particle Initialization Function.</para>
 		/// </summary>
 		/// <param name="numberOfParticlesToAdd">How many Particles to Add to the particle system.</param>
@@ -4216,6 +4254,7 @@ namespace DPSF
 		/// <summary>
 		/// Adds the specified number of new Particles to the particle system, linearly interpolating (Lerp) the Emitter's 
 		/// Position/Orientation to be between its Previous Position/Orientation and current Position/Orientation when adding new particles.
+		/// <para>Returns how many Particles were able to be added to the particle system.</para>
 		/// <para>These new Particles are initialized using the particle system's Particle Initialization Function.</para>
 		/// </summary>
 		/// <param name="numberOfParticlesToAdd">How many Particles to Add to the particle system.</param>
@@ -4569,11 +4608,7 @@ namespace DPSF
 					// Move to the Next Node in the Active Particle List
 					cNode = cNode.Next;
 
-					// Remove the Node from the Active Particles List
-					mcActiveParticlesList.Remove(cNodeToRemove);
-
-					// Add it to the Inactive Particles List
-					mcInactiveParticlesList.AddFirst(cNodeToRemove);
+                    MoveActiveParticleToInactiveParticleList(cNodeToRemove);
 				}
 				// Else the Particle is still Active
 				else
@@ -4646,6 +4681,19 @@ namespace DPSF
 #endif
 			}
 		}
+
+        /// <summary>
+        /// Moves the Active Particle's Linked List node to the Inactive Particle Linked List.
+        /// </summary>
+        /// <param name="nodeToRemove">The Active Particle Linked List's node to move to the Inactive Particle Linked List.</param>
+        protected void MoveActiveParticleToInactiveParticleList(LinkedListNode<Particle> nodeToRemove)
+        {
+            // Remove the Node from the Active Particles List
+            mcActiveParticlesList.Remove(nodeToRemove);
+
+            // Add it to the Inactive Particles List
+            mcInactiveParticlesList.AddFirst(nodeToRemove);
+        }
 
 		/// <summary>
 		/// Adds the given Particle to the list of Particles to be Drawn (i.e. the Vertex Buffer), if it is Visible

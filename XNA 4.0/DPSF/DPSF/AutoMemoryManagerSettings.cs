@@ -20,19 +20,33 @@ namespace DPSF
 		Disabled = 0,
 
 		/// <summary>
+		/// This is the same as Disabled, except that if a particle is trying to be added and there is no more memory available for a new particle, the
+		/// particle at the end of the ActiveParticleList will be hard-killed and recycled and used for the new particle.
+		/// <para>NOTE: If using Disabled mode instead of this mode, if a new particle tries to be added and no more memory is available, the new particle simply will not be added.</para>
+		/// <para>NOTE: If trying to add a new particle, but the number of Active Particles has already hit the MaxNumberOfParticlesAllowed, the particle will not be added.
+		/// This setting only takes effect when trying to add a new particle and we have reached the NumberOfParticlesAllocatedInMemory, but not the MaxNumberOfParticlesAllowed.
+		/// This means that in order for this setting to be effective, the MaxNumberOfParticlesAllowed must be greater than the NumberOfParticlesAllocatedInMemory.</para>
+		/// <para>NOTE: When a particle is hard-killed, no more processing at all is performed on it. For example, if the particle is supposed to 
+		/// trigger some other event to happen when it dies (e.g. by using a NormalizedTimedEvent), that event will not be triggered.</para>
+		/// <para>NOTE: Typically the oldest particles are at the end of the ActiveParticleList and the youngest ones are at the front, so the oldest
+		/// particles (i.e. the ones with the greatest ElapsedTime and a Lifetime greater than zero) will be recycled first.</para>
+		/// </summary>
+		DisabledWithEarlyRecycling = 1,
+
+		/// <summary>
 		/// Allow the Automatic Memory Manager to allocate more memory when needed, and reduce it when not needed.
 		/// </summary>
-		IncreaseAndDecrease = 1,
+		IncreaseAndDecrease = 2,
 
 		/// <summary>
 		/// Only allow the Automatic Memory Manager to allocate more memory when needed (cannot reduce space).
 		/// </summary>
-		IncreaseOnly = 2,
+		IncreaseOnly = 3,
 
 		/// <summary>
 		/// Only allow the Automatic Memory Manager to reduce the amount of memory allocated when it is not needed (cannot increase space).
 		/// </summary>
-		DecreaseOnly = 3
+		DecreaseOnly = 4
 	}
 
 	/// <summary>

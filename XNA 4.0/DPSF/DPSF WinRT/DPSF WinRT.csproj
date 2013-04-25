@@ -227,6 +227,9 @@
     <Compile Include="..\DPSF\Exceptions\DPSFArgumentNullException.cs">
       <Link>Exceptions\DPSFArgumentNullException.cs</Link>
     </Compile>
+    <Compile Include="..\DPSF\Exceptions\DPSFDebugWarningException.cs">
+      <Link>Exceptions\DPSFDebugWarningException.cs</Link>
+    </Compile>
     <Compile Include="..\DPSF\Exceptions\DPSFException.cs">
       <Link>Exceptions\DPSFException.cs</Link>
     </Compile>

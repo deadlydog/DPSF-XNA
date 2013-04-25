@@ -302,13 +302,10 @@ namespace DPSF
 		public int NumberOfParticlesEmitted { get; set; }
 
 		/// <summary>
-		/// Updates the Emitter's Position and Orientation according to its 
-		/// Velocities and Accelerations, and returns how many Particles should 
-		/// be emitted this frame.
+		/// Updates the Emitter's Position and Orientation according to its Velocities and Accelerations, and returns how many Particles should be emitted this frame.
 		/// </summary>
-		/// <param name="fElapsedTimeInSeconds">How long (in seconds) it has been 
-		/// since this function was called</param>
-		/// <returns>Returns the number of Particles that should be emitted</returns>
+		/// <param name="fElapsedTimeInSeconds">How long (in seconds) it has been since this function was called.</param>
+		/// <returns>Returns the number of Particles that should be emitted.</returns>
 		public int UpdateAndGetNumberOfParticlesToEmit(float fElapsedTimeInSeconds)
 		{
 			// Update the Emitter's Positional, Rotational, and Pivotal Data
@@ -367,10 +364,10 @@ namespace DPSF
 		}
 
 		/// <summary>
-		/// Calculates how many Particles should be emitted based on the amount of Time Elapsed
+		/// Calculates how many Particles should be emitted based on the amount of Time Elapsed.
 		/// </summary>
-		/// <param name="fElapsedTimeInSeconds">How much Time has Elapsed (in seconds) since the last Update</param>
-		/// <returns>Returns how many Particles should be emitted</returns>
+		/// <param name="fElapsedTimeInSeconds">How much Time has Elapsed (in seconds) since the last Update.</param>
+		/// <returns>Returns how many Particles should be emitted.</returns>
 		private int CalculateHowManyParticlesToEmit(float fElapsedTimeInSeconds)
 		{
 			// Variable to hold how many Particles To Emit

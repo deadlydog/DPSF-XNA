@@ -161,6 +161,7 @@
       <DependentUpon>DPSFResources.resx</DependentUpon>
     </Compile>
     <Compile Include="DPSFDefaultSettings.cs" />
+    <Compile Include="Exceptions\DPSFDebugWarningException.cs" />
     <Compile Include="Exceptions\DPSFArgumentException.cs" />
     <Compile Include="Exceptions\DPSFArgumentNullException.cs" />
     <Compile Include="Exceptions\DPSFException.cs" />
