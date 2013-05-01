@@ -13,7 +13,7 @@ namespace DPSF
 #if (WINDOWS)
 	[Serializable]
 #endif
-	public class DefaultSpriteParticleSystem : DPSFDefaultSpriteParticleSystem<DefaultSpriteParticle, DefaultSpriteParticleVertex>
+	public abstract class DefaultSpriteParticleSystem : DPSFDefaultSpriteParticleSystem<DefaultSpriteParticle, DefaultSpriteParticleVertex>
 	{
 		/// <summary>
 		/// Constructor
@@ -207,7 +207,7 @@ namespace DPSF
 #if (WINDOWS)
 	[Serializable]
 #endif
-	public class DPSFDefaultSpriteParticleSystem<Particle, Vertex> : DPSFDefaultBaseParticleSystem<Particle, Vertex>
+	public abstract class DPSFDefaultSpriteParticleSystem<Particle, Vertex> : DPSFDefaultBaseParticleSystem<Particle, Vertex>
 		where Particle : DPSFParticle, new()
 		where Vertex : struct, IDPSFParticleVertex
 	{

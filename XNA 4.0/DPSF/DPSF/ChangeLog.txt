@@ -16,9 +16,10 @@ public:
 - Added 2 more helper functions for updating particle transparency, UpdateParticleTransparencyWithQuickFadeIn and UpdateParticleTransparencyWithQuickFadeOut.
 - Added new DisabledWithEarlyRecycling memory management mode to allow recycling the oldest active particle when we want to add a new particle, but have no more memory available for it.
 - Added new DPSFDebugWarningExceptions that are only thrown when debugging and are meant to help users catch when they do not have DPSF setup ideally.
+- Changed the provided Default Particle System classes to be 'abstract', as they are meant to be inherited and not instanced directly.
 
 private:
-- Broke the ParticleTypes, RenderProperties, and SpriteBatchSettings out into their own files.
+- Moved the ParticleTypes, RenderProperties, and SpriteBatchSettings classes/enum into their own files.
 
 
 Changes made after Version 2.4.0:

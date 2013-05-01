@@ -24,19 +24,19 @@ namespace DPSF
 		public event EventHandler AllEmittersRemoved = delegate { };
 
 		/// <summary>
-		/// Adds a new ParticleEmitter to the list of emitters and returns the ParticleEmitter's unique ID that can be used to retrieve it from the collection.
+		/// Adds a new ParticleEmitter to the list of emitters and returns it.
 		/// </summary>
-		/// <returns>Returns the ParticleEmitter's unique ID that can be used to reference the ParticleEmitter in the collection.</returns>
+		/// <returns>Returns the ParticleEmitter added to the collection.</returns>
 		public ParticleEmitter Add()
 		{
 			return Add(null);
 		}
 
 		/// <summary>
-		/// Adds the given ParticleEmitter to the list of emitters and returns its unique ID that can be used to retrieve it from the collection.
+		/// Adds the given ParticleEmitter to the list of emitters and returns it.
 		/// </summary>
 		/// <param name="emitter">The ParticleEmitter to add to the collection.</param>
-		/// <returns>Returns the ParticleEmitter's unique ID that can be used to reference the ParticleEmitter in the collection.</returns>
+		/// <returns>Returns the ParticleEmitter added to the collection.</returns>
 		public ParticleEmitter Add(ParticleEmitter emitter)
 		{
 			ParticleEmitter newEmitter;

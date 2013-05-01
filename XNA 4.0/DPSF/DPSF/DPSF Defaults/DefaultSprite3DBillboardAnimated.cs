@@ -12,7 +12,7 @@ namespace DPSF
 #if (WINDOWS)
     [Serializable]
 #endif
-    public class DefaultAnimatedSprite3DBillboardParticleSystem : DPSFDefaultAnimatedSprite3DBillboardParticleSystem<DefaultAnimatedSprite3DBillboardParticle, DefaultSpriteParticleVertex>
+	public abstract class DefaultAnimatedSprite3DBillboardParticleSystem : DPSFDefaultAnimatedSprite3DBillboardParticleSystem<DefaultAnimatedSprite3DBillboardParticle, DefaultSpriteParticleVertex>
     {
         /// <summary>
         /// Constructor
@@ -66,7 +66,7 @@ namespace DPSF
 #if (WINDOWS)
     [Serializable]
 #endif
-    public class DPSFDefaultAnimatedSprite3DBillboardParticleSystem<Particle, Vertex> : DPSFDefaultSprite3DBillboardTextureCoordinates<Particle, Vertex>
+	public abstract class DPSFDefaultAnimatedSprite3DBillboardParticleSystem<Particle, Vertex> : DPSFDefaultSprite3DBillboardTextureCoordinates<Particle, Vertex>
         where Particle : DPSFParticle, new()
         where Vertex : struct, IDPSFParticleVertex
     {

@@ -12,7 +12,7 @@ namespace DPSF
 #if (WINDOWS)
 	[Serializable]
 #endif
-	public class DefaultNoDisplayParticleSystem : DPSFDefaultNoDisplayParticleSystem<DefaultNoDisplayParticle, DefaultNoDisplayParticleVertex>
+	public abstract class DefaultNoDisplayParticleSystem : DPSFDefaultNoDisplayParticleSystem<DefaultNoDisplayParticle, DefaultNoDisplayParticleVertex>
 	{
 		/// <summary>
 		/// Constructor
@@ -39,7 +39,7 @@ namespace DPSF
 #if (WINDOWS)
 	[Serializable]
 #endif
-	public class DPSFDefaultNoDisplayParticleSystem<Particle, Vertex> : DPSFDefaultBaseParticleSystem<Particle, Vertex>
+	public abstract class DPSFDefaultNoDisplayParticleSystem<Particle, Vertex> : DPSFDefaultBaseParticleSystem<Particle, Vertex>
 		where Particle : DPSFParticle, new()
 		where Vertex : struct, IDPSFParticleVertex
 	{

@@ -12,7 +12,7 @@ namespace DPSF
 #if (WINDOWS)
 	[Serializable]
 #endif
-	public class DefaultSpriteTextureCoordinatesParticleSystem : DPSFDefaultSpriteTextureCoordinatesParticleSystem<DefaultSpriteTextureCoordinatesParticle, DefaultSpriteParticleVertex>
+	public abstract class DefaultSpriteTextureCoordinatesParticleSystem : DPSFDefaultSpriteTextureCoordinatesParticleSystem<DefaultSpriteTextureCoordinatesParticle, DefaultSpriteParticleVertex>
 	{
 		/// <summary>
 		/// Constructor
@@ -93,7 +93,7 @@ namespace DPSF
 #if (WINDOWS)
 	[Serializable]
 #endif
-	public class DPSFDefaultSpriteTextureCoordinatesParticleSystem<Particle, Vertex> : DPSFDefaultSpriteParticleSystem<Particle, Vertex>
+	public abstract class DPSFDefaultSpriteTextureCoordinatesParticleSystem<Particle, Vertex> : DPSFDefaultSpriteParticleSystem<Particle, Vertex>
 		where Particle : DPSFParticle, new()
 		where Vertex : struct, IDPSFParticleVertex
 	{
