@@ -311,7 +311,7 @@ function UninstallDPSF
 }
 
 # Show an Open Folder Dialog and return the directory selected by the user.
-function Show-FolderBrowserDialog([string]$InitialDirectory)
+function Read-FolderBrowserDialog([string]$InitialDirectory)
 {
 	Add-Type -AssemblyName System.Windows.Forms
 	$openFolderDialog = New-Object System.Windows.Forms.FolderBrowserDialog
@@ -323,6 +323,7 @@ function Show-FolderBrowserDialog([string]$InitialDirectory)
 
 # Catch any exceptions thrown and stop the script.
 trap [Exception] { Write-Host "Error: $_"; break; }
+
 
 #==========================================================
 # Perform the script tasks.
@@ -783,7 +784,7 @@ Invoke-MsBuild -Path "$DPSF_SOLUTION_FILE_PATH" -MsBuildParameters "$MSBUILD_PAR
 # If the path to the DPSF Dev Website doesn't exist, prompt the user for it.
 if (!(Test-Path $DPSF_DEV_WEBSITE_DIRECTORY))
 {
-	$DPSF_DEV_WEBSITE_DIRECTORY = Show-FolderBrowserDialog $DPSF_REPOSITORY_ROOT_DIRECTORY
+	$DPSF_DEV_WEBSITE_DIRECTORY = Read-FolderBrowserDialog $DPSF_REPOSITORY_ROOT_DIRECTORY
 	
 	# If the user didn't choose a valid directory, exit.
 	if (!(Test-Path $DPSF_DEV_WEBSITE_DIRECTORY))
