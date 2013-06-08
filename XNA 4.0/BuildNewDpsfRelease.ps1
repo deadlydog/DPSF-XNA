@@ -26,10 +26,10 @@ param
 Set-StrictMode -Version Latest
 
 # Get the direcotry that this script is in.
-$thisScriptsDirectory = Split-Path $script:MyInvocation.MyCommand.Path
+$THIS_SCRIPTS_DIRECTORY = Split-Path $script:MyInvocation.MyCommand.Path
 
 # Import the module used to build the .sln files.
-$InvokeMsBuildModulePath = Join-Path $thisScriptsDirectory "BuildScriptUtilities\Invoke-MsBuild\Invoke-MsBuild.psm1"
+$InvokeMsBuildModulePath = Join-Path $THIS_SCRIPTS_DIRECTORY "BuildScriptUtilities\Invoke-MsBuild\Invoke-MsBuild.psm1"
 Import-Module -Name $InvokeMsBuildModulePath
 
 # Import the System.Windows.Forms namespace which is used to show Message Boxes and the Open File Dialog.
@@ -42,7 +42,7 @@ Add-Type -AssemblyName System.Windows.Forms
 $GIT_EXTENSIONS_COMMAND_LINE_TOOL_PATH = "C:\Program Files (x86)\GitExtensions\gitex.cmd"
 $DPSF_DEFAULT_INSTALL_DIRECTORY = "C:\DPSF"
 
-$DPSF_ROOT_DIRECTORY = $thisScriptsDirectory
+$DPSF_ROOT_DIRECTORY = $THIS_SCRIPTS_DIRECTORY
 $DPSF_REPOSITORY_ROOT_DIRECTORY = Resolve-Path -Path "$DPSF_ROOT_DIRECTORY\.."
 $DPSF_COMMON_ASSEMBLY_INFO_FILE_PATH = Join-Path $DPSF_ROOT_DIRECTORY "\DPSF\DPSF\CommonAssemblyInfo.cs"
 $DPSF_SOLUTION_FILE_PATH = Join-Path $DPSF_ROOT_DIRECTORY "\DPSF\DPSF.sln"
@@ -93,11 +93,14 @@ $DPSF_UNINSTALLER_FILE_PATH = Join-Path $DPSF_DEFAULT_INSTALL_DIRECTORY "Uninsta
 $ARCHIVED_INSTALLERS_DIRECTORY = Join-Path $DPSF_ROOT_DIRECTORY "Installer\Archived Installers"
 $DPSF_CHANGE_LOG_FILE_PATH = Join-Path $DPSF_ROOT_DIRECTORY "DPSF\DPSF\ChangeLog.txt"
 
-$DPSF_DEV_WEBSITE_DIRECTORY = Resolve-Path -Path (Join-Path "$DPSF_REPOSITORY_ROOT_DIRECTORY\.." "Websites\DPSF Website\Dev")
-$DPSF_DEV_WEBSITE_DPSF_INSTALLER_ZIP_FILE_PATH = Join-Path $DPSF_DEV_WEBSITE_DIRECTORY "DPSF Installer.zip"
-$DPSF_DEV_WEBSITE_ARCHIVED_INSTALLERS_DIRECTORY = Join-Path $DPSF_DEV_WEBSITE_DIRECTORY "ArchivedDPSFVersions"
-$DPSF_DEV_WEBSITE_HELP_FILES_DIRECTORY = Join-Path $DPSF_DEV_WEBSITE_DIRECTORY "DPSFHelp"
-$DPSF_DEV_WEBSITE_RELEASE_PROCESS_FILE_PATH = Join-Path $DPSF_DEV_WEBSITE_DIRECTORY "Release Process.txt"
+$DPSF_DEV_WEBSITE_DIRECTORY_PATH = Resolve-Path -Path (Join-Path "$DPSF_REPOSITORY_ROOT_DIRECTORY\.." "Websites\DPSF Website\Dev")
+$DPSF_DEV_WEBSITE_DPSF_INSTALLER_ZIP_FILE_PATH = Join-Path $DPSF_DEV_WEBSITE_DIRECTORY_PATH "DPSF Installer.zip"
+$DPSF_DEV_WEBSITE_ARCHIVED_INSTALLERS_DIRECTORY = Join-Path $DPSF_DEV_WEBSITE_DIRECTORY_PATH "ArchivedDPSFVersions"
+$DPSF_DEV_WEBSITE_HELP_FILES_DIRECTORY = Join-Path $DPSF_DEV_WEBSITE_DIRECTORY_PATH "DPSFHelp"
+$DPSF_DEV_WEBSITE_RELEASE_PROCESS_FILE_PATH = Join-Path $DPSF_DEV_WEBSITE_DIRECTORY_PATH "Release Process.txt"
+
+$NUGET_DIRECTORY_PATH = Join-Path $DPSF_ROOT_DIRECTORY "\Installer\NuGet"
+$CREATE_AND_PUSH_NEW_NUGET_PACKAGE_SCRIPT_PATH = Join-Path $NUGET_DIRECTORY_PATH "CreateNewDPSFNuGetPackage.ps1"
 
 
 #==========================================================
@@ -663,7 +666,7 @@ Write-Host "Opening the DPSF Install Creator project for you to create a new 'DP
 Invoke-Item $INSTALLER_CREATOR_PROJECT_FILE_PATH
 
 Write-Host "Prompt for when the new DPSF Installer has finished being created..."
-if ([System.Windows.Forms.MessageBox]::Show("Hit OK once the new 'DPSF Installer.exe' has been created.", "Create New DPSF Installer", [System.Windows.Forms.MessageBoxButtons]::OKCancel, [System.Windows.Forms.MessageBoxIcon]::Stop) -eq [System.Windows.Forms.DialogResult]::Cancel)
+if ([System.Windows.Forms.MessageBox]::Show("Make sure to include any new links that should appear in the Start Menu DPSF folder, such as links to new tutorials, demos, etc. and update the DPSF EULA if it was updated in the help documentation.`n`nHit OK once the new 'DPSF Installer.exe' has been created.", "Create New DPSF Installer", [System.Windows.Forms.MessageBoxButtons]::OKCancel, [System.Windows.Forms.MessageBoxIcon]::Stop) -eq [System.Windows.Forms.DialogResult]::Cancel)
 {
 	Write-Host "Exiting script since Cancel was pressed when asked to create the new 'DPSF Installer.exe'."
 	Exit
@@ -779,12 +782,12 @@ Invoke-MsBuild -Path "$DPSF_SOLUTION_FILE_PATH" -MsBuildParameters "$MSBUILD_PAR
 #>
 
 # If the path to the DPSF Dev Website doesn't exist, prompt the user for it.
-if (!(Test-Path $DPSF_DEV_WEBSITE_DIRECTORY))
+if (!(Test-Path $DPSF_DEV_WEBSITE_DIRECTORY_PATH))
 {
-	$DPSF_DEV_WEBSITE_DIRECTORY = Read-FolderBrowserDialog -Message "Please select the DPSF Dev Website folder" -InitialDirectory $DPSF_REPOSITORY_ROOT_DIRECTORY
+	$DPSF_DEV_WEBSITE_DIRECTORY_PATH = Read-FolderBrowserDialog -Message "Please select the DPSF Dev Website folder" -InitialDirectory $DPSF_REPOSITORY_ROOT_DIRECTORY
 	
 	# If the user didn't choose a valid directory, exit.
-	if (!(Test-Path $DPSF_DEV_WEBSITE_DIRECTORY))
+	if (!(Test-Path $DPSF_DEV_WEBSITE_DIRECTORY_PATH))
 	{
 		Write-Host "Exiting script because a valid directory was not chosen for the DSPF Dev Website."
 		Exit
@@ -822,6 +825,16 @@ Invoke-Item -Path $DPSF_DEV_WEBSITE_RELEASE_PROCESS_FILE_PATH
 # Tell user to do the Dev website Release Process steps to complete the release process.
 Write-Host "Prompt user to complete the Dev website steps..."
 [System.Windows.Forms.MessageBox]::Show("Follow the steps in the Dev website's Release Process file to complete the release process.", "Perform Dev Website Steps", [System.Windows.Forms.MessageBoxButtons]::OKCancel, [System.Windows.Forms.MessageBoxIcon]::Stop)
+
+
+<#
+26 - Build and push the new DPSF NuGet Packages
+#>
+
+Write-Host "Creating and pushing new DPSF NuGet packages..."
+& $CREATE_AND_PUSH_NEW_NUGET_PACKAGE_SCRIPT_PATH -VersionNumber $VersionNumber
+
+
 
 # Tell user that we are finished.
 Write-Host "All done!!!"
