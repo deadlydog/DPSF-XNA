@@ -23,7 +23,7 @@ using DPSF.ParticleSystems;
 namespace Tutorial
 {
     /// <summary>
-    /// Application class showing how to use Dans Particle System Framework
+	/// Application class showing how to use Dynamic Particle System Framework
     /// </summary>
     public class Game1 : Microsoft.Xna.Framework.Game
     {

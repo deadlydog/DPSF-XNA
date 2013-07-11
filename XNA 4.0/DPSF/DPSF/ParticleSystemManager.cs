@@ -772,7 +772,7 @@ namespace DPSF
 					// from the particle system manager, so make sure we don't go outside of the array bounds.
 					iNumberOfParticleSystems = mcParticleSystemListSortedByUpdateOrder.Count;
 
-					// If the particle system being updated remove itself from the PS Manager
+					// If the particle system being updated to remove itself from the PS Manager.
 					if (_isParticleSystemBeingUpdatedRemovedFromManager)
 					{
 						// Decrement our PS index so that the next PS doesn't get skipped, as it will now have this PS's index.

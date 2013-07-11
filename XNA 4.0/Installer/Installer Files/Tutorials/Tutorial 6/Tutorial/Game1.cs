@@ -1,6 +1,6 @@
 //===================================================================
 // DPSF Tutorial 6 Source Code - This tutorial shows how to set and update a 
-// particle's / emitter's / obect's position, orientation, and pivot point using the
+// particle's / emitter's / object's position, orientation, and pivot point using the
 // classes provided by DPSF.
 //
 // Tutorial files of interest:
@@ -24,7 +24,7 @@ using DPSF.ParticleSystems;
 namespace Tutorial
 {
 	/// <summary>
-	/// Application class showing how to use Dans Particle System Framework
+	/// Application class showing how to use Dynamic Particle System Framework
 	/// </summary>
 	public class Game1 : Microsoft.Xna.Framework.Game
 	{
