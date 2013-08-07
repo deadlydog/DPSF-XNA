@@ -12,7 +12,7 @@ namespace DPSF
 #if (WINDOWS)
 	[Serializable]
 #endif
-	public class DefaultTexturedQuadTextureCoordinatesParticleSystem : DPSFDefaultTexturedQuadTextureCoordinatesParticleSystem<DefaultTextureQuadTextureCoordinatesParticle, DefaultTexturedQuadParticleVertex>
+	public abstract class DefaultTexturedQuadTextureCoordinatesParticleSystem : DPSFDefaultTexturedQuadTextureCoordinatesParticleSystem<DefaultTextureQuadTextureCoordinatesParticle, DefaultTexturedQuadParticleVertex>
 	{
 		/// <summary>
 		/// Constructor
@@ -102,7 +102,7 @@ namespace DPSF
 #if (WINDOWS)
 	[Serializable]
 #endif
-	public class DPSFDefaultTexturedQuadTextureCoordinatesParticleSystem<Particle, Vertex> : DPSFDefaultTexturedQuadParticleSystem<Particle, Vertex>
+	public abstract class DPSFDefaultTexturedQuadTextureCoordinatesParticleSystem<Particle, Vertex> : DPSFDefaultTexturedQuadParticleSystem<Particle, Vertex>
 		where Particle : DPSFParticle, new()
 		where Vertex : struct, IDPSFParticleVertex
 	{

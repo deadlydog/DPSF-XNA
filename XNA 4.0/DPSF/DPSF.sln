@@ -159,7 +159,6 @@ Global
 		{428BC283-B89B-4F47-9B4C-918F7E45BAB9}.Release|Any CPU.ActiveCfg = Release|Xbox 360
 		{428BC283-B89B-4F47-9B4C-918F7E45BAB9}.Release|Mixed Platforms.ActiveCfg = Release|Xbox 360
 		{428BC283-B89B-4F47-9B4C-918F7E45BAB9}.Release|Mixed Platforms.Build.0 = Release|Xbox 360
-		{428BC283-B89B-4F47-9B4C-918F7E45BAB9}.Release|Mixed Platforms.Deploy.0 = Release|Xbox 360
 		{428BC283-B89B-4F47-9B4C-918F7E45BAB9}.Release|Windows Phone.ActiveCfg = Release|Xbox 360
 		{428BC283-B89B-4F47-9B4C-918F7E45BAB9}.Release|x86.ActiveCfg = Release|Xbox 360
 		{428BC283-B89B-4F47-9B4C-918F7E45BAB9}.Release|Xbox 360.ActiveCfg = Release|Xbox 360
@@ -200,7 +199,6 @@ Global
 		{CC35BE29-33BA-4A22-8AB6-4488805F5F9E}.Release|Any CPU.ActiveCfg = Release|Xbox 360
 		{CC35BE29-33BA-4A22-8AB6-4488805F5F9E}.Release|Mixed Platforms.ActiveCfg = Release|Xbox 360
 		{CC35BE29-33BA-4A22-8AB6-4488805F5F9E}.Release|Mixed Platforms.Build.0 = Release|Xbox 360
-		{CC35BE29-33BA-4A22-8AB6-4488805F5F9E}.Release|Mixed Platforms.Deploy.0 = Release|Xbox 360
 		{CC35BE29-33BA-4A22-8AB6-4488805F5F9E}.Release|Windows Phone.ActiveCfg = Release|Xbox 360
 		{CC35BE29-33BA-4A22-8AB6-4488805F5F9E}.Release|x86.ActiveCfg = Release|Xbox 360
 		{CC35BE29-33BA-4A22-8AB6-4488805F5F9E}.Release|Xbox 360.ActiveCfg = Release|Xbox 360
@@ -227,7 +225,6 @@ Global
 		{30E4DE64-17B4-41EE-B21F-D7AD2EF6BC39}.Release|Any CPU.ActiveCfg = Release|Windows Phone
 		{30E4DE64-17B4-41EE-B21F-D7AD2EF6BC39}.Release|Mixed Platforms.ActiveCfg = Release|Windows Phone
 		{30E4DE64-17B4-41EE-B21F-D7AD2EF6BC39}.Release|Mixed Platforms.Build.0 = Release|Windows Phone
-		{30E4DE64-17B4-41EE-B21F-D7AD2EF6BC39}.Release|Mixed Platforms.Deploy.0 = Release|Windows Phone
 		{30E4DE64-17B4-41EE-B21F-D7AD2EF6BC39}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
 		{30E4DE64-17B4-41EE-B21F-D7AD2EF6BC39}.Release|Windows Phone.Build.0 = Release|Windows Phone
 		{30E4DE64-17B4-41EE-B21F-D7AD2EF6BC39}.Release|Windows Phone.Deploy.0 = Release|Windows Phone
@@ -254,7 +251,6 @@ Global
 		{0BF3802A-C5F1-4C19-AD21-141F5C147ED2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0BF3802A-C5F1-4C19-AD21-141F5C147ED2}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{0BF3802A-C5F1-4C19-AD21-141F5C147ED2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{0BF3802A-C5F1-4C19-AD21-141F5C147ED2}.Release|Mixed Platforms.Deploy.0 = Release|Any CPU
 		{0BF3802A-C5F1-4C19-AD21-141F5C147ED2}.Release|Windows Phone.ActiveCfg = Release|Any CPU
 		{0BF3802A-C5F1-4C19-AD21-141F5C147ED2}.Release|x86.ActiveCfg = Release|Any CPU
 		{0BF3802A-C5F1-4C19-AD21-141F5C147ED2}.Release|Xbox 360.ActiveCfg = Release|Any CPU

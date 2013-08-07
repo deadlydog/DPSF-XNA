@@ -17,6 +17,20 @@
             the particle system, but small enough that it does not waste large amounts of memory.
             </summary>
         </member>
+        <member name="F:DPSF.AutoMemoryManagerModes.DisabledWithEarlyRecycling">
+            <summary>
+            This is the same as Disabled, except that if a particle is trying to be added and there is no more memory available for a new particle, the
+            particle at the end of the ActiveParticleList will be hard-killed and recycled and used for the new particle.
+            <para>NOTE: If using Disabled mode instead of this mode, if a new particle tries to be added and no more memory is available, the new particle simply will not be added.</para>
+            <para>NOTE: If trying to add a new particle, but the number of Active Particles has already hit the MaxNumberOfParticlesAllowed, the particle will not be added.
+            This setting only takes effect when trying to add a new particle and we have reached the NumberOfParticlesAllocatedInMemory, but not the MaxNumberOfParticlesAllowed.
+            This means that in order for this setting to be effective, the MaxNumberOfParticlesAllowed must be greater than the NumberOfParticlesAllocatedInMemory.</para>
+            <para>NOTE: When a particle is hard-killed, no more processing at all is performed on it. For example, if the particle is supposed to 
+            trigger some other event to happen when it dies (e.g. by using a NormalizedTimedEvent), that event will not be triggered.</para>
+            <para>NOTE: Typically the oldest particles are at the end of the ActiveParticleList and the youngest ones are at the front, so the oldest
+            particles (i.e. the ones with the greatest ElapsedTime and a Lifetime greater than zero) will be recycled first.</para>
+            </summary>
+        </member>
         <member name="F:DPSF.AutoMemoryManagerModes.IncreaseAndDecrease">
             <summary>
             Allow the Automatic Memory Manager to allocate more memory when needed, and reduce it when not needed.
@@ -1123,6 +1137,7 @@
             <summary>
             Adds the specified number of new Particles to the particle system, linearly interpolating (Lerp) the Emitter's 
             Position/Orientation to be between its Previous Position/Orientation and current Position/Orientation when adding new particles.
+            <para>Returns how many Particles were able to be added to the particle system.</para>
             <para>These new Particles are initialized using the particle system's Particle Initialization Function.</para>
             </summary>
             <param name="numberOfParticlesToAdd">How many Particles to Add to the particle system.</param>
@@ -1134,6 +1149,7 @@
             <summary>
             Adds the specified number of new Particles to the particle system, linearly interpolating (Lerp) the Emitter's 
             Position/Orientation to be between its Previous Position/Orientation and current Position/Orientation when adding new particles.
+            <para>Returns how many Particles were able to be added to the particle system.</para>
             <para>These new Particles are initialized using the particle system's Particle Initialization Function.</para>
             </summary>
             <param name="numberOfParticlesToAdd">How many Particles to Add to the particle system.</param>
@@ -1183,6 +1199,12 @@
             Drawable Game Component, nothing will be updated since the Particle System will
             automatically be updated when the Game Component's Update() function is called.</param>
         </member>
+        <member name="M:DPSF.DPSF`2.MoveActiveParticleToInactiveParticleList(System.Collections.Generic.LinkedListNode{`0})">
+            <summary>
+            Moves the Active Particle's Linked List node to the Inactive Particle Linked List.
+            </summary>
+            <param name="nodeToRemove">The Active Particle Linked List's node to move to the Inactive Particle Linked List.</param>
+        </member>
         <member name="M:DPSF.DPSF`2.AddParticleToVertexBuffer(`0)">
             <summary>
             Adds the given Particle to the list of Particles to be Drawn (i.e. the Vertex Buffer), if it is Visible
@@ -1223,12 +1245,14 @@
             Drawable Game Component, nothing will be drawn since the Particle System will
             automatically be drawn when the Game Component's Draw() function is called.</param>
         </member>
-        <member name="M:DPSF.DPSF`2.ClearRenderStates">
+        <member name="M:DPSF.DPSF`2.ClearRenderStatesOnXbox">
             <summary>
             Resets all of the Sampler States and Vertex Sampler States on the Graphics Device.
             This must be done before any rendering to prevent an XNA 4 bug that causes the graphics device
             to incorrectly track state information, which manifests itself as run-time errors.
-            https://connect.microsoft.com/site226/feedback/details/586216/cloned-effect-?wa=wsignin1.0
+            https://connect.microsoft.com/site226/feedback/details/586216/cloned-effect-
+            <para>It looks like this bug is only on the Xbox 360, so we only need to call this function on that platform.
+            I've removed all of the checks that were required to make this code run properly on other platforms.</para>
             </summary>
         </member>
         <member name="M:DPSF.DPSF`2.ApplyRenderState">
@@ -1399,7 +1423,8 @@
         <member name="P:DPSF.DPSF`2.Enabled">
             <summary>
             Get / Set if this Particle System should Update itself and its Particles or not.
-            <para>NOTE: Setting this to false causes the Update() function to not update anything.</para>
+            <para>NOTE: Setting this to false causes the Update() function to not update anything, including the
+            BeforeUpdate() and AfterUpdate() function not to be called.</para>
             </summary>
         </member>
         <member name="P:DPSF.DPSF`2.UpdateOrder">
@@ -1539,7 +1564,8 @@
             The Emitter is used to automatically generate new Particles.
             <para>NOTE: This is just a pointer to one of the ParticleEmitters in the Emitters ParticleEmitterCollection.</para>
             <para>NOTE: If you set this to a ParticleEmitter that is not in the Emitters collection, it will be added to it.</para>
-            <para>During the particle system Update() this Emitter property is updated to point to the ParticleEmitter in the Emitters collection that is being updated.</para>
+            <para>During the particle system Update() this Emitter property is updated to point to the ParticleEmitter in the Emitters collection that is being updated.
+            This allows you to use this property to reference the ParticleEmitter that is actually being used to add particles to the particle system.</para>
             </summary>
         </member>
         <member name="P:DPSF.DPSF`2.Emitters">
@@ -1732,12 +1758,10 @@
         <member name="P:DPSF.DPSF`2.ActiveParticles">
             <summary>
             Get / Protected Set a Linked List whose Nodes point to the Active Particles.
-            <para>NOTE: The Protected Set option is only provided to allow the order of the 
-            LinkedListNodes to be changed, changing the update and drawing 
-            order of the Particles. Be sure that all of the original LinkedListNodes 
-            (and only the original LinkedListNodes, no more) obtained from the 
-            Get are included; they may only be rearranged. If they are not, 
-            there may (and probably will) be unexpected results.</para>
+            <para>NOTE: New particles are added to the start of the Active Particles list, so by default the oldest particles should be at the end.</para>
+            <para>NOTE: The Protected Set option is only provided to allow the order of the LinkedListNodes to be changed, changing the update and drawing 
+            order of the Particles. Be sure that all of the original LinkedListNodes (and only the original LinkedListNodes, no more) obtained from the 
+            Get are included; they may only be rearranged. If they are not, there may (and probably will) be unexpected results.</para>
             </summary>
         </member>
         <member name="P:DPSF.DPSF`2.InactiveParticles">
@@ -5325,6 +5349,14 @@
             are called), not when the particle system functions are called.</para>
             </summary>
         </member>
+        <member name="P:DPSF.DPSFHelper.ThrowDebugWarningExceptions">
+            <summary>
+            Gets if DPSF Debug Warning Exceptions should be thrown or not.
+            <para>These exceptions are typically thrown as a warning to the user they that do not have DPSF configured ideally.</para>
+            <para>This will only return true (default) if we are running in Debug mode (i.e. the DEBUG compilation symbol is defined) and a debugger is attached. 
+            This is done to prevent these exceptions from being thrown when software compiled in Debug mode is released.</para>
+            </summary>
+        </member>
         <member name="T:DPSF.Orientation2D">
             <summary>
             Class to hold and update an object's 2D Orientation, Rotational Velocity, and Rotational Acceleration
@@ -6151,103 +6183,6 @@
             </summary>
             <returns>Returns a random number between 0.0f and 1.0f.</returns>
         </member>
-        <member name="T:DPSF.ParticleTypes">
-            <summary>
-            The Type of Particles that the Particle Systems can draw. Different Particle Types are drawn in 
-            different ways. For example, four vertices are required to draw a Quad, and only one is required 
-            to draw a Point Sprite.
-            </summary>
-        </member>
-        <member name="F:DPSF.ParticleTypes.None">
-            <summary>
-            This is the default settings when we don't know what Type of Particles are going to be used yet.
-            A particle system is not considered Initialized until the Particle Type does not equal this.
-            </summary>
-        </member>
-        <member name="F:DPSF.ParticleTypes.NoDisplay">
-            <summary>
-            Use this when you do not want to draw your particles to the screen (e.g. when you just want to collect 
-            and analyze particle information without visualizing the particles), or when you want to draw particles
-            to the screen using your own code (e.g. to draw models instead of textures).
-            <para>No vertex or index buffer will be created, saving memory.</para>
-            <para>The BeforeDraw() and AfterDraw() functions are still called when this Particle Type is used.
-            Place your custom drawing code in one of these functions if necessary.</para>
-            </summary>
-        </member>
-        <member name="F:DPSF.ParticleTypes.Sprite">
-            <summary>
-            Texture in 2D screen coordinates. Drawn using a SpriteBatch object. Only allows for 2D roll
-            rotations, always faces the camera, and must use a Texture.
-            </summary>
-        </member>
-        <member name="F:DPSF.ParticleTypes.Quad">
-            <summary>
-            Four vertices in 3D world coordinates. Allows for rotations in all 3 dimensions, does
-            not have to always face the camera, may be skewed into any quadrilateral, such as
-            a square, rectangle, or trapezoid, and do not use a Texture.
-            </summary>
-        </member>
-        <member name="F:DPSF.ParticleTypes.TexturedQuad">
-            <summary>
-            Four vertices in 3D world coordinates. Allows for rotations in all 3 dimensions, does
-            not have to always face the camera, may be skewed into any quadrilateral, such as
-            a square, rectangle, or trapezoid, and must use a Texture.
-            </summary>
-        </member>
-        <member name="T:DPSF.SpriteBatchSettings">
-            <summary>
-            Class to hold all of the SpriteBatch-specific drawing Settings
-            </summary>
-        </member>
-        <member name="F:DPSF.SpriteBatchSettings.SortMode">
-            <summary>
-            The Sort Mode to use in the SpriteBatch.Begin() function call.
-            </summary>
-        </member>
-        <member name="F:DPSF.SpriteBatchSettings.TransformationMatrix">
-            <summary>
-            The Transformation Matrix used in the SpriteBatch.Begin() function call.
-            </summary>
-        </member>
-        <member name="T:DPSF.RenderProperties">
-            <summary>
-            Class to hold all of the drawing Settings
-            </summary>
-        </member>
-        <member name="M:DPSF.RenderProperties.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:DPSF.RenderProperties"/> class, setting each property to its default value.
-            </summary>
-        </member>
-        <member name="M:DPSF.RenderProperties.ResetToDefaults">
-            <summary>
-            Resets each of the render properties to their default values.
-            </summary>
-        </member>
-        <member name="P:DPSF.RenderProperties.BlendState">
-            <summary>
-            Get / Set the BlendState to use when drawing the particles.
-            <para>Default value is BlendState.AlphaBlend.</para>
-            </summary>
-        </member>
-        <member name="P:DPSF.RenderProperties.DepthStencilState">
-            <summary>
-            Get / Set the DepthStencilState to use when drawing the particles.
-            <para>Default value is DepthStencilState.DepthRead.</para>
-            </summary>
-        </member>
-        <member name="P:DPSF.RenderProperties.RasterizerState">
-            <summary>
-            Get / Set the RasterizerState to use when drawing the particles.
-            <para>Default value is RasterizerState.CullCounterClockwise.</para>
-            </summary>
-        </member>
-        <member name="P:DPSF.RenderProperties.SamplerState">
-            <summary>
-            Get / Set the SamplerState to use when drawing the particles.
-            <para>Default value is SamplerState.LinearClamp.</para>
-            </summary>
-        </member>
         <member name="T:DPSF.DPSFDefaultSettings">
             <summary>
             Static class used to apply default settings to all DPSF particle systems and particle system managers when they are initialized.
@@ -6408,6 +6343,31 @@
             </summary>
             <param name="paramName">Name of the parameter that is null.</param>
             <param name="message">The error message that explains the reason for the exception.</param>
+        </member>
+        <member name="T:DPSF.Exceptions.DPSFDebugWarningException">
+            <summary>
+            A warning Exception thrown by a DPSF component when the user is not configuring DPSF ideally.
+            These are useful for helping users ensure that they have DPFS configured for optimal performance.
+            <para>NOTE: These exceptions can be disabled by setting the DPSFHelper.ThrowDebugWarningExceptions property to false.</para>
+            </summary>
+        </member>
+        <member name="M:DPSF.Exceptions.DPSFDebugWarningException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DPSF.Exceptions.DPSFDebugWarningException"/> class.
+            </summary>
+        </member>
+        <member name="M:DPSF.Exceptions.DPSFDebugWarningException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DPSF.Exceptions.DPSFDebugWarningException"/> class.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+        </member>
+        <member name="M:DPSF.Exceptions.DPSFDebugWarningException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DPSF.Exceptions.DPSFDebugWarningException"/> class.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+            <param name="innerException">The exception that is the cause of the current exception, or a null reference (Nothing in Visual Basic) if no inner exception is specified.</param>
         </member>
         <member name="T:DPSF.Exceptions.DPSFException">
             <summary>
@@ -6595,20 +6555,17 @@
         </member>
         <member name="M:DPSF.ParticleEmitter.UpdateAndGetNumberOfParticlesToEmit(System.Single)">
             <summary>
-            Updates the Emitter's Position and Orientation according to its 
-            Velocities and Accelerations, and returns how many Particles should 
-            be emitted this frame.
+            Updates the Emitter's Position and Orientation according to its Velocities and Accelerations, and returns how many Particles should be emitted this frame.
             </summary>
-            <param name="fElapsedTimeInSeconds">How long (in seconds) it has been 
-            since this function was called</param>
-            <returns>Returns the number of Particles that should be emitted</returns>
+            <param name="fElapsedTimeInSeconds">How long (in seconds) it has been since this function was called.</param>
+            <returns>Returns the number of Particles that should be emitted.</returns>
         </member>
         <member name="M:DPSF.ParticleEmitter.CalculateHowManyParticlesToEmit(System.Single)">
             <summary>
-            Calculates how many Particles should be emitted based on the amount of Time Elapsed
+            Calculates how many Particles should be emitted based on the amount of Time Elapsed.
             </summary>
-            <param name="fElapsedTimeInSeconds">How much Time has Elapsed (in seconds) since the last Update</param>
-            <returns>Returns how many Particles should be emitted</returns>
+            <param name="fElapsedTimeInSeconds">How much Time has Elapsed (in seconds) since the last Update.</param>
+            <returns>Returns how many Particles should be emitted.</returns>
         </member>
         <member name="E:DPSF.ParticleEmitter.BurstComplete">
             <summary>
@@ -6722,16 +6679,16 @@
         </member>
         <member name="M:DPSF.ParticleEmitterCollection.Add">
             <summary>
-            Adds a new ParticleEmitter to the list of emitters and returns the ParticleEmitter's unique ID that can be used to retrieve it from the collection.
+            Adds a new ParticleEmitter to the list of emitters and returns it.
             </summary>
-            <returns>Returns the ParticleEmitter's unique ID that can be used to reference the ParticleEmitter in the collection.</returns>
+            <returns>Returns the ParticleEmitter added to the collection.</returns>
         </member>
         <member name="M:DPSF.ParticleEmitterCollection.Add(DPSF.ParticleEmitter)">
             <summary>
-            Adds the given ParticleEmitter to the list of emitters and returns its unique ID that can be used to retrieve it from the collection.
+            Adds the given ParticleEmitter to the list of emitters and returns it.
             </summary>
             <param name="emitter">The ParticleEmitter to add to the collection.</param>
-            <returns>Returns the ParticleEmitter's unique ID that can be used to reference the ParticleEmitter in the collection.</returns>
+            <returns>Returns the ParticleEmitter added to the collection.</returns>
         </member>
         <member name="M:DPSF.ParticleEmitterCollection.Remove(System.Int32)">
             <summary>
@@ -6866,6 +6823,25 @@
             This is done by calling the particle system's virtual SetCameraPosition() function.
             </summary>
             <param name="cameraPosition">The current position of the Camera.</param>
+        </member>
+        <member name="M:DPSF.ParticleSystemManager.SetEnabledStateForAllParticleSystems(System.Boolean)">
+            <summary>
+            Sets the Enabled property of all particle systems in this manager to the given state.
+            </summary>
+            <param name="isEnabled">If the particle systems should be enabled or not.</param>
+        </member>
+        <member name="M:DPSF.ParticleSystemManager.SetVisibleStateForAllParticleSystems(System.Boolean)">
+            <summary>
+            Sets the Visible property of all particle systems in this manager to the given state.
+            </summary>
+            <param name="isVisible">If the particle systems should be visible or not.</param>
+        </member>
+        <member name="M:DPSF.ParticleSystemManager.SetEnabledAndVisibleStatesForAllParticleSystems(System.Boolean,System.Boolean)">
+            <summary>
+            Sets the Enabled and Visible properties of all particle systems in this manager to the given states.
+            </summary>
+            <param name="isEnabled">If the particle systems should be enabled or not.</param>
+            <param name="isVisible">If the particle systems should be visible or not.</param>
         </member>
         <member name="M:DPSF.ParticleSystemManager.ContainsParticleSystem(DPSF.IDPSFParticleSystem)">
             <summary>
@@ -7032,7 +7008,7 @@
         </member>
         <member name="P:DPSF.ParticleSystemManager.Enabled">
             <summary>
-            Get / Set if the Particle Systems should be Updated or not
+            Get / Set if the Particle Systems should be Updated or not.
             </summary>
         </member>
         <member name="P:DPSF.ParticleSystemManager.Visible">
@@ -7112,6 +7088,103 @@
         <member name="P:DPSF.ParticleSystemManager.ParticleSystems">
             <summary>
             Returns a Linked List of handles to the Particle Systems in this Manager
+            </summary>
+        </member>
+        <member name="T:DPSF.ParticleTypes">
+            <summary>
+            The Type of Particles that the Particle Systems can draw. Different Particle Types are drawn in 
+            different ways. For example, four vertices are required to draw a Quad, and only one is required 
+            to draw a Point Sprite.
+            </summary>
+        </member>
+        <member name="F:DPSF.ParticleTypes.None">
+            <summary>
+            This is the default settings when we don't know what Type of Particles are going to be used yet.
+            A particle system is not considered Initialized until the Particle Type does not equal this.
+            </summary>
+        </member>
+        <member name="F:DPSF.ParticleTypes.NoDisplay">
+            <summary>
+            Use this when you do not want to draw your particles to the screen (e.g. when you just want to collect 
+            and analyze particle information without visualizing the particles), or when you want to draw particles
+            to the screen using your own code (e.g. to draw models instead of textures).
+            <para>No vertex or index buffer will be created, saving memory.</para>
+            <para>The BeforeDraw() and AfterDraw() functions are still called when this Particle Type is used.
+            Place your custom drawing code in one of these functions if necessary.</para>
+            </summary>
+        </member>
+        <member name="F:DPSF.ParticleTypes.Sprite">
+            <summary>
+            Texture in 2D screen coordinates. Drawn using a SpriteBatch object. Only allows for 2D roll
+            rotations, always faces the camera, and must use a Texture.
+            </summary>
+        </member>
+        <member name="F:DPSF.ParticleTypes.Quad">
+            <summary>
+            Four vertices in 3D world coordinates. Allows for rotations in all 3 dimensions, does
+            not have to always face the camera, may be skewed into any quadrilateral, such as
+            a square, rectangle, or trapezoid, and do not use a Texture.
+            </summary>
+        </member>
+        <member name="F:DPSF.ParticleTypes.TexturedQuad">
+            <summary>
+            Four vertices in 3D world coordinates. Allows for rotations in all 3 dimensions, does
+            not have to always face the camera, may be skewed into any quadrilateral, such as
+            a square, rectangle, or trapezoid, and must use a Texture.
+            </summary>
+        </member>
+        <member name="T:DPSF.RenderProperties">
+            <summary>
+            Class to hold all of the drawing Settings
+            </summary>
+        </member>
+        <member name="M:DPSF.RenderProperties.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DPSF.RenderProperties"/> class, setting each property to its default value.
+            </summary>
+        </member>
+        <member name="M:DPSF.RenderProperties.ResetToDefaults">
+            <summary>
+            Resets each of the render properties to their default values.
+            </summary>
+        </member>
+        <member name="P:DPSF.RenderProperties.BlendState">
+            <summary>
+            Get / Set the BlendState to use when drawing the particles.
+            <para>Default value is BlendState.AlphaBlend.</para>
+            </summary>
+        </member>
+        <member name="P:DPSF.RenderProperties.DepthStencilState">
+            <summary>
+            Get / Set the DepthStencilState to use when drawing the particles.
+            <para>Default value is DepthStencilState.DepthRead.</para>
+            </summary>
+        </member>
+        <member name="P:DPSF.RenderProperties.RasterizerState">
+            <summary>
+            Get / Set the RasterizerState to use when drawing the particles.
+            <para>Default value is RasterizerState.CullCounterClockwise.</para>
+            </summary>
+        </member>
+        <member name="P:DPSF.RenderProperties.SamplerState">
+            <summary>
+            Get / Set the SamplerState to use when drawing the particles.
+            <para>Default value is SamplerState.LinearClamp.</para>
+            </summary>
+        </member>
+        <member name="T:DPSF.SpriteBatchSettings">
+            <summary>
+            Class to hold all of the SpriteBatch-specific drawing Settings
+            </summary>
+        </member>
+        <member name="F:DPSF.SpriteBatchSettings.SortMode">
+            <summary>
+            The Sort Mode to use in the SpriteBatch.Begin() function call.
+            </summary>
+        </member>
+        <member name="F:DPSF.SpriteBatchSettings.TransformationMatrix">
+            <summary>
+            The Transformation Matrix used in the SpriteBatch.Begin() function call.
             </summary>
         </member>
     </members>

@@ -5037,6 +5037,7 @@ namespace DPSF
             for (int index = 0; index < 16; index++)
 				GraphicsDevice.SamplerStates[index] = SamplerState.PointClamp;
 // Apparently MonoGame doesn't know about the VertexSamplerStates property, so we can't update it when using MonoGame for porting to Android and WinRT.
+// Even though this code will only be called on the Xbox, we still need this conditional compilation check in order to the project to compile on other platforms.
 #if (!ANDROID && !WIN_RT)
 			//  Reset all of the Vertex Sampler States
 			for (int index = 0; index < 2; index++)
