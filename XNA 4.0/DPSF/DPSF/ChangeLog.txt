@@ -18,6 +18,7 @@ public:
 - Added new DPSFDebugWarningExceptions that are only thrown when debugging and are meant to help users catch when they do not have DPSF setup ideally.
 - Changed the provided Default Particle System classes to be 'abstract', as they are meant to be inherited and not instanced directly.
 - Added more functionality to the MouseManager to easily detect when a mouse button is or was just pressed/released.
+- Created iOS friendly DPSF assemblies, but still not fully tested due to lack of Mac hardware required for testing.
 
 private:
 - Moved the ParticleTypes, RenderProperties, and SpriteBatchSettings classes/enum into their own files.
