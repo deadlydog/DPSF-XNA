@@ -4438,16 +4438,15 @@ namespace DPSF
 				return;
 			}
 
-
+// The Reach profile does not have access to the System.Diagnostics namespace, so it does not know about the Stopwatch class.
+#if (!WINDOWS_PHONE)
 			// We are going to be doing the Update for sure if we have gotten here, so start the performance profiling if it is enabled.
 			if (_performanceProfilingIsEnabled)
 			{
-// The Reach profile does not have access to the System.Diagnostics namespace, so it does not know about the Stopwatch class.
-#if (!WINDOWS_PHONE)
 				_performanceProfilingStopwatch.Reset();
 				_performanceProfilingStopwatch.Start();
-#endif  
 			}
+#endif
 
 			// Update the cumulative Elapsed Time
 			mfTimeElapsedSinceLastUpdate -= mfTimeToWaitBetweenUpdates;
@@ -4671,15 +4670,15 @@ namespace DPSF
 			// Perform any other functions now that this Particle System has been Updated
 			AfterUpdate(fScaledElapsedTimeInSeconds);
 
+// The Reach profile does not have access to the System.Diagnostics namespace, so it does not know about the Stopwatch class.
+#if (!WINDOWS_PHONE)
 			// If performance profiling is enabled, log how long it took to do the Update
 			if (_performanceProfilingIsEnabled)
 			{
-// The Reach profile does not have access to the System.Diagnostics namespace, so it does not know about the Stopwatch class.
-#if (!WINDOWS_PHONE)
 				_performanceProfilingStopwatch.Stop();
 				PerformanceTimeToDoUpdateInMilliseconds = _performanceProfilingStopwatch.Elapsed.TotalMilliseconds;
-#endif
 			}
+#endif
 		}
 
         /// <summary>
@@ -4822,15 +4821,15 @@ namespace DPSF
 				return;
 			}
 
+// The Reach profile does not have access to the System.Diagnostics namespace, so it does not know about the Stopwatch class.
+#if (!WINDOWS_PHONE)
 			// We are going to be doing the Draw for sure if we have gotten here, so start the performance profiling if it is enabled.
 			if (_performanceProfilingIsEnabled)
 			{
-// The Reach profile does not have access to the System.Diagnostics namespace, so it does not know about the Stopwatch class.
-#if (!WINDOWS_PHONE)
 				_performanceProfilingStopwatch.Reset();
 				_performanceProfilingStopwatch.Start();
-#endif
             }
+#endif
 
 // There's an XNA 4 bug on the Xbox that will throw a run-time error if we don't clear out the Render State before drawing, so clear them out.
 #if (XBOX)
@@ -4848,15 +4847,15 @@ namespace DPSF
 				// Perform the AfterDraw() operations before exiting.
 				AfterDraw();
 
+// The Reach profile does not have access to the System.Diagnostics namespace, so it does not know about the Stopwatch class.
+#if (!WINDOWS_PHONE)
 				// If performance profiling is enabled, log how long it took to do the Draw.
 				if (_performanceProfilingIsEnabled)
 				{
-// The Reach profile does not have access to the System.Diagnostics namespace, so it does not know about the Stopwatch class.
-#if (!WINDOWS_PHONE)
 					_performanceProfilingStopwatch.Stop();
 					PerformanceTimeToDoDrawInMilliseconds = _performanceProfilingStopwatch.Elapsed.TotalMilliseconds;
-#endif
 				}
+#endif
 
 				// Exit without drawing anything.
 				return;
@@ -5008,15 +5007,15 @@ namespace DPSF
 			// Perform any other functions now that this Particle System has been Drawn.
 			AfterDraw();
 
+// The Reach profile does not have access to the System.Diagnostics namespace, so it does not know about the Stopwatch class.
+#if (!WINDOWS_PHONE)
 			// If performance profiling is enabled, log how long it took to do the Draw.
 			if (_performanceProfilingIsEnabled)
 			{
-// The Reach profile does not have access to the System.Diagnostics namespace, so it does not know about the Stopwatch class.
-#if (!WINDOWS_PHONE)
 				_performanceProfilingStopwatch.Stop();
 				PerformanceTimeToDoDrawInMilliseconds = _performanceProfilingStopwatch.Elapsed.TotalMilliseconds;
-#endif
 			}
+#endif
 		}
 
 		/// <summary>
