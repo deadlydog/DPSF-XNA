@@ -88,5 +88,25 @@ namespace DPSF
 			return _alphaTestEffect ?? (_alphaTestEffect = new AlphaTestEffect(graphicsDevice));
 		}
     	private static AlphaTestEffect _alphaTestEffect = null;
+
+	    /// <summary>
+	    /// Get and set if DPSF Debug Warning Exceptions should be thrown or not.
+	    /// <para>These exceptions are typically thrown as a warning to the user that they do not have DPSF configured ideally.</para>
+	    /// <para>This will only return true (default) if we are running in Debug mode (i.e. the DEBUG compilation symbol is defined) and a debugger is attached. 
+	    /// This is done to prevent these exceptions from being thrown when software compiled in Debug mode is released.</para>
+	    /// </summary>
+	    public static bool ThrowDebugWarningExceptions
+	    {
+		    get
+		    {
+			    // Not everybody knows that they should be compiling their software in Release mode before shipping it, so to avoid these
+			    // Debug Warning Exceptions from being thrown on released software, make sure a debugger is attached.
+			    // If we are running in Debug mode and a Debugger is attached, return the setting value specified by the user.
+			    return DPSFHelper.IsRunningInDebugModeWithDebuggerAttached && _throwDebugWarningExceptions;
+		    }
+		    set { _throwDebugWarningExceptions = value; }
+	    }
+
+	    private static bool _throwDebugWarningExceptions = true;
     }
 }

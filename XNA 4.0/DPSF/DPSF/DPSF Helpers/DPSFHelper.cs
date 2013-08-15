@@ -82,37 +82,29 @@ namespace DPSF
 		}
 
 		/// <summary>
-		/// Gets if DPSF Debug Warning Exceptions should be thrown or not.
-		/// <para>These exceptions are typically thrown as a warning to the user they that do not have DPSF configured ideally.</para>
-		/// <para>This will only return true (default) if we are running in Debug mode (i.e. the DEBUG compilation symbol is defined) and a debugger is attached. 
-		/// This is done to prevent these exceptions from being thrown when software compiled in Debug mode is released.</para>
+		/// Get if the application is currently running in Debug mode or not.
 		/// </summary>
-		public static bool ThrowDebugWarningExceptions
+		public static bool IsRunningInDebugMode
 		{
 			get
 			{
 // If we are in Debug mode.
 #if (DEBUG)
-				// Not everybody knows that they should be compiling their software in Release mode before shipping it, so to avoid these
-				// Debug Warning Exceptions from being thrown on released software, make sure a debugger is attached.
-				// If a debugger is attached.
-				if (System.Diagnostics.Debugger.IsAttached)
-				{
-					return _throwDebugWarningExceptions;
-				}
-				// Else a debugger is not attached, so return false.
-				else
-				{
-					return false;
-				}
+				return true;
 // Else we are not running in Debug mode.
 #else
-			return false;
+				return false;
 #endif
 			}
-			set { _throwDebugWarningExceptions = value; }
 		}
-		private static bool _throwDebugWarningExceptions = true;
+
+		/// <summary>
+		/// Get if the application is currently running in Debug mode with a Debugger attached or not.
+		/// </summary>
+		public static bool IsRunningInDebugModeWithDebuggerAttached
+		{
+			get { return IsRunningInDebugMode && System.Diagnostics.Debugger.IsAttached; }
+		}
 
 		/// <summary>
 		/// Returns a random number between the specified values
