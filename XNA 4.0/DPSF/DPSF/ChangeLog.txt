@@ -19,6 +19,10 @@ public:
 - Changed the provided Default Particle System classes to be 'abstract', as they are meant to be inherited and not instanced directly.
 - Added more functionality to the MouseManager to easily detect when a mouse button is or was just pressed/released.
 - Created iOS friendly DPSF assemblies, but still not fully tested due to lack of Mac hardware required for testing.
+- Fixed performance bug in ParticleEmitterCollection, as it was generating garbage for the Garbage Collector every time the Emitters and IDs properties were accessed.
+
+Possible Breaking Changes:
+- In the ParticleEmitterCollection class, changed the Emitters property to return an ICollection instead of an IList, and the IDs property to return a ReadOnlyCollection instead of an IList.
 
 private:
 - Moved the ParticleTypes, RenderProperties, and SpriteBatchSettings classes/enum into their own files.

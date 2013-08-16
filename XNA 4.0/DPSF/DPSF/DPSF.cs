@@ -3110,7 +3110,7 @@ namespace DPSF
 				if (_emitters.Count <= 0)
 					_emitters.Add();
 
-				_emitter = _emitters.Emitters.First();
+				_emitter = _emitters[_emitters.IDs[0]];
 				return _emitter;
 			}
 
@@ -4083,7 +4083,7 @@ namespace DPSF
 		public bool AddParticle(Particle cParticleToCopy)
 		{
 #if (DEBUG)
-			if (DPSFHelper.ThrowDebugWarningExceptions)
+			if (DPSFDefaultSettings.ThrowDebugWarningExceptions)
 			{
 				// If we want to use DisabledWithEarlyRecycling mode, but don't have things configured properly for it to take effect, warn the user.
 				if (AutoMemoryManagerSettings.MemoryManagementMode == AutoMemoryManagerModes.DisabledWithEarlyRecycling &&
