@@ -42,7 +42,7 @@ namespace DPSF
 		where Particle : DPSFParticle, new()
 		where Vertex : struct, IDPSFParticleVertex
 #else
-	public class DPSF<Particle, Vertex> : IDPSFParticleSystem
+	public abstract class DPSF<Particle, Vertex> : IDPSFParticleSystem
 		where Particle : DPSFParticle, new()
 		where Vertex : struct, IDPSFParticleVertex
 #endif

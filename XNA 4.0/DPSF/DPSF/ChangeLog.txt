@@ -1,6 +1,7 @@
 ﻿=====================================================================
 This document should show all of the technical changes to DPSF (private), 
-as well as the larger changes that the users should be aware of (public)
+as well as the larger changes that the users should be aware of (public), 
+especially any changes that may potentially break their code.
 =====================================================================
 
 TODO - Add a Mass property to the default particles; just one little float.  Then can use that to do very simple physics; make a simple particle system that uses it. And make
@@ -8,6 +9,12 @@ TODO - Add a Mass property to the default particles; just one little float.  The
 TODO - Do more multiple emitter examples. Have one extend the Emitter class to store it's custom Type.  In another have a custom template particle object for each emitter; store different
 	text coordinates maybe to have the same particle system display different textures.  Show all 3 solutions in a tutorial.
 TODO - Investigate using Tasks and running on multiple threads to boost performance.
+
+TODO - Refactoring at next major or minor version:
+- Rename classes to be clearer: DPSF to ParticleSystem, DPSFParticle to Particle, DPSFDefaultSettings to ParticleSystemDefaultSettings.
+	- Will need to update tutorials and documentation as well.
+- Move Shared Effect properties and functions, and the ThrowDebugWarningExceptions property from DPSFDefaultSettings to a new DPSFSettings class.
+
 
 Changes made after Version 4.2.1:
 public:
@@ -26,6 +33,7 @@ Possible Breaking Changes:
 
 private:
 - Moved the ParticleTypes, RenderProperties, and SpriteBatchSettings classes/enum into their own files.
+- Made DPSF class abstract.
 
 
 Changes made after Version 2.4.0:
@@ -86,7 +94,7 @@ Possible Breaking Changes:
 - Changed IDPSFParticleVertex to implement Microsoft.XNA.Framework.Graphics.IVertexType and removed the old IDPSFParticleVertex enforcements.
 - Changed the DPSF Splash Screen particle system class to be in the DPSF.SplashScreen namespace.
 
-Private:
+private:
 - Added a Name property to the DPSFViewerParameterAttributes.
 
 
