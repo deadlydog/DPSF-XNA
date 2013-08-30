@@ -52,8 +52,9 @@ $DPSF_CSPROJ_FILE_PATHS = @(
 	(Join-Path $DPSF_ROOT_DIRECTORY "DPSF\DPSF\DPSF.csproj"),
 	(Join-Path $DPSF_ROOT_DIRECTORY "DPSF\DPSF\Xbox 360 Copy of DPSF.csproj"), 
 	(Join-Path $DPSF_ROOT_DIRECTORY "DPSF\DPSF\Windows Phone Copy of DPSF.csproj"),
-	(Join-Path $DPSF_ROOT_DIRECTORY "DPSF\Mono for Android Copy of DPSF\Mono for Android Copy of DPSF.csproj"),
-	(Join-Path $DPSF_ROOT_DIRECTORY "DPSF\DPSF WinRT\DPSF WinRT.csproj")
+	(Join-Path $DPSF_ROOT_DIRECTORY "DPSF\DPSF WinRT\DPSF WinRT.csproj"),
+    (Join-Path $DPSF_ROOT_DIRECTORY "DPSF\Mono for Android Copy of DPSF\Mono for Android Copy of DPSF.csproj"),
+    (Join-Path $DPSF_ROOT_DIRECTORY "DPSF\Xamarin.iOS Copy of DPSF\Xamarin.iOS Copy of DPSF.csproj")
 )
 $MSBUILD_LOG_DIRECTORY_PATH = $DPSF_ROOT_DIRECTORY
 $MSBUILD_PARAMETERS = "/target:Clean;Build /property:Configuration=Release;Platform=""Mixed Platforms"" /verbosity:Quiet"
@@ -75,8 +76,8 @@ $DPSF_DEMO_CSPROJ_FILE_PATHS = @(
 	(Join-Path $INSTALLER_FILES_DIRECTORY_PATH "DPSF Demo\DPSF Demo\DPSF Demo\DPSF Demo.csproj"),
 	(Join-Path $INSTALLER_FILES_DIRECTORY_PATH "DPSF Demo\DPSF Demo\DPSF Demo\Xbox 360 Copy of DPSF Demo.csproj"), 
 	(Join-Path $INSTALLER_FILES_DIRECTORY_PATH "DPSF Demo\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone\DPSF Demo for Windows Phone.csproj"),
-	(Join-Path $INSTALLER_FILES_DIRECTORY_PATH "DPSF Demo\DPSF Demo for Mono for Android\DPSF Demo for Mono for Android.csproj"),
-	(Join-Path $INSTALLER_FILES_DIRECTORY_PATH "DPSF Demo\DPSF Demo for WinRT\DPSF Demo for WinRT.csproj")
+	(Join-Path $INSTALLER_FILES_DIRECTORY_PATH "DPSF Demo\DPSF Demo for WinRT\DPSF Demo for WinRT.csproj"),
+    (Join-Path $INSTALLER_FILES_DIRECTORY_PATH "DPSF Demo\DPSF Demo for Mono for Android\DPSF Demo for Mono for Android.csproj")
 )
 $CSPROJ_FILE_PATHS_BACKUP_DIRECTORY = Join-Path $DPSF_ROOT_DIRECTORY "CsprojBackups"
 
