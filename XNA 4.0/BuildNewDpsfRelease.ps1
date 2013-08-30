@@ -583,7 +583,7 @@ with "Resharper" or "ncrunch" in their name.  This will help keep the size of th
 #>
 
 Write-Host "Delete the 'Debug' and 'Release' folders, and any other temp files in the '$INSTALLER_FILES_DIRECTORY_PATH' directory..."
-Get-ChildItem -Recurse -Force -Path "$INSTALLER_FILES_DIRECTORY_PATH" -Include "bin","obj","*.suo","*.cachefile","*ncrunch*","*ReSharper*" | Remove-Item -Recurse -Force
+Get-ChildItem -Recurse -Force -Path "$INSTALLER_FILES_DIRECTORY_PATH" -Include "bin","obj","*.suo","*.cache","*.cachefile","*ncrunch*","*ReSharper*" | Remove-Item -Recurse -Force
 
 <#
 14 - Open the "DPSF\DPSF.sln" and change the DPSF Demo projects to reference the "C:\DPSF\DPSF.dll" files rather than the DPSF project. 
