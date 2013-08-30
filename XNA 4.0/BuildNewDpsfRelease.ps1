@@ -227,12 +227,12 @@ function UpdateCsprojFileToAsDrawableGameComponent
 		$fileContents = $fileContents.Replace('<DefineConstants>TRACE;ANDROID</DefineConstants>', '<DefineConstants>TRACE;ANDROID DPSFAsDrawableGameComponent</DefineConstants>')
 		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Release\DPSFMonoForAndoid.xml</DocumentationFile>', '<DocumentationFile>bin\Release\DPSFMonoForAndoidAsDrawableGameComponent.xml</DocumentationFile>')
 	}
-    elseif ((Split-Path -Path $CsprojFilePath -Leaf) -eq 'Mono for Android Copy of DPSF.csproj')
+    elseif ((Split-Path -Path $CsprojFilePath -Leaf) -eq 'Xamarin.iOS Copy of DPSF.csproj')
 	{
 		$fileContents = $fileContents.Replace('<AssemblyName>DPSFXamarin.iOS</AssemblyName>', '<AssemblyName>DPSFXamarin.iOSAsDrawableGameComponent</AssemblyName>')
-		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Debug\DPSFXamarin.iOS.xml</DocumentationFile>', '<DocumentationFile>bin\Debug\DPSFXamarin.iOSAsDrawableGameComponent.xml</DocumentationFile>')
-		$fileContents = $fileContents.Replace('<DefineConstants>TRACE;iOS</DefineConstants>', '<DefineConstants>TRACE;iOS DPSFAsDrawableGameComponent</DefineConstants>')
-		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Release\DPSFXamarin.iOS.xml</DocumentationFile>', '<DocumentationFile>bin\Release\DPSFXamarin.iOSAsDrawableGameComponent.xml</DocumentationFile>')
+		$fileContents = $fileContents.Replace('<DocumentationFile>bin\iPhone\Debug\DPSFXamarin.iOS.xml</DocumentationFile>', '<DocumentationFile>bin\iPhone\Debug\DPSFXamarin.iOSAsDrawableGameComponent.xml</DocumentationFile>')
+		$fileContents = $fileContents.Replace('<DefineConstants>TRACE;IOS</DefineConstants>', '<DefineConstants>TRACE;IOS AsDrawableGameComponent</DefineConstants>')
+		$fileContents = $fileContents.Replace('<DocumentationFile>bin\iPhone\Release\DPSFXamarin.iOS.xml</DocumentationFile>', '<DocumentationFile>bin\iPhone\Release\DPSFXamarin.iOSAsDrawableGameComponent.xml</DocumentationFile>')
 	}
 	else
 	{

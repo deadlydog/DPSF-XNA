@@ -17,7 +17,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\iPhone\Debug</OutputPath>
-    <DefineConstants>DEBUG;IOS</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;IOS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -34,7 +34,7 @@
     <ConsolePause>false</ConsolePause>
     <CodesignKey>iPhone Developer</CodesignKey>
     <DocumentationFile>bin\iPhone\Release\DPSFXamarin.iOS.xml</DocumentationFile>
-    <DefineConstants>IOS</DefineConstants>
+    <DefineConstants>TRACE;IOS</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\DPSF\AutoMemoryManagerSettings.cs">
