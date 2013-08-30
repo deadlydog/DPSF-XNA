@@ -278,15 +278,15 @@ function UpdateCsprojFileToReferenceDllInDpsfInstallDirectory
 		$projectAssemblyName = "DPSFPhone"
 		$projectFileName = "Windows Phone Copy of DPSF.csproj"
 	}
-	elseif ((Split-Path -Path $CsprojFilePath -Leaf) -eq 'DPSF Demo for Mono for Android.csproj')
-	{
-		$projectAssemblyName = "DPSFMonoForAndoid"
-		$projectFileName = "Mono for Android Copy of DPSF.csproj"
-	}
 	elseif ((Split-Path -Path $CsprojFilePath -Leaf) -eq 'DPSF Demo for WinRT.csproj')
 	{
 		$projectAssemblyName = "DPSFWinRT"
 		$projectFileName = "DPSF WinRT.csproj"
+	}
+    elseif ((Split-Path -Path $CsprojFilePath -Leaf) -eq 'DPSF Demo for Mono for Android.csproj')
+	{
+		$projectAssemblyName = "DPSFMonoForAndoid"
+		$projectFileName = "Mono for Android Copy of DPSF.csproj"
 	}
 	else
 	{
