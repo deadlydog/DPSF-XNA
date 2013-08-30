@@ -213,19 +213,26 @@ function UpdateCsprojFileToAsDrawableGameComponent
 		$fileContents = $fileContents.Replace('<DefineConstants>TRACE;WINDOWS_PHONE</DefineConstants>', '<DefineConstants>TRACE;WINDOWS_PHONE DPSFAsDrawableGameComponent</DefineConstants>')
 		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Windows Phone\Release\DPSFPhone.xml</DocumentationFile>', '<DocumentationFile>bin\Windows Phone\Release\DPSFPhoneAsDrawableGameComponent.xml</DocumentationFile>')
 	}
-	elseif ((Split-Path -Path $CsprojFilePath -Leaf) -eq 'Mono for Android Copy of DPSF.csproj')
-	{
-		$fileContents = $fileContents.Replace('<AssemblyName>DPSFMonoForAndoid</AssemblyName>', '<AssemblyName>DPSFMonoForAndoidAsDrawableGameComponent</AssemblyName>')
-		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Debug\DPSFMonoForAndoid.xml</DocumentationFile>', '<DocumentationFile>bin\Debug\DPSFMonoForAndoidAsDrawableGameComponent.xml</DocumentationFile>')
-		$fileContents = $fileContents.Replace('<DefineConstants>TRACE;ANDROID</DefineConstants>', '<DefineConstants>TRACE;ANDROID DPSFAsDrawableGameComponent</DefineConstants>')
-		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Release\DPSFMonoForAndoid.xml</DocumentationFile>', '<DocumentationFile>bin\Release\DPSFMonoForAndoidAsDrawableGameComponent.xml</DocumentationFile>')
-	}
 	elseif ((Split-Path -Path $CsprojFilePath -Leaf) -eq 'DPSF WinRT.csproj')
 	{
 		$fileContents = $fileContents.Replace('<AssemblyName>DPSFWinRT</AssemblyName>', '<AssemblyName>DPSFWinRTAsDrawableGameComponent</AssemblyName>')
 		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Debug\DPSFWinRT.xml</DocumentationFile>', '<DocumentationFile>bin\Debug\DPSFWinRTAsDrawableGameComponent.xml</DocumentationFile>')
 		$fileContents = $fileContents.Replace('<DefineConstants>TRACE;NETFX_CORE WIN_RT</DefineConstants>', '<DefineConstants>TRACE;NETFX_CORE WIN_RT DPSFAsDrawableGameComponent</DefineConstants>')
 		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Release\DPSFWinRT.xml</DocumentationFile>', '<DocumentationFile>bin\Release\DPSFWinRTAsDrawableGameComponent.xml</DocumentationFile>')
+	}
+    elseif ((Split-Path -Path $CsprojFilePath -Leaf) -eq 'Mono for Android Copy of DPSF.csproj')
+	{
+		$fileContents = $fileContents.Replace('<AssemblyName>DPSFMonoForAndoid</AssemblyName>', '<AssemblyName>DPSFMonoForAndoidAsDrawableGameComponent</AssemblyName>')
+		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Debug\DPSFMonoForAndoid.xml</DocumentationFile>', '<DocumentationFile>bin\Debug\DPSFMonoForAndoidAsDrawableGameComponent.xml</DocumentationFile>')
+		$fileContents = $fileContents.Replace('<DefineConstants>TRACE;ANDROID</DefineConstants>', '<DefineConstants>TRACE;ANDROID DPSFAsDrawableGameComponent</DefineConstants>')
+		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Release\DPSFMonoForAndoid.xml</DocumentationFile>', '<DocumentationFile>bin\Release\DPSFMonoForAndoidAsDrawableGameComponent.xml</DocumentationFile>')
+	}
+    elseif ((Split-Path -Path $CsprojFilePath -Leaf) -eq 'Mono for Android Copy of DPSF.csproj')
+	{
+		$fileContents = $fileContents.Replace('<AssemblyName>DPSFXamarin.iOS</AssemblyName>', '<AssemblyName>DPSFXamarin.iOSAsDrawableGameComponent</AssemblyName>')
+		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Debug\DPSFXamarin.iOS.xml</DocumentationFile>', '<DocumentationFile>bin\Debug\DPSFXamarin.iOSAsDrawableGameComponent.xml</DocumentationFile>')
+		$fileContents = $fileContents.Replace('<DefineConstants>TRACE;iOS</DefineConstants>', '<DefineConstants>TRACE;iOS DPSFAsDrawableGameComponent</DefineConstants>')
+		$fileContents = $fileContents.Replace('<DocumentationFile>bin\Release\DPSFXamarin.iOS.xml</DocumentationFile>', '<DocumentationFile>bin\Release\DPSFXamarin.iOSAsDrawableGameComponent.xml</DocumentationFile>')
 	}
 	else
 	{

@@ -23,6 +23,7 @@
     <ConsolePause>false</ConsolePause>
     <MtouchDebug>true</MtouchDebug>
     <CodesignKey>iPhone Developer</CodesignKey>
+    <DocumentationFile>bin\iPhone\Debug\DPSFXamarin.iOS.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -33,6 +34,7 @@
     <ConsolePause>false</ConsolePause>
     <CodesignKey>iPhone Developer</CodesignKey>
     <DocumentationFile>bin\iPhone\Release\DPSFXamarin.iOS.xml</DocumentationFile>
+    <DefineConstants>IOS</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\DPSF\AutoMemoryManagerSettings.cs">
