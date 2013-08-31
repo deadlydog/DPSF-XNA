@@ -122,22 +122,72 @@ function Read-MultiLineInputBoxDialog([string]$Message, [string]$WindowTitle, [s
 	return $form.Tag
 }
 
+function Get-NuSpecVersionNumber([parameter(Position=1,Mandatory)][ValidateScript({Test-Path $_ -PathType Leaf})][string] $NuSpecFilePath)
+{	
+	# Read in the file contents and return the version element's value.
+	[xml]$fileContents = Get-Content -Path $NuSpecFilePath
+	return Get-XmlElementsTextValue -XmlDocument $fileContents -ElementPath "package.metadata.version"
+}
+
+function Get-NuSpecReleaseNotes([parameter(Position=1,Mandatory)][ValidateScript({Test-Path $_ -PathType Leaf})][string] $NuSpecFilePath)
+{	
+	# Read in the file contents and return the version element's value.
+	[xml]$fileContents = Get-Content -Path $NuSpecFilePath
+	return Get-XmlElementsTextValue -XmlDocument $fileContents -ElementPath "package.metadata.releaseNotes"
+}
+
+function Get-XmlElementsTextValue([xml]$XmlDocument, [string]$ElementPath, [string]$NamespaceURI = "", [string]$NodeSeparatorCharacter = '.')
+{
+	# Try and get the node.	
+	$node = Get-XmlNode -XmlDocument $XmlDocument -NodePath $ElementPath -NamespaceURI $NamespaceURI -NodeSeparatorCharacter $NodeSeparatorCharacter
+	
+	# If the node already exists, return its value, otherwise return null.
+	if ($node) { return $node.InnerText } else { return $null }
+}
+
+function Get-XmlNamespaceManager([xml]$XmlDocument, [string]$NamespaceURI = "")
+{
+    # If a Namespace URI was not given, use the Xml document's default namespace.
+	if ([string]::IsNullOrEmpty($NamespaceURI)) { $NamespaceURI = $XmlDocument.DocumentElement.NamespaceURI }	
+	
+	# In order for SelectSingleNode() to actually work, we need to use the fully qualified node path along with an Xml Namespace Manager, so set them up.
+	[System.Xml.XmlNamespaceManager]$xmlNsManager = New-Object System.Xml.XmlNamespaceManager($XmlDocument.NameTable)
+	$xmlNsManager.AddNamespace("ns", $NamespaceURI)
+    return ,$xmlNsManager		# Need to put the comma before the variable name so that PowerShell doesn't convert it into an Object[].
+}
+
+function Get-FullyQualifiedXmlNodePath([string]$NodePath, [string]$NodeSeparatorCharacter = '.')
+{
+    return "/ns:$($NodePath.Replace($($NodeSeparatorCharacter), '/ns:'))"
+}
+
+function Get-XmlNode([xml]$XmlDocument, [string]$NodePath, [string]$NamespaceURI = "", [string]$NodeSeparatorCharacter = '.')
+{
+	$xmlNsManager = Get-XmlNamespaceManager -XmlDocument $XmlDocument -NamespaceURI $NamespaceURI
+	[string]$fullyQualifiedNodePath = Get-FullyQualifiedXmlNodePath -NodePath $NodePath -NodeSeparatorCharacter $NodeSeparatorCharacter
+	
+	# Try and get the node, then return it. Returns $null if the node was not found.
+	$node = $XmlDocument.SelectSingleNode($fullyQualifiedNodePath, $xmlNsManager)
+	return $node
+}
+
 #==========================================================
 # Perform the script actions.
 #==========================================================
 
+$DPSFNuSpecFilePath = "$THIS_SCRIPTS_DIRECTORY\DPSF.nuspec"
+$DPSFAsDrawableGameComponentNuSpecFilePath = "$THIS_SCRIPTS_DIRECTORY\DPSFAsDrawableGameComponent.nuspec"
+
+& "$THIS_SCRIPTS_DIRECTORY\New-NuGetPackage.ps1" -NuSpecFilePath $DPSFNuSpecFilePath -VersionNumber $VersionNumber -ReleaseNotes $ReleaseNotes -PushPackageToNuGetGallery
+
+# If we weren't given a Version Number or Release Notes, use the ones provided for the first Nuspec file.
 if ([string]::IsNullOrWhiteSpace($VersionNumber))
 {
-	$promptMessage = 'Enter the NuGet package version number to use (x.x[.x.x] or $version$ if packing a project file)'
-	$VersionNumber = Read-InputBoxDialog -Message "$promptMessage`:" -WindowTitle "NuGet Package Version Number" -DefaultText $currentVersionNumber
+	$VersionNumber = Get-NuSpecVersionNumber -NuSpecFilePath $DPSFNuSpecFilePath
 }
-
 if ([string]::IsNullOrWhiteSpace($ReleaseNotes))
 {
-	$promptMessage = "Please enter the release notes to include in the new NuGet package"
-	$ReleaseNotes = Read-MultiLineInputBoxDialog -Message "$promptMessage`:" -WindowTitle "Enter Release Notes For New Package" -DefaultText $currentReleaseNotes
+	$ReleaseNotes = Get-NuSpecReleaseNotes -NuSpecFilePath $DPSFNuSpecFilePath
 }
 
-$apiKey = "b04c8890-af80-43aa-b516-1d61acb37015"
-& "$THIS_SCRIPTS_DIRECTORY\New-NuGetPackage.ps1" -NuSpecFilePath "$THIS_SCRIPTS_DIRECTORY\DPSF.nuspec" -VersionNumber $VersionNumber -ReleaseNotes $ReleaseNotes -PushPackageToNuGetGallery -PushOptions "-ApiKey $apiKey"
-& "$THIS_SCRIPTS_DIRECTORY\New-NuGetPackage.ps1" -NuSpecFilePath "$THIS_SCRIPTS_DIRECTORY\DPSFAsDrawableGameComponent.nuspec" -VersionNumber $VersionNumber -ReleaseNotes $ReleaseNotes -PushPackageToNuGetGallery -PushOptions "-ApiKey $apiKey"
+& "$THIS_SCRIPTS_DIRECTORY\New-NuGetPackage.ps1" -NuSpecFilePath $DPSFAsDrawableGameComponentNuSpecFilePath -VersionNumber $VersionNumber -ReleaseNotes $ReleaseNotes -PushPackageToNuGetGallery

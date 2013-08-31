@@ -821,8 +821,11 @@ Write-Host "Zipping up new DPSF installer and copying it to '$DPSF_DEV_WEBSITE_D
 Write-Zip -Path $newDpsfInstallerInArchiveDirectoryFilePath -OutputPath $DPSF_DEV_WEBSITE_DPSF_INSTALLER_ZIP_FILE_PATH -Level 9 -Quiet > $null # Don't output the zip file info to the powershell window.
 
 # Delete the previous HTML DPSF Help documenation on the Dev website.
-Write-Host "Deleting the old Dev website HTML Help Documentation at '$DPSF_DEV_WEBSITE_HELP_FILES_DIRECTORY'."
-Remove-Item -Recurse -Path $DPSF_DEV_WEBSITE_HELP_FILES_DIRECTORY
+if (Test-Path -Path $DPSF_DEV_WEBSITE_HELP_FILES_DIRECTORY)
+{
+    Write-Host "Deleting the old Dev website HTML Help Documentation at '$DPSF_DEV_WEBSITE_HELP_FILES_DIRECTORY'."
+    Remove-Item -Recurse -Path $DPSF_DEV_WEBSITE_HELP_FILES_DIRECTORY -Force
+}
 
 # Move the new HTML DPSF Help Documentation to the Dev website.
 Write-Host "Moving the new HTML DPSF Help documentation to the Dev website at '$DPSF_DEV_WEBSITE_HELP_FILES_DIRECTORY'."
@@ -838,8 +841,11 @@ Invoke-Item -Path $DPSF_DEV_WEBSITE_RELEASE_PROCESS_FILE_PATH
 
 # Tell user to do the Dev website Release Process steps to complete the release process.
 Write-Host "Prompt user to complete the Dev website steps..."
-[System.Windows.Forms.MessageBox]::Show("Follow the steps in the Dev website's Release Process file to complete the release process.", "Perform Dev Website Steps", [System.Windows.Forms.MessageBoxButtons]::OKCancel, [System.Windows.Forms.MessageBoxIcon]::Stop)
-
+if ([System.Windows.Forms.MessageBox]::Show("Follow the steps in the Dev website's Release Process file to complete the release process.", "Perform Dev Website Steps", [System.Windows.Forms.MessageBoxButtons]::OKCancel, [System.Windows.Forms.MessageBoxIcon]::Stop) -eq [System.Windows.Forms.DialogResult]::Cancel)
+{
+	Write-Host "Exiting script since Cancel was pressed when asked to complete the Dev website Release Process steps."
+	Exit
+}
 
 <#
 26 - Build and push the new DPSF NuGet Packages
