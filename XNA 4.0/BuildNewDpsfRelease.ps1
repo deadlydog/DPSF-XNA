@@ -733,7 +733,8 @@ if (Test-Path $DPSF_DEFAULT_INSTALL_DIRECTORY)
 
 # Grab the first 3 hex values of the version number (i.e. the public version number) and create the path to copy the DPSF Installer to.
 $rxPublicVersionNumber = [regex] "^\d{1,5}\.\d{1,5}\.\d{1,5}"
-$publicVersionNumber = rxPublicVersionNumber.Match($VersionNumber).Value
+$match = $rxPublicVersionNumber.Match($VersionNumber)
+$publicVersionNumber = $match.Value
 $newDpsfInstallerInArchiveDirectoryFilePath = Join-Path $ARCHIVED_INSTALLERS_DIRECTORY "DPSF Installer v$publicVersionNumber.exe"
 
 Write-Host "Copying new DPSF Installer to '$newDpsfInstallerInArchiveDirectoryFilePath'"
