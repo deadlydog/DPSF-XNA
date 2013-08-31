@@ -775,10 +775,10 @@ if ([System.Windows.Forms.MessageBox]::Show("Revert the DPSF Demo project files 
 Invoke-Item -Path $DPSF_CHANGE_LOG_FILE_PATH
 
 # Launch the Git Extensions commit window so user can check in the changes.
-Start-Process -FilePath cmd.exe -ArgumentList "/k `" cd `"$DPSF_REPOSITORY_ROOT_DIRECTORY`" & `"$GIT_EXTENSIONS_COMMAND_LINE_TOOL_PATH`" commit & EXIT"
+Start-Process -FilePath cmd.exe -ArgumentList "/k `"cd `"$DPSF_REPOSITORY_ROOT_DIRECTORY`" & `"$GIT_EXTENSIONS_COMMAND_LINE_TOOL_PATH`" commit & EXIT`" "
 
 Write-Host "Prompt to see if the user has finished checking files into Git..."
-if ([System.Windows.Forms.MessageBox]::Show("Hit OK once the you have checked the changes into Git.`n`nInclude the ", "Check Changes Into Git", [System.Windows.Forms.MessageBoxButtons]::OKCancel, [System.Windows.Forms.MessageBoxIcon]::Stop) -eq [System.Windows.Forms.DialogResult]::Cancel)
+if ([System.Windows.Forms.MessageBox]::Show("Hit OK once the you have checked the changes into Git.`n`nInclude the changes from the Change Log file.", "Check Changes Into Git", [System.Windows.Forms.MessageBoxButtons]::OKCancel, [System.Windows.Forms.MessageBoxIcon]::Stop) -eq [System.Windows.Forms.DialogResult]::Cancel)
 {
 	Write-Host "Exiting script since Cancel was pressed when asked to check the changes into Git."
 	Exit
@@ -789,7 +789,7 @@ if ([System.Windows.Forms.MessageBox]::Show("Hit OK once the you have checked th
 #>
 
 Write-Host "Building the DPSF solution to create required .xnb files before it can be built in Debug mode..."
-Invoke-MsBuild -Path "$DPSF_SOLUTION_FILE_PATH" -MsBuildParameters "$MSBUILD_PARAMETERS" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -ShowBuildWindow -PassThru
+Invoke-MsBuild -Path "$DPSF_SOLUTION_FILE_PATH" -MsBuildParameters "$MSBUILD_PARAMETERS" -BuildLogDirectoryPath "$MSBUILD_LOG_DIRECTORY_PATH" -ShowBuildWindow -PassThru > $null
 
 <#
 24 - Upload the new DPSF Installer and HTML help files to the Dev website.
@@ -824,7 +824,7 @@ Write-Zip -Path $newDpsfInstallerInArchiveDirectoryFilePath -OutputPath $DPSF_DE
 Write-Host "Deleting the old Dev website HTML Help Documentation at '$DPSF_DEV_WEBSITE_HELP_FILES_DIRECTORY'."
 Remove-Item -Recurse -Path $DPSF_DEV_WEBSITE_HELP_FILES_DIRECTORY
 
-# Move to the new HTML DPSF Help Documentation to the Dev website.
+# Move the new HTML DPSF Help Documentation to the Dev website.
 Write-Host "Moving the new HTML DPSF Help documentation to the Dev website at '$DPSF_DEV_WEBSITE_HELP_FILES_DIRECTORY'."
 RoboCopy $HELP_DOCUMENTATION_HTML_DIRECTORY $DPSF_DEV_WEBSITE_HELP_FILES_DIRECTORY /move > $null	# Don't output the files copied to the powershell window.
 
