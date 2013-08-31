@@ -6134,12 +6134,14 @@
             are called), not when the particle system functions are called.</para>
             </summary>
         </member>
-        <member name="P:DPSF.DPSFHelper.ThrowDebugWarningExceptions">
+        <member name="P:DPSF.DPSFHelper.IsRunningInDebugMode">
             <summary>
-            Gets if DPSF Debug Warning Exceptions should be thrown or not.
-            <para>These exceptions are typically thrown as a warning to the user they that do not have DPSF configured ideally.</para>
-            <para>This will only return true (default) if we are running in Debug mode (i.e. the DEBUG compilation symbol is defined) and a debugger is attached. 
-            This is done to prevent these exceptions from being thrown when software compiled in Debug mode is released.</para>
+            Get if the application is currently running in Debug mode or not.
+            </summary>
+        </member>
+        <member name="P:DPSF.DPSFHelper.IsRunningInDebugModeWithDebuggerAttached">
+            <summary>
+            Get if the application is currently running in Debug mode with a Debugger attached or not.
             </summary>
         </member>
         <member name="T:DPSF.DPSFResources">
@@ -6236,6 +6238,14 @@
             For example, if particle system 1 sets the Effect's Texture, that same Texture will be used for particle system 2 unless particle system 2 specifies the new Texture to use.</para>
             <para>NOTE: The Graphics Device of the first particle system to be initialized will be used when creating the shared Effect. If you later require a different Graphics Device
             to be used, you must call the SetGraphicsDeviceForSharedEffectsForAllParticleSystems() function.</para>
+            </summary>
+        </member>
+        <member name="P:DPSF.DPSFDefaultSettings.ThrowDebugWarningExceptions">
+            <summary>
+            Get and set if DPSF Debug Warning Exceptions should be thrown or not.
+            <para>These exceptions are typically thrown as a warning to the user that they do not have DPSF configured ideally.</para>
+            <para>This will only return true (default) if we are running in Debug mode (i.e. the DEBUG compilation symbol is defined) and a debugger is attached. 
+            This is done to prevent these exceptions from being thrown when software compiled in Debug mode is released.</para>
             </summary>
         </member>
         <member name="T:DPSF.Exceptions.DPSFDebugWarningException">
@@ -6634,6 +6644,17 @@
         <member name="F:DPSF.ParticleEmitterCollection._emitters">
             <summary>
             The dictionary used to hold the collection of emitters.
+            We want to use a dictionary for this because one particle system may potentially end up with hundreds of emitters (e.g. every enemy has an emitter), so we want
+            to be able to perform lookups very quickly, and dictionaries can do adds/removes/lookups in constant O(1) time.
+            </summary>
+        </member>
+        <member name="F:DPSF.ParticleEmitterCollection._emitterIdsCache">
+            <summary>
+            The list of Emitter IDs to return back to clients when requested.
+            This is essentially just a copy of the Emitter Dictionary's Keys, but we need it since the Keys collection can only be iterated over using an enumerator, which basically
+            means using a foreach loop, which is bad for performance. To compensate, every time the Keys collection is modified we update this variable to hold all of the keys.
+            This allows clients to use a regular for loop in order to iterate over all of the Emitter IDs, which means less garbage will be generated for the garbage collector.
+            Essentially we are assuming that the IDs property will be accessed more often than the Add() and Remove() functions are called.
             </summary>
         </member>
         <member name="M:DPSF.ParticleEmitterCollection.Add">

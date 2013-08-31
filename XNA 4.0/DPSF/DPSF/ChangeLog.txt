@@ -16,7 +16,7 @@ TODO - Refactoring at next major or minor version:
 - Move Shared Effect properties and functions, and the ThrowDebugWarningExceptions property from DPSFDefaultSettings to a new DPSFSettings class.
 
 
-Changes made after Version 4.2.1:
+Changes made after Version 2.4.1:
 public:
 - Fixed Android bug where IndexOutOfRangeException would be thrown on some Android devices, depending on their hardware capabilities.
 - Added SetEnabledStateForAllParticleSystems(), SetVisibleStateForAllParticleSystems(), and SetEnabledAndVisibleStatesForAllParticleSystems() functions to the ParticleSystemManager class.
