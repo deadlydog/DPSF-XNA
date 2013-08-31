@@ -475,13 +475,12 @@ files in the "DPSF\LatestDLLBuild" folder into the "Installer Files" folder, and
 Write-Host "Copying new DLL and XML files to the Installer Files directory..."
 Copy-Item -Path "$LATEST_DLL_FILES_DIRECTORY_PATH/*" -Destination $INSTALLER_FILES_DIRECTORY_PATH -Include "*.dll","*.xml" -Force
 
-# If the 'C:\DPSF' directory does not exist, create it before we copy files to it.
+# Copy the DLL files to the 'C:\DPSF' directory.
 if (!(Test-Path -Path $DPSF_DEFAULT_INSTALL_DIRECTORY))
 {
+    Write-Host "Creating the 'C:\DPSF' directory..."
     New-Item -ItemType Directory -Path $DPSF_DEFAULT_INSTALL_DIRECTORY > $null
 }
-
-# Copy the DLL files to the 'C:\DPSF' directory.
 Write-Host "Copying new DLL and XML files to the 'C:\DPSF' directory..."
 Copy-Item -Path "$LATEST_DLL_FILES_DIRECTORY_PATH/*" -Destination $DPSF_DEFAULT_INSTALL_DIRECTORY -Include "*.dll","*.xml" -Force
 
