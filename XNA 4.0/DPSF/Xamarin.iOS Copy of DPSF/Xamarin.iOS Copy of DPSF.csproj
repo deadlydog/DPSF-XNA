@@ -213,9 +213,7 @@
     <Reference Include="System.Core" />
     <Reference Include="monotouch" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Dependencies\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="..\DPSF\ChangeLog.txt">
       <Link>ChangeLog.txt</Link>
@@ -223,6 +221,8 @@
     <Content Include="..\DPSF\DPSF Effects\HLSL\DPSFDefaultEffect.fx">
       <Link>DPSF Effects\HLSL\DPSFDefaultEffect.fx</Link>
     </Content>
+    <Content Include="Dependencies\Lidgren.Network.dll" />
+    <Content Include="Dependencies\MonoGame.Framework.dll" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\DPSF\DPSF Effects\Raw Effect Code\DPSFDefaultEffectWindowsHiDef.bin">
