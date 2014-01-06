@@ -1,116 +1,89 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
+    <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{6F2A8594-445F-4561-B8E3-C56397797D74}</ProjectGuid>
+    <ProjectGuid>{C763A491-3735-45C5-B252-08312B3EF6ED}</ProjectGuid>
+    <ProjectTypeGuids>{C089C8C0-30E0-4E22-80C0-CE093F111A43};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DPSF_WinRT</RootNamespace>
-    <AssemblyName>DPSFWinRT</AssemblyName>
-    <DefaultLanguage>en-US</DefaultLanguage>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <RootNamespace>DPSF_Windows_Phone_MonoGame</RootNamespace>
+    <AssemblyName>DPSFWindowsPhoneMonoGame</AssemblyName>
+    <TargetFrameworkIdentifier>WindowsPhone</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v8.0</TargetFrameworkVersion>
+    <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
+    <SilverlightApplication>false</SilverlightApplication>
+    <ValidateXaml>true</ValidateXaml>
+    <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
+    <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NETFX_CORE WIN_RT</DefineConstants>
+    <OutputPath>Bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\DPSFWinRT.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE WIN_RT</DefineConstants>
+    <OutputPath>Bin\Release</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\DPSFWinRT.xml</DocumentationFile>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\ARM\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE</DefineConstants>
-    <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
-    <PlatformTarget>ARM</PlatformTarget>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <Optimize>false</Optimize>
+    <OutputPath>Bin\x86\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
-    <Prefer32Bit>true</Prefer32Bit>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>Bin\x86\Debug\DPSFWindowsPhoneMonoGame.XML</DocumentationFile>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
-    <OutputPath>bin\ARM\Release\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE</DefineConstants>
-    <Optimize>true</Optimize>
-    <NoWarn>;2008</NoWarn>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>pdbonly</DebugType>
-    <PlatformTarget>ARM</PlatformTarget>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <Optimize>true</Optimize>
+    <OutputPath>Bin\x86\Release</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
-    <Prefer32Bit>true</Prefer32Bit>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>Bin\x86\Release\DPSFWindowsPhoneMonoGame.XML</DocumentationFile>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|ARM' ">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE</DefineConstants>
-    <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <Optimize>false</Optimize>
+    <OutputPath>Bin\ARM\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
-    <Prefer32Bit>true</Prefer32Bit>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE</DefineConstants>
-    <Optimize>true</Optimize>
-    <NoWarn>;2008</NoWarn>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|ARM' ">
     <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <ErrorReport>prompt</ErrorReport>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NETFX_CORE WIN_RT</DefineConstants>
-    <NoWarn>;2008</NoWarn>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <ErrorReport>prompt</ErrorReport>
-    <Prefer32Bit>true</Prefer32Bit>
-    <DocumentationFile>bin\x86\Debug\DPSFWinRT.XML</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE WIN_RT</DefineConstants>
     <Optimize>true</Optimize>
-    <NoWarn>;2008</NoWarn>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <OutputPath>Bin\ARM\Release</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
-    <Prefer32Bit>true</Prefer32Bit>
-    <DocumentationFile>bin\x86\Release\DPSFWinRT.XML</DocumentationFile>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <ItemGroup>
-    <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-    <Content Include="..\DPSF\ChangeLog.txt">
-      <Link>ChangeLog.txt</Link>
-    </Content>
-    <Content Include="..\DPSF\DPSF Effects\HLSL\DPSFDefaultEffect.fx">
-      <Link>DPSF Effects\HLSL\DPSFDefaultEffect.fx</Link>
-    </Content>
-  </ItemGroup>
   <ItemGroup>
     <Compile Include="..\DPSF\AutoMemoryManagerSettings.cs">
       <Link>AutoMemoryManagerSettings.cs</Link>
@@ -223,6 +196,9 @@
     <Compile Include="..\DPSF\DPSFParticle.cs">
       <Link>DPSFParticle.cs</Link>
     </Compile>
+    <Compile Include="..\DPSF\DPSFResources.Designer.cs">
+      <Link>DPSFResources.Designer.cs</Link>
+    </Compile>
     <Compile Include="..\DPSF\Exceptions\DPSFArgumentException.cs">
       <Link>Exceptions\DPSFArgumentException.cs</Link>
     </Compile>
@@ -265,16 +241,21 @@
     <Compile Include="..\DPSF\ParticleTypes.cs">
       <Link>ParticleTypes.cs</Link>
     </Compile>
-    <Compile Include="..\DPSF\Properties\AssemblyInfo.cs">
-      <Link>Properties\AssemblyInfo.cs</Link>
-    </Compile>
     <Compile Include="..\DPSF\RenderProperties.cs">
       <Link>RenderProperties.cs</Link>
     </Compile>
     <Compile Include="..\DPSF\SpriteBatchSettings.cs">
       <Link>SpriteBatchSettings.cs</Link>
     </Compile>
-    <Compile Include="DPSFResources.Designer.winrt.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\DPSF\ChangeLog.txt">
+      <Link>ChangeLog.txt</Link>
+    </Content>
+    <Content Include="..\DPSF\DPSF Effects\HLSL\DPSFDefaultEffect.fx">
+      <Link>DPSF Effects\HLSL\DPSFDefaultEffect.fx</Link>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\DPSF\DPSF Effects\Raw Effect Code\DPSFDefaultEffectWindowsHiDef.bin">
@@ -289,23 +270,21 @@
     <None Include="..\DPSF\DPSFKey.snk">
       <Link>DPSFKey.snk</Link>
     </None>
-    <PRIResource Include="DPSFResources.resw" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="MonoGame.Framework">
-      <HintPath>..\..\Installer\Installer Files\DPSF Demo\DPSF Demo for WinRT\Mono Dependencies\MonoGame.Framework.dll</HintPath>
+    <EmbeddedResource Include="..\DPSF\DPSFResources.resx">
+      <Link>DPSFResources.resx</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="MonoGame.Framework, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Installer\Installer Files\DPSF Demo\DPSF Demo for Windows Phone MonoGame\Mono Dependencies\x86\MonoGame.Framework.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
-    <VisualStudioVersion>11.0</VisualStudioVersion>
-  </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>REM Copy the new files to the LatestDLLBuild folder.
-if not exist "$(ProjectDir)..\LatestDLLBuild" mkdir "$(ProjectDir)..\LatestDLLBuild"
-if exist "$(TargetPath)" copy /y /d "$(TargetPath)" "$(ProjectDir)..\LatestDLLBuild\$(TargetFileName)"
-if exist "$(TargetDir)$(TargetName).xml" copy /y /d "$(TargetDir)$(TargetName).xml" "$(ProjectDir)..\LatestDLLBuild\$(TargetName).xml"</PostBuildEvent>
-  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
+  <ProjectExtensions />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -313,4 +292,20 @@ if exist "$(TargetDir)$(TargetName).xml" copy /y /d "$(TargetDir)$(TargetName).x
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Target Name="MonoGame_RemoveXnaAssemblies" AfterTargets="ImplicitlyExpandTargetFramework">
+    <Message Text="MonoGame - Removing XNA Assembly references!" Importance="normal" />
+    <ItemGroup>
+      <ReferencePath Remove="@(ReferencePath)" Condition="'%(Filename)%(Extension)'=='Microsoft.Xna.Framework.dll'" />
+      <ReferencePath Remove="@(ReferencePath)" Condition="'%(Filename)%(Extension)'=='Microsoft.Xna.Framework.GamerServices.dll'" />
+      <ReferencePath Remove="@(ReferencePath)" Condition="'%(Filename)%(Extension)'=='Microsoft.Xna.Framework.GamerServicesExtensions.dll'" />
+      <ReferencePath Remove="@(ReferencePath)" Condition="'%(Filename)%(Extension)'=='Microsoft.Xna.Framework.Input.Touch.dll'" />
+      <ReferencePath Remove="@(ReferencePath)" Condition="'%(Filename)%(Extension)'=='Microsoft.Xna.Framework.MediaLibraryExtensions.dll'" />
+    </ItemGroup>
+  </Target>
+  <PropertyGroup>
+    <PostBuildEvent>REM Copy the new files to the LatestDLLBuild folder.
+if not exist "$(ProjectDir)..\LatestDLLBuild" mkdir "$(ProjectDir)..\LatestDLLBuild"
+if exist "$(TargetPath)" copy /y /d "$(TargetPath)" "$(ProjectDir)..\LatestDLLBuild\$(TargetFileName)"
+if exist "$(TargetDir)$(TargetName).xml" copy /y /d "$(TargetDir)$(TargetName).xml" "$(ProjectDir)..\LatestDLLBuild\$(TargetName).xml"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

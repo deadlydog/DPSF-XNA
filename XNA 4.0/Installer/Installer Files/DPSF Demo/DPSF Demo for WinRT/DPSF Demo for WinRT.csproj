@@ -108,17 +108,11 @@
     <Reference Include="SharpDX">
       <HintPath>$(MSBuildExtensionsPath)\..\MonoGame\v3.0\Assemblies\Windows8\SharpDX.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX.Input">
-      <HintPath>$(MSBuildExtensionsPath)\..\MonoGame\v3.0\Assemblies\Windows8\SharpDX.Input.dll</HintPath>
-    </Reference>
     <Reference Include="SharpDX.Direct2D1">
       <HintPath>$(MSBuildExtensionsPath)\..\MonoGame\v3.0\Assemblies\Windows8\SharpDX.Direct2D1.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Direct3D11">
       <HintPath>$(MSBuildExtensionsPath)\..\MonoGame\v3.0\Assemblies\Windows8\SharpDX.Direct3D11.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.DXGL">
-      <HintPath>$(MSBuildExtensionsPath)\..\MonoGame\v3.0\Assemblies\Windows8\SharpDX.DXGL.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.MediaFoundation">
       <HintPath>$(MSBuildExtensionsPath)\..\MonoGame\v3.0\Assemblies\Windows8\SharpDX.MediaFoundation.dll</HintPath>
@@ -164,6 +158,17 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Mono Dependencies\MonoGame.Framework.dll" />
+    <Content Include="Mono Dependencies\SharpDX.D3DCompiler.dll" />
+    <Content Include="Mono Dependencies\SharpDX.Direct2D1.dll" />
+    <Content Include="Mono Dependencies\SharpDX.Direct3D11.dll" />
+    <Content Include="Mono Dependencies\SharpDX.dll" />
+    <Content Include="Mono Dependencies\SharpDX.DXGI.dll" />
+    <Content Include="Mono Dependencies\SharpDX.MediaFoundation.dll" />
+    <Content Include="Mono Dependencies\SharpDX.Toolkit.dll" />
+    <Content Include="Mono Dependencies\SharpDX.Toolkit.Game.dll" />
+    <Content Include="Mono Dependencies\SharpDX.Toolkit.Graphics.dll" />
+    <Content Include="Mono Dependencies\SharpDX.XAudio2.dll" />
+    <Content Include="Mono Dependencies\SharpDX.XInput.dll" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\DPSF\DPSF WinRT\DPSF WinRT.csproj">
