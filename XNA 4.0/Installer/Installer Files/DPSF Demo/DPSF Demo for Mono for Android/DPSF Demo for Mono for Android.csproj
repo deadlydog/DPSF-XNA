@@ -41,25 +41,16 @@
     <AndroidLinkMode>SdkOnly</AndroidLinkMode>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Lidgren.Network, Version=2011.3.12.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
     <Reference Include="Mono.Android" />
     <Reference Include="MonoGame.Framework, Version=3.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\DPSF\packages\MonoGame.Framework.Android.3.3.0.0\lib\MonoAndroid\MonoGame.Framework.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib" />
-    <Reference Include="OpenTK, Version=0.9.9.3, Culture=neutral, PublicKeyToken=c4c4237547e4b6cd, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tao.Sdl, Version=1.2.13.0, Culture=neutral, PublicKeyToken=9c7a200e36c0094e, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Logos\DPSFSplashScreenPS.cs">
@@ -326,9 +317,6 @@
     <AndroidResource Include="Resources\Drawable\Icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Mono Dependencies\Lidgren.Network.dll" />
-    <Content Include="Mono Dependencies\OpenTK.dll" />
-    <Content Include="Mono Dependencies\Tao.Sdl.dll" />
     <Content Include="Properties\AndroidManifest.xml" />
   </ItemGroup>
   <ItemGroup>
