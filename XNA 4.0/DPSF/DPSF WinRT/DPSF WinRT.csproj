@@ -289,11 +289,13 @@
     <None Include="..\DPSF\DPSFKey.snk">
       <Link>DPSFKey.snk</Link>
     </None>
+    <None Include="packages.config" />
     <PRIResource Include="DPSFResources.resw" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="MonoGame.Framework">
-      <HintPath>..\..\Installer\Installer Files\DPSF Demo\DPSF Demo for WinRT\Mono Dependencies\MonoGame.Framework.dll</HintPath>
+    <Reference Include="MonoGame.Framework, Version=3.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\MonoGame.Framework.Windows8.3.3.0.0\lib\netcore\MonoGame.Framework.dll</HintPath>
     </Reference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
