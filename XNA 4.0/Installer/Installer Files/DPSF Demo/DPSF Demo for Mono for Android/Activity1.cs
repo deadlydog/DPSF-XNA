@@ -17,9 +17,8 @@ namespace DPSF_Demo_for_Mono_for_Android
 		{
 			base.OnCreate(bundle);
 
-			DPSF_Demo_Phone.Game1.Activity = this;
 			var game = new DPSF_Demo_Phone.Game1();
-			SetContentView(game.Window);
+			SetContentView(game.Services.GetService<View>());
 			game.Run();
 		}
 	}

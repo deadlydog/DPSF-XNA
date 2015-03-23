@@ -16,6 +16,8 @@
     <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
+    <AndroidUseLatestPlatformSdk />
+    <TargetFrameworkVersion>v4.4</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -43,8 +45,9 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Mono.Android" />
-    <Reference Include="MonoGame.Framework, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="MonoGame.Framework, Version=3.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\DPSF\packages\MonoGame.Framework.Android.3.3.0.0\lib\MonoAndroid\MonoGame.Framework.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="OpenTK, Version=0.9.9.3, Culture=neutral, PublicKeyToken=c4c4237547e4b6cd, processorArchitecture=MSIL">
@@ -309,6 +312,7 @@
       <Link>Assets\Content\Textures\X.xnb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </AndroidAsset>
+    <None Include="packages.config" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
   </ItemGroup>
@@ -323,7 +327,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Mono Dependencies\Lidgren.Network.dll" />
-    <Content Include="Mono Dependencies\MonoGame.Framework.dll" />
     <Content Include="Mono Dependencies\OpenTK.dll" />
     <Content Include="Mono Dependencies\Tao.Sdl.dll" />
     <Content Include="Properties\AndroidManifest.xml" />
