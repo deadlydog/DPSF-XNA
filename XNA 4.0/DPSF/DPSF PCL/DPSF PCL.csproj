@@ -1,0 +1,249 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A98AE8F8-69C9-4E37-83B7-06EB89AB1537}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DPSF_PCL</RootNamespace>
+    <AssemblyName>DPSF PCL</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFrameworkProfile>Profile328</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;PORTABLE_CLASS_LIBRARY</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- A reference to the entire .NET Framework is automatically included -->
+    <None Include="..\DPSF\DPSF Effects\HLSL\DPSFDefaultEffect.fx">
+      <Link>DPSF Effects\HLSL\DPSFDefaultEffect.fx</Link>
+    </None>
+    <None Include="..\DPSF\DPSF Effects\Raw Effect Code\DPSFDefaultEffectWindowsHiDef.bin">
+      <Link>DPSF Effects\Raw Effect Code\DPSFDefaultEffectWindowsHiDef.bin</Link>
+    </None>
+    <None Include="..\DPSF\DPSF Effects\Raw Effect Code\DPSFDefaultEffectWindowsReach.bin">
+      <Link>DPSF Effects\Raw Effect Code\DPSFDefaultEffectWindowsReach.bin</Link>
+    </None>
+    <None Include="..\DPSF\DPSF Effects\Raw Effect Code\DPSFDefaultEffectXbox360HiDef.bin">
+      <Link>DPSF Effects\Raw Effect Code\DPSFDefaultEffectXbox360HiDef.bin</Link>
+    </None>
+    <None Include="..\DPSF\DPSFKey.snk">
+      <Link>DPSFKey.snk</Link>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\DPSF\AutoMemoryManagerSettings.cs">
+      <Link>AutoMemoryManagerSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Attributes\DPSFViewerParameterAttribute.cs">
+      <Link>DPSF Attributes\DPSFViewerParameterAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\DefaultBase.cs">
+      <Link>DPSF Defaults\DefaultBase.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\DefaultNoDisplay.cs">
+      <Link>DPSF Defaults\DefaultNoDisplay.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\DefaultQuad.cs">
+      <Link>DPSF Defaults\DefaultQuad.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\DefaultSprite.cs">
+      <Link>DPSF Defaults\DefaultSprite.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\DefaultSprite3DBillboard.cs">
+      <Link>DPSF Defaults\DefaultSprite3DBillboard.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\DefaultSprite3DBillboardAnimated.cs">
+      <Link>DPSF Defaults\DefaultSprite3DBillboardAnimated.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\DefaultSprite3DBillboardTextureCoordinates.cs">
+      <Link>DPSF Defaults\DefaultSprite3DBillboardTextureCoordinates.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\DefaultSpriteAnimated.cs">
+      <Link>DPSF Defaults\DefaultSpriteAnimated.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\DefaultSpriteTextureCoordinates.cs">
+      <Link>DPSF Defaults\DefaultSpriteTextureCoordinates.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\DefaultTexturedQuad.cs">
+      <Link>DPSF Defaults\DefaultTexturedQuad.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\DefaultTexturedQuadAnimated.cs">
+      <Link>DPSF Defaults\DefaultTexturedQuadAnimated.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\DefaultTexturedQuadTextureCoordinates.cs">
+      <Link>DPSF Defaults\DefaultTexturedQuadTextureCoordinates.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\Magnets\DefaultParticleSystemMagnet.cs">
+      <Link>DPSF Defaults\Magnets\DefaultParticleSystemMagnet.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\Magnets\MagnetLine.cs">
+      <Link>DPSF Defaults\Magnets\MagnetLine.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\Magnets\MagnetLineSegment.cs">
+      <Link>DPSF Defaults\Magnets\MagnetLineSegment.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\Magnets\MagnetPlane.cs">
+      <Link>DPSF Defaults\Magnets\MagnetPlane.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Defaults\Magnets\MagnetPoint.cs">
+      <Link>DPSF Defaults\Magnets\MagnetPoint.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Effects\CSharp\DPSFDefaultEffect.cs">
+      <Link>DPSF Effects\CSharp\DPSFDefaultEffect.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Helpers\Animations.cs">
+      <Link>DPSF Helpers\Animations.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Helpers\DPSFHelper.cs">
+      <Link>DPSF Helpers\DPSFHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Helpers\Orientation2D.cs">
+      <Link>DPSF Helpers\Orientation2D.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Helpers\Orientation2DWithPreviousOrientation.cs">
+      <Link>DPSF Helpers\Orientation2DWithPreviousOrientation.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Helpers\Orientation3D.cs">
+      <Link>DPSF Helpers\Orientation3D.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Helpers\Orientation3DWithPreviousOrientation.cs">
+      <Link>DPSF Helpers\Orientation3DWithPreviousOrientation.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Helpers\PivotPoint2D.cs">
+      <Link>DPSF Helpers\PivotPoint2D.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Helpers\PivotPoint3D.cs">
+      <Link>DPSF Helpers\PivotPoint3D.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Helpers\Position2D.cs">
+      <Link>DPSF Helpers\Position2D.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Helpers\Position2DWithPreviousPosition.cs">
+      <Link>DPSF Helpers\Position2DWithPreviousPosition.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Helpers\Position3D.cs">
+      <Link>DPSF Helpers\Position3D.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Helpers\Position3DWithPreviousPosition.cs">
+      <Link>DPSF Helpers\Position3DWithPreviousPosition.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF Helpers\RandomNumbers.cs">
+      <Link>DPSF Helpers\RandomNumbers.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSF.cs">
+      <Link>DPSF.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSFDefaultSettings.cs">
+      <Link>DPSFDefaultSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSFParticle.cs">
+      <Link>DPSFParticle.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\DPSFResources.Designer.cs">
+      <Link>DPSFResources.Designer.cs</Link>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DPSFResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="..\DPSF\Exceptions\DPSFArgumentException.cs">
+      <Link>Exceptions\DPSFArgumentException.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\Exceptions\DPSFArgumentNullException.cs">
+      <Link>Exceptions\DPSFArgumentNullException.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\Exceptions\DPSFDebugWarningException.cs">
+      <Link>Exceptions\DPSFDebugWarningException.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\Exceptions\DPSFException.cs">
+      <Link>Exceptions\DPSFException.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\Exceptions\DPSFInvalidOperationException.cs">
+      <Link>Exceptions\DPSFInvalidOperationException.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\Exceptions\DPSFKeyNotFoundException.cs">
+      <Link>Exceptions\DPSFKeyNotFoundException.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\Exceptions\DPSFNullReferenceException.cs">
+      <Link>Exceptions\DPSFNullReferenceException.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\Exceptions\IDPSFException.cs">
+      <Link>Exceptions\IDPSFException.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\Extension Methods\GenericCollectionsExtensions.cs">
+      <Link>Extension Methods\GenericCollectionsExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\IDPSFParticleSystem.cs">
+      <Link>IDPSFParticleSystem.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\ParticleEmitter.cs">
+      <Link>ParticleEmitter.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\ParticleEmitterCollection.cs">
+      <Link>ParticleEmitterCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\ParticleSystemManager.cs">
+      <Link>ParticleSystemManager.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\ParticleTypes.cs">
+      <Link>ParticleTypes.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\RenderProperties.cs">
+      <Link>RenderProperties.cs</Link>
+    </Compile>
+    <Compile Include="..\DPSF\SpriteBatchSettings.cs">
+      <Link>SpriteBatchSettings.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\DPSF\ChangeLog.txt">
+      <Link>ChangeLog.txt</Link>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\DPSF\DPSFResources.resx">
+      <Link>DPSFResources.resx</Link>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>DPSFResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="MonoGame.Framework">
+      <HintPath>..\packages\MonoGame.Framework.Portable.3.2.99.1-Beta\lib\portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+MonoTouch10\MonoGame.Framework.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

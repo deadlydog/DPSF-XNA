@@ -45,10 +45,12 @@ namespace DPSF
 		/// </summary>
 		public static string Version
 		{
-			get 
-			{ 
+			get
+			{
 #if (WIN_RT)
 				return typeof(DPSF<DPSFParticle, DefaultNoDisplayParticleVertex>).GetTypeInfo().Assembly.GetName().Version.ToString();
+#elif (PORTABLE_CLASS_LIBRARY)
+				throw new NotImplementedException("No way to get the assembly version using the PCL."); 
 #else
 				return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(); 
 #endif

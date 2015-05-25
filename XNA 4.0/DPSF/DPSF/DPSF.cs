@@ -1925,11 +1925,11 @@ namespace DPSF
 		private ParticleEmitter _emitter = null;			// The Emitter used to automatically generate Particles
 		private ParticleEmitterCollection _emitters = null;	// The collection of emitters that this particle system uses.
 
-// The Reach profile does not have access to the System.Diagnostics namespace, so it does not know about the Stopwatch class.
-#if (!WINDOWS_PHONE)
-    #if (WINDOWS)
+		// The Reach profile does not have access to the System.Diagnostics namespace, so it does not know about the Stopwatch class.
+#if (!WINDOWS_PHONE && !PORTABLE_CLASS_LIBRARY)
+#if (WINDOWS)
             [NonSerialized]
-    #endif
+#endif
 		private Stopwatch _performanceProfilingStopwatch = null; // Stopwatch used for diagnostic timers.
 #endif
 		private bool _performanceProfilingIsEnabled = false;
@@ -3603,7 +3603,7 @@ namespace DPSF
 				else
 					_performanceProfilingIsEnabled = value;
 // The Reach profile does not have access to the System.Diagnostics namespace, so it does not know about the Stopwatch class.
-#if (!WINDOWS_PHONE)
+#if (!WINDOWS_PHONE && !PORTABLE_CLASS_LIBRARY)
 				// If Performance Profiling is enabled
 				if (_performanceProfilingIsEnabled)
 				{
@@ -4439,7 +4439,7 @@ namespace DPSF
 			}
 
 // The Reach profile does not have access to the System.Diagnostics namespace, so it does not know about the Stopwatch class.
-#if (!WINDOWS_PHONE)
+#if (!WINDOWS_PHONE && !PORTABLE_CLASS_LIBRARY)
 			// We are going to be doing the Update for sure if we have gotten here, so start the performance profiling if it is enabled.
 			if (_performanceProfilingIsEnabled)
 			{
@@ -4671,7 +4671,7 @@ namespace DPSF
 			AfterUpdate(fScaledElapsedTimeInSeconds);
 
 // The Reach profile does not have access to the System.Diagnostics namespace, so it does not know about the Stopwatch class.
-#if (!WINDOWS_PHONE)
+#if (!WINDOWS_PHONE && !PORTABLE_CLASS_LIBRARY)
 			// If performance profiling is enabled, log how long it took to do the Update
 			if (_performanceProfilingIsEnabled)
 			{
@@ -4822,7 +4822,7 @@ namespace DPSF
 			}
 
 // The Reach profile does not have access to the System.Diagnostics namespace, so it does not know about the Stopwatch class.
-#if (!WINDOWS_PHONE)
+#if (!WINDOWS_PHONE && !PORTABLE_CLASS_LIBRARY)
 			// We are going to be doing the Draw for sure if we have gotten here, so start the performance profiling if it is enabled.
 			if (_performanceProfilingIsEnabled)
 			{
@@ -4831,7 +4831,7 @@ namespace DPSF
             }
 #endif
 
-// There's an XNA 4 bug on the Xbox that will throw a run-time error if we don't clear out the Render State before drawing, so clear them out.
+			// There's an XNA 4 bug on the Xbox that will throw a run-time error if we don't clear out the Render State before drawing, so clear them out.
 #if (XBOX)
             // Reset all of the render states.
 			if (ParticleType != ParticleTypes.NoDisplay)
@@ -4848,7 +4848,7 @@ namespace DPSF
 				AfterDraw();
 
 // The Reach profile does not have access to the System.Diagnostics namespace, so it does not know about the Stopwatch class.
-#if (!WINDOWS_PHONE)
+#if (!WINDOWS_PHONE && !PORTABLE_CLASS_LIBRARY)
 				// If performance profiling is enabled, log how long it took to do the Draw.
 				if (_performanceProfilingIsEnabled)
 				{
@@ -5008,7 +5008,7 @@ namespace DPSF
 			AfterDraw();
 
 // The Reach profile does not have access to the System.Diagnostics namespace, so it does not know about the Stopwatch class.
-#if (!WINDOWS_PHONE)
+#if (!WINDOWS_PHONE && !PORTABLE_CLASS_LIBRARY)
 			// If performance profiling is enabled, log how long it took to do the Draw.
 			if (_performanceProfilingIsEnabled)
 			{
