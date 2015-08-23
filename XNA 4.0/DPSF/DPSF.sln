@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DPSF", "DPSF\DPSF.csproj", "{B0CF088B-D0AA-4E39-9DD0-0E876ACFE7D7}"
 EndProject
@@ -183,19 +183,23 @@ Global
 		{4FDD6876-4AC9-42B3-8DDA-D79D605569B7}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{4FDD6876-4AC9-42B3-8DDA-D79D605569B7}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{4FDD6876-4AC9-42B3-8DDA-D79D605569B7}.Debug|Windows Phone.ActiveCfg = Debug|x86
+		{4FDD6876-4AC9-42B3-8DDA-D79D605569B7}.Debug|Windows Phone.Build.0 = Debug|x86
 		{4FDD6876-4AC9-42B3-8DDA-D79D605569B7}.Debug|x64.ActiveCfg = Debug|x86
 		{4FDD6876-4AC9-42B3-8DDA-D79D605569B7}.Debug|x86.ActiveCfg = Debug|x86
 		{4FDD6876-4AC9-42B3-8DDA-D79D605569B7}.Debug|x86.Build.0 = Debug|x86
 		{4FDD6876-4AC9-42B3-8DDA-D79D605569B7}.Debug|Xbox 360.ActiveCfg = Debug|x86
+		{4FDD6876-4AC9-42B3-8DDA-D79D605569B7}.Debug|Xbox 360.Build.0 = Debug|x86
 		{4FDD6876-4AC9-42B3-8DDA-D79D605569B7}.Release|Any CPU.ActiveCfg = Release|x86
 		{4FDD6876-4AC9-42B3-8DDA-D79D605569B7}.Release|ARM.ActiveCfg = Release|x86
 		{4FDD6876-4AC9-42B3-8DDA-D79D605569B7}.Release|Mixed Platforms.ActiveCfg = Release|x86
 		{4FDD6876-4AC9-42B3-8DDA-D79D605569B7}.Release|Mixed Platforms.Build.0 = Release|x86
 		{4FDD6876-4AC9-42B3-8DDA-D79D605569B7}.Release|Windows Phone.ActiveCfg = Release|x86
+		{4FDD6876-4AC9-42B3-8DDA-D79D605569B7}.Release|Windows Phone.Build.0 = Release|x86
 		{4FDD6876-4AC9-42B3-8DDA-D79D605569B7}.Release|x64.ActiveCfg = Release|x86
 		{4FDD6876-4AC9-42B3-8DDA-D79D605569B7}.Release|x86.ActiveCfg = Release|x86
 		{4FDD6876-4AC9-42B3-8DDA-D79D605569B7}.Release|x86.Build.0 = Release|x86
 		{4FDD6876-4AC9-42B3-8DDA-D79D605569B7}.Release|Xbox 360.ActiveCfg = Release|x86
+		{4FDD6876-4AC9-42B3-8DDA-D79D605569B7}.Release|Xbox 360.Build.0 = Release|x86
 		{428BC283-B89B-4F47-9B4C-918F7E45BAB9}.Debug|Any CPU.ActiveCfg = Debug|Xbox 360
 		{428BC283-B89B-4F47-9B4C-918F7E45BAB9}.Debug|ARM.ActiveCfg = Debug|Xbox 360
 		{428BC283-B89B-4F47-9B4C-918F7E45BAB9}.Debug|Mixed Platforms.ActiveCfg = Debug|Xbox 360
@@ -235,19 +239,23 @@ Global
 		{E00BCEC2-64EF-4172-AC40-BEE8A806781C}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{E00BCEC2-64EF-4172-AC40-BEE8A806781C}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{E00BCEC2-64EF-4172-AC40-BEE8A806781C}.Debug|Windows Phone.ActiveCfg = Debug|x86
+		{E00BCEC2-64EF-4172-AC40-BEE8A806781C}.Debug|Windows Phone.Build.0 = Debug|x86
 		{E00BCEC2-64EF-4172-AC40-BEE8A806781C}.Debug|x64.ActiveCfg = Debug|x86
 		{E00BCEC2-64EF-4172-AC40-BEE8A806781C}.Debug|x86.ActiveCfg = Debug|x86
 		{E00BCEC2-64EF-4172-AC40-BEE8A806781C}.Debug|x86.Build.0 = Debug|x86
 		{E00BCEC2-64EF-4172-AC40-BEE8A806781C}.Debug|Xbox 360.ActiveCfg = Debug|x86
+		{E00BCEC2-64EF-4172-AC40-BEE8A806781C}.Debug|Xbox 360.Build.0 = Debug|x86
 		{E00BCEC2-64EF-4172-AC40-BEE8A806781C}.Release|Any CPU.ActiveCfg = Release|x86
 		{E00BCEC2-64EF-4172-AC40-BEE8A806781C}.Release|ARM.ActiveCfg = Release|x86
 		{E00BCEC2-64EF-4172-AC40-BEE8A806781C}.Release|Mixed Platforms.ActiveCfg = Release|x86
 		{E00BCEC2-64EF-4172-AC40-BEE8A806781C}.Release|Mixed Platforms.Build.0 = Release|x86
 		{E00BCEC2-64EF-4172-AC40-BEE8A806781C}.Release|Windows Phone.ActiveCfg = Release|x86
+		{E00BCEC2-64EF-4172-AC40-BEE8A806781C}.Release|Windows Phone.Build.0 = Release|x86
 		{E00BCEC2-64EF-4172-AC40-BEE8A806781C}.Release|x64.ActiveCfg = Release|x86
 		{E00BCEC2-64EF-4172-AC40-BEE8A806781C}.Release|x86.ActiveCfg = Release|x86
 		{E00BCEC2-64EF-4172-AC40-BEE8A806781C}.Release|x86.Build.0 = Release|x86
 		{E00BCEC2-64EF-4172-AC40-BEE8A806781C}.Release|Xbox 360.ActiveCfg = Release|x86
+		{E00BCEC2-64EF-4172-AC40-BEE8A806781C}.Release|Xbox 360.Build.0 = Release|x86
 		{CC35BE29-33BA-4A22-8AB6-4488805F5F9E}.Debug|Any CPU.ActiveCfg = Debug|Xbox 360
 		{CC35BE29-33BA-4A22-8AB6-4488805F5F9E}.Debug|ARM.ActiveCfg = Debug|Xbox 360
 		{CC35BE29-33BA-4A22-8AB6-4488805F5F9E}.Debug|Mixed Platforms.ActiveCfg = Debug|Xbox 360
