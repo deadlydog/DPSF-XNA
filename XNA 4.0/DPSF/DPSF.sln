@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2015
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DPSF", "DPSF\DPSF.csproj", "{B0CF088B-D0AA-4E39-9DD0-0E876ACFE7D7}"
 EndProject
@@ -45,6 +45,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DPSF Demo for WinRT", "..\Installer\Installer Files\DPSF Demo\DPSF Demo for WinRT\DPSF Demo for WinRT.csproj", "{CC61523B-FE7C-4BDF-BD3E-599AE3265399}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DPSF Demo for Windows Phone MonoGame", "..\Installer\Installer Files\DPSF Demo\DPSF Demo for Windows Phone MonoGame\DPSF Demo for Windows Phone MonoGame.csproj", "{744D0108-67C8-4CB3-9552-B438CD059E46}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DPSF FNA", "DPSF FNA\DPSF FNA.csproj", "{2D9BC0FE-CC76-4B6B-88E0-FCB919FBA07D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -478,6 +480,24 @@ Global
 		{744D0108-67C8-4CB3-9552-B438CD059E46}.Release|x86.Build.0 = Release|x86
 		{744D0108-67C8-4CB3-9552-B438CD059E46}.Release|x86.Deploy.0 = Release|x86
 		{744D0108-67C8-4CB3-9552-B438CD059E46}.Release|Xbox 360.ActiveCfg = Release|x86
+		{2D9BC0FE-CC76-4B6B-88E0-FCB919FBA07D}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{2D9BC0FE-CC76-4B6B-88E0-FCB919FBA07D}.Debug|ARM.ActiveCfg = Debug|x86
+		{2D9BC0FE-CC76-4B6B-88E0-FCB919FBA07D}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{2D9BC0FE-CC76-4B6B-88E0-FCB919FBA07D}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{2D9BC0FE-CC76-4B6B-88E0-FCB919FBA07D}.Debug|Windows Phone.ActiveCfg = Debug|x86
+		{2D9BC0FE-CC76-4B6B-88E0-FCB919FBA07D}.Debug|x64.ActiveCfg = Debug|x86
+		{2D9BC0FE-CC76-4B6B-88E0-FCB919FBA07D}.Debug|x86.ActiveCfg = Debug|x86
+		{2D9BC0FE-CC76-4B6B-88E0-FCB919FBA07D}.Debug|x86.Build.0 = Debug|x86
+		{2D9BC0FE-CC76-4B6B-88E0-FCB919FBA07D}.Debug|Xbox 360.ActiveCfg = Debug|x86
+		{2D9BC0FE-CC76-4B6B-88E0-FCB919FBA07D}.Release|Any CPU.ActiveCfg = Release|x86
+		{2D9BC0FE-CC76-4B6B-88E0-FCB919FBA07D}.Release|ARM.ActiveCfg = Release|x86
+		{2D9BC0FE-CC76-4B6B-88E0-FCB919FBA07D}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{2D9BC0FE-CC76-4B6B-88E0-FCB919FBA07D}.Release|Mixed Platforms.Build.0 = Release|x86
+		{2D9BC0FE-CC76-4B6B-88E0-FCB919FBA07D}.Release|Windows Phone.ActiveCfg = Release|x86
+		{2D9BC0FE-CC76-4B6B-88E0-FCB919FBA07D}.Release|x64.ActiveCfg = Release|x86
+		{2D9BC0FE-CC76-4B6B-88E0-FCB919FBA07D}.Release|x86.ActiveCfg = Release|x86
+		{2D9BC0FE-CC76-4B6B-88E0-FCB919FBA07D}.Release|x86.Build.0 = Release|x86
+		{2D9BC0FE-CC76-4B6B-88E0-FCB919FBA07D}.Release|Xbox 360.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
