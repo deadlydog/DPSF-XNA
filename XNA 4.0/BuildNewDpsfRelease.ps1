@@ -1,4 +1,4 @@
-<#
+﻿<#
 	.SYNOPSIS
 	This script builds a new Release version for DPSF.
 	
@@ -54,7 +54,8 @@ $DPSF_CSPROJ_FILE_PATHS = @(
 	(Join-Path $DPSF_ROOT_DIRECTORY "DPSF\DPSF\Windows Phone Copy of DPSF.csproj"),
 	(Join-Path $DPSF_ROOT_DIRECTORY "DPSF\DPSF WinRT\DPSF WinRT.csproj"),
     (Join-Path $DPSF_ROOT_DIRECTORY "DPSF\Mono for Android Copy of DPSF\Mono for Android Copy of DPSF.csproj"),
-    (Join-Path $DPSF_ROOT_DIRECTORY "DPSF\Xamarin.iOS Copy of DPSF\Xamarin.iOS Copy of DPSF.csproj")
+    (Join-Path $DPSF_ROOT_DIRECTORY "DPSF\Xamarin.iOS Copy of DPSF\Xamarin.iOS Copy of DPSF.csproj"),
+	(Join-Path $DPSF_ROOT_DIRECTORY "DPSF\DPSF FNA\DPSF FNA.csproj")
 )
 $MSBUILD_LOG_DIRECTORY_PATH = $DPSF_ROOT_DIRECTORY
 $MSBUILD_PARAMETERS = "/target:Clean;Build /property:Configuration=Release;Platform=""Mixed Platforms"" /verbosity:Quiet"

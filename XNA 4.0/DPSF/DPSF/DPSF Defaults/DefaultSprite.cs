@@ -1,6 +1,7 @@
 ﻿#region Using Statements
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 #endregion
@@ -534,6 +535,7 @@ namespace DPSF
 	/// </summary>
 #if (WINDOWS)
 	[Serializable]
+	[StructLayout(LayoutKind.Sequential, Pack = 1)]
 #endif
 	public struct DefaultSpriteParticleVertex : IDPSFParticleVertex
 	{

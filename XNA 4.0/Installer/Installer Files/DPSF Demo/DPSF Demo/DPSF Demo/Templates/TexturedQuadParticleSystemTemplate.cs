@@ -19,6 +19,7 @@
 
 #region Using Statements
 using System;
+using System.Runtime.InteropServices;
 using DPSF;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -131,6 +132,7 @@ namespace DPSF_Demo.ParticleSystems
 	/// </summary>
 #if (WINDOWS)
 	[Serializable]
+	[StructLayout(LayoutKind.Sequential, Pack = 1)]
 #endif
 	struct TexturedQuadParticleSystemTemplateParticleVertex : IDPSFParticleVertex
 	{

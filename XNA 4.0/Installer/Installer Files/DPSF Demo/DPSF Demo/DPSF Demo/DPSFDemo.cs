@@ -35,7 +35,7 @@ namespace DPSF_Demo
 		//===========================================================
 
 		// How often the Particle Systems should be updated (zero = update as often as possible)
-		const int PARTICLE_SYSTEM_UPDATES_PER_SECOND = 60;
+		const int PARTICLE_SYSTEM_UPDATES_PER_SECOND = 0;	// Using zero (instead of 60) so that quad particles still rotate to face the camera when the simulation is paused.
 
 		// Static Particle Settings
 		float _staticParticleTimeStep = 1.0f / 30.0f;	// The Time Step between the drawing of each frame of the Static Particles (1 / # of fps, example, 1 / 30 = 30fps).
