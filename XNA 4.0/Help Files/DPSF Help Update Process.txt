@@ -1,3 +1,5 @@
+The following process is done in "Help And Manual", which is the software used to produce the .chm help file.
+
 When updating "DPSF Help.chm", make the updates in the "DPSF Help Without API Documentation.hmxz" project. This is done to avoid importing the "DPSF API Documentation" into the project more than once, as this is likely to produce dead links to topics.
 Once you are finished editing and want to create a new .chm for release: 
 
