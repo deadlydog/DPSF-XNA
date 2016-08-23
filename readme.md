@@ -10,6 +10,6 @@ There is also a new git repository for DPSF v3, which aims to remove the XNA dep
 
 While we hope that new development will be done to DPSF v3, it is not ready yet and will likely depend on the time and effort of the community for its completion. For this reason, you may still wish to submit pull requests for this version of DPSF.
 
-[logo]: XNA 4.0/Logos/DPSFLogo.png
+[logo]: https://bytebucket.org/deadlydog/dpsfproject/raw/03d5d5dceda395c56ca2e55eb18ae5b9a2450677/XNA%204.0/Logos/DPSFLogo.png?token=3b5f887ab7186f8bf8a17ab8ebe761fe0d9c5c9e
 [monoGameWebsite]: http://www.monogame.net/news/
 [DpsfWebsite]: http://xnaparticles.com/
